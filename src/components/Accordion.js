@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { marked } from 'marked';
 
 export default function Accordion({ items, type = "interview" }) {
   const [openIndex, setOpenIndex] = useState(null);
@@ -34,14 +35,11 @@ export default function Accordion({ items, type = "interview" }) {
             {openIndex === index && (
               <div className="accordion-body">
                 {item.q.includes("```") && (
-                  <pre className="q-code">{item.q.split("```")[1]?.replace(/^js\n?/,"")}</pre>
+                  <div className="q-full markdown-body" dangerouslySetInnerHTML={{ __html: marked.parse(item.q.replace(/\\n/g, '\n')) }} />
                 )}
                 <div className="answer">
                   <strong>Answer:</strong>
-                  <div className="answer-text">{item.a}</div>
-                  {item.a.includes("```") && (
-                    <pre className="a-code">{item.a.split("```")[1]?.replace(/^js\n?/,"")}</pre>
-                  )}
+                  <div className="answer-text" dangerouslySetInnerHTML={{ __html: marked.parse(item.a.replace(/\\n/g, '\n')) }} />
                 </div>
               </div>
             )}

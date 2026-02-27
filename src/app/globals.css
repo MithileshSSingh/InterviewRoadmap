@@ -241,8 +241,29 @@ body {
   line-height: 1.8; font-size: 0.92rem;
 }
 
+.explanation p { margin-bottom: 1rem; }
+.explanation p:last-child { margin-bottom: 0; }
+.explanation ul, .explanation ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+.explanation li { margin-bottom: 0.4rem; }
+.explanation h3 { margin: 1.5rem 0 0.75rem; color: var(--text-primary); font-size: 1.05rem; }
+.explanation h4 { margin: 1.25rem 0 0.5rem; color: var(--text-primary); font-size: 0.95rem; }
+.explanation pre {
+  background: var(--code-bg, #070f0b); padding: 1rem; border-radius: var(--radius);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+  overflow-x: auto; color: var(--text-secondary); margin: 1rem 0;
+  border: 1px solid var(--border);
+}
+.explanation table {
+  width: 100%; border-collapse: collapse; margin: 1rem 0;
+  font-size: 0.85rem;
+}
+.explanation th, .explanation td {
+  padding: 0.75rem; border: 1px solid var(--border); text-align: left;
+}
+.explanation th { background: rgba(255,255,255,0.03); color: var(--text-primary); }
+
 .explanation strong { color: var(--text-primary); }
-.explanation code {
+.explanation code:not(pre code) {
   background: rgba(16,185,129,0.12); color: var(--accent-cyan);
   padding: 0.15rem 0.4rem; border-radius: 4px;
   font-family: 'JetBrains Mono', monospace; font-size: 0.85em;
@@ -293,6 +314,10 @@ body {
   color: var(--text-secondary); font-size: 0.88rem; line-height: 1.7;
 }
 
+.exercise-text p { margin-bottom: 0.75rem; }
+.exercise-text p:last-child { margin-bottom: 0; }
+.exercise-text ul, .exercise-text ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
+
 .exercise-text strong { color: var(--accent-green); }
 .exercise-text code {
   background: rgba(74,222,128,0.1); color: var(--accent-green);
@@ -313,7 +338,10 @@ body {
   line-height: 1.6;
 }
 
-.mistakes-list li code {
+.mistakes-list li p { margin-bottom: 0.5rem; }
+.mistakes-list li p:last-child { margin-bottom: 0; }
+
+.mistakes-list li code:not(pre code) {
   background: rgba(248,113,113,0.12); color: var(--accent-orange);
   padding: 0.1rem 0.35rem; border-radius: 3px;
   font-family: 'JetBrains Mono', monospace; font-size: 0.85em;
@@ -376,13 +404,31 @@ body {
 .accordion-body strong { color: var(--accent-green); }
 
 .answer-text {
-  white-space: pre-wrap;
+  color: var(--text-secondary);
 }
 
-.answer-text code, .accordion-body code {
+.answer-text p, .q-full p { margin-bottom: 0.75rem; }
+.answer-text p:last-child, .q-full p:last-child { margin-bottom: 0; }
+.answer-text ul, .answer-text ol, .q-full ul, .q-full ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
+.answer-text li, .q-full li { margin-bottom: 0.3rem; }
+
+.q-full.markdown-body {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--border);
+}
+
+.answer-text code:not(pre code), .accordion-body code:not(pre code) {
   background: rgba(16,185,129,0.12); color: var(--accent-cyan);
   padding: 0.1rem 0.35rem; border-radius: 3px;
   font-family: 'JetBrains Mono', monospace; font-size: 0.85em;
+}
+
+.answer-text pre, .q-full pre, .q-code, .a-code {
+  background: var(--code-bg, #070f0b); padding: 0.75rem 1rem; border-radius: var(--radius);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+  overflow-x: auto; color: var(--text-secondary); margin: 0.5rem 0;
+  line-height: 1.6; border: 1px solid var(--border);
 }
 
 .q-code, .a-code {

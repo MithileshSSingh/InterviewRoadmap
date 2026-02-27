@@ -6,12 +6,13 @@ import { getRoadmapMeta } from "@/data/roadmaps";
 import CodeBlock from "@/components/CodeBlock";
 import Accordion from "@/components/Accordion";
 
+import { marked } from 'marked';
+
 function renderMarkdown(text) {
   if (!text) return null;
-  return text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/\\n/g, '\n');
+  // Some legacy data might still have literal string "\n" instead of actual newlines
+  const processed = text.replace(/\\n/g, '\n');
+  return marked.parse(processed);
 }
 
 export default function TopicPage() {

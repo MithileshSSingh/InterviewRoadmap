@@ -9,6 +9,14 @@ const roadmaps = [
     tags: ["DSA", "Interview", "Problem Solving"],
   },
   {
+    slug: "android-senior",
+    title: "Sr. Android Developer",
+    emoji: "🤖",
+    color: "#3DDC84",
+    description: "Prepare for a Senior Android Developer role at Google — architecture, Kotlin, system design, DSA, and behavioral.",
+    tags: ["Android", "Interview", "Google"],
+  },
+  {
     slug: "javascript",
     title: "JavaScript",
     emoji: "⚡",
@@ -23,14 +31,6 @@ const roadmaps = [
     color: "#3178c6",
     description: "Add type safety to JavaScript — interfaces, generics, utility types, and best practices.",
     tags: ["Frontend", "Backend", "Types"],
-  },
-  {
-    slug: "android-senior",
-    title: "Sr. Android Developer @ Google",
-    emoji: "🤖",
-    color: "#3DDC84",
-    description: "Prepare for a Senior Android Developer role at Google — architecture, Kotlin, system design, DSA, and behavioral.",
-    tags: ["Android", "Interview", "Google"],
   },
   {
     slug: "react-native-senior",
