@@ -30,7 +30,7 @@ export default function Sidebar() {
       <aside className={`sidebar ${mobileOpen ? "open" : ""}`}>
         <Link href="/" className="sidebar-logo" onClick={() => setMobileOpen(false)}>
           <span className="logo-icon">📚</span>
-          <span className="logo-text">Learning Hub</span>
+          <span className="logo-text">Interview Roadmaps</span>
         </Link>
 
         <nav className="sidebar-nav">

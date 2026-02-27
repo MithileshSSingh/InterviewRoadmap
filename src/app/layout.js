@@ -4,8 +4,8 @@ import ModeToggle from "@/components/ModeToggle";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata = {
-  title: "JavaScript Learning Roadmap — Beginner to Advanced",
-  description: "A complete interactive JavaScript learning roadmap with code examples, exercises, and interview questions. From variables to design patterns.",
+  title: "Interview Roadmap",
+  description: "A complete interactive roadmap for interviews with code examples, exercises, and interview questions. From variables to design patterns.",
 };
 
 export default function RootLayout({ children }) {
