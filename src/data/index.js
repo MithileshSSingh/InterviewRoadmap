@@ -6,6 +6,11 @@ import phase3Data from './phase3';
 import phase4Data from './phase4';
 import phase5Data from './phase5';
 
+import tsPhase1 from './ts-phase1';
+import tsPhase2 from './ts-phase2';
+import tsPhase3 from './ts-phase3';
+import tsPhase4 from './ts-phase4';
+
 // Combine phase1 + phase1b topics
 const phase1 = {
   ...phase1Data,
@@ -25,9 +30,13 @@ const phase5 = phase5Data;
 // JavaScript roadmap phases
 export const javascriptPhases = [phase1, phase2, phase3, phase4, phase5];
 
+// TypeScript roadmap phases
+export const typescriptPhases = [tsPhase1, tsPhase2, tsPhase3, tsPhase4];
+
 // Registry of all roadmap data keyed by slug
 const roadmapData = {
   javascript: javascriptPhases,
+  typescript: typescriptPhases,
 };
 
 export function getRoadmapPhases(slug) {
