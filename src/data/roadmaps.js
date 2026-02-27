@@ -33,7 +33,6 @@ const roadmaps = [
     color: "#3178c6",
     description: "Add type safety to JavaScript — interfaces, generics, utility types, and best practices.",
     tags: ["Frontend", "Backend", "Types"],
-    comingSoon: true,
   },
   {
     slug: "python",

@@ -54,6 +54,8 @@ export default function TopicPage() {
     }
   }
 
+  const codeLanguage = slug === "typescript" ? "typescript" : "javascript";
+
   return (
     <div className="topic-page">
       <div className="breadcrumb">
@@ -77,7 +79,7 @@ export default function TopicPage() {
       {/* Code Example */}
       <section className="section">
         <h2 className="section-title"><span className="icon">💻</span> Code Example</h2>
-        <CodeBlock code={topic.codeExample} />
+        <CodeBlock code={topic.codeExample} language={codeLanguage} />
       </section>
 
       {/* Exercise */}
