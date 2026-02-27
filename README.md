@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Learning Roadmap Platform
 
-## Getting Started
+A modern, responsive web application built with [Next.js](https://nextjs.org) that provides comprehensive, structured learning roadmaps for software engineering roles and technologies.
 
-First, run the development server:
+## 🚀 Key Features
+
+*   **Interactive Learning Paths:** Follow structured, step-by-step guides from beginner to advanced topics.
+*   **Rich Content Rendering:** Markdown parsing with syntax highlighting using `marked` and `prism-react-renderer`.
+*   **Modern Theming:** Supports multiple themes including Light, Dark, and a custom Monochrome off-white theme.
+*   **Responsive UI:** Fully responsive design built with Tailwind CSS v4, optimized for both desktop and mobile.
+*   **Performance:** Powered by Next.js 16 and React 19, delivering fast, optimized loading times.
+
+## 📚 Available Roadmaps
+
+1.  🧠 **Data Structures & Algorithms (DSA)** - Master DSA from beginner to advanced: arrays, trees, graphs, DP, and interview-level problem solving.
+2.  🤖 **Sr. Android Developer** - Prepare for Senior roles at top tech companies, covering architecture, Kotlin, system design, DSA, and behavioral interviews.
+3.  ⚡ **JavaScript** - Master the language of the web, from basic variables to advanced design patterns.
+4.  🔷 **TypeScript** - Add type safety to your JavaScript workflow with interfaces, generics, and advanced utility types.
+5.  📱 **Sr. React Native Engineer** - Deep dive into React Native architecture, performance, internals, system design, and technical leadership.
+
+*(More roadmaps coming soon: React, Node.js, Python, CSS)*
+
+## 🛠️ Tech Stack
+
+*   **Framework:** [Next.js 16](https://nextjs.org) (React 19)
+*   **Styling:** [Tailwind CSS v4](https://tailwindcss.com) & PostCSS
+*   **Content Parsing:** `marked`
+*   **Syntax Highlighting:** `prism-react-renderer`
+*   **Package Manager:** `bun` / `npm`
+
+## 🏃‍♂️ Getting Started
+
+First, install the dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+# or npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then, run the development server:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+bun dev
+# or npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. The main entry point for the application is within `src/app/`.
 
-## Learn More
+## 📁 Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+*   `src/app/` - Next.js App Router pages and layouts.
+*   `src/components/` - Reusable UI components.
+*   `src/data/` - Static JSON/JS data and markdown content for the different roadmaps and their respective phases.
+*   `src/themes.js` - Configuration for the custom Light, Dark, and Monochrome themes.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📝 License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.
