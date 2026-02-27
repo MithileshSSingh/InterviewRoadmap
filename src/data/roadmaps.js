@@ -52,6 +52,14 @@ const roadmaps = [
     tags: ["Frontend", "Design", "Web"],
     comingSoon: true,
   },
+  {
+    slug: "dsa",
+    title: "Data Structures & Algorithms",
+    emoji: "🧠",
+    color: "#e44d26",
+    description: "Master DSA from beginner to advanced — arrays, trees, graphs, DP, and interview-level problem solving.",
+    tags: ["DSA", "Interview", "Problem Solving"],
+  },
 ];
 
 export function getAllRoadmaps() {
