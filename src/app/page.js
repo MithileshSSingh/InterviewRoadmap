@@ -8,7 +8,7 @@ export default function HomePage() {
   return (
     <div>
       <div className="hero">
-        <h1>Learning Roadmaps</h1>
+        <h1>Interview Roadmaps</h1>
         <p>
           Choose a roadmap and master any technology — with code examples,
           exercises, and interview questions at every step.

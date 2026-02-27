@@ -1,6 +1,6 @@
-# Learning Roadmap Platform
+# Interview Roadmap Platform
 
-A modern, responsive web application built with [Next.js](https://nextjs.org) that provides comprehensive, structured learning roadmaps for software engineering roles and technologies.
+A modern, responsive web application built with [Next.js](https://nextjs.org) that provides comprehensive, structured Interview Roadmaps for software engineering roles and technologies.
 
 ## 🚀 Key Features
 
