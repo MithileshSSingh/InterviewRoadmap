@@ -21,6 +21,36 @@ import dsaPhase4Data from './dsa-phase4';
 import dsaPhase4bData from './dsa-phase4b';
 import dsaPhase5Data from './dsa-phase5';
 
+import androidPhase1Data from './android-phase1';
+import androidPhase2Data from './android-phase2';
+import androidPhase2bData from './android-phase2b';
+import androidPhase3Data from './android-phase3';
+import androidPhase4Data from './android-phase4';
+import androidPhase5Data from './android-phase5';
+import androidPhase6Data from './android-phase6';
+import androidPhase7Data from './android-phase7';
+import androidPhase8Data from './android-phase8';
+import androidPhase9Data from './android-phase9';
+import androidPhase10Data from './android-phase10';
+import androidPhase11Data from './android-phase11';
+import androidPhase12Data from './android-phase12';
+
+import rnPhase1 from './rn-phase1';
+import rnPhase2 from './rn-phase2';
+import rnPhase3 from './rn-phase3';
+import rnPhase4 from './rn-phase4';
+import rnPhase5 from './rn-phase5';
+import rnPhase6 from './rn-phase6';
+import rnPhase7 from './rn-phase7';
+import rnPhase8 from './rn-phase8';
+import rnPhase9 from './rn-phase9';
+import rnPhase10 from './rn-phase10';
+import rnPhase11 from './rn-phase11';
+import rnPhase12 from './rn-phase12';
+import rnPhase13 from './rn-phase13';
+import rnPhase14 from './rn-phase14';
+import rnPhase15 from './rn-phase15';
+
 // Combine phase1 + phase1b topics
 const phase1 = {
   ...phase1Data,
@@ -63,6 +93,12 @@ const dsaPhase4 = {
 
 const dsaPhase5 = dsaPhase5Data;
 
+// Combine Android phase2 + phase2b topics
+const androidPhase2 = {
+  ...androidPhase2Data,
+  topics: [...androidPhase2Data.topics, ...androidPhase2bData]
+};
+
 // JavaScript roadmap phases
 export const javascriptPhases = [phase1, phase2, phase3, phase4, phase5];
 
@@ -72,11 +108,27 @@ export const typescriptPhases = [tsPhase1, tsPhase2, tsPhase3, tsPhase4];
 // DSA roadmap phases
 export const dsaPhases = [dsaPhase1, dsaPhase2, dsaPhase3, dsaPhase4, dsaPhase5];
 
+// Android roadmap phases
+export const androidPhases = [
+  androidPhase1Data, androidPhase2, androidPhase3Data, androidPhase4Data,
+  androidPhase5Data, androidPhase6Data, androidPhase7Data, androidPhase8Data,
+  androidPhase9Data, androidPhase10Data, androidPhase11Data, androidPhase12Data,
+];
+
+// React Native roadmap phases
+export const reactnativePhases = [
+  rnPhase1, rnPhase2, rnPhase3, rnPhase4, rnPhase5,
+  rnPhase6, rnPhase7, rnPhase8, rnPhase9, rnPhase10,
+  rnPhase11, rnPhase12, rnPhase13, rnPhase14, rnPhase15,
+];
+
 // Registry of all roadmap data keyed by slug
 const roadmapData = {
   javascript: javascriptPhases,
   typescript: typescriptPhases,
   dsa: dsaPhases,
+  'android-senior': androidPhases,
+  'react-native-senior': reactnativePhases,
 };
 
 export function getRoadmapPhases(slug) {

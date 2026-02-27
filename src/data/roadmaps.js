@@ -33,6 +33,14 @@ const roadmaps = [
     tags: ["Android", "Interview", "Google"],
   },
   {
+    slug: "react-native-senior",
+    title: "Sr. React Native Engineer",
+    emoji: "📱",
+    color: "#61dafb",
+    description: "Prepare for a Senior / Staff React Native Engineer role — architecture, performance, internals, system design, and technical leadership.",
+    tags: ["React Native", "Interview", "Mobile"],
+  },
+  {
     slug: "react",
     title: "React",
     emoji: "⚛️",
