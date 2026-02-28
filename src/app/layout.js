@@ -1,6 +1,7 @@
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import ModeToggle from "@/components/ModeToggle";
+import ThemeDropdown from "@/components/ThemeDropdown";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata = {
@@ -16,7 +17,10 @@ export default function RootLayout({ children }) {
           <div className="app-layout">
             <Sidebar />
             <main className="main-content">
-              <ModeToggle />
+              <div className="top-controls">
+                <ThemeDropdown />
+                <ModeToggle />
+              </div>
               {children}
             </main>
           </div>
