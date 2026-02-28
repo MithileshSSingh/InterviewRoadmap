@@ -1407,12 +1407,14 @@ body {
 /* Responsive */
 @media (max-width: 520px) {
   .chatbot-drawer {
-    right: 0;
-    bottom: 0;
+    position: fixed;
+    inset: 0;
     width: 100%;
-    height: 100dvh;
-    max-height: 100dvh;
+    height: 100%;
+    max-height: none;
     border-radius: 0;
+    touch-action: manipulation;
+    overscroll-behavior: contain;
   }
 
   .chatbot-drawer.chatbot-fullscreen {
@@ -1424,6 +1426,12 @@ body {
     flex: 1 1 0;
     max-height: none;
     min-height: 0;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chatbot-bubble {
+    max-width: 90% !important;
   }
 
   #chatbot-fullscreen-toggle {
@@ -1437,8 +1445,8 @@ body {
     height: 56px;
   }
 
-  .chatbot-fullscreen .chatbot-bubble {
-    max-width: 90%;
+  .chatbot-input-area {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
   }
 }
 

@@ -50,15 +50,36 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
     }
   }, [isOpen]);
 
-  // Lock body scroll when fullscreen
+  // Lock body scroll on fullscreen, and disable zoom on mobile when chat is open
   useEffect(() => {
-    if (isFullscreen && isOpen) {
+    const isMobile = window.innerWidth <= 520;
+
+    if (isOpen && isMobile) {
+      document.body.style.overflow = "hidden";
+      // Disable pinch-to-zoom on mobile when chat is open
+      const viewport = document.querySelector('meta[name="viewport"]');
+      if (viewport) {
+        viewport.setAttribute(
+          "content",
+          "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        );
+      }
+    } else if (isFullscreen && isOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
+
     return () => {
       document.body.style.overflow = "";
+      // Restore zoom capability
+      const viewport = document.querySelector('meta[name="viewport"]');
+      if (viewport) {
+        viewport.setAttribute(
+          "content",
+          "width=device-width, initial-scale=1"
+        );
+      }
     };
   }, [isFullscreen, isOpen]);
 
