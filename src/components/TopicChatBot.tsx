@@ -21,9 +21,30 @@ interface ChatMessage {
   content: string;
 }
 
+type ChatStreamEvent =
+  | { type: "token"; content: string }
+  | { type: "done" }
+  | { type: "error"; message: string };
+
 function renderMarkdown(text: string): string {
   if (!text) return "";
   return marked.parse(text, { async: false }) as string;
+}
+
+function parseSSEEvent(rawEvent: string): ChatStreamEvent | null {
+  const data = rawEvent
+    .split("\n")
+    .filter((line) => line.startsWith("data:"))
+    .map((line) => line.slice(5).trimStart())
+    .join("\n");
+
+  if (!data) return null;
+
+  try {
+    return JSON.parse(data) as ChatStreamEvent;
+  } catch {
+    return null;
+  }
 }
 
 export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
@@ -260,17 +281,73 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
         return;
       }
 
-      const data = await response.json();
-      const content = data.content || "😔 No response received. Please try again.";
+      if (!response.body) {
+        setMessages((prev) => {
+          const updated = [...prev];
+          updated[assistantIndex] = {
+            role: "assistant",
+            content: "😔 No response received. Please try again.",
+          };
+          return updated;
+        });
+        return;
+      }
 
-      setMessages((prev) => {
-        const updated = [...prev];
-        updated[assistantIndex] = {
-          role: "assistant",
-          content,
-        };
-        return updated;
-      });
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let streamedContent = "";
+      let streamErrorMessage = "";
+
+      const setAssistantContent = (content: string) => {
+        setMessages((prev) => {
+          const updated = [...prev];
+          updated[assistantIndex] = { role: "assistant", content };
+          return updated;
+        });
+      };
+
+      const processEvent = (event: ChatStreamEvent | null) => {
+        if (!event) return;
+
+        if (event.type === "token") {
+          streamedContent += event.content || "";
+          setAssistantContent(streamedContent);
+          return;
+        }
+
+        if (event.type === "error") {
+          streamErrorMessage = event.message || "😔 Something went wrong. Please try again.";
+        }
+      };
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const rawEvents = buffer.split("\n\n");
+        buffer = rawEvents.pop() || "";
+
+        rawEvents.forEach((rawEvent) => {
+          processEvent(parseSSEEvent(rawEvent));
+        });
+      }
+
+      // Flush decoder and parse any trailing event fragment.
+      buffer += decoder.decode();
+      if (buffer.trim()) {
+        processEvent(parseSSEEvent(buffer));
+      }
+
+      if (streamErrorMessage) {
+        setAssistantContent(streamErrorMessage);
+        return;
+      }
+
+      if (!streamedContent.trim()) {
+        setAssistantContent("😔 No response received. Please try again.");
+      }
     } catch (err: unknown) {
       if (err instanceof Error && err.name === "AbortError") return;
       setMessages((prev) => {
@@ -282,7 +359,10 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
         return updated;
       });
     } finally {
-      setIsStreaming(false);
+      if (abortRef.current === controller) {
+        abortRef.current = null;
+        setIsStreaming(false);
+      }
     }
   };
 

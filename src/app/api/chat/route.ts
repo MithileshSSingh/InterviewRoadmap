@@ -4,9 +4,61 @@ import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages
 import { NextResponse } from "next/server";
 
 const ALLOWED_MODELS = ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-pro", "gemini-3-flash-preview"];
+const STREAM_HEADERS = {
+  "Content-Type": "text/event-stream; charset=utf-8",
+  "Cache-Control": "no-cache, no-transform",
+  Connection: "keep-alive",
+  "X-Accel-Buffering": "no",
+};
+
+export const dynamic = "force-dynamic";
 
 interface ChatRequestBody {
   messages: { role: "user" | "assistant" | "system"; content: string }[];
+}
+
+type StreamEvent =
+  | { type: "token"; content: string }
+  | { type: "done" }
+  | { type: "error"; message: string };
+
+function contentToText(content: unknown): string {
+  if (typeof content === "string") return content;
+  if (!Array.isArray(content)) return "";
+
+  return content
+    .map((part) => {
+      if (typeof part === "string") return part;
+      if (!part || typeof part !== "object") return "";
+      const maybeText = (part as { text?: unknown }).text;
+      return typeof maybeText === "string" ? maybeText : "";
+    })
+    .join("");
+}
+
+function extractChunkText(messageChunk: unknown): string {
+  if (!messageChunk || typeof messageChunk !== "object") return "";
+  return contentToText((messageChunk as { content?: unknown }).content);
+}
+
+function extractAssistantFromUpdate(updateChunk: unknown): string {
+  if (!updateChunk || typeof updateChunk !== "object") return "";
+
+  for (const nodeUpdate of Object.values(updateChunk as Record<string, unknown>)) {
+    if (!nodeUpdate || typeof nodeUpdate !== "object") continue;
+
+    const messages = (nodeUpdate as { messages?: unknown }).messages;
+    if (!Array.isArray(messages) || messages.length === 0) continue;
+
+    const lastMessage = messages[messages.length - 1];
+    if (!lastMessage || typeof lastMessage !== "object") continue;
+
+    const content = (lastMessage as { content?: unknown }).content;
+    const text = contentToText(content);
+    if (text) return text;
+  }
+
+  return "";
 }
 
 export async function POST(request: Request) {
@@ -46,7 +98,7 @@ export async function POST(request: Request) {
       }
     });
 
-    // Create the model (no streaming)
+    // Create the model (LangGraph stream mode will emit tokens)
     const llm = new ChatGoogleGenerativeAI({
       model: selectedModel,
       apiKey,
@@ -65,16 +117,65 @@ export async function POST(request: Request) {
       .addEdge("callModel", "__end__")
       .compile();
 
-    // Invoke the graph (single call, no streaming)
-    const result = await graph.invoke({ messages: langchainMessages });
+    const encoder = new TextEncoder();
 
-    // Extract the assistant's response (last message in the result)
-    const lastMessage = result.messages[result.messages.length - 1];
-    const content = typeof lastMessage.content === "string"
-      ? lastMessage.content
-      : "";
+    const stream = new ReadableStream({
+      async start(controller) {
+        const pushEvent = (event: StreamEvent) => {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
+        };
 
-    return NextResponse.json({ content });
+        try {
+          let streamedContent = "";
+          let fallbackContentFromUpdates = "";
+
+          const iterator = await graph.stream(
+            { messages: langchainMessages },
+            { streamMode: ["messages", "updates"] }
+          );
+
+          for await (const [mode, chunk] of iterator as AsyncIterable<[string, unknown]>) {
+            if (mode === "messages" && Array.isArray(chunk)) {
+              const [messageChunk, metadata] = chunk as [unknown, { langgraph_node?: string }];
+
+              if (metadata?.langgraph_node && metadata.langgraph_node !== "callModel") {
+                continue;
+              }
+
+              const token = extractChunkText(messageChunk);
+              if (!token) continue;
+
+              streamedContent += token;
+              pushEvent({ type: "token", content: token });
+            }
+
+            if (mode === "updates") {
+              const contentFromUpdate = extractAssistantFromUpdate(chunk);
+              if (contentFromUpdate) fallbackContentFromUpdates = contentFromUpdate;
+            }
+          }
+
+          if (!streamedContent && fallbackContentFromUpdates) {
+            pushEvent({ type: "token", content: fallbackContentFromUpdates });
+          }
+
+          pushEvent({ type: "done" });
+          controller.close();
+        } catch (streamErr) {
+          console.error("[Chat API] Stream error:", streamErr);
+          pushEvent({
+            type: "error",
+            message: "Something went wrong while streaming the response.",
+          });
+          controller.close();
+        }
+      },
+    });
+
+    return new Response(stream, {
+      status: 200,
+      headers: STREAM_HEADERS,
+    });
   } catch (err) {
     console.error("[Chat API] Unexpected error:", err);
     return NextResponse.json(
