@@ -5,6 +5,7 @@ import { getRoadmapPhases } from "@/data";
 import { getRoadmapMeta } from "@/data/roadmaps";
 import CodeBlock from "@/components/CodeBlock";
 import Accordion from "@/components/Accordion";
+import TopicChatBot from "@/components/TopicChatBot";
 
 import { marked } from 'marked';
 
@@ -120,6 +121,9 @@ export default function TopicPage() {
           </Link>
         ) : <div />}
       </div>
+
+      {/* Topic Chatbot */}
+      <TopicChatBot topicContent={topic} />
     </div>
   );
 }
