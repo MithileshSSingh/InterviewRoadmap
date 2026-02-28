@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback, useMemo, FormEvent, useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
 import { marked } from "marked";
 import { ChatApiMessage, streamChatResponse } from "@/lib/chatClient";
 
@@ -50,6 +51,7 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
     left: number;
     top: number;
   } | null>(null);
+  const [topControlSlot, setTopControlSlot] = useState<HTMLElement | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -139,6 +141,10 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
       abortRef.current?.abort();
       selectionAbortRef.current?.abort();
     };
+  }, []);
+
+  useEffect(() => {
+    setTopControlSlot(document.getElementById("top-chatbot-slot"));
   }, []);
 
   // Close chat when clicking outside the dialog
@@ -503,6 +509,21 @@ Selected text:
 
   return (
     <>
+      {topControlSlot &&
+        createPortal(
+          <button
+            id="chatbot-toggle"
+            className="mode-toggle chatbot-top-toggle"
+            onClick={() => setIsOpen(true)}
+            aria-label="Open chat"
+            title="Open chat"
+            type="button"
+          >
+            <span className="chatbot-top-toggle-icon">🤖</span>
+          </button>,
+          topControlSlot
+        )}
+
       {/* Floating Text Selection Helper */}
       {selectionBtn && !isOpen && (
         <button
@@ -582,16 +603,6 @@ Selected text:
       {isOpen && isFullscreen && (
         <div className="chatbot-backdrop" />
       )}
-
-      {/* Floating toggle button */}
-      <button
-        id="chatbot-toggle"
-        className={`chatbot-fab ${isOpen ? "chatbot-fab-hidden" : ""}`}
-        onClick={() => setIsOpen(true)}
-        aria-label="Open chat"
-      >
-        <span className="chatbot-fab-icon">🤖</span>
-      </button>
 
       {/* Chat drawer */}
       {isOpen && (

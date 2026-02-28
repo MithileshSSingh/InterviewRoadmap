@@ -18,6 +18,7 @@ export default function RootLayout({ children }) {
             <Sidebar />
             <main className="main-content">
               <div className="top-controls">
+                <div id="top-chatbot-slot" className="top-control-slot" />
                 <ThemeDropdown />
                 <ModeToggle />
               </div>
