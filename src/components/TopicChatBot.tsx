@@ -172,6 +172,7 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
     };
 
     document.addEventListener("mouseup", handleSelection);
+    document.addEventListener("touchend", handleSelection);
     document.addEventListener("keyup", handleSelection);
     document.addEventListener("selectionchange", () => {
       if (!window.getSelection()?.toString().trim()) {
@@ -181,6 +182,7 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
 
     return () => {
       document.removeEventListener("mouseup", handleSelection);
+      document.removeEventListener("touchend", handleSelection);
       document.removeEventListener("keyup", handleSelection);
     };
   }, []);
@@ -390,7 +392,10 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
             left: selectionBtn.x,
             top: selectionBtn.y,
           }}
-          onClick={handleSelectionAction}
+          onPointerDown={(e) => {
+            e.preventDefault(); // Prevent selection from clearing before action fires
+            handleSelectionAction();
+          }}
         >
           ✨ Ask AI
         </button>
