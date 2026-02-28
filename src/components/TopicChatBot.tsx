@@ -53,7 +53,6 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
-  const [isFirstMessage, setIsFirstMessage] = useState(true);
   const [selectionBtn, setSelectionBtn] = useState<{
     text: string;
     x: number;
@@ -237,11 +236,7 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
 
     // Build messages payload for API
     const apiMessages: { role: string; content: string }[] = [];
-
-    if (isFirstMessage) {
-      apiMessages.push({ role: "system", content: buildSystemMessage() });
-      setIsFirstMessage(false);
-    }
+    apiMessages.push({ role: "system", content: buildSystemMessage() });
 
     // Add all previous messages
     messages.forEach((msg) => {
@@ -369,7 +364,6 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
   const handleClearChat = () => {
     abortRef.current?.abort();
     setMessages([]);
-    setIsFirstMessage(true);
     setIsStreaming(false);
   };
 
