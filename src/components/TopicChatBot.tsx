@@ -49,10 +49,12 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Focus input when chat opens
+  // Focus input when chat opens, clear input when it closes
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 200);
+    } else {
+      setInput("");
     }
   }, [isOpen]);
 
