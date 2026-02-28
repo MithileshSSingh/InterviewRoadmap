@@ -37,6 +37,7 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to the bottom when messages change
   useEffect(() => {
@@ -48,6 +49,33 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 200);
     }
+  }, [isOpen]);
+
+  // Close chat when clicking outside the dialog
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
+      if (
+        isOpen &&
+        chatContainerRef.current &&
+        !chatContainerRef.current.contains(event.target as Node)
+      ) {
+        const toggleBtn = document.getElementById("chatbot-toggle");
+        if (toggleBtn && toggleBtn.contains(event.target as Node)) {
+          return;
+        }
+        setIsOpen(false);
+        setIsFullscreen(false);
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
   }, [isOpen]);
 
   // Lock body scroll on fullscreen, and disable zoom on mobile when chat is open
@@ -219,7 +247,7 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
     <>
       {/* Fullscreen backdrop */}
       {isOpen && isFullscreen && (
-        <div className="chatbot-backdrop" onClick={() => setIsFullscreen(false)} />
+        <div className="chatbot-backdrop" />
       )}
 
       {/* Floating toggle button */}
@@ -234,7 +262,7 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
 
       {/* Chat drawer */}
       {isOpen && (
-        <div className={drawerClass} role="dialog" aria-label="Topic chatbot">
+        <div ref={chatContainerRef} className={drawerClass} role="dialog" aria-label="Topic chatbot">
           {/* Header */}
           <div className="chatbot-header">
             <div className="chatbot-header-info">
