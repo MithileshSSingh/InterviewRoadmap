@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, useMemo, FormEvent } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo, FormEvent, useLayoutEffect } from "react";
 import { marked } from "marked";
+import { ChatApiMessage, streamChatResponse } from "@/lib/chatClient";
 
 interface TopicContent {
   title: string;
@@ -21,49 +22,9 @@ interface ChatMessage {
   content: string;
 }
 
-type ChatStreamEvent =
-  | { type: "token"; content: string }
-  | { type: "done" }
-  | { type: "error"; message: string };
-
 function renderMarkdown(text: string): string {
   if (!text) return "";
   return marked.parse(text, { async: false }) as string;
-}
-
-function b64EncodeUnicode(str: string): string {
-  const bytes = new TextEncoder().encode(str);
-  let bin = "";
-  for (let i = 0; i < bytes.length; i++) {
-    bin += String.fromCharCode(bytes[i]);
-  }
-  return btoa(bin);
-}
-
-function b64DecodeUnicode(b64: string): string {
-  const bin = atob(b64);
-  const bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) {
-    bytes[i] = bin.charCodeAt(i);
-  }
-  return new TextDecoder().decode(bytes);
-}
-
-function parseSSEEvent(rawEvent: string): ChatStreamEvent | null {
-  const data = rawEvent
-    .split("\n")
-    .filter((line) => line.startsWith("data:"))
-    .map((line) => line.slice(5).trimStart())
-    .join("");
-
-  if (!data) return null;
-
-  try {
-    const jsonStr = b64DecodeUnicode(data);
-    return JSON.parse(jsonStr) as ChatStreamEvent;
-  } catch {
-    return null;
-  }
 }
 
 export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
@@ -77,11 +38,68 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
     x: number;
     y: number;
   } | null>(null);
+  const [selectionTooltip, setSelectionTooltip] = useState<{
+    text: string;
+    x: number;
+    y: number;
+    content: string;
+    isLoading: boolean;
+    error: string | null;
+  } | null>(null);
+  const [selectionTooltipPosition, setSelectionTooltipPosition] = useState<{
+    left: number;
+    top: number;
+  } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const selectionAbortRef = useRef<AbortController | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const selectionTooltipRef = useRef<HTMLDivElement>(null);
+
+  const closeSelectionTooltip = useCallback(() => {
+    selectionAbortRef.current?.abort();
+    selectionAbortRef.current = null;
+    setSelectionTooltip(null);
+    setSelectionTooltipPosition(null);
+  }, []);
+
+  const computeSelectionTooltipPosition = useCallback(
+    (anchorX: number, anchorYInDocument: number) => {
+      const viewportPadding = 12;
+      const anchorOffset = 14;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const tooltipWidth = Math.min(420, viewportWidth - 32);
+      const tooltipHeight = Math.min(360, viewportHeight - viewportPadding * 2);
+      const anchorY = anchorYInDocument - window.scrollY;
+
+      const availableAbove = anchorY - viewportPadding - anchorOffset;
+      const availableBelow =
+        viewportHeight - anchorY - viewportPadding - anchorOffset;
+      const minPreferredSpace = Math.min(220, tooltipHeight);
+      const placeAbove =
+        availableAbove >= minPreferredSpace || availableAbove >= availableBelow;
+
+      let top = placeAbove
+        ? anchorY - anchorOffset - tooltipHeight
+        : anchorY + anchorOffset;
+      top = Math.max(
+        viewportPadding,
+        Math.min(top, viewportHeight - tooltipHeight - viewportPadding)
+      );
+
+      let left = anchorX - tooltipWidth / 2;
+      left = Math.max(
+        viewportPadding,
+        Math.min(left, viewportWidth - tooltipWidth - viewportPadding)
+      );
+
+      return { left, top };
+    },
+    []
+  );
 
   // Auto-scroll to the bottom when messages change
   useEffect(() => {
@@ -96,6 +114,13 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
       setInput("");
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+      selectionAbortRef.current?.abort();
+    };
+  }, []);
 
   // Close chat when clicking outside the dialog
   useEffect(() => {
@@ -189,31 +214,24 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
         });
       }
     };
+    const handleSelectionChange = () => {
+      if (!window.getSelection()?.toString().trim()) {
+        setSelectionBtn(null);
+      }
+    };
 
     document.addEventListener("mouseup", handleSelection);
     document.addEventListener("touchend", handleSelection);
     document.addEventListener("keyup", handleSelection);
-    document.addEventListener("selectionchange", () => {
-      if (!window.getSelection()?.toString().trim()) {
-        setSelectionBtn(null);
-      }
-    });
+    document.addEventListener("selectionchange", handleSelectionChange);
 
     return () => {
       document.removeEventListener("mouseup", handleSelection);
       document.removeEventListener("touchend", handleSelection);
       document.removeEventListener("keyup", handleSelection);
+      document.removeEventListener("selectionchange", handleSelectionChange);
     };
   }, []);
-
-  const handleSelectionAction = () => {
-    if (!selectionBtn) return;
-    setIsOpen(true);
-    setInput(`Can you explain this part?\\n\\n"${selectionBtn.text}"`);
-    setSelectionBtn(null);
-    window.getSelection()?.removeAllRanges();
-    setTimeout(() => inputRef.current?.focus(), 250);
-  };
 
   const buildSystemMessage = useCallback(() => {
     const mistakes = topicContent.commonMistakes?.join("\n- ") || "";
@@ -243,6 +261,142 @@ Answer all questions in the context of this topic only. Be EXTREMELY concise. Ke
 IMPORTANT: If the user asks a question that is not related to the topic above, politely respond with "I'm sorry, but I can't assist with that. Please ask a question related to the topic above.".`;
   }, [topicContent]);
 
+  const handleSelectionAction = useCallback(async () => {
+    if (!selectionBtn) return;
+
+    const selected = selectionBtn;
+
+    setSelectionBtn(null);
+    window.getSelection()?.removeAllRanges();
+    setSelectionTooltipPosition(
+      computeSelectionTooltipPosition(selected.x, selected.y)
+    );
+    setSelectionTooltip({
+      text: selected.text,
+      x: selected.x,
+      y: selected.y,
+      content: "",
+      isLoading: true,
+      error: null,
+    });
+
+    const apiMessages: ChatApiMessage[] = [
+      { role: "system", content: buildSystemMessage() },
+      {
+        role: "user",
+        content: `Explain this selected text in the context of the current topic. Keep it concise and practical.
+
+Selected text:
+"${selected.text}"`,
+      },
+    ];
+
+    selectionAbortRef.current?.abort();
+    const controller = new AbortController();
+    selectionAbortRef.current = controller;
+
+    try {
+      const result = await streamChatResponse({
+        messages: apiMessages,
+        signal: controller.signal,
+        onToken: (_token, fullContent) => {
+          setSelectionTooltip((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  content: fullContent,
+                }
+              : prev
+          );
+        },
+      });
+
+      if (result.status === "aborted") {
+        return;
+      }
+
+      if (result.status === "error") {
+        setSelectionTooltip((prev) =>
+          prev
+            ? {
+                ...prev,
+                error: result.message,
+              }
+            : prev
+        );
+      }
+    } finally {
+      if (selectionAbortRef.current === controller) {
+        selectionAbortRef.current = null;
+        setSelectionTooltip((prev) =>
+          prev
+            ? {
+                ...prev,
+                isLoading: false,
+              }
+            : prev
+        );
+      }
+    }
+  }, [buildSystemMessage, computeSelectionTooltipPosition, selectionBtn]);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
+      if (!selectionTooltip) return;
+
+      const target = event.target as Node;
+      if (selectionTooltipRef.current?.contains(target)) return;
+
+      const selectionActionBtn = document.getElementById("chatbot-selection-action");
+      if (selectionActionBtn?.contains(target)) return;
+
+      closeSelectionTooltip();
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("touchstart", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
+    };
+  }, [closeSelectionTooltip, selectionTooltip]);
+
+  const selectionTooltipAnchorX = selectionTooltip?.x;
+  const selectionTooltipAnchorY = selectionTooltip?.y;
+
+  useLayoutEffect(() => {
+    if (selectionTooltipAnchorX == null || selectionTooltipAnchorY == null) {
+      return;
+    }
+
+    const updateTooltipPosition = () => {
+      const { left, top } = computeSelectionTooltipPosition(
+        selectionTooltipAnchorX,
+        selectionTooltipAnchorY
+      );
+      setSelectionTooltipPosition((prev) => {
+        if (prev && Math.abs(prev.left - left) < 1 && Math.abs(prev.top - top) < 1) {
+          return prev;
+        }
+        return { left, top };
+      });
+    };
+
+    updateTooltipPosition();
+    window.addEventListener("resize", updateTooltipPosition);
+    window.addEventListener("scroll", updateTooltipPosition, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", updateTooltipPosition);
+      window.removeEventListener("scroll", updateTooltipPosition);
+    };
+  }, [
+    computeSelectionTooltipPosition,
+    selectionTooltipAnchorX,
+    selectionTooltipAnchorY,
+  ]);
+
   const handleSubmit = async (e?: FormEvent) => {
     e?.preventDefault();
 
@@ -256,7 +410,7 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
     setIsStreaming(true);
 
     // Build messages payload for API
-    const apiMessages: { role: string; content: string }[] = [];
+    const apiMessages: ChatApiMessage[] = [];
     apiMessages.push({ role: "system", content: buildSystemMessage() });
 
     // Add all previous messages
@@ -270,9 +424,13 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
     // Add a placeholder assistant message
     const assistantIndex = messages.length + 1; // +1 because we added user message
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
-
-    const payloadObj = { messages: apiMessages };
-    const b64Payload = b64EncodeUnicode(JSON.stringify(payloadObj));
+    const setAssistantContent = (content: string) => {
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[assistantIndex] = { role: "assistant", content };
+        return updated;
+      });
+    };
 
     // Abort previous request if any
     abortRef.current?.abort();
@@ -280,103 +438,23 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
     abortRef.current = controller;
 
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "text/plain" },
-        body: b64Payload,
+      const result = await streamChatResponse({
+        messages: apiMessages,
         signal: controller.signal,
+        onToken: (_token, fullContent) => {
+          setAssistantContent(fullContent);
+        },
       });
 
-      if (!response.ok) {
-        setMessages((prev) => {
-          const updated = [...prev];
-          updated[assistantIndex] = {
-            role: "assistant",
-            content: "😔 Sorry, I couldn't process your request right now. Please try again.",
-          };
-          return updated;
-        });
-        setIsStreaming(false);
+      if (result.status === "aborted") {
         return;
       }
 
-      if (!response.body) {
-        setMessages((prev) => {
-          const updated = [...prev];
-          updated[assistantIndex] = {
-            role: "assistant",
-            content: "😔 No response received. Please try again.",
-          };
-          return updated;
-        });
-        return;
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-      let streamedContent = "";
-      let streamErrorMessage = "";
-
-      const setAssistantContent = (content: string) => {
-        setMessages((prev) => {
-          const updated = [...prev];
-          updated[assistantIndex] = { role: "assistant", content };
-          return updated;
-        });
-      };
-
-      const processEvent = (event: ChatStreamEvent | null) => {
-        if (!event) return;
-
-        if (event.type === "token") {
-          streamedContent += event.content || "";
-          setAssistantContent(streamedContent);
-          return;
-        }
-
-        if (event.type === "error") {
-          streamErrorMessage = event.message || "😔 Something went wrong. Please try again.";
-        }
-      };
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const rawEvents = buffer.split("\n\n");
-        buffer = rawEvents.pop() || "";
-
-        rawEvents.forEach((rawEvent) => {
-          processEvent(parseSSEEvent(rawEvent));
-        });
-      }
-
-      // Flush decoder and parse any trailing event fragment.
-      buffer += decoder.decode();
-      if (buffer.trim()) {
-        processEvent(parseSSEEvent(buffer));
-      }
-
-      if (streamErrorMessage) {
-        setAssistantContent(streamErrorMessage);
-        return;
-      }
-
-      if (!streamedContent.trim()) {
+      if (result.status === "error") {
+        setAssistantContent(`😔 ${result.message}`);
+      } else if (!result.content.trim()) {
         setAssistantContent("😔 No response received. Please try again.");
       }
-    } catch (err: unknown) {
-      if (err instanceof Error && err.name === "AbortError") return;
-      setMessages((prev) => {
-        const updated = [...prev];
-        updated[assistantIndex] = {
-          role: "assistant",
-          content: "😔 Something went wrong. Please try again.",
-        };
-        return updated;
-      });
     } finally {
       if (abortRef.current === controller) {
         abortRef.current = null;
@@ -409,6 +487,7 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
       {/* Floating Text Selection Helper */}
       {selectionBtn && !isOpen && (
         <button
+          id="chatbot-selection-action"
           className="chatbot-selection-btn"
           style={{
             left: selectionBtn.x,
@@ -421,6 +500,52 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
         >
           ✨ Ask AI
         </button>
+      )}
+
+      {selectionTooltip && !isOpen && (
+        <div
+          ref={selectionTooltipRef}
+          className="chatbot-selection-tooltip"
+          style={{
+            left: selectionTooltipPosition?.left ?? -9999,
+            top: selectionTooltipPosition?.top ?? -9999,
+            visibility: selectionTooltipPosition ? "visible" : "hidden",
+          }}
+          role="status"
+          aria-live="polite"
+        >
+          <div className="chatbot-selection-tooltip-header">
+            <p className="chatbot-selection-tooltip-title">AI Quick View</p>
+            <button
+              type="button"
+              className="chatbot-selection-tooltip-close"
+              onClick={closeSelectionTooltip}
+              aria-label="Close quick AI view"
+            >
+              ✕
+            </button>
+          </div>
+          <p className="chatbot-selection-tooltip-label">Selected text</p>
+          <p className="chatbot-selection-tooltip-selected">{selectionTooltip.text}</p>
+          <div className="chatbot-selection-tooltip-body">
+            {selectionTooltip.content ? (
+              <div
+                className="chatbot-markdown"
+                dangerouslySetInnerHTML={{
+                  __html: renderMarkdown(selectionTooltip.content),
+                }}
+              />
+            ) : selectionTooltip.error ? (
+              <p className="chatbot-selection-tooltip-error">{selectionTooltip.error}</p>
+            ) : (
+              <span className="chatbot-typing">
+                <span className="chatbot-dot" />
+                <span className="chatbot-dot" />
+                <span className="chatbot-dot" />
+              </span>
+            )}
+          </div>
+        </div>
       )}
 
       {/* Fullscreen backdrop */}
