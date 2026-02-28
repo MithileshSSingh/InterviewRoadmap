@@ -33,6 +33,11 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [isFirstMessage, setIsFirstMessage] = useState(true);
+  const [selectionBtn, setSelectionBtn] = useState<{
+    text: string;
+    x: number;
+    y: number;
+  } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -110,6 +115,62 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
       }
     };
   }, [isFullscreen, isOpen]);
+
+  // Handle global text selection to show the "Ask AI" helper
+  useEffect(() => {
+    const handleSelection = () => {
+      const selection = window.getSelection();
+      const text = selection?.toString().trim();
+
+      if (!text || text.length === 0) {
+        setSelectionBtn(null);
+        return;
+      }
+
+      // Ignore if the selection is inside the chat drawer itself
+      if (
+        chatContainerRef.current &&
+        selection.anchorNode &&
+        chatContainerRef.current.contains(selection.anchorNode)
+      ) {
+        setSelectionBtn(null);
+        return;
+      }
+
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+
+        setSelectionBtn({
+          text,
+          x: rect.left + rect.width / 2,
+          y: rect.top + window.scrollY - 10,
+        });
+      }
+    };
+
+    document.addEventListener("mouseup", handleSelection);
+    document.addEventListener("keyup", handleSelection);
+    document.addEventListener("selectionchange", () => {
+      if (!window.getSelection()?.toString().trim()) {
+        setSelectionBtn(null);
+      }
+    });
+
+    return () => {
+      document.removeEventListener("mouseup", handleSelection);
+      document.removeEventListener("keyup", handleSelection);
+    };
+  }, []);
+
+  const handleSelectionAction = () => {
+    if (!selectionBtn) return;
+    setIsOpen(true);
+    setInput(`Can you explain this part?\\n\\n"${selectionBtn.text}"`);
+    setSelectionBtn(null);
+    window.getSelection()?.removeAllRanges();
+    setTimeout(() => inputRef.current?.focus(), 250);
+  };
 
   const buildSystemMessage = useCallback(() => {
     const mistakes = topicContent.commonMistakes?.join("\n- ") || "";
@@ -245,6 +306,20 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
 
   return (
     <>
+      {/* Floating Text Selection Helper */}
+      {selectionBtn && !isOpen && (
+        <button
+          className="chatbot-selection-btn"
+          style={{
+            left: selectionBtn.x,
+            top: selectionBtn.y,
+          }}
+          onClick={handleSelectionAction}
+        >
+          ✨ Ask AI
+        </button>
+      )}
+
       {/* Fullscreen backdrop */}
       {isOpen && isFullscreen && (
         <div className="chatbot-backdrop" />
