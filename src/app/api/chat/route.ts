@@ -1,9 +1,9 @@
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatOpenAI } from "@langchain/openai";
 import { StateGraph, MessagesAnnotation } from "@langchain/langgraph";
 import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
 import { NextResponse } from "next/server";
 
-const ALLOWED_MODELS = ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-pro", "gemini-3-flash-preview"];
+const ALLOWED_MODELS = ["google/gemini-2.0-flash-001", "google/gemini-2.0-flash-lite-preview-02-05", "google/gemini-3-flash-preview"];
 const STREAM_HEADERS = {
   "Content-Type": "text/event-stream; charset=utf-8",
   "Cache-Control": "no-cache, no-transform",
@@ -83,17 +83,18 @@ export async function POST(request: Request) {
       );
     }
 
-    const apiKey = process.env.GOOGLE_API_KEY;
-    if (!apiKey || apiKey === "your_gemini_api_key_here") {
-      console.error("[Chat API] GOOGLE_API_KEY is not configured in .env.local");
+    const apiKey = process.env.OPENROUTER_API_KEY || process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      console.error("[Chat API] OPENROUTER_API_KEY or GEMINI_API_KEY is not configured in .env.local");
       return NextResponse.json(
         { error: "The assistant is not configured yet. Please contact the administrator." },
         { status: 503 }
       );
     }
 
-    const modelName = process.env.GEMINI_MODEL || "gemini-2.0-flash";
-    const selectedModel = ALLOWED_MODELS.includes(modelName) ? modelName : "gemini-2.0-flash";
+    const modelName = process.env.GEMINI_MODEL || "google/gemini-2.0-flash-001";
+    // Check if user has explicitly asked for a model that contains google/, if not allow custom openrouter model string
+    const selectedModel = modelName.includes("/") ? modelName : `google/${modelName}`;
 
     // Convert incoming messages to LangChain message objects
     const langchainMessages = messages.map((msg) => {
@@ -108,10 +109,15 @@ export async function POST(request: Request) {
       }
     });
 
-    // Create the model (LangGraph stream mode will emit tokens)
-    const llm = new ChatGoogleGenerativeAI({
+    // Create the model pointing to OpenRouter
+    const llm = new ChatOpenAI({
       model: selectedModel,
-      apiKey,
+      apiKey: apiKey,
+      configuration: {
+        baseURL: "https://openrouter.ai/api/v1",
+        defaultHeaders: {
+        },
+      },
     });
 
     // Define the callModel node for LangGraph
@@ -196,3 +202,4 @@ export async function POST(request: Request) {
     );
   }
 }
+

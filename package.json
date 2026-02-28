@@ -12,6 +12,7 @@
     "@langchain/core": "^1.1.29",
     "@langchain/google-genai": "^2.1.22",
     "@langchain/langgraph": "^1.2.0",
+    "@langchain/openai": "^1.2.11",
     "@types/node": "^25.3.2",
     "@types/react": "^19.2.14",
     "marked": "^17.0.3",
