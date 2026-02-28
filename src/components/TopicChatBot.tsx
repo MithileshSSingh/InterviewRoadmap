@@ -81,9 +81,13 @@ Common Mistakes:
 Interview Questions:
 ${questions}
 
-Answer all questions in the context of this topic only. Be concise but thorough. Use code examples when helpful. Format your responses in markdown.
+Answer all questions in the context of this topic only. Be EXTREMELY concise. Keep your responses short, practical, and to the point. 
+- Use brief bullet points instead of long paragraphs.
+- Provide only the bare minimum code needed to explain the concept.
+- Do not over-explain or write essays. Get straight to the answer.
+- Format your responses in markdown.
 
-IMPORTANT: If the user asks a question that is not related to the topic above,politely respond with "I'm sorry, but I can't assist with that. Please ask a question related to the topic above.".`;
+IMPORTANT: If the user asks a question that is not related to the topic above, politely respond with "I'm sorry, but I can't assist with that. Please ask a question related to the topic above.".`;
   }, [topicContent]);
 
   const handleSubmit = async (e?: FormEvent) => {
@@ -200,14 +204,11 @@ IMPORTANT: If the user asks a question that is not related to the topic above,po
       {/* Floating toggle button */}
       <button
         id="chatbot-toggle"
-        className={`chatbot-fab ${isOpen ? "chatbot-fab-active" : ""}`}
-        onClick={() => {
-          if (isOpen && isFullscreen) setIsFullscreen(false);
-          setIsOpen(!isOpen);
-        }}
-        aria-label={isOpen ? "Close chat" : "Open chat"}
+        className={`chatbot-fab ${isOpen ? "chatbot-fab-hidden" : ""}`}
+        onClick={() => setIsOpen(true)}
+        aria-label="Open chat"
       >
-        <span className="chatbot-fab-icon">{isOpen ? "✕" : "💬"}</span>
+        <span className="chatbot-fab-icon">🤖</span>
       </button>
 
       {/* Chat drawer */}
@@ -240,6 +241,17 @@ IMPORTANT: If the user asks a question that is not related to the topic above,po
                 title="Clear chat"
               >
                 🗑️
+              </button>
+              <button
+                id="chatbot-close"
+                className="chatbot-action-btn"
+                onClick={() => {
+                  setIsOpen(false);
+                  setIsFullscreen(false);
+                }}
+                title="Close chat"
+              >
+                ✕
               </button>
             </div>
           </div>
