@@ -60,13 +60,17 @@ export async function streamChatResponse({
   onToken,
 }: StreamChatOptions): Promise<StreamChatResult> {
   const payloadObj = { messages };
-  const b64Payload = b64EncodeUnicode(JSON.stringify(payloadObj));
+  const isProduction = process.env.NODE_ENV === "production";
+  const requestBody = isProduction
+    ? b64EncodeUnicode(JSON.stringify(payloadObj))
+    : JSON.stringify(payloadObj);
+  const contentType = isProduction ? "text/plain" : "application/json";
 
   try {
     const response = await fetch("/api/chat", {
       method: "POST",
-      headers: { "Content-Type": "text/plain" },
-      body: b64Payload,
+      headers: { "Content-Type": contentType },
+      body: requestBody,
       signal,
     });
 

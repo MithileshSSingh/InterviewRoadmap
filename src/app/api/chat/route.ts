@@ -22,6 +22,51 @@ type StreamEvent =
   | { type: "done" }
   | { type: "error"; message: string };
 
+function isValidChatRequestBody(body: unknown): body is ChatRequestBody {
+  if (!body || typeof body !== "object") return false;
+  const messages = (body as { messages?: unknown }).messages;
+  if (!Array.isArray(messages) || messages.length === 0) return false;
+
+  return messages.every((msg) => {
+    if (!msg || typeof msg !== "object") return false;
+    const role = (msg as { role?: unknown }).role;
+    const content = (msg as { content?: unknown }).content;
+    const validRole =
+      role === "user" || role === "assistant" || role === "system";
+    return validRole && typeof content === "string";
+  });
+}
+
+async function parseChatRequestBody(request: Request): Promise<ChatRequestBody | null> {
+  const contentType = request.headers.get("content-type") || "";
+
+  if (contentType.includes("application/json")) {
+    try {
+      const jsonBody = await request.json();
+      return isValidChatRequestBody(jsonBody) ? jsonBody : null;
+    } catch {
+      return null;
+    }
+  }
+
+  const rawBody = await request.text();
+  try {
+    const decodedStr = Buffer.from(rawBody, "base64").toString("utf8");
+    const parsed = JSON.parse(decodedStr);
+    return isValidChatRequestBody(parsed) ? parsed : null;
+  } catch {
+    if (process.env.NODE_ENV !== "production") {
+      try {
+        const parsed = JSON.parse(rawBody);
+        return isValidChatRequestBody(parsed) ? parsed : null;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
+}
+
 function contentToText(content: unknown): string {
   if (typeof content === "string") return content;
   if (!Array.isArray(content)) return "";
@@ -63,25 +108,14 @@ function extractAssistantFromUpdate(updateChunk: unknown): string {
 
 export async function POST(request: Request) {
   try {
-    const rawBody = await request.text();
-    let body: ChatRequestBody;
-    try {
-      const decodedStr = Buffer.from(rawBody, "base64").toString("utf8");
-      body = JSON.parse(decodedStr);
-    } catch (e) {
+    const body = await parseChatRequestBody(request);
+    if (!body) {
       return NextResponse.json(
-        { error: "Invalid payload format. Expected Base64." },
+        { error: "Invalid payload format." },
         { status: 400 }
       );
     }
     const { messages } = body;
-
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      return NextResponse.json(
-        { error: "Invalid request. Please try again." },
-        { status: 400 }
-      );
-    }
 
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
@@ -202,4 +236,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

@@ -65,6 +65,30 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
     setSelectionTooltipPosition(null);
   }, []);
 
+  const handleContinueInChat = useCallback(() => {
+    if (!selectionTooltip) return;
+
+    const selectedText = selectionTooltip.text;
+    const quickAnswer = selectionTooltip.content.trim();
+    const initialQuestion = `Can you explain this part?\n\n"${selectedText}"`;
+
+    closeSelectionTooltip();
+    setIsOpen(true);
+
+    // Seed quick-view context into chat only when chat is currently empty.
+    setMessages((prev) => {
+      if (prev.length > 0) return prev;
+      const seeded: ChatMessage[] = [{ role: "user", content: initialQuestion }];
+      if (quickAnswer) {
+        seeded.push({ role: "assistant", content: quickAnswer });
+      }
+      return seeded;
+    });
+
+    setInput("");
+    setTimeout(() => inputRef.current?.focus(), 250);
+  }, [closeSelectionTooltip, selectionTooltip]);
+
   const computeSelectionTooltipPosition = useCallback(
     (anchorX: number, anchorYInDocument: number) => {
       const viewportPadding = 12;
@@ -545,6 +569,17 @@ Selected text:
               </span>
             )}
           </div>
+          {!selectionTooltip.isLoading && (
+            <div className="chatbot-selection-tooltip-actions">
+              <button
+                type="button"
+                className="chatbot-selection-tooltip-chat-btn"
+                onClick={handleContinueInChat}
+              >
+                Continue in Chat
+              </button>
+            </div>
+          )}
         </div>
       )}
 
