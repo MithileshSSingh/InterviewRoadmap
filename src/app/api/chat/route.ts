@@ -83,16 +83,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const apiKey = process.env.OPENROUTER_API_KEY || process.env.GEMINI_API_KEY;
+    const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
-      console.error("[Chat API] OPENROUTER_API_KEY or GEMINI_API_KEY is not configured in .env.local");
+      console.error("[Chat API] OPENROUTER_API_KEY is not configured in .env.local");
       return NextResponse.json(
         { error: "The assistant is not configured yet. Please contact the administrator." },
         { status: 503 }
       );
     }
 
-    const modelName = process.env.GEMINI_MODEL || "google/gemini-2.0-flash-001";
+    const modelName = process.env.FREE_MODEL;
     // Check if user has explicitly asked for a model that contains google/, if not allow custom openrouter model string
     const selectedModel = modelName.includes("/") ? modelName : `google/${modelName}`;
 
