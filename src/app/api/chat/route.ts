@@ -73,33 +73,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // --- security check: prevent raw curl access ---
-    // In a production app you'd use real auth, but this prevents simple abuse
-    const origin = request.headers.get("origin");
-    const referer = request.headers.get("referer");
-    const host = request.headers.get("host");
-
-    // We expect the request to come from our own host
-    const isLocalhost = host?.includes("localhost") || host?.includes("127.0.0.1") || host?.includes("192.168.");
-    const expectedOrigin = isLocalhost ? `http://${host}` : `https://${host}`;
-
-    // If both origin and referer are missing, it's likely a script/curl
-    if (!origin && !referer) {
-      return NextResponse.json(
-        { error: "Unauthorized request" },
-        { status: 403 }
-      );
-    }
-
-    // If origin exists, it should match our host
-    if (origin && origin !== expectedOrigin) {
-      return NextResponse.json(
-        { error: "Unauthorized origin" },
-        { status: 403 }
-      );
-    }
-    // -----------------------------------------------
-
     const apiKey = process.env.GOOGLE_API_KEY;
     if (!apiKey || apiKey === "your_gemini_api_key_here") {
       console.error("[Chat API] GOOGLE_API_KEY is not configured in .env.local");
