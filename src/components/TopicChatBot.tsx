@@ -31,17 +31,36 @@ function renderMarkdown(text: string): string {
   return marked.parse(text, { async: false }) as string;
 }
 
+function b64EncodeUnicode(str: string): string {
+  const bytes = new TextEncoder().encode(str);
+  let bin = "";
+  for (let i = 0; i < bytes.length; i++) {
+    bin += String.fromCharCode(bytes[i]);
+  }
+  return btoa(bin);
+}
+
+function b64DecodeUnicode(b64: string): string {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) {
+    bytes[i] = bin.charCodeAt(i);
+  }
+  return new TextDecoder().decode(bytes);
+}
+
 function parseSSEEvent(rawEvent: string): ChatStreamEvent | null {
   const data = rawEvent
     .split("\n")
     .filter((line) => line.startsWith("data:"))
     .map((line) => line.slice(5).trimStart())
-    .join("\n");
+    .join("");
 
   if (!data) return null;
 
   try {
-    return JSON.parse(data) as ChatStreamEvent;
+    const jsonStr = b64DecodeUnicode(data);
+    return JSON.parse(jsonStr) as ChatStreamEvent;
   } catch {
     return null;
   }
@@ -252,6 +271,9 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
     const assistantIndex = messages.length + 1; // +1 because we added user message
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
+    const payloadObj = { messages: apiMessages };
+    const b64Payload = b64EncodeUnicode(JSON.stringify(payloadObj));
+
     // Abort previous request if any
     abortRef.current?.abort();
     const controller = new AbortController();
@@ -260,8 +282,8 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: apiMessages }),
+        headers: { "Content-Type": "text/plain" },
+        body: b64Payload,
         signal: controller.signal,
       });
 

@@ -63,7 +63,17 @@ function extractAssistantFromUpdate(updateChunk: unknown): string {
 
 export async function POST(request: Request) {
   try {
-    const body: ChatRequestBody = await request.json();
+    const rawBody = await request.text();
+    let body: ChatRequestBody;
+    try {
+      const decodedStr = Buffer.from(rawBody, "base64").toString("utf8");
+      body = JSON.parse(decodedStr);
+    } catch (e) {
+      return NextResponse.json(
+        { error: "Invalid payload format. Expected Base64." },
+        { status: 400 }
+      );
+    }
     const { messages } = body;
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -122,7 +132,9 @@ export async function POST(request: Request) {
     const stream = new ReadableStream({
       async start(controller) {
         const pushEvent = (event: StreamEvent) => {
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
+          const eventStr = JSON.stringify(event);
+          const b64Event = Buffer.from(eventStr, "utf8").toString("base64");
+          controller.enqueue(encoder.encode(`data: ${b64Event}\n\n`));
         };
 
         try {
