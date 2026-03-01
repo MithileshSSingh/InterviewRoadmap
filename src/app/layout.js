@@ -4,6 +4,7 @@ import ModeToggle from "@/components/ModeToggle";
 import ThemeDropdown from "@/components/ThemeDropdown";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata = {
   title: "Interview Roadmap",
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
           </div>
         </ThemeProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
