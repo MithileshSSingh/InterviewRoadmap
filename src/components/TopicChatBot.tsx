@@ -51,6 +51,7 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
     left: number;
     top: number;
   } | null>(null);
+  const [isSelectionTooltipExpanded, setIsSelectionTooltipExpanded] = useState(false);
   const [topControlSlot, setTopControlSlot] = useState<HTMLElement | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -65,6 +66,7 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
     selectionAbortRef.current = null;
     setSelectionTooltip(null);
     setSelectionTooltipPosition(null);
+    setIsSelectionTooltipExpanded(false);
   }, []);
 
   const handleContinueInChat = useCallback(() => {
@@ -173,6 +175,37 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
       document.removeEventListener("touchstart", handleClickOutside);
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen && !selectionTooltip) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+
+      if (selectionTooltip) {
+        closeSelectionTooltip();
+      }
+      if (isOpen) {
+        setIsOpen(false);
+        setIsFullscreen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [closeSelectionTooltip, isOpen, selectionTooltip]);
+
+  useEffect(() => {
+    if (!isSelectionTooltipExpanded) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isSelectionTooltipExpanded]);
 
   // Lock body scroll on fullscreen, and disable zoom on mobile when chat is open
   useEffect(() => {
@@ -293,6 +326,7 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
 
     setSelectionBtn(null);
     window.getSelection()?.removeAllRanges();
+    setIsSelectionTooltipExpanded(false);
     setSelectionTooltipPosition(
       computeSelectionTooltipPosition(selected.x, selected.y)
     );
@@ -369,11 +403,13 @@ Selected text:
     const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
       if (!selectionTooltip) return;
 
-      const target = event.target as Node;
-      if (selectionTooltipRef.current?.contains(target)) return;
+      const targetNode = event.target as Node | null;
+      const targetElement =
+        targetNode instanceof Element ? targetNode : null;
 
-      const selectionActionBtn = document.getElementById("chatbot-selection-action");
-      if (selectionActionBtn?.contains(target)) return;
+      if (targetElement?.closest(".chatbot-selection-tooltip")) return;
+      if (targetElement?.closest("#chatbot-selection-action")) return;
+      if (targetNode && selectionTooltipRef.current?.contains(targetNode)) return;
 
       closeSelectionTooltip();
     };
@@ -545,25 +581,48 @@ Selected text:
       {selectionTooltip && !isOpen && (
         <div
           ref={selectionTooltipRef}
-          className="chatbot-selection-tooltip"
-          style={{
-            left: selectionTooltipPosition?.left ?? -9999,
-            top: selectionTooltipPosition?.top ?? -9999,
-            visibility: selectionTooltipPosition ? "visible" : "hidden",
-          }}
+          className={`chatbot-selection-tooltip ${
+            isSelectionTooltipExpanded ? "chatbot-selection-tooltip-expanded" : ""
+          }`}
+          style={
+            isSelectionTooltipExpanded
+              ? {
+                  visibility: "visible",
+                }
+              : {
+                  left: selectionTooltipPosition?.left ?? -9999,
+                  top: selectionTooltipPosition?.top ?? -9999,
+                  visibility: selectionTooltipPosition ? "visible" : "hidden",
+                }
+          }
           role="status"
           aria-live="polite"
         >
           <div className="chatbot-selection-tooltip-header">
             <p className="chatbot-selection-tooltip-title">AI Quick View</p>
-            <button
-              type="button"
-              className="chatbot-selection-tooltip-close"
-              onClick={closeSelectionTooltip}
-              aria-label="Close quick AI view"
-            >
-              ✕
-            </button>
+            <div className="chatbot-selection-tooltip-header-actions">
+              <button
+                type="button"
+                className="chatbot-selection-tooltip-expand"
+                onClick={() =>
+                  setIsSelectionTooltipExpanded((prev) => !prev)
+                }
+                aria-label={
+                  isSelectionTooltipExpanded ? "Collapse quick AI view" : "Expand quick AI view"
+                }
+                title={isSelectionTooltipExpanded ? "Collapse" : "Expand"}
+              >
+                {isSelectionTooltipExpanded ? "⊙" : "⛶"}
+              </button>
+              <button
+                type="button"
+                className="chatbot-selection-tooltip-close"
+                onClick={closeSelectionTooltip}
+                aria-label="Close quick AI view"
+              >
+                ✕
+              </button>
+            </div>
           </div>
           <p className="chatbot-selection-tooltip-label">Selected text</p>
           <p className="chatbot-selection-tooltip-selected">{selectionTooltip.text}</p>
