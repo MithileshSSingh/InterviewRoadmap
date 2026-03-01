@@ -51,6 +51,22 @@ import rnPhase13 from './rn-phase13';
 import rnPhase14 from './rn-phase14';
 import rnPhase15 from './rn-phase15';
 
+import sfPhase1Data from './sf-phase1';
+import sfPhase2Data from './sf-phase2';
+import sfPhase3Data from './sf-phase3';
+import sfPhase3bData from './sf-phase3b';
+import sfPhase4Data from './sf-phase4';
+import sfPhase5Data from './sf-phase5';
+import sfPhase6Data from './sf-phase6';
+import sfPhase7Data from './sf-phase7';
+import sfPhase8Data from './sf-phase8';
+import sfPhase9Data from './sf-phase9';
+import sfPhase10Data from './sf-phase10';
+import sfPhase11Data from './sf-phase11';
+import sfPhase12Data from './sf-phase12';
+import sfPhase13Data from './sf-phase13';
+import sfPhase14Data from './sf-phase14';
+
 // Combine phase1 + phase1b topics
 const phase1 = {
   ...phase1Data,
@@ -122,6 +138,19 @@ export const reactnativePhases = [
   rnPhase11, rnPhase12, rnPhase13, rnPhase14, rnPhase15,
 ];
 
+// Combine Salesforce phase3 + phase3b topics
+const sfPhase3 = {
+  ...sfPhase3Data,
+  topics: [...sfPhase3Data.topics, ...sfPhase3bData]
+};
+
+// Salesforce Developer roadmap phases
+export const salesforcePhases = [
+  sfPhase1Data, sfPhase2Data, sfPhase3, sfPhase4Data, sfPhase5Data,
+  sfPhase6Data, sfPhase7Data, sfPhase8Data, sfPhase9Data, sfPhase10Data,
+  sfPhase11Data, sfPhase12Data, sfPhase13Data, sfPhase14Data,
+];
+
 // Registry of all roadmap data keyed by slug
 const roadmapData = {
   javascript: javascriptPhases,
@@ -129,6 +158,7 @@ const roadmapData = {
   dsa: dsaPhases,
   'android-senior': androidPhases,
   'react-native-senior': reactnativePhases,
+  'salesforce-developer': salesforcePhases,
 };
 
 export function getRoadmapPhases(slug) {

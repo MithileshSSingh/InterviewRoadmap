@@ -41,6 +41,14 @@ const roadmaps = [
     tags: ["React Native", "Interview", "Mobile"],
   },
   {
+    slug: "salesforce-developer",
+    title: "Salesforce Developer",
+    emoji: "☁️",
+    color: "#00A1E0",
+    description: "Master Salesforce development from Apex to LWC — architecture, integrations, security, and interview preparation for Developer to Architect roles.",
+    tags: ["Salesforce", "Interview", "CRM"],
+  },
+  {
     slug: "react",
     title: "React",
     emoji: "⚛️",
