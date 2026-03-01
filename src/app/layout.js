@@ -3,6 +3,7 @@ import Sidebar from "@/components/Sidebar";
 import ModeToggle from "@/components/ModeToggle";
 import ThemeDropdown from "@/components/ThemeDropdown";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata = {
   title: "Interview Roadmap",
@@ -26,6 +27,7 @@ export default function RootLayout({ children }) {
             </main>
           </div>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
