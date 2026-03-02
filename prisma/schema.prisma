@@ -1,0 +1,57 @@
+// This is your Prisma schema file
+// Prisma v6 — output goes to src/generated/prisma
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Roadmap {
+  id              String          @id @default(cuid())
+  sessionId       String
+  role            String
+  company         String
+  experienceLevel String
+  status          String          @default("pending") // pending | running | complete | error
+  result          String? // Full canonical JSON (stringified)
+  errorMessage    String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  topicProgress   TopicProgress[]
+  agentRuns       AgentRun[]
+
+  @@index([sessionId])
+  @@map("roadmaps")
+}
+
+model TopicProgress {
+  id          String    @id @default(cuid())
+  roadmapId   String
+  topicId     String
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  roadmap     Roadmap   @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+
+  @@unique([roadmapId, topicId])
+  @@map("topic_progress")
+}
+
+model AgentRun {
+  id           String    @id @default(cuid())
+  roadmapId    String
+  agentName    String
+  status       String    @default("pending") // pending | running | complete | error
+  startedAt    DateTime?
+  completedAt  DateTime?
+  errorMessage String?
+  createdAt    DateTime  @default(now())
+  roadmap      Roadmap   @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+
+  @@index([roadmapId])
+  @@map("agent_runs")
+}

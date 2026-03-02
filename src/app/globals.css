@@ -491,6 +491,7 @@ body {
 .roadmap-card {
   border-radius: var(--radius-lg);
   overflow: hidden;
+  text-decoration: none; color: inherit;
   transition: all 0.3s ease;
 }
 
@@ -1730,4 +1731,13 @@ body {
   .chatbot-input-area {
     padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
   }
+}
+
+/* ─── Roadmap AI ─────────────────────────────────────────────────── */
+.careerforge-wide {
+  max-width: 1100px;
+}
+
+@keyframes cf-spin {
+  to { transform: rotate(360deg); }
 }

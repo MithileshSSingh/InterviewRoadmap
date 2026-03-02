@@ -10,9 +10,10 @@ export default function Sidebar() {
   const [expandedPhase, setExpandedPhase] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Detect if we're inside a roadmap route
+  // Detect if we're inside a roadmap route or careerforge
   const pathParts = pathname.split("/").filter(Boolean);
   const isInRoadmap = pathParts[0] === "roadmap" && pathParts[1];
+  const isInCareerForge = pathParts[0] === "careerforge";
   const currentSlug = isInRoadmap ? pathParts[1] : null;
   const roadmapMeta = currentSlug ? getRoadmapMeta(currentSlug) : null;
   const phases = currentSlug ? getRoadmapPhases(currentSlug) : null;
@@ -86,10 +87,36 @@ export default function Sidebar() {
                 </div>
               ))}
             </>
-          ) : (
+          ) : isInCareerForge ? (
+            /* CareerForge context */
+            <>
+              <Link
+                href="/careerforge"
+                className="sidebar-back"
+                onClick={() => setMobileOpen(false)}
+              >
+                ← CareerForge Home
+              </Link>
+              <div className="sidebar-roadmap-title">
+                🤖 Roadmap AI
+              </div>
+              <p style={{ padding: "0 0.75rem", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
+                AI-powered career roadmaps with interview intel, salary data, and a phased study plan.
+              </p>
+            </>
+        ) : (
             /* Roadmap list on landing page */
             <div className="sidebar-roadmap-list">
-              <div className="sidebar-section-label">Roadmaps</div>
+              <div className="sidebar-section-label">AI Tools</div>
+              <Link
+                href="/careerforge"
+                className={`sidebar-roadmap-link ${pathname.startsWith("/careerforge") ? "active" : ""}`}
+                onClick={() => setMobileOpen(false)}
+              >
+                <span>🤖 Roadmap AI</span>
+                <span className="sidebar-soon" style={{ background: "var(--accent-blue)", color: "var(--bg-primary)" }}>Beta</span>
+              </Link>
+              <div className="sidebar-section-label" style={{ marginTop: "0.75rem" }}>Roadmaps</div>
               {allRoadmaps.map((rm) => (
                 <Link
                   key={rm.slug}
