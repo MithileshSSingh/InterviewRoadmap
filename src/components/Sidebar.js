@@ -95,7 +95,7 @@ export default function Sidebar() {
                 className="sidebar-back"
                 onClick={() => setMobileOpen(false)}
               >
-                ← CareerForge Home
+                ← Roadmap AI
               </Link>
               <div className="sidebar-roadmap-title">
                 🤖 Roadmap AI
