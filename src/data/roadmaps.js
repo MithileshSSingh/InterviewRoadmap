@@ -56,13 +56,12 @@ const roadmaps = [
   },
   {
     slug: "react",
-    title: "React",
+    title: "React Mastery",
     emoji: "⚛️",
     color: "#61dafb",
     description:
-      "Build modern UIs with components, hooks, state management, and the React ecosystem.",
+      "Master React from absolute fundamentals to enterprise-grade patterns, performance optimization, and Next.js.",
     tags: ["Frontend", "UI", "Web"],
-    comingSoon: true,
   },
   {
     slug: "nodejs",

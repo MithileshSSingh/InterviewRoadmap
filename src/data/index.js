@@ -67,6 +67,22 @@ import sfPhase12Data from "./salesforce/sf-phase12";
 import sfPhase13Data from "./salesforce/sf-phase13";
 import sfPhase14Data from "./salesforce/sf-phase14";
 
+import reactPhase1 from "./react/react-phase1";
+import reactPhase2 from "./react/react-phase2";
+import reactPhase3 from "./react/react-phase3";
+import reactPhase4 from "./react/react-phase4";
+import reactPhase5 from "./react/react-phase5";
+import reactPhase6 from "./react/react-phase6";
+import reactPhase7 from "./react/react-phase7";
+import reactPhase8 from "./react/react-phase8";
+import reactPhase9 from "./react/react-phase9";
+import reactPhase10 from "./react/react-phase10";
+import reactPhase11 from "./react/react-phase11";
+import reactPhase12 from "./react/react-phase12";
+import reactPhase13 from "./react/react-phase13";
+import reactPhase14 from "./react/react-phase14";
+import reactPhase15 from "./react/react-phase15";
+
 // Combine phase1 + phase1b topics
 const phase1 = {
   ...phase1Data,
@@ -189,6 +205,25 @@ export const salesforcePhases = [
   sfPhase14Data,
 ];
 
+// React roadmap phases
+export const reactPhases = [
+  reactPhase1,
+  reactPhase2,
+  reactPhase3,
+  reactPhase4,
+  reactPhase5,
+  reactPhase6,
+  reactPhase7,
+  reactPhase8,
+  reactPhase9,
+  reactPhase10,
+  reactPhase11,
+  reactPhase12,
+  reactPhase13,
+  reactPhase14,
+  reactPhase15,
+];
+
 // Registry of all roadmap data keyed by slug
 const roadmapData = {
   javascript: javascriptPhases,
@@ -197,6 +232,7 @@ const roadmapData = {
   "android-senior": androidPhases,
   "react-native-senior": reactnativePhases,
   "salesforce-developer": salesforcePhases,
+  react: reactPhases,
 };
 
 export function getRoadmapPhases(slug) {
