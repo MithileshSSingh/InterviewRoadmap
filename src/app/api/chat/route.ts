@@ -143,7 +143,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const modelName = process.env.FREE_MODEL;
+    const modelName = process.env.FREE_MODEL ?? "google/gemini-2.0-flash-001";
     // Check if user has explicitly asked for a model that contains google/, if not allow custom openrouter model string
     const selectedModel = modelName.includes("/")
       ? modelName
