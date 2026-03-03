@@ -2,7 +2,8 @@ const androidPhase11 = {
   id: "phase-11",
   title: "Phase 11: 90-Day Preparation Plan",
   emoji: "📅",
-  description: "A structured 90-day plan to prepare for Google's Senior Android Developer interview — daily schedule, weekly goals, and milestone checkpoints.",
+  description:
+    "A structured 90-day plan to prepare for Google's Senior Android Developer interview — daily schedule, weekly goals, and milestone checkpoints.",
   topics: [
     {
       id: "month-1-foundations",
@@ -140,7 +141,7 @@ Evening:
         {
           type: "conceptual",
           q: "How should you structure your daily DSA practice for maximum retention?",
-          a: "**Spaced repetition + active recall:** (1) Solve new problems daily (push boundaries). (2) Review problems from 3 days ago (short-term recall). (3) Review problems from 7 days ago (medium-term). (4) Review problems from 14 days ago (long-term). (5) After solving, write a 1-line note of the pattern used. (6) When reviewing, try to identify the pattern before looking at your solution. (7) If you can identify the pattern and approach from memory, it's learned. If not, resolve it. This is similar to how Anki/flashcards work but for coding problems."
+          a: "**Spaced repetition + active recall:** (1) Solve new problems daily (push boundaries). (2) Review problems from 3 days ago (short-term recall). (3) Review problems from 7 days ago (medium-term). (4) Review problems from 14 days ago (long-term). (5) After solving, write a 1-line note of the pattern used. (6) When reviewing, try to identify the pattern before looking at your solution. (7) If you can identify the pattern and approach from memory, it's learned. If not, resolve it. This is similar to how Anki/flashcards work but for coding problems.",
         },
       ],
     },
@@ -272,7 +273,7 @@ Behavioral Stories Ready:
         {
           type: "conceptual",
           q: "What's the most effective way to prepare for system design interviews?",
-          a: "**Structured approach:** (1) Read: 'Designing Data-Intensive Applications' for fundamentals. (2) Practice framework: For every system design, follow Requirements → High-Level → Deep Dive → Trade-offs. (3) Mobile-specific: Always address offline support, battery, process death — interviewers expect this from Android candidates. (4) Draw it: Practice drawing architecture diagrams quickly. (5) Study real systems: Read engineering blogs from Google, Meta, Uber about their mobile architectures. (6) Time-box: Practice with a 45-minute timer. Many candidates run out of time because they spend too long on requirements."
+          a: "**Structured approach:** (1) Read: 'Designing Data-Intensive Applications' for fundamentals. (2) Practice framework: For every system design, follow Requirements → High-Level → Deep Dive → Trade-offs. (3) Mobile-specific: Always address offline support, battery, process death — interviewers expect this from Android candidates. (4) Draw it: Practice drawing architecture diagrams quickly. (5) Study real systems: Read engineering blogs from Google, Meta, Uber about their mobile architectures. (6) Time-box: Practice with a 45-minute timer. Many candidates run out of time because they spend too long on requirements.",
         },
       ],
     },
@@ -410,7 +411,7 @@ Keep under 2 minutes when speaking
         {
           type: "conceptual",
           q: "What should your mindset be on the day of the Google interview?",
-          a: "**Key mindset shifts:** (1) **It's a collaboration, not a test** — think of the interviewer as a colleague you're solving a problem with. (2) **Think aloud** — silence is your enemy. Share your thought process, even if unsure. (3) **It's okay to be stuck** — ask clarifying questions, discuss what you're considering. Interviewers are trained to help. (4) **Start simple** — brute force is fine as a starting point. Optimize after. (5) **Handle mistakes gracefully** — if you spot an error, say 'I see a bug here, let me fix it.' This is a positive signal. (6) **Ask questions at the end** — shows genuine interest. Ask about team, tech stack, challenges."
+          a: "**Key mindset shifts:** (1) **It's a collaboration, not a test** — think of the interviewer as a colleague you're solving a problem with. (2) **Think aloud** — silence is your enemy. Share your thought process, even if unsure. (3) **It's okay to be stuck** — ask clarifying questions, discuss what you're considering. Interviewers are trained to help. (4) **Start simple** — brute force is fine as a starting point. Optimize after. (5) **Handle mistakes gracefully** — if you spot an error, say 'I see a bug here, let me fix it.' This is a positive signal. (6) **Ask questions at the end** — shows genuine interest. Ask about team, tech stack, challenges.",
         },
       ],
     },

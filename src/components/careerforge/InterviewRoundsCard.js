@@ -1,10 +1,10 @@
 const TYPE_COLORS = {
   "Phone Screen": "#6366f1",
-  "Technical": "var(--accent-blue)",
+  Technical: "var(--accent-blue)",
   "System Design": "#8b5cf6",
-  "Behavioral": "#f59e0b",
-  "HR": "#10b981",
-  "Onsite": "#ec4899",
+  Behavioral: "#f59e0b",
+  HR: "#10b981",
+  Onsite: "#ec4899",
   "Hiring Manager": "#06b6d4",
 };
 
@@ -20,8 +20,17 @@ export default function InterviewRoundsCard({ interviewProcess }) {
 
   return (
     <section style={cardStyle}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
-        <h2 style={{ fontSize: "1.1rem", fontWeight: 700 }}>🎯 Interview Process</h2>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "1.25rem",
+        }}
+      >
+        <h2 style={{ fontSize: "1.1rem", fontWeight: 700 }}>
+          🎯 Interview Process
+        </h2>
         <span style={{ color: "var(--text-secondary)", fontSize: "0.85rem" }}>
           {interviewProcess.totalRounds} rounds · {interviewProcess.timeline}
         </span>
@@ -42,7 +51,16 @@ export default function InterviewRoundsCard({ interviewProcess }) {
           }}
         />
 
-        <div style={{ display: "flex", gap: "1rem", overflowX: "auto", paddingBottom: "1rem", position: "relative", zIndex: 1 }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "1rem",
+            overflowX: "auto",
+            paddingBottom: "1rem",
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
           {interviewProcess.rounds?.map((round) => {
             const color = getColor(round.type);
             return (
@@ -95,10 +113,22 @@ export default function InterviewRoundsCard({ interviewProcess }) {
                   >
                     {round.type}
                   </div>
-                  <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)", marginBottom: "0.2rem" }}>
+                  <div
+                    style={{
+                      fontSize: "0.7rem",
+                      color: "var(--text-secondary)",
+                      marginBottom: "0.2rem",
+                    }}
+                  >
                     {round.duration}
                   </div>
-                  <div style={{ fontSize: "0.72rem", color: "var(--text-primary)", lineHeight: 1.4 }}>
+                  <div
+                    style={{
+                      fontSize: "0.72rem",
+                      color: "var(--text-primary)",
+                      lineHeight: 1.4,
+                    }}
+                  >
                     {round.focus}
                   </div>
                 </div>
@@ -109,7 +139,13 @@ export default function InterviewRoundsCard({ interviewProcess }) {
       </div>
 
       {interviewProcess.sources?.length > 0 && (
-        <div style={{ marginTop: "0.75rem", fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+        <div
+          style={{
+            marginTop: "0.75rem",
+            fontSize: "0.75rem",
+            color: "var(--text-secondary)",
+          }}
+        >
           Sources: {interviewProcess.sources.join(", ")}
         </div>
       )}

@@ -1,22 +1,70 @@
 "use client";
 
 const AGENT_DEFS = [
-  { key: "orchestrator", label: "Orchestrator", icon: "🎯", desc: "Coordinating agents" },
-  { key: "jobIntel", label: "Job Intel", icon: "📋", desc: "Interview process + job description" },
-  { key: "salaryIntel", label: "Salary Intel", icon: "💰", desc: "Compensation data" },
-  { key: "linkedinIntel", label: "LinkedIn Intel", icon: "🔗", desc: "Networking strategy" },
-  { key: "skillsMapper", label: "Skills Mapper", icon: "🗺️", desc: "Skill tree generation" },
-  { key: "resourceFinder", label: "Resource Finder", icon: "📚", desc: "Learning resources" },
-  { key: "roadmapBuilder", label: "Roadmap Builder", icon: "🏗️", desc: "Assembling final roadmap" },
-  { key: "formatter", label: "Formatter", icon: "✅", desc: "Validating and saving" },
+  {
+    key: "orchestrator",
+    label: "Orchestrator",
+    icon: "🎯",
+    desc: "Coordinating agents",
+  },
+  {
+    key: "jobIntel",
+    label: "Job Intel",
+    icon: "📋",
+    desc: "Interview process + job description",
+  },
+  {
+    key: "salaryIntel",
+    label: "Salary Intel",
+    icon: "💰",
+    desc: "Compensation data",
+  },
+  {
+    key: "linkedinIntel",
+    label: "LinkedIn Intel",
+    icon: "🔗",
+    desc: "Networking strategy",
+  },
+  {
+    key: "skillsMapper",
+    label: "Skills Mapper",
+    icon: "🗺️",
+    desc: "Skill tree generation",
+  },
+  {
+    key: "resourceFinder",
+    label: "Resource Finder",
+    icon: "📚",
+    desc: "Learning resources",
+  },
+  {
+    key: "roadmapBuilder",
+    label: "Roadmap Builder",
+    icon: "🏗️",
+    desc: "Assembling final roadmap",
+  },
+  {
+    key: "formatter",
+    label: "Formatter",
+    icon: "✅",
+    desc: "Validating and saving",
+  },
 ];
 
 function AgentStatusBadge({ status }) {
   const configs = {
-    done: { bg: "var(--accent-blue)22", color: "var(--accent-blue)", label: "Done" },
+    done: {
+      bg: "var(--accent-blue)22",
+      color: "var(--accent-blue)",
+      label: "Done",
+    },
     running: { bg: "#f59e0b22", color: "#f59e0b", label: "Running" },
     failed: { bg: "#ef444422", color: "#ef4444", label: "Failed" },
-    pending: { bg: "var(--border)", color: "var(--text-secondary)", label: "Pending" },
+    pending: {
+      bg: "var(--border)",
+      color: "var(--text-secondary)",
+      label: "Pending",
+    },
   };
   const cfg = configs[status] ?? configs.pending;
   return (
@@ -35,13 +83,22 @@ function AgentStatusBadge({ status }) {
   );
 }
 
-export default function StreamingProgress({ agentStatuses = {}, progress = 0 }) {
+export default function StreamingProgress({
+  agentStatuses = {},
+  progress = 0,
+}) {
   return (
     <div style={{ maxWidth: 700, margin: "0 auto", padding: "2rem 1rem" }}>
       {/* Header */}
       <div style={{ textAlign: "center", marginBottom: "2rem" }}>
         <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>🧠</div>
-        <h2 style={{ fontSize: "1.6rem", fontWeight: 700, marginBottom: "0.5rem" }}>
+        <h2
+          style={{
+            fontSize: "1.6rem",
+            fontWeight: 700,
+            marginBottom: "0.5rem",
+          }}
+        >
           Building Your Roadmap
         </h2>
         <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>
@@ -77,11 +134,12 @@ export default function StreamingProgress({ agentStatuses = {}, progress = 0 }) 
           const status = statusMsg
             ? statusMsg.includes("fail") || statusMsg.includes("error")
               ? "failed"
-              : statusMsg.includes("LLM fallback") || statusMsg.includes("estimated")
-              ? "done"
-              : statusMsg.includes("...")
-              ? "running"
-              : "done"
+              : statusMsg.includes("LLM fallback") ||
+                  statusMsg.includes("estimated")
+                ? "done"
+                : statusMsg.includes("...")
+                  ? "running"
+                  : "done"
             : "pending";
 
           return (
@@ -94,7 +152,8 @@ export default function StreamingProgress({ agentStatuses = {}, progress = 0 }) 
                 padding: "0.85rem 1.25rem",
                 background: "var(--bg-card)",
                 border: "1px solid",
-                borderColor: status === "running" ? "var(--accent-blue)" : "var(--border)",
+                borderColor:
+                  status === "running" ? "var(--accent-blue)" : "var(--border)",
                 borderRadius: "var(--radius)",
                 transition: "border-color 0.3s",
               }}
@@ -114,7 +173,9 @@ export default function StreamingProgress({ agentStatuses = {}, progress = 0 }) 
                   {agent.label}
                   <AgentStatusBadge status={status} />
                 </div>
-                <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                <div
+                  style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}
+                >
                   {statusMsg ?? agent.desc}
                 </div>
               </div>

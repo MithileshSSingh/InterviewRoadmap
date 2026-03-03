@@ -2,7 +2,8 @@ const rnPhase4 = {
   id: "phase-4",
   title: "Phase 4: React Native Internals (Critical)",
   emoji: "📱",
-  description: "Deep internals of React Native — old vs new architecture, Bridge vs JSI, TurboModules, Fabric renderer, Hermes engine, native module creation, and the Yoga layout engine.",
+  description:
+    "Deep internals of React Native — old vs new architecture, Bridge vs JSI, TurboModules, Fabric renderer, Hermes engine, native module creation, and the Yoga layout engine.",
   topics: [
     {
       id: "old-vs-new-architecture",

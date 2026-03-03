@@ -2,7 +2,8 @@ const rnPhase13 = {
   id: "phase-13",
   title: "Phase 13: Technical Leadership & Communication",
   emoji: "👔",
-  description: "Lead as a Staff engineer — technical decision-making frameworks, architecture decision records, mentoring, code review excellence, cross-team influence, and stakeholder communication.",
+  description:
+    "Lead as a Staff engineer — technical decision-making frameworks, architecture decision records, mentoring, code review excellence, cross-team influence, and stakeholder communication.",
   topics: [
     {
       id: "tech-leadership-patterns",

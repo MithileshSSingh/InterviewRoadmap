@@ -102,20 +102,20 @@ function commonElements(a: number[], b: number[]): number[] {
       "Forgetting that Set uses === for comparison — objects are compared by reference, not value",
       "Not knowing WeakMap/WeakSet — use them for caching to avoid memory leaks",
       "Assuming Set preserves insertion order for numbers — it does in JS, but don't rely on this in algorithms",
-      "Using Array.includes() for repeated lookups — O(n) per check; convert to Set for O(1)"
+      "Using Array.includes() for repeated lookups — O(n) per check; convert to Set for O(1)",
     ],
     interviewQuestions: [
       {
         type: "coding",
         q: "Find the intersection of two arrays (each element in result must be unique).",
-        a: "```js\nfunction intersection(a, b) {\n  const setA = new Set(a);\n  const result = new Set();\n  for (const x of b) {\n    if (setA.has(x)) result.add(x);\n  }\n  return [...result];\n}\n// O(n + m) time, O(min(n,m)) space\n```"
+        a: "```js\nfunction intersection(a, b) {\n  const setA = new Set(a);\n  const result = new Set();\n  for (const x of b) {\n    if (setA.has(x)) result.add(x);\n  }\n  return [...result];\n}\n// O(n + m) time, O(min(n,m)) space\n```",
       },
       {
         type: "conceptual",
         q: "What is the difference between Map and Object in JavaScript?",
-        a: "**Map**: any key type, has .size, preserves insertion order, no prototype chain, iterable. **Object**: string/Symbol keys only, no .size, has prototype (can collide with 'toString' etc.), not directly iterable. Use Map for data dictionaries, Object for structured records."
-      }
-    ]
+        a: "**Map**: any key type, has .size, preserves insertion order, no prototype chain, iterable. **Object**: string/Symbol keys only, no .size, has prototype (can collide with 'toString' etc.), not directly iterable. Use Map for data dictionaries, Object for structured records.",
+      },
+    ],
   },
   {
     id: "recursion-based-structures",
@@ -264,20 +264,20 @@ function mergeTwoLists(l1, l2) {
       "Forgetting to return the new head after recursive reversal — the recursion returns the new head all the way up",
       "Stack overflow on deeply nested structures — convert to iterative with explicit stack for very deep nesting",
       "Modifying the original data structure when a deep clone is needed — always create new nodes/objects",
-      "Not handling circular references in deep clone — add a visited set for production code"
+      "Not handling circular references in deep clone — add a visited set for production code",
     ],
     interviewQuestions: [
       {
         type: "coding",
         q: "Reverse a linked list recursively. Explain how it works.",
-        a: "```js\nfunction reverse(head) {\n  if (!head || !head.next) return head;\n  const newHead = reverse(head.next);\n  head.next.next = head; // Make next node point back\n  head.next = null;       // Remove old forward pointer\n  return newHead;          // Return from deepest call\n}\n// Each frame reverses one pointer. newHead propagates \n// back unchanged from the tail.\n```"
+        a: "```js\nfunction reverse(head) {\n  if (!head || !head.next) return head;\n  const newHead = reverse(head.next);\n  head.next.next = head; // Make next node point back\n  head.next = null;       // Remove old forward pointer\n  return newHead;          // Return from deepest call\n}\n// Each frame reverses one pointer. newHead propagates \n// back unchanged from the tail.\n```",
       },
       {
         type: "conceptual",
         q: "Why is a linked list a naturally recursive data structure?",
-        a: "A linked list is either: 1) empty (null) — base case, or 2) a node followed by a smaller linked list — recursive case. This matches the recursive definition perfectly. Every linked list operation can be expressed as: handle current node + recurse on rest. This is why many interview solutions use recursion on linked lists."
-      }
-    ]
+        a: "A linked list is either: 1) empty (null) — base case, or 2) a node followed by a smaller linked list — recursive case. This matches the recursive definition perfectly. Every linked list operation can be expressed as: handle current node + recurse on rest. This is why many interview solutions use recursion on linked lists.",
+      },
+    ],
   },
   {
     id: "matrix-2d-arrays",
@@ -401,20 +401,20 @@ function searchMatrix(matrix: number[][], target: number): boolean {
       "Not checking bounds before accessing neighbors — always verify r >= 0, r < rows, c >= 0, c < cols",
       "Forgetting to mark visited cells in grid DFS/BFS — leads to infinite loops",
       "Modifying the input grid when the problem doesn't allow it — use a visited set instead",
-      "Creating a matrix with shared row references — `new Array(3).fill(new Array(3).fill(0))` shares the SAME inner array"
+      "Creating a matrix with shared row references — `new Array(3).fill(new Array(3).fill(0))` shares the SAME inner array",
     ],
     interviewQuestions: [
       {
         type: "coding",
         q: "Rotate a matrix 90° clockwise in-place without extra space.",
-        a: "```js\nfunction rotate(matrix) {\n  const n = matrix.length;\n  // Transpose\n  for (let i = 0; i < n; i++)\n    for (let j = i + 1; j < n; j++)\n      [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]];\n  // Reverse each row\n  for (const row of matrix) row.reverse();\n}\n// O(n²) time, O(1) space\n```"
+        a: "```js\nfunction rotate(matrix) {\n  const n = matrix.length;\n  // Transpose\n  for (let i = 0; i < n; i++)\n    for (let j = i + 1; j < n; j++)\n      [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]];\n  // Reverse each row\n  for (const row of matrix) row.reverse();\n}\n// O(n²) time, O(1) space\n```",
       },
       {
         type: "conceptual",
         q: "How do you search efficiently in a matrix where rows and columns are sorted?",
-        a: "Start from the **top-right corner** (or bottom-left). If current > target: move left (smaller). If current < target: move down (larger). This eliminates one row or column per step → O(m + n) time. This works because sorted rows go left→right increasing, columns go top→bottom increasing."
-      }
-    ]
+        a: "Start from the **top-right corner** (or bottom-left). If current > target: move left (smaller). If current < target: move down (larger). This eliminates one row or column per step → O(m + n) time. This works because sorted rows go left→right increasing, columns go top→bottom increasing.",
+      },
+    ],
   },
   {
     id: "sorting-algorithms",
@@ -540,20 +540,20 @@ function selectionSort(arr: number[]): number[] {
       "Choosing quick sort without randomization — sorted input gives O(n²) with fixed pivot",
       "Forgetting that merge sort needs O(n) extra space — important for space-constrained systems",
       "Not understanding stability — can cause bugs when sorting objects by multiple fields",
-      "Implementing quick sort recursively on already-sorted large arrays — can cause stack overflow"
+      "Implementing quick sort recursively on already-sorted large arrays — can cause stack overflow",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "Compare merge sort and quick sort. When would you choose each?",
-        a: "**Merge Sort**: O(n log n) guaranteed, stable, great for linked lists, but O(n) extra space. **Quick Sort**: O(n log n) average, in-place (O(log n) space), better cache locality, but O(n²) worst case. Choose merge sort when you need stability or guaranteed performance. Choose quick sort for general-purpose in-memory sorting."
+        a: "**Merge Sort**: O(n log n) guaranteed, stable, great for linked lists, but O(n) extra space. **Quick Sort**: O(n log n) average, in-place (O(log n) space), better cache locality, but O(n²) worst case. Choose merge sort when you need stability or guaranteed performance. Choose quick sort for general-purpose in-memory sorting.",
       },
       {
         type: "coding",
         q: "Sort an array of 0s, 1s, and 2s in-place with O(n) time and O(1) space.",
-        a: "```js\nfunction sortColors(nums) {\n  let lo = 0, mid = 0, hi = nums.length - 1;\n  while (mid <= hi) {\n    if (nums[mid] === 0) {\n      [nums[lo], nums[mid]] = [nums[mid], nums[lo]];\n      lo++; mid++;\n    } else if (nums[mid] === 1) {\n      mid++;\n    } else {\n      [nums[mid], nums[hi]] = [nums[hi], nums[mid]];\n      hi--;\n    }\n  }\n}\n// Dutch National Flag algorithm — 3-way partitioning\n```"
-      }
-    ]
+        a: "```js\nfunction sortColors(nums) {\n  let lo = 0, mid = 0, hi = nums.length - 1;\n  while (mid <= hi) {\n    if (nums[mid] === 0) {\n      [nums[lo], nums[mid]] = [nums[mid], nums[lo]];\n      lo++; mid++;\n    } else if (nums[mid] === 1) {\n      mid++;\n    } else {\n      [nums[mid], nums[hi]] = [nums[hi], nums[mid]];\n      hi--;\n    }\n  }\n}\n// Dutch National Flag algorithm — 3-way partitioning\n```",
+      },
+    ],
   },
   {
     id: "searching-algorithms",
@@ -695,20 +695,20 @@ function canShip(weights: number[], days: number, capacity: number): boolean {
       "Integer overflow in `(lo + hi) / 2` — use `lo + (hi - lo) / 2` instead",
       "Applying binary search to unsorted data — it REQUIRES sorted input (or a monotonic condition)",
       "Not handling duplicates properly — standard binary search finds ANY occurrence, not first/last",
-      "Forgetting the 'binary search on answer' pattern — many optimization problems use it"
+      "Forgetting the 'binary search on answer' pattern — many optimization problems use it",
     ],
     interviewQuestions: [
       {
         type: "coding",
         q: "Search in a rotated sorted array. [4,5,6,7,0,1,2], target=0 → 4",
-        a: "```js\nfunction search(nums, target) {\n  let lo = 0, hi = nums.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >>> 1;\n    if (nums[mid] === target) return mid;\n    if (nums[lo] <= nums[mid]) {\n      if (target >= nums[lo] && target < nums[mid]) hi = mid - 1;\n      else lo = mid + 1;\n    } else {\n      if (target > nums[mid] && target <= nums[hi]) lo = mid + 1;\n      else hi = mid - 1;\n    }\n  }\n  return -1;\n}\n```"
+        a: "```js\nfunction search(nums, target) {\n  let lo = 0, hi = nums.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >>> 1;\n    if (nums[mid] === target) return mid;\n    if (nums[lo] <= nums[mid]) {\n      if (target >= nums[lo] && target < nums[mid]) hi = mid - 1;\n      else lo = mid + 1;\n    } else {\n      if (target > nums[mid] && target <= nums[hi]) lo = mid + 1;\n      else hi = mid - 1;\n    }\n  }\n  return -1;\n}\n```",
       },
       {
         type: "conceptual",
         q: "What is 'binary search on the answer space' and when do you use it?",
-        a: "Instead of searching for an element in an array, you binary search for the **optimal answer** in a range. Pattern: 1) Define lo and hi as the min/max possible answer. 2) Check if mid satisfies the condition. 3) Narrow the range. Used for: 'minimum capacity to ship in D days', 'split array to minimize largest sum', 'Koko eating bananas'. The condition must be **monotonic** (once true, stays true)."
-      }
-    ]
+        a: "Instead of searching for an element in an array, you binary search for the **optimal answer** in a range. Pattern: 1) Define lo and hi as the min/max possible answer. 2) Check if mid satisfies the condition. 3) Narrow the range. Used for: 'minimum capacity to ship in D days', 'split array to minimize largest sum', 'Koko eating bananas'. The condition must be **monotonic** (once true, stays true).",
+      },
+    ],
   },
   {
     id: "two-pointers-pattern",
@@ -829,20 +829,20 @@ function isPalindrome(s: string): boolean {
       "Not handling duplicates in three sum — must skip duplicate values to avoid duplicate triplets",
       "Moving the wrong pointer — in converging two pointers, move the pointer that's 'less optimal'",
       "Not recognizing two pointers pattern — keywords: 'sorted array', 'pair', 'in-place', 'O(1) space'",
-      "Off-by-one with same-direction pointers — use `slow` and `fast` naming for clarity"
+      "Off-by-one with same-direction pointers — use `slow` and `fast` naming for clarity",
     ],
     interviewQuestions: [
       {
         type: "coding",
         q: "Find all unique triplets in an array that sum to zero (Three Sum).",
-        a: "```js\nfunction threeSum(nums) {\n  nums.sort((a,b) => a-b);\n  const res = [];\n  for (let i = 0; i < nums.length-2; i++) {\n    if (i > 0 && nums[i] === nums[i-1]) continue;\n    let lo = i+1, hi = nums.length-1;\n    while (lo < hi) {\n      const s = nums[i]+nums[lo]+nums[hi];\n      if (s === 0) { res.push([nums[i],nums[lo],nums[hi]]);\n        while (nums[lo]===nums[lo+1]) lo++;\n        while (nums[hi]===nums[hi-1]) hi--;\n        lo++; hi--;\n      } else s < 0 ? lo++ : hi--;\n    }\n  }\n  return res;\n}\n// O(n²) time, O(1) space\n```"
+        a: "```js\nfunction threeSum(nums) {\n  nums.sort((a,b) => a-b);\n  const res = [];\n  for (let i = 0; i < nums.length-2; i++) {\n    if (i > 0 && nums[i] === nums[i-1]) continue;\n    let lo = i+1, hi = nums.length-1;\n    while (lo < hi) {\n      const s = nums[i]+nums[lo]+nums[hi];\n      if (s === 0) { res.push([nums[i],nums[lo],nums[hi]]);\n        while (nums[lo]===nums[lo+1]) lo++;\n        while (nums[hi]===nums[hi-1]) hi--;\n        lo++; hi--;\n      } else s < 0 ? lo++ : hi--;\n    }\n  }\n  return res;\n}\n// O(n²) time, O(1) space\n```",
       },
       {
         type: "conceptual",
         q: "When do you use two pointers vs hash map for pair problems?",
-        a: "**Two pointers**: when array is sorted or can be sorted. O(n) time, O(1) space. Perfect for: sorted array pair sum, three sum, partitioning. **Hash map**: when array is unsorted and you can't sort it (need original indices). O(n) time, O(n) space. Perfect for: two sum with indices, subarray sum. If you only need existence (not indices), sorting + two pointers is more space-efficient."
-      }
-    ]
+        a: "**Two pointers**: when array is sorted or can be sorted. O(n) time, O(1) space. Perfect for: sorted array pair sum, three sum, partitioning. **Hash map**: when array is unsorted and you can't sort it (need original indices). O(n) time, O(n) space. Perfect for: two sum with indices, subarray sum. If you only need existence (not indices), sorting + two pointers is more space-efficient.",
+      },
+    ],
   },
   {
     id: "sliding-window-pattern",
@@ -968,21 +968,21 @@ function findAnagrams(s: string, p: string): number[] {
       "Forgetting to shrink the window — the left pointer must move to maintain the window condition",
       "Using O(n) comparison in the loop (e.g., comparing full hash maps) — use counters instead for O(1)",
       "Confusing fixed and variable window — fixed: always size k, variable: shrink/expand to optimize",
-      "Not updating the answer at the right time — update AFTER ensures condition, not before"
+      "Not updating the answer at the right time — update AFTER ensures condition, not before",
     ],
     interviewQuestions: [
       {
         type: "coding",
         q: "Find the longest substring without repeating characters.",
-        a: "```js\nfunction lengthOfLongestSubstring(s) {\n  const seen = new Map();\n  let left = 0, max = 0;\n  for (let right = 0; right < s.length; right++) {\n    if (seen.has(s[right]) && seen.get(s[right]) >= left) {\n      left = seen.get(s[right]) + 1;\n    }\n    seen.set(s[right], right);\n    max = Math.max(max, right - left + 1);\n  }\n  return max;\n}\n// O(n) time, O(min(n, alphabet)) space\n```"
+        a: "```js\nfunction lengthOfLongestSubstring(s) {\n  const seen = new Map();\n  let left = 0, max = 0;\n  for (let right = 0; right < s.length; right++) {\n    if (seen.has(s[right]) && seen.get(s[right]) >= left) {\n      left = seen.get(s[right]) + 1;\n    }\n    seen.set(s[right], right);\n    max = Math.max(max, right - left + 1);\n  }\n  return max;\n}\n// O(n) time, O(min(n, alphabet)) space\n```",
       },
       {
         type: "conceptual",
         q: "How does the sliding window pattern achieve O(n) for problems that seem like O(n²)?",
-        a: "Each element is processed at most twice — once when the right pointer includes it, once when the left pointer excludes it. The left pointer only moves forward, never backward. Total pointer movements: right moves n times + left moves at most n times = 2n = O(n). The key insight is that the window 'slides' instead of restarting from scratch for each position."
-      }
-    ]
-  }
+        a: "Each element is processed at most twice — once when the right pointer includes it, once when the left pointer excludes it. The left pointer only moves forward, never backward. Total pointer movements: right moves n times + left moves at most n times = 2n = O(n). The key insight is that the window 'slides' instead of restarting from scratch for each position.",
+      },
+    ],
+  },
 ];
 
 export default dsaPhase2b;

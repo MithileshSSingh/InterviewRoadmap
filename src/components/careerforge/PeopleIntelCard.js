@@ -17,14 +17,22 @@ export default function PeopleIntelCard({ peopleIntel }) {
       <h2 style={headingStyle}>🔗 Networking & Referrals</h2>
 
       {peopleIntel.strategy && (
-        <p style={{ color: "var(--text-secondary)", marginBottom: "1.25rem", lineHeight: 1.65 }}>
+        <p
+          style={{
+            color: "var(--text-secondary)",
+            marginBottom: "1.25rem",
+            lineHeight: 1.65,
+          }}
+        >
           {peopleIntel.strategy}
         </p>
       )}
 
       {/* LinkedIn search cards */}
       {peopleIntel.referralSearches?.length > 0 && (
-        <div style={{ display: "grid", gap: "0.75rem", marginBottom: "1.5rem" }}>
+        <div
+          style={{ display: "grid", gap: "0.75rem", marginBottom: "1.5rem" }}
+        >
           {peopleIntel.referralSearches.map((search, idx) => (
             <div
               key={idx}
@@ -40,8 +48,15 @@ export default function PeopleIntelCard({ peopleIntel }) {
               }}
             >
               <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 600, marginBottom: "0.2rem" }}>{search.label}</div>
-                <div style={{ fontSize: "0.82rem", color: "var(--text-secondary)" }}>
+                <div style={{ fontWeight: 600, marginBottom: "0.2rem" }}>
+                  {search.label}
+                </div>
+                <div
+                  style={{
+                    fontSize: "0.82rem",
+                    color: "var(--text-secondary)",
+                  }}
+                >
                   {search.description}
                 </div>
               </div>
@@ -69,12 +84,29 @@ export default function PeopleIntelCard({ peopleIntel }) {
       {/* Tips */}
       {peopleIntel.tips?.length > 0 && (
         <div>
-          <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
+          <div
+            style={{
+              fontSize: "0.8rem",
+              fontWeight: 700,
+              color: "var(--text-secondary)",
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              marginBottom: "0.75rem",
+            }}
+          >
             Outreach Tips
           </div>
-          <ol style={{ paddingLeft: "1.25rem", color: "var(--text-secondary)", lineHeight: 1.8 }}>
+          <ol
+            style={{
+              paddingLeft: "1.25rem",
+              color: "var(--text-secondary)",
+              lineHeight: 1.8,
+            }}
+          >
             {peopleIntel.tips.map((tip, i) => (
-              <li key={i} style={{ marginBottom: "0.25rem" }}>{tip}</li>
+              <li key={i} style={{ marginBottom: "0.25rem" }}>
+                {tip}
+              </li>
             ))}
           </ol>
         </div>
@@ -91,7 +123,11 @@ const cardStyle = {
   marginBottom: "1.25rem",
 };
 
-const headingStyle = { fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.75rem" };
+const headingStyle = {
+  fontSize: "1.1rem",
+  fontWeight: 700,
+  marginBottom: "0.75rem",
+};
 
 const primaryBtnStyle = {
   padding: "0.4rem 0.85rem",

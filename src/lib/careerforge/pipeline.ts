@@ -70,9 +70,14 @@ async function tavilySearch(query: string): Promise<string> {
       }),
     });
     if (!res.ok) return "";
-    const data = await res.json() as { answer?: string; results?: { content?: string }[] };
+    const data = (await res.json()) as {
+      answer?: string;
+      results?: { content?: string }[];
+    };
     const answer = data.answer ?? "";
-    const snippets = (data.results ?? []).map((r) => r.content ?? "").join("\n\n");
+    const snippets = (data.results ?? [])
+      .map((r) => r.content ?? "")
+      .join("\n\n");
     return answer ? `${answer}\n\n${snippets}` : snippets;
   } catch (err) {
     console.warn("[Tavily] Search failed:", err);
@@ -108,10 +113,14 @@ type Emitter = (event: CareerForgeSSEEvent) => void;
 
 const orchestratorNode = async (
   state: CareerForgeState,
-  config: { configurable?: { emitter?: Emitter } }
+  config: { configurable?: { emitter?: Emitter } },
 ) => {
   const emitter = config.configurable?.emitter;
-  emitter?.({ type: "status", agent: "orchestrator", message: "Starting career analysis..." });
+  emitter?.({
+    type: "status",
+    agent: "orchestrator",
+    message: "Starting career analysis...",
+  });
 
   try {
     await prisma.roadmap.update({
@@ -130,15 +139,23 @@ const orchestratorNode = async (
 
 const jobIntelNode = async (
   state: CareerForgeState,
-  config: { configurable?: { emitter?: Emitter } }
+  config: { configurable?: { emitter?: Emitter } },
 ) => {
   const emitter = config.configurable?.emitter;
-  emitter?.({ type: "status", agent: "jobIntel", message: "Searching for job intel..." });
+  emitter?.({
+    type: "status",
+    agent: "jobIntel",
+    message: "Searching for job intel...",
+  });
 
   try {
     const [searchResult1, searchResult2] = await Promise.all([
-      tavilySearch(`${state.role} ${state.company} interview process rounds timeline 2024 2025`),
-      tavilySearch(`${state.role} ${state.company} job description responsibilities required skills`),
+      tavilySearch(
+        `${state.role} ${state.company} interview process rounds timeline 2024 2025`,
+      ),
+      tavilySearch(
+        `${state.role} ${state.company} job description responsibilities required skills`,
+      ),
     ]);
 
     const llm = createLLM(0.2);
@@ -172,13 +189,18 @@ Respond ONLY with a valid JSON object matching this exact schema (no markdown, n
 }`;
 
     const response = await llm.invoke([new HumanMessage(prompt)]);
-    const content = typeof response.content === "string" ? response.content : "";
+    const content =
+      typeof response.content === "string" ? response.content : "";
 
     const defaultRoleIntel: RoleIntel = {
       title: state.role,
       experienceRequired: "3+ years",
       description: `Senior ${state.role} role at ${state.company}`,
-      keyResponsibilities: ["System design", "Code reviews", "Feature development"],
+      keyResponsibilities: [
+        "System design",
+        "Code reviews",
+        "Feature development",
+      ],
       requiredSkills: ["Problem solving", "Algorithms", "System design"],
       niceToHave: [],
     };
@@ -186,21 +208,48 @@ Respond ONLY with a valid JSON object matching this exact schema (no markdown, n
       totalRounds: 5,
       timeline: "4-6 weeks",
       rounds: [
-        { round: 1, type: "Phone Screen", duration: "30 min", focus: "Background check" },
+        {
+          round: 1,
+          type: "Phone Screen",
+          duration: "30 min",
+          focus: "Background check",
+        },
         { round: 2, type: "Technical", duration: "45 min", focus: "Coding" },
-        { round: 3, type: "System Design", duration: "45 min", focus: "Architecture" },
-        { round: 4, type: "Behavioral", duration: "45 min", focus: "Culture fit" },
-        { round: 5, type: "Hiring Manager", duration: "30 min", focus: "Final decision" },
+        {
+          round: 3,
+          type: "System Design",
+          duration: "45 min",
+          focus: "Architecture",
+        },
+        {
+          round: 4,
+          type: "Behavioral",
+          duration: "45 min",
+          focus: "Culture fit",
+        },
+        {
+          round: 5,
+          type: "Hiring Manager",
+          duration: "30 min",
+          focus: "Final decision",
+        },
       ],
       sources: [],
     };
 
-    const parsed = parseJsonFromLLM<{ roleIntel: RoleIntel; interviewProcess: InterviewProcess }>(
-      content,
-      { roleIntel: defaultRoleIntel, interviewProcess: defaultInterviewProcess }
-    );
+    const parsed = parseJsonFromLLM<{
+      roleIntel: RoleIntel;
+      interviewProcess: InterviewProcess;
+    }>(content, {
+      roleIntel: defaultRoleIntel,
+      interviewProcess: defaultInterviewProcess,
+    });
 
-    emitter?.({ type: "partial", section: "interviewProcess", data: parsed.interviewProcess });
+    emitter?.({
+      type: "partial",
+      section: "interviewProcess",
+      data: parsed.interviewProcess,
+    });
     emitter?.({ type: "progress", agent: "jobIntel", percent: 20 });
 
     return {
@@ -209,7 +258,11 @@ Respond ONLY with a valid JSON object matching this exact schema (no markdown, n
     };
   } catch (err) {
     console.error("[Job Intel Agent] Error:", err);
-    emitter?.({ type: "status", agent: "jobIntel", message: "Using LLM fallback for job intel..." });
+    emitter?.({
+      type: "status",
+      agent: "jobIntel",
+      message: "Using LLM fallback for job intel...",
+    });
     return {
       errors: [`jobIntel: ${String(err)}`],
       roleIntel: {
@@ -234,15 +287,23 @@ Respond ONLY with a valid JSON object matching this exact schema (no markdown, n
 
 const salaryIntelNode = async (
   state: CareerForgeState,
-  config: { configurable?: { emitter?: Emitter } }
+  config: { configurable?: { emitter?: Emitter } },
 ) => {
   const emitter = config.configurable?.emitter;
-  emitter?.({ type: "status", agent: "salaryIntel", message: "Researching compensation data..." });
+  emitter?.({
+    type: "status",
+    agent: "salaryIntel",
+    message: "Researching compensation data...",
+  });
 
   try {
     const [result1, result2] = await Promise.all([
-      tavilySearch(`${state.role} ${state.company} salary compensation total comp ${state.experienceLevel} 2024 2025`),
-      tavilySearch(`site:levels.fyi ${state.company} ${state.role} salary OR site:glassdoor.com ${state.company} ${state.role} compensation`),
+      tavilySearch(
+        `${state.role} ${state.company} salary compensation total comp ${state.experienceLevel} 2024 2025`,
+      ),
+      tavilySearch(
+        `site:levels.fyi ${state.company} ${state.role} salary OR site:glassdoor.com ${state.company} ${state.role} compensation`,
+      ),
     ]);
 
     const llm = createLLM(0.1);
@@ -269,15 +330,34 @@ Respond ONLY with a valid JSON object (no markdown):
 }`;
 
     const response = await llm.invoke([new HumanMessage(prompt)]);
-    const content = typeof response.content === "string" ? response.content : "";
+    const content =
+      typeof response.content === "string" ? response.content : "";
 
     const defaultSalary: SalaryIntel = {
       currency: "USD",
       location: "United States",
       levels: [
-        { level: "Junior", base: "$90K-$120K", totalComp: "$110K-$150K", equity4yr: "N/A", bonus: "N/A" },
-        { level: "Mid", base: "$130K-$160K", totalComp: "$170K-$230K", equity4yr: "N/A", bonus: "N/A" },
-        { level: "Senior", base: "$170K-$210K", totalComp: "$250K-$350K", equity4yr: "N/A", bonus: "N/A" },
+        {
+          level: "Junior",
+          base: "$90K-$120K",
+          totalComp: "$110K-$150K",
+          equity4yr: "N/A",
+          bonus: "N/A",
+        },
+        {
+          level: "Mid",
+          base: "$130K-$160K",
+          totalComp: "$170K-$230K",
+          equity4yr: "N/A",
+          bonus: "N/A",
+        },
+        {
+          level: "Senior",
+          base: "$170K-$210K",
+          totalComp: "$250K-$350K",
+          equity4yr: "N/A",
+          bonus: "N/A",
+        },
       ],
       sources: [],
       lastUpdated: "2025",
@@ -290,7 +370,11 @@ Respond ONLY with a valid JSON object (no markdown):
     return { salaryIntel: parsed };
   } catch (err) {
     console.error("[Salary Intel Agent] Error:", err);
-    emitter?.({ type: "status", agent: "salaryIntel", message: "Using estimated salary data..." });
+    emitter?.({
+      type: "status",
+      agent: "salaryIntel",
+      message: "Using estimated salary data...",
+    });
     return {
       errors: [`salaryIntel: ${String(err)}`],
       salaryIntel: {
@@ -308,10 +392,14 @@ Respond ONLY with a valid JSON object (no markdown):
 
 const linkedInIntelNode = async (
   state: CareerForgeState,
-  config: { configurable?: { emitter?: Emitter } }
+  config: { configurable?: { emitter?: Emitter } },
 ) => {
   const emitter = config.configurable?.emitter;
-  emitter?.({ type: "status", agent: "linkedinIntel", message: "Building LinkedIn search strategy..." });
+  emitter?.({
+    type: "status",
+    agent: "linkedinIntel",
+    message: "Building LinkedIn search strategy...",
+  });
 
   try {
     const llm = createLLM(0.4);
@@ -356,7 +444,8 @@ Respond ONLY with valid JSON (no markdown):
 }`;
 
     const response = await llm.invoke([new HumanMessage(prompt)]);
-    const content = typeof response.content === "string" ? response.content : "";
+    const content =
+      typeof response.content === "string" ? response.content : "";
 
     const defaultPeople: PeopleIntel = {
       strategy: `Focus on connecting with current ${state.role}s at ${state.company} who can provide referrals.`,
@@ -394,14 +483,20 @@ Respond ONLY with valid JSON (no markdown):
 
 const skillsMapperNode = async (
   state: CareerForgeState,
-  config: { configurable?: { emitter?: Emitter } }
+  config: { configurable?: { emitter?: Emitter } },
 ) => {
   const emitter = config.configurable?.emitter;
-  emitter?.({ type: "status", agent: "skillsMapper", message: "Mapping skill tree..." });
+  emitter?.({
+    type: "status",
+    agent: "skillsMapper",
+    message: "Mapping skill tree...",
+  });
 
   try {
     const llm = createLLM(0.3);
-    const topicCount = state.experienceLevel.toLowerCase().includes("junior") ? 12 : 18;
+    const topicCount = state.experienceLevel.toLowerCase().includes("junior")
+      ? 12
+      : 18;
 
     const prompt = `You are a career skills mapping agent. Create a structured skill tree for a ${state.experienceLevel} ${state.role} targeting ${state.company}.
 
@@ -455,15 +550,21 @@ Respond ONLY with valid JSON (no markdown):
 }`;
 
     const response = await llm.invoke([new HumanMessage(prompt)]);
-    const content = typeof response.content === "string" ? response.content : "";
+    const content =
+      typeof response.content === "string" ? response.content : "";
 
-    const parsed = parseJsonFromLLM<{ phases: Phase[] }>(content, { phases: [] });
+    const parsed = parseJsonFromLLM<{ phases: Phase[] }>(content, {
+      phases: [],
+    });
     emitter?.({ type: "progress", agent: "skillsMapper", percent: 30 });
 
     return { skillTree: parsed };
   } catch (err) {
     console.error("[Skills Mapper Agent] Error:", err);
-    return { errors: [`skillsMapper: ${String(err)}`], skillTree: { phases: [] } };
+    return {
+      errors: [`skillsMapper: ${String(err)}`],
+      skillTree: { phases: [] },
+    };
   }
 };
 
@@ -471,10 +572,14 @@ Respond ONLY with valid JSON (no markdown):
 
 const resourceFinderNode = async (
   state: CareerForgeState,
-  config: { configurable?: { emitter?: Emitter } }
+  config: { configurable?: { emitter?: Emitter } },
 ) => {
   const emitter = config.configurable?.emitter;
-  emitter?.({ type: "status", agent: "resourceFinder", message: "Finding learning resources..." });
+  emitter?.({
+    type: "status",
+    agent: "resourceFinder",
+    message: "Finding learning resources...",
+  });
 
   try {
     const phases = state.skillTree?.phases ?? [];
@@ -485,7 +590,7 @@ const resourceFinderNode = async (
       phases.map(async (phase, idx) => {
         const topicNames = phase.topics.map((t) => t.name).join(", ");
         const searchResult = await tavilySearch(
-          `best resources to learn ${topicNames} for software engineering interview 2024`
+          `best resources to learn ${topicNames} for software engineering interview 2024`,
         );
 
         const prompt = `For each topic in this interview prep phase, suggest the best 2-3 learning resources.
@@ -509,16 +614,19 @@ Example:
 ]`;
 
         const response = await llm.invoke([new HumanMessage(prompt)]);
-        const content = typeof response.content === "string" ? response.content : "";
-        const resourceMap = parseJsonFromLLM<{ topicName: string; resources: unknown[] }[]>(
-          content,
-          []
-        );
+        const content =
+          typeof response.content === "string" ? response.content : "";
+        const resourceMap = parseJsonFromLLM<
+          { topicName: string; resources: unknown[] }[]
+        >(content, []);
 
         const enrichedTopics = phase.topics.map((topic) => {
           const match = resourceMap.find(
-            (r) => r.topicName?.toLowerCase().includes(topic.name.toLowerCase()) ||
-              topic.name.toLowerCase().includes(r.topicName?.toLowerCase() ?? "")
+            (r) =>
+              r.topicName?.toLowerCase().includes(topic.name.toLowerCase()) ||
+              topic.name
+                .toLowerCase()
+                .includes(r.topicName?.toLowerCase() ?? ""),
           );
           return { ...topic, resources: match?.resources ?? [] };
         });
@@ -530,7 +638,7 @@ Example:
         });
 
         return { ...phase, topics: enrichedTopics };
-      })
+      }),
     );
 
     emitter?.({ type: "progress", agent: "resourceFinder", percent: 55 });
@@ -548,14 +656,21 @@ Example:
 
 const roadmapBuilderNode = async (
   state: CareerForgeState,
-  config: { configurable?: { emitter?: Emitter } }
+  config: { configurable?: { emitter?: Emitter } },
 ) => {
   const emitter = config.configurable?.emitter;
-  emitter?.({ type: "status", agent: "roadmapBuilder", message: "Assembling your roadmap..." });
+  emitter?.({
+    type: "status",
+    agent: "roadmapBuilder",
+    message: "Assembling your roadmap...",
+  });
 
   try {
     const phases = state.enrichedPhases ?? state.skillTree?.phases ?? [];
-    const totalWeeks = phases.reduce((sum, p) => sum + (p.durationWeeks || 2), 0);
+    const totalWeeks = phases.reduce(
+      (sum, p) => sum + (p.durationWeeks || 2),
+      0,
+    );
 
     const llm = createLLM(0.4);
     const prompt = `You are generating system design and behavioral interview prep sections for a ${state.role} interview at ${state.company} (${state.experienceLevel} level).
@@ -587,7 +702,8 @@ Respond ONLY with valid JSON (no markdown):
 }`;
 
     const response = await llm.invoke([new HumanMessage(prompt)]);
-    const content = typeof response.content === "string" ? response.content : "";
+    const content =
+      typeof response.content === "string" ? response.content : "";
 
     const extras = parseJsonFromLLM<{
       systemDesign: CareerRoadmap["systemDesign"];
@@ -595,7 +711,12 @@ Respond ONLY with valid JSON (no markdown):
       companyIntel: CareerRoadmap["companyIntel"];
     }>(content, {
       systemDesign: { topics: [], keyConcepts: [], resources: [] },
-      behavioral: { framework: "STAR", companyValues: [], keyThemes: [], sampleQuestions: [] },
+      behavioral: {
+        framework: "STAR",
+        companyValues: [],
+        keyThemes: [],
+        sampleQuestions: [],
+      },
       companyIntel: { hiringTimeline: "4-6 weeks", tips: [] },
     });
 
@@ -653,10 +774,14 @@ Respond ONLY with valid JSON (no markdown):
 
 const formatterNode = async (
   state: CareerForgeState,
-  config: { configurable?: { emitter?: Emitter } }
+  config: { configurable?: { emitter?: Emitter } },
 ) => {
   const emitter = config.configurable?.emitter;
-  emitter?.({ type: "status", agent: "formatter", message: "Validating and saving roadmap..." });
+  emitter?.({
+    type: "status",
+    agent: "formatter",
+    message: "Validating and saving roadmap...",
+  });
 
   try {
     if (!state.roadmap) {
@@ -670,7 +795,10 @@ const formatterNode = async (
       finalRoadmap = validation.data;
     } else {
       // Try LLM repair once
-      console.warn("[Formatter] Validation failed, attempting repair:", validation.error.message);
+      console.warn(
+        "[Formatter] Validation failed, attempting repair:",
+        validation.error.message,
+      );
       const llm = createLLM(0.1);
       const prompt = `Fix this JSON to match the required schema. Validation errors:
 ${validation.error.message}
@@ -681,7 +809,8 @@ ${JSON.stringify(state.roadmap, null, 2)}
 Return ONLY the fixed JSON with no explanation or markdown.`;
 
       const response = await llm.invoke([new HumanMessage(prompt)]);
-      const content = typeof response.content === "string" ? response.content : "";
+      const content =
+        typeof response.content === "string" ? response.content : "";
       const repaired = parseJsonFromLLM(content, state.roadmap);
       const retry = CareerRoadmapSchema.safeParse(repaired);
       finalRoadmap = retry.success ? retry.data : state.roadmap;
@@ -710,7 +839,9 @@ Return ONLY the fixed JSON with no explanation or markdown.`;
       ].map((agentName) => ({
         roadmapId: state.roadmapId,
         agentName,
-        status: state.errors?.some((e) => e.startsWith(agentName)) ? "error" : "complete",
+        status: state.errors?.some((e) => e.startsWith(agentName))
+          ? "error"
+          : "complete",
         completedAt: new Date(),
       })),
     });
@@ -723,12 +854,17 @@ Return ONLY the fixed JSON with no explanation or markdown.`;
     console.error("[Formatter Agent] Error:", err);
 
     // Mark DB as error
-    await prisma.roadmap.update({
-      where: { id: state.roadmapId },
-      data: { status: "error", errorMessage: String(err) },
-    }).catch(() => {});
+    await prisma.roadmap
+      .update({
+        where: { id: state.roadmapId },
+        data: { status: "error", errorMessage: String(err) },
+      })
+      .catch(() => {});
 
-    emitter?.({ type: "error", message: "Failed to save roadmap. Please try again." });
+    emitter?.({
+      type: "error",
+      message: "Failed to save roadmap. Please try again.",
+    });
     return { errors: [`formatter: ${String(err)}`] };
   }
 };
@@ -754,8 +890,13 @@ const graph = new StateGraph(CareerForgeAnnotation)
   .addEdge("skillsMapperAgent", "resourceFinderAgent")
   // Fan-in barrier: wait for all 4 before building roadmap
   .addEdge(
-    ["jobIntelAgent", "salaryIntelAgent", "linkedInIntelAgent", "resourceFinderAgent"],
-    "roadmapBuilderAgent"
+    [
+      "jobIntelAgent",
+      "salaryIntelAgent",
+      "linkedInIntelAgent",
+      "resourceFinderAgent",
+    ],
+    "roadmapBuilderAgent",
   )
   .addEdge("roadmapBuilderAgent", "formatterAgent")
   .addEdge("formatterAgent", END)

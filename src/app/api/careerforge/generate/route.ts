@@ -10,8 +10,11 @@ export async function POST(request: Request) {
 
     if (!role?.trim() || !company?.trim() || !experienceLevel || !sessionId) {
       return NextResponse.json(
-        { error: "Missing required fields: role, company, experienceLevel, sessionId" },
-        { status: 400 }
+        {
+          error:
+            "Missing required fields: role, company, experienceLevel, sessionId",
+        },
+        { status: 400 },
       );
     }
 
@@ -30,7 +33,7 @@ export async function POST(request: Request) {
     console.error("[CareerForge Generate] Error:", err);
     return NextResponse.json(
       { error: "Failed to create roadmap. Please try again." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

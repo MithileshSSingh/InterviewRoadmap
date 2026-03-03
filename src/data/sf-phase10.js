@@ -2,7 +2,8 @@ const sfPhase10 = {
   id: "phase-10",
   title: "Phase 10: Debugging & Production Troubleshooting",
   emoji: "🔍",
-  description: "Master debugging tools, debug logs, Developer Console, error handling patterns, production incident management, monitoring, and troubleshooting strategies for enterprise Salesforce orgs.",
+  description:
+    "Master debugging tools, debug logs, Developer Console, error handling patterns, production incident management, monitoring, and troubleshooting strategies for enterprise Salesforce orgs.",
   topics: [
     {
       id: "sf-debugging-tools",
@@ -158,20 +159,20 @@ public class DebuggingService {
         "Debug log size truncation — logs over 5MB are truncated. Reduce log levels for categories you don't need (set to WARN or NONE)",
         "Not using structured log format — random debug messages are impossible to search. Always include class name, method name, and context",
         "Debugging production with FINEST level — this generates massive logs and can impact org performance. Use INFO/DEBUG for production",
-        "Not checking CUMULATIVE_LIMIT_USAGE — the section at the end of debug logs shows total limit consumption, including all triggers and automations"
+        "Not checking CUMULATIVE_LIMIT_USAGE — the section at the end of debug logs shows total limit consumption, including all triggers and automations",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What tools and techniques do you use to debug Salesforce issues?",
-          a: "**Tools:** (1) **Debug Logs:** Set categories (Database:FINE, Apex:DEBUG) to trace queries, DML, and code flow. (2) **Developer Console:** Execute Anonymous Apex, Query Plan tool, Timeline profiling. (3) **VS Code Replay Debugger:** Step through captured logs. (4) **Error logging:** Custom Error_Log__c object for persistent error tracking. **Techniques:** (5) Structured logging with class/method context. (6) Conditional debugging toggled per user. (7) Transaction ID tracking for correlating related logs. (8) Governor limit monitoring at key checkpoints. **Production:** Event Monitoring for user activity, Apex Exception Emails for alerts, org health monitoring."
+          a: "**Tools:** (1) **Debug Logs:** Set categories (Database:FINE, Apex:DEBUG) to trace queries, DML, and code flow. (2) **Developer Console:** Execute Anonymous Apex, Query Plan tool, Timeline profiling. (3) **VS Code Replay Debugger:** Step through captured logs. (4) **Error logging:** Custom Error_Log__c object for persistent error tracking. **Techniques:** (5) Structured logging with class/method context. (6) Conditional debugging toggled per user. (7) Transaction ID tracking for correlating related logs. (8) Governor limit monitoring at key checkpoints. **Production:** Event Monitoring for user activity, Apex Exception Emails for alerts, org health monitoring.",
         },
         {
           type: "scenario",
           q: "Users report intermittent errors when saving Accounts. How do you investigate?",
-          a: "**Systematic investigation:** (1) **Reproduce:** Get exact error message, user, time, and record. (2) **Check Error_Log__c** for recent errors (if implemented). (3) **Enable debug log** for the affected user. (4) **Have user reproduce** while logging is active. (5) **Analyze log:** Search for EXCEPTION or FATAL. Check SOQL count (near 100?), CPU time (near 10s?), DML (near 150?). (6) **Check recent deployments** (Setup Audit Trail) — did new code/automation deploy? (7) **Check platform** (trust.salesforce.com) — instance issues? (8) **Intermittent clues:** If only fails sometimes, check: data skew (specific accounts), sharing recalculation, concurrent updates (lock contention), or volume-dependent triggers."
-        }
-      ]
+          a: "**Systematic investigation:** (1) **Reproduce:** Get exact error message, user, time, and record. (2) **Check Error_Log__c** for recent errors (if implemented). (3) **Enable debug log** for the affected user. (4) **Have user reproduce** while logging is active. (5) **Analyze log:** Search for EXCEPTION or FATAL. Check SOQL count (near 100?), CPU time (near 10s?), DML (near 150?). (6) **Check recent deployments** (Setup Audit Trail) — did new code/automation deploy? (7) **Check platform** (trust.salesforce.com) — instance issues? (8) **Intermittent clues:** If only fails sometimes, check: data skew (specific accounts), sharing recalculation, concurrent updates (lock contention), or volume-dependent triggers.",
+        },
+      ],
     },
     {
       id: "sf-production-incident-management",
@@ -319,17 +320,17 @@ public class IncidentAlert {
         "Deploying to production on Friday afternoon — follow change management best practices: deploy during low-traffic hours, not before weekends",
         "Not testing with production-data volumes — code works in sandbox (1K records) but fails in production (1M records)",
         "No rollback plan — every production deployment should have a documented rollback procedure before it starts",
-        "Not logging errors persistently — debug logs expire in 24 hours. Without an Error_Log__c, production errors are lost"
+        "Not logging errors persistently — debug logs expire in 24 hours. Without an Error_Log__c, production errors are lost",
       ],
       interviewQuestions: [
         {
           type: "scenario",
           q: "Production users are getting 'Too many SOQL queries' errors when saving Opportunities. How do you handle this incident?",
-          a: "**Immediate (P2 response):** (1) Check Setup Audit Trail — did new code deploy recently? Check last 24-48 hours. (2) Enable debug logs for an affected user. (3) Have them reproduce while logging. (4) Analyze log: search for SOQL_EXECUTE_BEGIN — which class/trigger is consuming queries? Count total queries. **Investigation:** (5) Check if a new Flow/Process Builder was deployed. (6) Check if there are cascading triggers (Opportunity → OpportunityLineItem → PricebookEntry). (7) Check if data volume changed (did a bulk load run?). **Resolution:** (8) If new code: hotfix or feature toggle off. (9) If existing code with new data volume: bulkify the offending logic. (10) If automation cascade: consolidate or move logic to async. **Prevention:** Add limits monitoring to the trigger, implement budget alerts."
-        }
-      ]
-    }
-  ]
+          a: "**Immediate (P2 response):** (1) Check Setup Audit Trail — did new code deploy recently? Check last 24-48 hours. (2) Enable debug logs for an affected user. (3) Have them reproduce while logging. (4) Analyze log: search for SOQL_EXECUTE_BEGIN — which class/trigger is consuming queries? Count total queries. **Investigation:** (5) Check if a new Flow/Process Builder was deployed. (6) Check if there are cascading triggers (Opportunity → OpportunityLineItem → PricebookEntry). (7) Check if data volume changed (did a bulk load run?). **Resolution:** (8) If new code: hotfix or feature toggle off. (9) If existing code with new data volume: bulkify the offending logic. (10) If automation cascade: consolidate or move logic to async. **Prevention:** Add limits monitoring to the trigger, implement budget alerts.",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase10;

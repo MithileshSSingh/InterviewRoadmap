@@ -2,7 +2,8 @@ const rnPhase6 = {
   id: "phase-6",
   title: "Phase 6: Architecture & Large-Scale Design",
   emoji: "🏗️",
-  description: "Architect scalable React Native apps — feature-based architecture, clean architecture, monorepos, API abstraction layers, error handling, dependency injection, and tech debt strategy.",
+  description:
+    "Architect scalable React Native apps — feature-based architecture, clean architecture, monorepos, API abstraction layers, error handling, dependency injection, and tech debt strategy.",
   topics: [
     {
       id: "feature-based-architecture",

@@ -2,7 +2,8 @@ const sfPhase7 = {
   id: "phase-7",
   title: "Phase 7: DevOps & SFDX",
   emoji: "🚀",
-  description: "Master SFDX CLI, scratch orgs, source-driven development, CI/CD pipelines, version control, packaging, deployment strategies, and Salesforce DevOps best practices.",
+  description:
+    "Master SFDX CLI, scratch orgs, source-driven development, CI/CD pipelines, version control, packaging, deployment strategies, and Salesforce DevOps best practices.",
   topics: [
     {
       id: "sf-sfdx-source-development",
@@ -185,20 +186,20 @@ my-project/
         "Creating scratch orgs without proper definition files — missing features in the scratch org definition causes deployment failures that don't happen in sandbox",
         "Not running tests before deployment — production deployments require 75% coverage. Always validate with --dry-run first",
         "Deploying directly to production without a sandbox validation — always deploy to a full sandbox first, then promote to production",
-        "Committing sensitive data (credentials, API keys) to Git — use .gitignore and .forceignore. Store secrets in Named Credentials or environment variables"
+        "Committing sensitive data (credentials, API keys) to Git — use .gitignore and .forceignore. Store secrets in Named Credentials or environment variables",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is Salesforce DX and how does it change the development workflow?",
-          a: "SFDX modernizes Salesforce development: (1) **Source-driven:** Metadata lives in Git, not the org. Source of truth is the repository. (2) **Scratch orgs:** Disposable dev environments created from code. Each developer gets isolated orgs. (3) **CLI-based:** All operations via command line — scriptable, automatable. (4) **Package development:** Modular deployment via Unlocked/Managed Packages. (5) **CI/CD ready:** Git + CLI + scratch orgs = automated testing and deployment pipelines. **Workflow change:** Old: develop in sandbox → deploy change set. New: develop in scratch org → commit to Git → CI runs tests → deploy via CLI."
+          a: "SFDX modernizes Salesforce development: (1) **Source-driven:** Metadata lives in Git, not the org. Source of truth is the repository. (2) **Scratch orgs:** Disposable dev environments created from code. Each developer gets isolated orgs. (3) **CLI-based:** All operations via command line — scriptable, automatable. (4) **Package development:** Modular deployment via Unlocked/Managed Packages. (5) **CI/CD ready:** Git + CLI + scratch orgs = automated testing and deployment pipelines. **Workflow change:** Old: develop in sandbox → deploy change set. New: develop in scratch org → commit to Git → CI runs tests → deploy via CLI.",
         },
         {
           type: "scenario",
           q: "How would you set up a CI/CD pipeline for a Salesforce project?",
-          a: "**Pipeline stages:** (1) **Developer:** Works in scratch org, commits to feature branch. (2) **Pull Request:** CI creates scratch org → deploys source → runs tests → reports coverage. (3) **Integration:** Merge to develop → deploy to QA sandbox → run all tests. (4) **UAT:** Merge to main → deploy to UAT sandbox → stakeholder testing. (5) **Production:** Tag release → validate deployment (dry-run) → deploy with RunLocalTests. **Tools:** GitHub Actions / Jenkins / Azure DevOps + SFDX CLI. **Key practices:** Automated scratch org creation, test data seeding, code coverage gates (>85%), mandatory code review, deployment validation before merge."
-        }
-      ]
+          a: "**Pipeline stages:** (1) **Developer:** Works in scratch org, commits to feature branch. (2) **Pull Request:** CI creates scratch org → deploys source → runs tests → reports coverage. (3) **Integration:** Merge to develop → deploy to QA sandbox → run all tests. (4) **UAT:** Merge to main → deploy to UAT sandbox → stakeholder testing. (5) **Production:** Tag release → validate deployment (dry-run) → deploy with RunLocalTests. **Tools:** GitHub Actions / Jenkins / Azure DevOps + SFDX CLI. **Key practices:** Automated scratch org creation, test data seeding, code coverage gates (>85%), mandatory code review, deployment validation before merge.",
+        },
+      ],
     },
     {
       id: "sf-deployment-packaging",
@@ -383,17 +384,17 @@ echo "=== Validation Passed ==="`,
         "Not specifying test level for production deployments — RunLocalTests is required for production. Forgetting causes deployment failure",
         "Using Change Sets for complex deployments — Change Sets don't handle dependencies well. Use SFDX CLI or packages for anything beyond simple changes",
         "Not having a rollback plan — some deployments can't be undone (data changes, deleted fields). Always plan for rollback before deploying",
-        "Deploying during business hours — production deployments should happen during maintenance windows to minimize user impact"
+        "Deploying during business hours — production deployments should happen during maintenance windows to minimize user impact",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Compare Change Sets, SFDX CLI deployment, and Unlocked Packages. When would you use each?",
-          a: "**Change Sets:** Legacy, point-and-click. One-way between connected orgs. No version control, no rollback. Use for: simple changes in orgs without source control. **SFDX CLI:** Modern, command-line. Deploy source format from Git. Supports test levels, dry-run, CI/CD. Use for: most development teams with source control. **Unlocked Packages:** Modular, versioned deployment units. Dependency tracking, upgrade/rollback support. Use for: enterprise teams needing modular architecture, ISVs building distributable components. **Recommendation:** SFDX CLI for most teams, Unlocked Packages for large/multi-team orgs, avoid Change Sets for anything complex."
-        }
-      ]
-    }
-  ]
+          a: "**Change Sets:** Legacy, point-and-click. One-way between connected orgs. No version control, no rollback. Use for: simple changes in orgs without source control. **SFDX CLI:** Modern, command-line. Deploy source format from Git. Supports test levels, dry-run, CI/CD. Use for: most development teams with source control. **Unlocked Packages:** Modular, versioned deployment units. Dependency tracking, upgrade/rollback support. Use for: enterprise teams needing modular architecture, ISVs building distributable components. **Recommendation:** SFDX CLI for most teams, Unlocked Packages for large/multi-team orgs, avoid Change Sets for anything complex.",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase7;

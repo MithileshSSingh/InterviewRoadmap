@@ -2,7 +2,8 @@ const rnPhase10 = {
   id: "phase-10",
   title: "Phase 10: Debugging & Production Resiliency",
   emoji: "🔍",
-  description: "Real-world debugging scenarios — memory leaks, race conditions, bridge overload, crash analytics, API failure cascading, and systematic debugging mindset for production issues.",
+  description:
+    "Real-world debugging scenarios — memory leaks, race conditions, bridge overload, crash analytics, API failure cascading, and systematic debugging mindset for production issues.",
   topics: [
     {
       id: "systematic-debugging",

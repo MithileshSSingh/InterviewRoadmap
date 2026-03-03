@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -14,7 +14,7 @@ export async function PATCH(
     if (!topicId || typeof completed !== "boolean") {
       return NextResponse.json(
         { error: "Missing required fields: topicId, completed" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -37,6 +37,9 @@ export async function PATCH(
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[CareerForge Progress] Error:", err);
-    return NextResponse.json({ error: "Failed to update progress" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update progress" },
+      { status: 500 },
+    );
   }
 }

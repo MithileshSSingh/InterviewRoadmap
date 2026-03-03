@@ -2,7 +2,8 @@ const tsPhase2 = {
   id: "phase-2",
   title: "Phase 2: Intermediate TypeScript",
   emoji: "🟡",
-  description: "Level up with type narrowing, generics, classes, modules, utility types, and the tsconfig deep dive.",
+  description:
+    "Level up with type narrowing, generics, classes, modules, utility types, and the tsconfig deep dive.",
   topics: [
     {
       id: "type-narrowing-guards",
@@ -129,35 +130,35 @@ function unwrap<T>(result: Result<T>): T {
         "Forgetting that type predicates lie if implemented wrong — TypeScript trusts your `is` predicate unconditionally; if it returns true incorrectly, you'll have runtime bugs",
         "Using `as` type assertions instead of type guards — assertions bypass safety; guards prove safety",
         "Not handling the `else` branch in narrowing — always consider what type remains after the check",
-        "Truthiness narrowing eliminates `0` and `\"\"` along with `null`/`undefined` — use explicit null checks if `0` or `\"\"` are valid values"
+        'Truthiness narrowing eliminates `0` and `""` along with `null`/`undefined` — use explicit null checks if `0` or `""` are valid values',
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is a type predicate and how does it work?",
-          a: "A type predicate is a special return type `param is Type` for a function. When the function returns `true`, TypeScript narrows the parameter to the specified type in the calling scope. Example: `function isString(x: unknown): x is string { return typeof x === 'string'; }`. After `if (isString(x))`, TS knows `x` is `string`. The predicate is trusted — incorrect implementations cause unsafe narrowing."
+          a: "A type predicate is a special return type `param is Type` for a function. When the function returns `true`, TypeScript narrows the parameter to the specified type in the calling scope. Example: `function isString(x: unknown): x is string { return typeof x === 'string'; }`. After `if (isString(x))`, TS knows `x` is `string`. The predicate is trusted — incorrect implementations cause unsafe narrowing.",
         },
         {
           type: "tricky",
           q: "What's the difference between a type assertion (`as`) and a type guard?",
-          a: "A **type assertion** (`value as Type`) is a developer override — it tells TS 'trust me' without any runtime check. If wrong, you get runtime errors. A **type guard** (`if (typeof x === 'string')`) is a runtime check that TypeScript understands — it proves the type is correct. Always prefer guards over assertions. Assertions should only be used when you know more than TS can infer."
+          a: "A **type assertion** (`value as Type`) is a developer override — it tells TS 'trust me' without any runtime check. If wrong, you get runtime errors. A **type guard** (`if (typeof x === 'string')`) is a runtime check that TypeScript understands — it proves the type is correct. Always prefer guards over assertions. Assertions should only be used when you know more than TS can infer.",
         },
         {
           type: "coding",
           q: "Write a type guard that validates an API response has the expected shape.",
-          a: "```ts\\ninterface ApiUser {\\n  id: number;\\n  name: string;\\n  email: string;\\n}\\n\\nfunction isApiUser(data: unknown): data is ApiUser {\\n  return (\\n    typeof data === 'object' &&\\n    data !== null &&\\n    typeof (data as any).id === 'number' &&\\n    typeof (data as any).name === 'string' &&\\n    typeof (data as any).email === 'string'\\n  );\\n}\\n\\n// Usage with fetch:\\nconst response = await fetch('/api/user');\\nconst data: unknown = await response.json();\\nif (isApiUser(data)) {\\n  console.log(data.email); // Type-safe!\\n}\\n```"
+          a: "```ts\\ninterface ApiUser {\\n  id: number;\\n  name: string;\\n  email: string;\\n}\\n\\nfunction isApiUser(data: unknown): data is ApiUser {\\n  return (\\n    typeof data === 'object' &&\\n    data !== null &&\\n    typeof (data as any).id === 'number' &&\\n    typeof (data as any).name === 'string' &&\\n    typeof (data as any).email === 'string'\\n  );\\n}\\n\\n// Usage with fetch:\\nconst response = await fetch('/api/user');\\nconst data: unknown = await response.json();\\nif (isApiUser(data)) {\\n  console.log(data.email); // Type-safe!\\n}\\n```",
         },
         {
           type: "conceptual",
           q: "What is the difference between `asserts value is Type` and `value is Type`?",
-          a: "`value is Type` (type predicate) returns a boolean — narrowing only happens in the `if (true)` branch. `asserts value is Type` (assertion function) narrows from the point of call onward — if it doesn't throw, the rest of the function has the narrowed type. Assertion functions are used for validation at the start of functions."
+          a: "`value is Type` (type predicate) returns a boolean — narrowing only happens in the `if (true)` branch. `asserts value is Type` (assertion function) narrows from the point of call onward — if it doesn't throw, the rest of the function has the narrowed type. Assertion functions are used for validation at the start of functions.",
         },
         {
           type: "scenario",
           q: "You receive untrusted JSON from an API. How do you safely narrow it to your expected type?",
-          a: "1) Parse as `unknown` (not `any`): `const data: unknown = await res.json()`. 2) Write a type predicate that checks every property. 3) Or use a validation library: Zod (`z.object({}).parse(data)`), io-ts, or Valibot. 4) The validation library approach is preferred for production — hand-written guards are error-prone for complex shapes."
-        }
-      ]
+          a: "1) Parse as `unknown` (not `any`): `const data: unknown = await res.json()`. 2) Write a type predicate that checks every property. 3) Or use a validation library: Zod (`z.object({}).parse(data)`), io-ts, or Valibot. 4) The validation library approach is preferred for production — hand-written guards are error-prone for complex shapes.",
+        },
+      ],
     },
     {
       id: "generics-mastery",
@@ -273,35 +274,35 @@ function wrapInArray<T>(value: T): T extends any[] ? T : T[] {
         "Over-constraining generics — `<T extends string | number>` when just `<T>` would work; only constrain when you need specific operations",
         "Not letting TypeScript infer type arguments — `identity<string>('hello')` is redundant; `identity('hello')` infers `string` automatically",
         "Forgetting that generic type parameters are erased at runtime — you can't do `if (T === string)` or `new T()` at runtime",
-        "Creating too many type parameters — if your function has `<A, B, C, D, E>`, it's too complex; simplify the design"
+        "Creating too many type parameters — if your function has `<A, B, C, D, E>`, it's too complex; simplify the design",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are generics in TypeScript and why are they useful?",
-          a: "Generics are type-level variables that let you write functions, classes, and interfaces that work with multiple types while maintaining type safety. Without generics, you'd need either `any` (unsafe) or duplicated code for each type. Example: `Array<T>` is generic — `Array<string>` and `Array<number>` share the same implementation but are type-safe."
+          a: "Generics are type-level variables that let you write functions, classes, and interfaces that work with multiple types while maintaining type safety. Without generics, you'd need either `any` (unsafe) or duplicated code for each type. Example: `Array<T>` is generic — `Array<string>` and `Array<number>` share the same implementation but are type-safe.",
         },
         {
           type: "coding",
           q: "Write a generic `merge` function that type-safely combines two objects.",
-          a: "```ts\\nfunction merge<T extends object, U extends object>(a: T, b: U): T & U {\\n  return { ...a, ...b };\\n}\\n\\nconst result = merge(\\n  { name: 'Alice' },\\n  { age: 30 }\\n);\\n// Type: { name: string } & { age: number }\\nconsole.log(result.name); // ✅\\nconsole.log(result.age);  // ✅\\n```"
+          a: "```ts\\nfunction merge<T extends object, U extends object>(a: T, b: U): T & U {\\n  return { ...a, ...b };\\n}\\n\\nconst result = merge(\\n  { name: 'Alice' },\\n  { age: 30 }\\n);\\n// Type: { name: string } & { age: number }\\nconsole.log(result.name); // ✅\\nconsole.log(result.age);  // ✅\\n```",
         },
         {
           type: "tricky",
           q: "Why can't you use `new T()` in a generic function?",
-          a: "Generic type parameters are erased at runtime — `T` doesn't exist as a value. To create instances, pass the constructor: `function create<T>(Ctor: { new(): T }): T { return new Ctor(); }`. The `{ new(): T }` type represents a constructable class. This separates the type space (generic) from the value space (constructor)."
+          a: "Generic type parameters are erased at runtime — `T` doesn't exist as a value. To create instances, pass the constructor: `function create<T>(Ctor: { new(): T }): T { return new Ctor(); }`. The `{ new(): T }` type represents a constructable class. This separates the type space (generic) from the value space (constructor).",
         },
         {
           type: "conceptual",
           q: "What does `K extends keyof T` mean?",
-          a: "`keyof T` produces a union of T's property names as string literal types. `K extends keyof T` constrains K to be one of those keys. This enables type-safe property access: `function get<T, K extends keyof T>(obj: T, key: K): T[K]` — the return type `T[K]` is automatically the type of that specific property."
+          a: "`keyof T` produces a union of T's property names as string literal types. `K extends keyof T` constrains K to be one of those keys. This enables type-safe property access: `function get<T, K extends keyof T>(obj: T, key: K): T[K]` — the return type `T[K]` is automatically the type of that specific property.",
         },
         {
           type: "scenario",
           q: "How would you design a type-safe API for a form builder using generics?",
-          a: "Use a generic that captures the form shape: ```ts\\ninterface FormBuilder<T extends Record<string, any>> {\\n  field<K extends keyof T>(name: K, config: FieldConfig<T[K]>): this;\\n  validate(): Promise<T>;\\n  getValues(): Partial<T>;\\n}\\nconst form = createForm<{ name: string; age: number }>();\\nform.field('name', { required: true }); // ✅ name must be keyof form\\nform.field('phone', {}); // ❌ 'phone' doesn't exist\\n```"
-        }
-      ]
+          a: "Use a generic that captures the form shape: ```ts\\ninterface FormBuilder<T extends Record<string, any>> {\\n  field<K extends keyof T>(name: K, config: FieldConfig<T[K]>): this;\\n  validate(): Promise<T>;\\n  getValues(): Partial<T>;\\n}\\nconst form = createForm<{ name: string; age: number }>();\\nform.field('name', { required: true }); // ✅ name must be keyof form\\nform.field('phone', {}); // ❌ 'phone' doesn't exist\\n```",
+        },
+      ],
     },
     {
       id: "classes-and-access-modifiers",
@@ -453,35 +454,35 @@ const userRepo = new Repository<User>();`,
         "Forgetting to call `super()` in the subclass constructor before using `this` — TypeScript enforces this and throws a compile error",
         "Not knowing that `implements` doesn't add anything at runtime — it's a compile-time check only. The class must still provide all properties",
         "Over-using abstract classes when an interface would suffice — abstract classes add a runtime prototype chain; interfaces are zero-cost",
-        "Forgetting that parameter properties only work in constructors — `public` on a regular method parameter doesn't create a property"
+        "Forgetting that parameter properties only work in constructors — `public` on a regular method parameter doesn't create a property",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What's the difference between `private`, `#private`, and `protected` in TypeScript?",
-          a: "`private` (TS keyword): compile-time only enforcement, erased at runtime, accessible via bracket notation or DevTools. `#private` (ES2022): true runtime privacy, enforced by the JavaScript engine, cannot be accessed from outside at all. `protected`: accessible within the class AND its subclasses, but not from outside. Use `#private` for real security, `private` for API design."
+          a: "`private` (TS keyword): compile-time only enforcement, erased at runtime, accessible via bracket notation or DevTools. `#private` (ES2022): true runtime privacy, enforced by the JavaScript engine, cannot be accessed from outside at all. `protected`: accessible within the class AND its subclasses, but not from outside. Use `#private` for real security, `private` for API design.",
         },
         {
           type: "coding",
           q: "Create an abstract `Logger` class with subclasses for console and file logging.",
-          a: "```ts\\nabstract class Logger {\\n  abstract log(message: string): void;\\n  \\n  info(msg: string) { this.log(`[INFO] ${msg}`); }\\n  warn(msg: string) { this.log(`[WARN] ${msg}`); }\\n  error(msg: string) { this.log(`[ERROR] ${msg}`); }\\n}\\n\\nclass ConsoleLogger extends Logger {\\n  log(message: string) { console.log(message); }\\n}\\n\\nclass FileLogger extends Logger {\\n  constructor(private filepath: string) { super(); }\\n  log(message: string) {\\n    // fs.appendFileSync(this.filepath, message + '\\\\n');\\n  }\\n}\\n```"
+          a: "```ts\\nabstract class Logger {\\n  abstract log(message: string): void;\\n  \\n  info(msg: string) { this.log(`[INFO] ${msg}`); }\\n  warn(msg: string) { this.log(`[WARN] ${msg}`); }\\n  error(msg: string) { this.log(`[ERROR] ${msg}`); }\\n}\\n\\nclass ConsoleLogger extends Logger {\\n  log(message: string) { console.log(message); }\\n}\\n\\nclass FileLogger extends Logger {\\n  constructor(private filepath: string) { super(); }\\n  log(message: string) {\\n    // fs.appendFileSync(this.filepath, message + '\\\\n');\\n  }\\n}\\n```",
         },
         {
           type: "conceptual",
           q: "What are parameter properties in TypeScript?",
-          a: "Parameter properties are a shorthand: adding `public`, `private`, `protected`, or `readonly` to a constructor parameter automatically creates and assigns the corresponding class property. `constructor(public name: string)` is equivalent to: `name: string; constructor(name: string) { this.name = name; }`. Saves boilerplate but can be less readable."
+          a: "Parameter properties are a shorthand: adding `public`, `private`, `protected`, or `readonly` to a constructor parameter automatically creates and assigns the corresponding class property. `constructor(public name: string)` is equivalent to: `name: string; constructor(name: string) { this.name = name; }`. Saves boilerplate but can be less readable.",
         },
         {
           type: "tricky",
           q: "What does `implements` actually do at runtime?",
-          a: "Nothing. `implements` is a compile-time-only check that ensures a class has all the properties and methods required by an interface. It generates no JavaScript code. The class must independently provide all members — `implements` doesn't inherit anything. It's purely a contract verification tool."
+          a: "Nothing. `implements` is a compile-time-only check that ensures a class has all the properties and methods required by an interface. It generates no JavaScript code. The class must independently provide all members — `implements` doesn't inherit anything. It's purely a contract verification tool.",
         },
         {
           type: "scenario",
           q: "When would you use an abstract class vs an interface in TypeScript?",
-          a: "Use **abstract class** when: you want to share implementation (concrete methods), need constructor logic, or want to enforce a prototype chain. Use **interface** when: you only need a shape contract, want zero runtime overhead, need multiple inheritance (a class can implement multiple interfaces but extend only one class), or want declaration merging."
-        }
-      ]
+          a: "Use **abstract class** when: you want to share implementation (concrete methods), need constructor logic, or want to enforce a prototype chain. Use **interface** when: you only need a shape contract, want zero runtime overhead, need multiple inheritance (a class can implement multiple interfaces but extend only one class), or want declaration merging.",
+        },
+      ],
     },
     {
       id: "modules-tsconfig",
@@ -611,35 +612,35 @@ console.log("Modules and tsconfig are the backbone of any TS project.");`,
         "Confusing `module` and `moduleResolution` in tsconfig — `module` is the output format; `moduleResolution` is how TS finds imported files",
         "Using `namespace` in new code — namespaces are legacy; ES modules (`import`/`export`) are the standard way to organize code",
         "Not enabling `skipLibCheck: true` — checking ALL declaration files in node_modules is slow and finds irrelevant errors",
-        "Forgetting that `.d.ts` files are type-only — they cannot contain any implementation, only type declarations"
+        "Forgetting that `.d.ts` files are type-only — they cannot contain any implementation, only type declarations",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are declaration files (.d.ts) and when are they needed?",
-          a: "Declaration files provide type information for JavaScript code without TypeScript types. They contain ONLY type declarations (no implementation). Needed when: 1) Using a JS library without built-in types. 2) Publishing a library — ship `.d.ts` so consumers get types. 3) Defining types for non-TS assets (CSS modules, SVGs). DefinitelyTyped (`@types/*`) provides community declarations."
+          a: "Declaration files provide type information for JavaScript code without TypeScript types. They contain ONLY type declarations (no implementation). Needed when: 1) Using a JS library without built-in types. 2) Publishing a library — ship `.d.ts` so consumers get types. 3) Defining types for non-TS assets (CSS modules, SVGs). DefinitelyTyped (`@types/*`) provides community declarations.",
         },
         {
           type: "coding",
           q: "Write a declaration file for a simple JavaScript utility library.",
-          a: "```ts\\n// utils.d.ts\\ndeclare module 'my-utils' {\\n  export function debounce<T extends (...args: any[]) => any>(\\n    fn: T,\\n    ms: number\\n  ): (...args: Parameters<T>) => void;\\n\\n  export function deepClone<T>(obj: T): T;\\n\\n  export interface Config {\\n    apiUrl: string;\\n    timeout?: number;\\n  }\\n}\\n```"
+          a: "```ts\\n// utils.d.ts\\ndeclare module 'my-utils' {\\n  export function debounce<T extends (...args: any[]) => any>(\\n    fn: T,\\n    ms: number\\n  ): (...args: Parameters<T>) => void;\\n\\n  export function deepClone<T>(obj: T): T;\\n\\n  export interface Config {\\n    apiUrl: string;\\n    timeout?: number;\\n  }\\n}\\n```",
         },
         {
           type: "conceptual",
           q: "What does `moduleResolution: 'bundler'` do in tsconfig?",
-          a: "`moduleResolution: 'bundler'` (TS 5.0+) tells TypeScript to resolve modules the way modern bundlers (Vite, webpack, esbuild) do: supports `package.json` `exports` field, allows extensionless imports, and handles `index.ts` files. It's the recommended setting for applications bundled by tools like Vite, webpack, or Next.js."
+          a: "`moduleResolution: 'bundler'` (TS 5.0+) tells TypeScript to resolve modules the way modern bundlers (Vite, webpack, esbuild) do: supports `package.json` `exports` field, allows extensionless imports, and handles `index.ts` files. It's the recommended setting for applications bundled by tools like Vite, webpack, or Next.js.",
         },
         {
           type: "tricky",
           q: "What is module augmentation and why is it useful?",
-          a: "Module augmentation lets you add new declarations to an existing module without modifying its source. Use `declare module 'module-name' { ... }` to add properties. Common use cases: adding `user` to Express `Request`, extending `Window` with custom globals, adding custom fields to library types. It's how you customize third-party types for your codebase."
+          a: "Module augmentation lets you add new declarations to an existing module without modifying its source. Use `declare module 'module-name' { ... }` to add properties. Common use cases: adding `user` to Express `Request`, extending `Window` with custom globals, adding custom fields to library types. It's how you customize third-party types for your codebase.",
         },
         {
           type: "scenario",
           q: "You're setting up a new TypeScript project. What tsconfig options do you consider essential?",
-          a: "Must-have: `strict: true` (all strict checks), `noUncheckedIndexedAccess` (array safety), `forceConsistentCasingInFileNames` (prevent case-sensitivity bugs), `skipLibCheck` (performance). Recommended: `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`, `sourceMap`, `declaration`. For target: `ES2022` for modern runtimes, `ES2018` for broader compat."
-        }
-      ]
+          a: "Must-have: `strict: true` (all strict checks), `noUncheckedIndexedAccess` (array safety), `forceConsistentCasingInFileNames` (prevent case-sensitivity bugs), `skipLibCheck` (performance). Recommended: `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`, `sourceMap`, `declaration`. For target: `ES2022` for modern runtimes, `ES2018` for broader compat.",
+        },
+      ],
     },
     {
       id: "utility-types",
@@ -763,37 +764,37 @@ type PromiseResult = Awaited<Promise<Promise<string>>>;
         "Using `Partial` when only some fields should be optional — use `Pick` + `Partial` combination or intersection for precise control",
         "Forgetting that `Readonly` is shallow — nested objects inside a `Readonly<T>` can still be mutated",
         "Not knowing that `Record<string, T>` allows ANY string key — for specific keys, use `Record<'a' | 'b', T>`",
-        "Using `ReturnType` with a function value instead of a type — use `ReturnType<typeof myFunction>`, not `ReturnType<myFunction>`"
+        "Using `ReturnType` with a function value instead of a type — use `ReturnType<typeof myFunction>`, not `ReturnType<myFunction>`",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the difference between `Omit` and `Exclude` in TypeScript?",
-          a: "`Omit<T, K>` works on **object types** — it creates a new object type with specific properties removed. `Exclude<T, U>` works on **union types** — it removes members from a union that match `U`. Example: `Omit<User, 'id'>` removes the `id` property. `Exclude<'a' | 'b' | 'c', 'a'>` removes `'a'` from the union."
+          a: "`Omit<T, K>` works on **object types** — it creates a new object type with specific properties removed. `Exclude<T, U>` works on **union types** — it removes members from a union that match `U`. Example: `Omit<User, 'id'>` removes the `id` property. `Exclude<'a' | 'b' | 'c', 'a'>` removes `'a'` from the union.",
         },
         {
           type: "coding",
           q: "Create a type `RequiredPick<T, K>` that makes only specified fields required and the rest optional.",
-          a: "```ts\\ntype RequiredPick<T, K extends keyof T> = Required<Pick<T, K>> & Partial<Omit<T, K>>;\\n\\n// Usage:\\ninterface Form {\\n  name?: string;\\n  email?: string;\\n  age?: number;\\n}\\ntype SubmitForm = RequiredPick<Form, 'name' | 'email'>;\\n// { name: string; email: string; age?: number }\\n```"
+          a: "```ts\\ntype RequiredPick<T, K extends keyof T> = Required<Pick<T, K>> & Partial<Omit<T, K>>;\\n\\n// Usage:\\ninterface Form {\\n  name?: string;\\n  email?: string;\\n  age?: number;\\n}\\ntype SubmitForm = RequiredPick<Form, 'name' | 'email'>;\\n// { name: string; email: string; age?: number }\\n```",
         },
         {
           type: "tricky",
           q: "What does `Awaited<Promise<Promise<string>>>` resolve to?",
-          a: "`string`. `Awaited` recursively unwraps nested Promises until it reaches a non-Promise type. `Awaited<Promise<Promise<string>>>` → `Awaited<Promise<string>>` → `Awaited<string>` → `string`. This is how TypeScript correctly types `await` on deeply nested Promises."
+          a: "`string`. `Awaited` recursively unwraps nested Promises until it reaches a non-Promise type. `Awaited<Promise<Promise<string>>>` → `Awaited<Promise<string>>` → `Awaited<string>` → `string`. This is how TypeScript correctly types `await` on deeply nested Promises.",
         },
         {
           type: "conceptual",
           q: "How does `Partial<T>` work internally?",
-          a: "`Partial<T>` is a mapped type: `type Partial<T> = { [P in keyof T]?: T[P] }`. It iterates over each key `P` in `T` using `keyof T`, makes it optional with `?`, and preserves the original value type `T[P]`. This pattern (mapped types) is the foundation for all utility types and lets you build your own."
+          a: "`Partial<T>` is a mapped type: `type Partial<T> = { [P in keyof T]?: T[P] }`. It iterates over each key `P` in `T` using `keyof T`, makes it optional with `?`, and preserves the original value type `T[P]`. This pattern (mapped types) is the foundation for all utility types and lets you build your own.",
         },
         {
           type: "scenario",
           q: "You're designing a REST API. How would you use utility types for your DTOs?",
-          a: "```ts\\n// Base entity\\ninterface User { id: number; name: string; email: string; password: string; createdAt: Date; }\\n\\n// Create: no id, no createdAt (server generates)\\ntype CreateUserDTO = Omit<User, 'id' | 'createdAt'>;\\n\\n// Update: all fields optional except id\\ntype UpdateUserDTO = Partial<Omit<User, 'id'>> & Pick<User, 'id'>;\\n\\n// Response: no password (never expose)\\ntype UserResponse = Omit<User, 'password'>;\\n\\n// List: minimal fields\\ntype UserListItem = Pick<User, 'id' | 'name'>;\\n```"
-        }
-      ]
-    }
-  ]
+          a: "```ts\\n// Base entity\\ninterface User { id: number; name: string; email: string; password: string; createdAt: Date; }\\n\\n// Create: no id, no createdAt (server generates)\\ntype CreateUserDTO = Omit<User, 'id' | 'createdAt'>;\\n\\n// Update: all fields optional except id\\ntype UpdateUserDTO = Partial<Omit<User, 'id'>> & Pick<User, 'id'>;\\n\\n// Response: no password (never expose)\\ntype UserResponse = Omit<User, 'password'>;\\n\\n// List: minimal fields\\ntype UserListItem = Pick<User, 'id' | 'name'>;\\n```",
+        },
+      ],
+    },
+  ],
 };
 
 export default tsPhase2;

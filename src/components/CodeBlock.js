@@ -22,7 +22,18 @@ export default function CodeBlock({ code, language = "javascript" }) {
       </div>
       <Highlight theme={themes.nightOwl} code={trimmedCode} language={language}>
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
-          <pre className={className} style={{ ...style, margin: 0, padding: "1rem", overflow: "auto", borderRadius: "0 0 0.75rem 0.75rem", fontSize: "0.875rem", lineHeight: 1.7 }}>
+          <pre
+            className={className}
+            style={{
+              ...style,
+              margin: 0,
+              padding: "1rem",
+              overflow: "auto",
+              borderRadius: "0 0 0.75rem 0.75rem",
+              fontSize: "0.875rem",
+              lineHeight: 1.7,
+            }}
+          >
             {tokens.map((line, i) => (
               <div key={i} {...getLineProps({ line })}>
                 <span className="line-number">{i + 1}</span>

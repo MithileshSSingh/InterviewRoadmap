@@ -1,6 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, useMemo, FormEvent, useLayoutEffect } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useMemo,
+  FormEvent,
+  useLayoutEffect,
+} from "react";
 import { createPortal } from "react-dom";
 import { marked } from "marked";
 import { ChatApiMessage, streamChatResponse } from "@/lib/chatClient";
@@ -51,8 +59,11 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
     left: number;
     top: number;
   } | null>(null);
-  const [isSelectionTooltipExpanded, setIsSelectionTooltipExpanded] = useState(false);
-  const [topControlSlot, setTopControlSlot] = useState<HTMLElement | null>(null);
+  const [isSelectionTooltipExpanded, setIsSelectionTooltipExpanded] =
+    useState(false);
+  const [topControlSlot, setTopControlSlot] = useState<HTMLElement | null>(
+    null,
+  );
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -110,18 +121,18 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
         : anchorY + anchorOffset;
       top = Math.max(
         viewportPadding,
-        Math.min(top, viewportHeight - tooltipHeight - viewportPadding)
+        Math.min(top, viewportHeight - tooltipHeight - viewportPadding),
       );
 
       let left = anchorX - tooltipWidth / 2;
       left = Math.max(
         viewportPadding,
-        Math.min(left, viewportWidth - tooltipWidth - viewportPadding)
+        Math.min(left, viewportWidth - tooltipWidth - viewportPadding),
       );
 
       return { left, top };
     },
-    []
+    [],
   );
 
   // Auto-scroll to the bottom when messages change
@@ -218,7 +229,7 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
       if (viewport) {
         viewport.setAttribute(
           "content",
-          "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+          "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
         );
       }
     } else if (isFullscreen && isOpen) {
@@ -232,10 +243,7 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
       // Restore zoom capability
       const viewport = document.querySelector('meta[name="viewport"]');
       if (viewport) {
-        viewport.setAttribute(
-          "content",
-          "width=device-width, initial-scale=1"
-        );
+        viewport.setAttribute("content", "width=device-width, initial-scale=1");
       }
     };
   }, [isFullscreen, isOpen]);
@@ -328,7 +336,7 @@ IMPORTANT: If the user asks a question that is not related to the topic above, p
     window.getSelection()?.removeAllRanges();
     setIsSelectionTooltipExpanded(false);
     setSelectionTooltipPosition(
-      computeSelectionTooltipPosition(selected.x, selected.y)
+      computeSelectionTooltipPosition(selected.x, selected.y),
     );
     setSelectionTooltip({
       text: selected.text,
@@ -365,7 +373,7 @@ Selected text:
                   ...prev,
                   content: fullContent,
                 }
-              : prev
+              : prev,
           );
         },
       });
@@ -381,7 +389,7 @@ Selected text:
                 ...prev,
                 error: result.message,
               }
-            : prev
+            : prev,
         );
       }
     } finally {
@@ -393,7 +401,7 @@ Selected text:
                 ...prev,
                 isLoading: false,
               }
-            : prev
+            : prev,
         );
       }
     }
@@ -404,12 +412,12 @@ Selected text:
       if (!selectionTooltip) return;
 
       const targetNode = event.target as Node | null;
-      const targetElement =
-        targetNode instanceof Element ? targetNode : null;
+      const targetElement = targetNode instanceof Element ? targetNode : null;
 
       if (targetElement?.closest(".chatbot-selection-tooltip")) return;
       if (targetElement?.closest("#chatbot-selection-action")) return;
-      if (targetNode && selectionTooltipRef.current?.contains(targetNode)) return;
+      if (targetNode && selectionTooltipRef.current?.contains(targetNode))
+        return;
 
       closeSelectionTooltip();
     };
@@ -434,10 +442,14 @@ Selected text:
     const updateTooltipPosition = () => {
       const { left, top } = computeSelectionTooltipPosition(
         selectionTooltipAnchorX,
-        selectionTooltipAnchorY
+        selectionTooltipAnchorY,
       );
       setSelectionTooltipPosition((prev) => {
-        if (prev && Math.abs(prev.left - left) < 1 && Math.abs(prev.top - top) < 1) {
+        if (
+          prev &&
+          Math.abs(prev.left - left) < 1 &&
+          Math.abs(prev.top - top) < 1
+        ) {
           return prev;
         }
         return { left, top };
@@ -557,7 +569,7 @@ Selected text:
           >
             <span className="chatbot-top-toggle-icon">🤖</span>
           </button>,
-          topControlSlot
+          topControlSlot,
         )}
 
       {/* Floating Text Selection Helper */}
@@ -582,7 +594,9 @@ Selected text:
         <div
           ref={selectionTooltipRef}
           className={`chatbot-selection-tooltip ${
-            isSelectionTooltipExpanded ? "chatbot-selection-tooltip-expanded" : ""
+            isSelectionTooltipExpanded
+              ? "chatbot-selection-tooltip-expanded"
+              : ""
           }`}
           style={
             isSelectionTooltipExpanded
@@ -604,11 +618,11 @@ Selected text:
               <button
                 type="button"
                 className="chatbot-selection-tooltip-expand"
-                onClick={() =>
-                  setIsSelectionTooltipExpanded((prev) => !prev)
-                }
+                onClick={() => setIsSelectionTooltipExpanded((prev) => !prev)}
                 aria-label={
-                  isSelectionTooltipExpanded ? "Collapse quick AI view" : "Expand quick AI view"
+                  isSelectionTooltipExpanded
+                    ? "Collapse quick AI view"
+                    : "Expand quick AI view"
                 }
                 title={isSelectionTooltipExpanded ? "Collapse" : "Expand"}
               >
@@ -625,7 +639,9 @@ Selected text:
             </div>
           </div>
           <p className="chatbot-selection-tooltip-label">Selected text</p>
-          <p className="chatbot-selection-tooltip-selected">{selectionTooltip.text}</p>
+          <p className="chatbot-selection-tooltip-selected">
+            {selectionTooltip.text}
+          </p>
           <div className="chatbot-selection-tooltip-body">
             {selectionTooltip.content ? (
               <div
@@ -635,7 +651,9 @@ Selected text:
                 }}
               />
             ) : selectionTooltip.error ? (
-              <p className="chatbot-selection-tooltip-error">{selectionTooltip.error}</p>
+              <p className="chatbot-selection-tooltip-error">
+                {selectionTooltip.error}
+              </p>
             ) : (
               <span className="chatbot-typing">
                 <span className="chatbot-dot" />
@@ -659,13 +677,16 @@ Selected text:
       )}
 
       {/* Fullscreen backdrop */}
-      {isOpen && isFullscreen && (
-        <div className="chatbot-backdrop" />
-      )}
+      {isOpen && isFullscreen && <div className="chatbot-backdrop" />}
 
       {/* Chat drawer */}
       {isOpen && (
-        <div ref={chatContainerRef} className={drawerClass} role="dialog" aria-label="Topic chatbot">
+        <div
+          ref={chatContainerRef}
+          className={drawerClass}
+          role="dialog"
+          aria-label="Topic chatbot"
+        >
           {/* Header */}
           <div className="chatbot-header">
             <div className="chatbot-header-info">
@@ -713,7 +734,9 @@ Selected text:
             {messages.length === 0 && (
               <div className="chatbot-empty">
                 <span className="chatbot-empty-icon">💬</span>
-                <p>Ask anything about <strong>{topicContent.title}</strong></p>
+                <p>
+                  Ask anything about <strong>{topicContent.title}</strong>
+                </p>
                 <div className="chatbot-suggestions">
                   <button
                     className="chatbot-suggestion"

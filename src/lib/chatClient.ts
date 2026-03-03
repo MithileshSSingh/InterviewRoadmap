@@ -78,7 +78,8 @@ export async function streamChatResponse({
       return {
         status: "error",
         content: "",
-        message: "Sorry, I couldn't process your request right now. Please try again.",
+        message:
+          "Sorry, I couldn't process your request right now. Please try again.",
       };
     }
 
@@ -107,7 +108,8 @@ export async function streamChatResponse({
       }
 
       if (event.type === "error") {
-        streamErrorMessage = event.message || "Something went wrong. Please try again.";
+        streamErrorMessage =
+          event.message || "Something went wrong. Please try again.";
       }
     };
 

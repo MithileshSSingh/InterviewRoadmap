@@ -2,7 +2,8 @@ const dsaPhase2 = {
   id: "phase-2",
   title: "Phase 2: Core Data Structures",
   emoji: "🔵",
-  description: "Master arrays, strings, linked lists, stacks, queues, hash tables, sets, sorting, searching, and foundational patterns.",
+  description:
+    "Master arrays, strings, linked lists, stacks, queues, hash tables, sets, sorting, searching, and foundational patterns.",
   topics: [
     {
       id: "arrays-deep-dive",
@@ -132,30 +133,30 @@ function reverse(arr: number[], start: number, end: number): void {
         "Creating sparse arrays with `new Array(n)` without filling — leads to slower hash map storage",
         "Mutating arrays during iteration — can skip elements or cause infinite loops",
         "Not knowing that `arr.length = 0` truncates the array — this is a valid way to clear it",
-        "Using `delete arr[i]` which leaves a hole — use splice instead for proper deletion"
+        "Using `delete arr[i]` which leaves a hole — use splice instead for proper deletion",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Why is array access O(1) but insertion in the middle O(n)?",
-          a: "Arrays are contiguous memory. Access is O(1) because the engine calculates: address = base + index × elementSize. Insertion at index i requires shifting elements i+1, i+2, ... to the right — each shift is O(1) but there are n-i elements to shift, giving O(n) worst case."
+          a: "Arrays are contiguous memory. Access is O(1) because the engine calculates: address = base + index × elementSize. Insertion at index i requires shifting elements i+1, i+2, ... to the right — each shift is O(1) but there are n-i elements to shift, giving O(n) worst case.",
         },
         {
           type: "coding",
           q: "Move all zeros to the end of an array in-place while maintaining relative order of non-zeros.",
-          a: "```js\nfunction moveZeros(arr) {\n  let insertPos = 0;\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] !== 0) {\n      [arr[insertPos], arr[i]] = [arr[i], arr[insertPos]];\n      insertPos++;\n    }\n  }\n  return arr;\n}\n// Two pointer technique — O(n) time, O(1) space\n```"
+          a: "```js\nfunction moveZeros(arr) {\n  let insertPos = 0;\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] !== 0) {\n      [arr[insertPos], arr[i]] = [arr[i], arr[insertPos]];\n      insertPos++;\n    }\n  }\n  return arr;\n}\n// Two pointer technique — O(n) time, O(1) space\n```",
         },
         {
           type: "tricky",
           q: "What's the difference between `Array(5)` and `Array.from({length: 5})`?",
-          a: "`Array(5)` creates a sparse array with 5 empty slots — `[,,,,]`. Methods like `map` skip empty slots. `Array.from({length: 5})` creates `[undefined, undefined, ...]` — a dense array where methods work correctly. Always use `Array.from` or `new Array(5).fill(0)` for usable arrays."
+          a: "`Array(5)` creates a sparse array with 5 empty slots — `[,,,,]`. Methods like `map` skip empty slots. `Array.from({length: 5})` creates `[undefined, undefined, ...]` — a dense array where methods work correctly. Always use `Array.from` or `new Array(5).fill(0)` for usable arrays.",
         },
         {
           type: "scenario",
           q: "You need to frequently add/remove from both ends. Should you use an array?",
-          a: "No — array shift/unshift is O(n). Use a **deque** (double-ended queue) implemented as a doubly linked list for O(1) at both ends. In JavaScript, you can also use a circular buffer or simply use two arrays as stacks. For interview purposes, mention that arrays are not optimal for front operations."
-        }
-      ]
+          a: "No — array shift/unshift is O(n). Use a **deque** (double-ended queue) implemented as a doubly linked list for O(1) at both ends. In JavaScript, you can also use a circular buffer or simply use two arrays as stacks. For interview purposes, mention that arrays are not optimal for front operations.",
+        },
+      ],
     },
     {
       id: "strings-manipulation",
@@ -265,25 +266,25 @@ function lengthOfLongestSubstring(s: string): number {
         "Forgetting strings are immutable — str[i] = 'x' silently fails",
         "Not handling Unicode properly — '😀'.length is 2, not 1; use Array.from() or for...of",
         "Using == for string comparison when case matters — 'Hello' !== 'hello'",
-        "Assuming indexOf returns boolean — it returns -1 for not found; use includes() instead"
+        "Assuming indexOf returns boolean — it returns -1 for not found; use includes() instead",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Find the first non-repeating character in a string.",
-          a: "```js\nfunction firstUnique(s) {\n  const freq = new Map();\n  for (const c of s) freq.set(c, (freq.get(c) || 0) + 1);\n  for (const c of s) {\n    if (freq.get(c) === 1) return c;\n  }\n  return null;\n}\n// O(n) time, O(1) space (at most 26 letters)\n```"
+          a: "```js\nfunction firstUnique(s) {\n  const freq = new Map();\n  for (const c of s) freq.set(c, (freq.get(c) || 0) + 1);\n  for (const c of s) {\n    if (freq.get(c) === 1) return c;\n  }\n  return null;\n}\n// O(n) time, O(1) space (at most 26 letters)\n```",
         },
         {
           type: "tricky",
           q: "Why is string concatenation in a loop O(n²)?",
-          a: "Strings are immutable. Each `result += char` creates a NEW string by: 1) Allocating memory for old + new. 2) Copying the entire old string. 3) Appending the new character. If you do this n times, total copies = 1+2+3+...+n = n(n+1)/2 = O(n²). Fix: push to array, then join()."
+          a: "Strings are immutable. Each `result += char` creates a NEW string by: 1) Allocating memory for old + new. 2) Copying the entire old string. 3) Appending the new character. If you do this n times, total copies = 1+2+3+...+n = n(n+1)/2 = O(n²). Fix: push to array, then join().",
         },
         {
           type: "coding",
           q: "Implement string compression: 'aabcccccaaa' → 'a2b1c5a3'. Return original if not shorter.",
-          a: "```ts\nfunction compress(s: string): string {\n  const parts: string[] = [];\n  let i = 0;\n  while (i < s.length) {\n    let j = i;\n    while (j < s.length && s[j] === s[i]) j++;\n    parts.push(s[i] + (j - i));\n    i = j;\n  }\n  const compressed = parts.join('');\n  return compressed.length < s.length ? compressed : s;\n}\n```"
-        }
-      ]
+          a: "```ts\nfunction compress(s: string): string {\n  const parts: string[] = [];\n  let i = 0;\n  while (i < s.length) {\n    let j = i;\n    while (j < s.length && s[j] === s[i]) j++;\n    parts.push(s[i] + (j - i));\n    i = j;\n  }\n  const compressed = parts.join('');\n  return compressed.length < s.length ? compressed : s;\n}\n```",
+        },
+      ],
     },
     {
       id: "singly-linked-list",
@@ -452,25 +453,25 @@ function hasCycle<T>(head: ListNodeTS<T> | null): boolean {
         "Not handling edge cases: null head, single node, deleting head node",
         "Forgetting to update size counter after insertions/deletions",
         "Off-by-one errors when traversing — `while (curr.next)` vs `while (curr)`",
-        "Not using a dummy/sentinel node for operations that might change the head"
+        "Not using a dummy/sentinel node for operations that might change the head",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Reverse a singly linked list in-place.",
-          a: "```js\nfunction reverseList(head) {\n  let prev = null, curr = head;\n  while (curr) {\n    const next = curr.next;\n    curr.next = prev;\n    prev = curr;\n    curr = next;\n  }\n  return prev;\n}\n// Time: O(n), Space: O(1)\n// Key: three pointers — prev, curr, next\n```"
+          a: "```js\nfunction reverseList(head) {\n  let prev = null, curr = head;\n  while (curr) {\n    const next = curr.next;\n    curr.next = prev;\n    prev = curr;\n    curr = next;\n  }\n  return prev;\n}\n// Time: O(n), Space: O(1)\n// Key: three pointers — prev, curr, next\n```",
         },
         {
           type: "tricky",
           q: "How do you find the middle of a linked list in ONE pass?",
-          a: "Use **fast and slow pointers**: slow moves 1 step, fast moves 2 steps. When fast reaches the end, slow is at the middle. This avoids O(n) to count length + O(n/2) to reach middle. Total: O(n) in a single pass."
+          a: "Use **fast and slow pointers**: slow moves 1 step, fast moves 2 steps. When fast reaches the end, slow is at the middle. This avoids O(n) to count length + O(n/2) to reach middle. Total: O(n) in a single pass.",
         },
         {
           type: "conceptual",
           q: "When would you use a linked list over an array?",
-          a: "Use linked lists when: 1) Frequent insertions/deletions at the front or middle. 2) Unknown or highly variable size. 3) Building other structures (stacks, queues, LRU cache). Use arrays when: 1) Need random access. 2) Data is mostly read, not modified. 3) Cache performance matters. In practice, arrays are preferred 90% of the time due to cache locality."
-        }
-      ]
+          a: "Use linked lists when: 1) Frequent insertions/deletions at the front or middle. 2) Unknown or highly variable size. 3) Building other structures (stacks, queues, LRU cache). Use arrays when: 1) Need random access. 2) Data is mostly read, not modified. 3) Cache performance matters. In practice, arrays are preferred 90% of the time due to cache locality.",
+        },
+      ],
     },
     {
       id: "doubly-linked-list",
@@ -616,20 +617,20 @@ class DLLNodeTS<T> {
         "Not using sentinel/dummy nodes — makes head/tail edge cases much more complex",
         "Memory leaks — not nullifying prev/next when removing nodes in languages with manual memory",
         "Confusing node reference with node value — especially in LRU cache implementations",
-        "Not maintaining the size counter — off-by-one errors when checking empty/full"
+        "Not maintaining the size counter — off-by-one errors when checking empty/full",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Design an LRU (Least Recently Used) Cache with O(1) get and put.",
-          a: "```js\n// Use: DoublyLinkedList + HashMap\n// get(key): if exists, move to front, return value\n// put(key, val): if exists, update & move to front.\n//   If new: add to front. If over capacity: remove tail.\n// DLL maintains order (front=recent, back=oldest)\n// HashMap gives O(1) access to any node\n// Both get/put are O(1)\n```"
+          a: "```js\n// Use: DoublyLinkedList + HashMap\n// get(key): if exists, move to front, return value\n// put(key, val): if exists, update & move to front.\n//   If new: add to front. If over capacity: remove tail.\n// DLL maintains order (front=recent, back=oldest)\n// HashMap gives O(1) access to any node\n// Both get/put are O(1)\n```",
         },
         {
           type: "conceptual",
           q: "Why use sentinel (dummy) nodes in a doubly linked list?",
-          a: "Sentinel nodes eliminate ALL edge cases for empty list, single element, head operations, and tail operations. Without sentinels, every method needs `if (head === null)`, `if (node === head)`, `if (node === tail)` checks. With sentinels, the same code handles all cases because there's always a node before and after the target."
-        }
-      ]
+          a: "Sentinel nodes eliminate ALL edge cases for empty list, single element, head operations, and tail operations. Without sentinels, every method needs `if (head === null)`, `if (node === head)`, `if (node === tail)` checks. With sentinels, the same code handles all cases because there's always a node before and after the target.",
+        },
+      ],
     },
     {
       id: "stacks",
@@ -753,20 +754,20 @@ function evalPostfix(tokens: string[]): number {
         "Not checking isEmpty before pop/peek — causes undefined errors",
         "Forgetting to check stack is empty after processing — leftover elements mean invalid input",
         "Using a stack when a simple variable/counter would suffice (e.g., just counting parentheses depth)",
-        "Not recognizing monotonic stack patterns — these are very common in interviews"
+        "Not recognizing monotonic stack patterns — these are very common in interviews",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Design a Min Stack that supports push, pop, top, and getMin — all in O(1).",
-          a: "```js\nclass MinStack {\n  constructor() { this.stack = []; this.mins = []; }\n  push(val) {\n    this.stack.push(val);\n    this.mins.push(this.mins.length === 0 ? val : Math.min(val, this.getMin()));\n  }\n  pop() { this.stack.pop(); this.mins.pop(); }\n  top() { return this.stack[this.stack.length - 1]; }\n  getMin() { return this.mins[this.mins.length - 1]; }\n}\n// Key: parallel min stack tracks minimum at each depth\n```"
+          a: "```js\nclass MinStack {\n  constructor() { this.stack = []; this.mins = []; }\n  push(val) {\n    this.stack.push(val);\n    this.mins.push(this.mins.length === 0 ? val : Math.min(val, this.getMin()));\n  }\n  pop() { this.stack.pop(); this.mins.pop(); }\n  top() { return this.stack[this.stack.length - 1]; }\n  getMin() { return this.mins[this.mins.length - 1]; }\n}\n// Key: parallel min stack tracks minimum at each depth\n```",
         },
         {
           type: "conceptual",
           q: "What is a monotonic stack and when do you use it?",
-          a: "A monotonic stack maintains elements in sorted order (either increasing or decreasing). Elements are popped when a new element would break the ordering. Use for: **next greater/smaller element**, **daily temperatures**, **largest rectangle in histogram**, **stock span**. Pattern: iterate array, while stack top violates condition → pop and record answer."
-        }
-      ]
+          a: "A monotonic stack maintains elements in sorted order (either increasing or decreasing). Elements are popped when a new element would break the ordering. Use for: **next greater/smaller element**, **daily temperatures**, **largest rectangle in histogram**, **stock span**. Pattern: iterate array, while stack top violates condition → pop and record answer.",
+        },
+      ],
     },
     {
       id: "queues",
@@ -906,20 +907,20 @@ class Deque {
         "Not handling empty queue for dequeue/peek — always check isEmpty first",
         "Forgetting that circular queue uses modulo to wrap around: (index + 1) % capacity",
         "Confusing stack (LIFO) with queue (FIFO) — stack uses push/pop, queue uses push/shift or enqueue/dequeue",
-        "Not realizing that BFS = queue, DFS = stack — this is fundamental"
+        "Not realizing that BFS = queue, DFS = stack — this is fundamental",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Implement a queue using two stacks.",
-          a: "```js\nclass QueueWithStacks {\n  constructor() { this.inStack = []; this.outStack = []; }\n  enqueue(val) { this.inStack.push(val); }\n  dequeue() {\n    if (!this.outStack.length) {\n      while (this.inStack.length) this.outStack.push(this.inStack.pop());\n    }\n    return this.outStack.pop();\n  }\n}\n// Amortized O(1) per operation!\n```"
+          a: "```js\nclass QueueWithStacks {\n  constructor() { this.inStack = []; this.outStack = []; }\n  enqueue(val) { this.inStack.push(val); }\n  dequeue() {\n    if (!this.outStack.length) {\n      while (this.inStack.length) this.outStack.push(this.inStack.pop());\n    }\n    return this.outStack.pop();\n  }\n}\n// Amortized O(1) per operation!\n```",
         },
         {
           type: "conceptual",
           q: "What is the difference between a queue, deque, and priority queue?",
-          a: "**Queue** (FIFO): add rear, remove front. **Deque**: add/remove from both ends. **Priority queue**: remove highest/lowest priority first (not FIFO). Queue uses linked list or circular buffer. Deque uses doubly linked list. Priority queue uses a heap. Use queue for BFS, deque for sliding window max, priority queue for scheduling/top-K."
-        }
-      ]
+          a: "**Queue** (FIFO): add rear, remove front. **Deque**: add/remove from both ends. **Priority queue**: remove highest/lowest priority first (not FIFO). Queue uses linked list or circular buffer. Deque uses doubly linked list. Priority queue uses a heap. Use queue for BFS, deque for sliding window max, priority queue for scheduling/top-K.",
+        },
+      ],
     },
     {
       id: "hash-tables",
@@ -1066,22 +1067,22 @@ function subarraySum(nums: number[], k: number): number {
         "Not understanding that hash map O(1) is AVERAGE, not guaranteed — worst case with bad hash is O(n)",
         "Forgetting that Map preserves insertion order in JavaScript — this is guaranteed by the spec",
         "Using JSON.stringify as a hash key — it's slow and order-dependent for objects",
-        "Not considering hash collisions in custom implementations — always handle them"
+        "Not considering hash collisions in custom implementations — always handle them",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "How does a hash table achieve O(1) average lookup?",
-          a: "1) A **hash function** converts the key to an integer index. 2) The element is stored at that index in an internal array. 3) Lookup: hash the key → go directly to that index. No scanning needed. 4) **Collisions** (two keys → same index) are handled by chaining (linked list at each bucket) or open addressing. With a good hash function and low load factor, chains are short → O(1) average."
+          a: "1) A **hash function** converts the key to an integer index. 2) The element is stored at that index in an internal array. 3) Lookup: hash the key → go directly to that index. No scanning needed. 4) **Collisions** (two keys → same index) are handled by chaining (linked list at each bucket) or open addressing. With a good hash function and low load factor, chains are short → O(1) average.",
         },
         {
           type: "coding",
           q: "Find the longest consecutive sequence in an unsorted array in O(n).",
-          a: "```js\nfunction longestConsecutive(nums) {\n  const set = new Set(nums);\n  let maxLen = 0;\n  for (const num of set) {\n    if (!set.has(num - 1)) { // Start of a sequence\n      let len = 1;\n      while (set.has(num + len)) len++;\n      maxLen = Math.max(maxLen, len);\n    }\n  }\n  return maxLen;\n}\n// O(n) — each number is visited at most twice\n```"
-        }
-      ]
-    }
-  ]
+          a: "```js\nfunction longestConsecutive(nums) {\n  const set = new Set(nums);\n  let maxLen = 0;\n  for (const num of set) {\n    if (!set.has(num - 1)) { // Start of a sequence\n      let len = 1;\n      while (set.has(num + len)) len++;\n      maxLen = Math.max(maxLen, len);\n    }\n  }\n  return maxLen;\n}\n// O(n) — each number is visited at most twice\n```",
+        },
+      ],
+    },
+  ],
 };
 
 export default dsaPhase2;

@@ -2,7 +2,8 @@ const dsaPhase1 = {
   id: "phase-1",
   title: "Phase 1: Foundations",
   emoji: "🟢",
-  description: "Master the fundamentals — Big-O notation, complexity analysis, recursion, memory model, and problem-solving thinking.",
+  description:
+    "Master the fundamentals — Big-O notation, complexity analysis, recursion, memory model, and problem-solving thinking.",
   topics: [
     {
       id: "big-o-notation",
@@ -118,35 +119,35 @@ function mystery(arr) {
         "Confusing O(log n) base — in Big-O, all logarithmic bases are equivalent because log_a(n) = log_b(n) / log_b(a), and 1/log_b(a) is a constant",
         "Not recognizing hidden O(n) operations — array.unshift(), array.splice(), string concatenation in loops are all O(n)",
         "Thinking O(n + m) simplifies to O(n) — if m is independent of n, you must keep both",
-        "Assuming hash map operations are always O(1) — they're O(1) amortized but O(n) worst case with collisions"
+        "Assuming hash map operations are always O(1) — they're O(1) amortized but O(n) worst case with collisions",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What does Big-O notation actually measure?",
-          a: "Big-O measures the **upper bound** of an algorithm's growth rate as input size approaches infinity. It describes how the number of operations (time) or memory usage (space) scales with input size n. It drops constants and lower-order terms because we care about behavior at scale, not exact operation counts."
+          a: "Big-O measures the **upper bound** of an algorithm's growth rate as input size approaches infinity. It describes how the number of operations (time) or memory usage (space) scales with input size n. It drops constants and lower-order terms because we care about behavior at scale, not exact operation counts.",
         },
         {
           type: "tricky",
           q: "What is the time complexity of this code?\n```js\nfor (let i = 0; i < n; i++) {\n  for (let j = 0; j < n; j += i + 1) {\n    // O(1) work\n  }\n}\n```",
-          a: "O(n log n). The outer loop runs n times. For each i, the inner loop runs n/(i+1) times. Total: n/1 + n/2 + n/3 + ... + n/n = n × (1 + 1/2 + 1/3 + ... + 1/n) = n × H(n) ≈ n × ln(n) = O(n log n). This is the Harmonic Series."
+          a: "O(n log n). The outer loop runs n times. For each i, the inner loop runs n/(i+1) times. Total: n/1 + n/2 + n/3 + ... + n/n = n × (1 + 1/2 + 1/3 + ... + 1/n) = n × H(n) ≈ n × ln(n) = O(n log n). This is the Harmonic Series.",
         },
         {
           type: "coding",
           q: "Write an O(n) solution to find if any two numbers in an array sum to a target.",
-          a: "```js\nfunction twoSum(arr, target) {\n  const seen = new Set();\n  for (const num of arr) {\n    if (seen.has(target - num)) return true;\n    seen.add(num);\n  }\n  return false;\n}\n// O(n) time, O(n) space — vs O(n²) brute force\n```"
+          a: "```js\nfunction twoSum(arr, target) {\n  const seen = new Set();\n  for (const num of arr) {\n    if (seen.has(target - num)) return true;\n    seen.add(num);\n  }\n  return false;\n}\n// O(n) time, O(n) space — vs O(n²) brute force\n```",
         },
         {
           type: "scenario",
           q: "Your API endpoint takes 5 seconds for 1,000 records. The client wants to handle 1,000,000 records. How do you estimate the new time?",
-          a: "Depends on the algorithm's Big-O. If O(n): 5,000 seconds (~83 min). If O(n²): 5,000,000 seconds (impossible). If O(n log n): ~50 seconds. This is exactly why Big-O matters — it predicts how your code behaves at scale and tells you whether to optimize or redesign."
+          a: "Depends on the algorithm's Big-O. If O(n): 5,000 seconds (~83 min). If O(n²): 5,000,000 seconds (impossible). If O(n log n): ~50 seconds. This is exactly why Big-O matters — it predicts how your code behaves at scale and tells you whether to optimize or redesign.",
         },
         {
           type: "conceptual",
           q: "Why do we drop constants in Big-O?",
-          a: "Because Big-O describes **growth rate** as n→∞, not exact runtime. O(2n) and O(n) grow at the same rate — linearly. At massive scale, the constant doesn't change the category of growth. However, in practice, constants DO matter for performance tuning — Big-O is for algorithm selection, not micro-optimization."
-        }
-      ]
+          a: "Because Big-O describes **growth rate** as n→∞, not exact runtime. O(2n) and O(n) grow at the same rate — linearly. At massive scale, the constant doesn't change the category of growth. However, in practice, constants DO matter for performance tuning — Big-O is for algorithm selection, not micro-optimization.",
+        },
+      ],
     },
     {
       id: "time-vs-space-complexity",
@@ -267,35 +268,35 @@ function factorialIterative(n) {
         "Forgetting that creating a new array/object inside a loop multiplies space usage",
         "Thinking in-place always means O(1) space — in-place quicksort still uses O(log n) stack space",
         "Not considering the space of the output — if you return a new array of size n, that's O(n) space",
-        "Confusing auxiliary space with total space — interviews usually ask about auxiliary (extra) space"
+        "Confusing auxiliary space with total space — interviews usually ask about auxiliary (extra) space",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Explain the time-space tradeoff with a concrete example.",
-          a: "Classic example: finding duplicates. **Brute force**: O(n²) time, O(1) space — compare every pair. **Hash set**: O(n) time, O(n) space — store seen values for O(1) lookup. We trade extra memory (hash set) for dramatically less time. This tradeoff appears everywhere: caching, memoization, pre-computation, indexing."
+          a: "Classic example: finding duplicates. **Brute force**: O(n²) time, O(1) space — compare every pair. **Hash set**: O(n) time, O(n) space — store seen values for O(1) lookup. We trade extra memory (hash set) for dramatically less time. This tradeoff appears everywhere: caching, memoization, pre-computation, indexing.",
         },
         {
           type: "tricky",
           q: "What's the space complexity of merge sort?",
-          a: "O(n). Merge sort needs a temporary array of size n for merging. The recursive call stack adds O(log n) depth, but the dominant term is the O(n) merge buffer. Compare with quicksort: O(log n) average space (just the call stack, in-place partitioning), but O(n) worst case if the recursion is unbalanced."
+          a: "O(n). Merge sort needs a temporary array of size n for merging. The recursive call stack adds O(log n) depth, but the dominant term is the O(n) merge buffer. Compare with quicksort: O(log n) average space (just the call stack, in-place partitioning), but O(n) worst case if the recursion is unbalanced.",
         },
         {
           type: "coding",
           q: "Reverse a string in-place with O(1) extra space.",
-          a: "```js\nfunction reverseString(s) {\n  const arr = s.split('');\n  let l = 0, r = arr.length - 1;\n  while (l < r) {\n    [arr[l], arr[r]] = [arr[r], arr[l]];\n    l++; r--;\n  }\n  return arr.join('');\n}\n```"
+          a: "```js\nfunction reverseString(s) {\n  const arr = s.split('');\n  let l = 0, r = arr.length - 1;\n  while (l < r) {\n    [arr[l], arr[r]] = [arr[r], arr[l]];\n    l++; r--;\n  }\n  return arr.join('');\n}\n```",
         },
         {
           type: "scenario",
           q: "Your server has limited memory but fast CPU. Should you prefer time-optimized or space-optimized algorithms?",
-          a: "**Space-optimized**. With limited memory, using O(n²) time with O(1) space may be better than O(n) time with O(n) space if n is large enough to exceed memory. In practice: use streaming algorithms, process data in chunks, avoid caching everything in memory. Example: use in-place sorting (quicksort) instead of merge sort."
+          a: "**Space-optimized**. With limited memory, using O(n²) time with O(1) space may be better than O(n) time with O(n) space if n is large enough to exceed memory. In practice: use streaming algorithms, process data in chunks, avoid caching everything in memory. Example: use in-place sorting (quicksort) instead of merge sort.",
         },
         {
           type: "conceptual",
           q: "Does O(1) space mean the algorithm uses no memory at all?",
-          a: "No. O(1) space means the **extra** memory used doesn't grow with input size. A few variables, pointers, or fixed-size buffers are O(1). The input itself still takes space. For example, reversing an array in-place uses O(1) extra space — just two pointers — even though the array itself is O(n)."
-        }
-      ]
+          a: "No. O(1) space means the **extra** memory used doesn't grow with input size. A few variables, pointers, or fixed-size buffers are O(1). The input itself still takes space. For example, reversing an array in-place uses O(1) extra space — just two pointers — even though the array itself is O(n).",
+        },
+      ],
     },
     {
       id: "best-worst-average-case",
@@ -388,30 +389,30 @@ function insertionSort(arr: number[]): number[] {
         "Thinking O(n²) worst case means the algorithm is always slow — quicksort is O(n²) worst case but the fastest sorting algorithm in practice",
         "Not understanding that Big-O IS the worst case by definition — saying 'worst case Big-O' is redundant",
         "Forgetting that best case of O(1) doesn't make an algorithm fast — best case rarely represents realistic inputs",
-        "Confusing Theta (Θ) with Big-O — Theta is a tight bound (both upper and lower), Big-O is only upper bound"
+        "Confusing Theta (Θ) with Big-O — Theta is a tight bound (both upper and lower), Big-O is only upper bound",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Why do we typically report worst-case complexity?",
-          a: "Worst case provides a **guarantee** — no input can make the algorithm slower than this bound. It protects against adversarial inputs, which matters in security (hash DoS attacks) and production reliability. Average case requires assumptions about input distribution that may not hold. Best case is misleading and almost never useful for decision-making."
+          a: "Worst case provides a **guarantee** — no input can make the algorithm slower than this bound. It protects against adversarial inputs, which matters in security (hash DoS attacks) and production reliability. Average case requires assumptions about input distribution that may not hold. Best case is misleading and almost never useful for decision-making.",
         },
         {
           type: "tricky",
           q: "Quicksort has O(n²) worst case. Why is it often preferred over merge sort which has O(n log n) worst case?",
-          a: "1) Quicksort's worst case is extremely rare with random pivot selection. 2) Quicksort is **in-place** (O(log n) space vs O(n) for merge sort). 3) Quicksort has better **cache locality** — it accesses contiguous memory. 4) The constant factor in quicksort's O(n log n) average is smaller. 5) In practice, randomized quicksort almost never hits O(n²)."
+          a: "1) Quicksort's worst case is extremely rare with random pivot selection. 2) Quicksort is **in-place** (O(log n) space vs O(n) for merge sort). 3) Quicksort has better **cache locality** — it accesses contiguous memory. 4) The constant factor in quicksort's O(n log n) average is smaller. 5) In practice, randomized quicksort almost never hits O(n²).",
         },
         {
           type: "conceptual",
           q: "What is the difference between Big-O, Big-Omega, and Big-Theta?",
-          a: "**Big-O (O)**: Upper bound — 'at most this fast growth'. **Big-Omega (Ω)**: Lower bound — 'at least this fast growth'. **Big-Theta (Θ)**: Tight bound — 'exactly this growth rate'. Example: Merge sort is Θ(n log n) because it's BOTH O(n log n) and Ω(n log n). Quicksort is O(n²) but Θ(n log n) on average."
+          a: "**Big-O (O)**: Upper bound — 'at most this fast growth'. **Big-Omega (Ω)**: Lower bound — 'at least this fast growth'. **Big-Theta (Θ)**: Tight bound — 'exactly this growth rate'. Example: Merge sort is Θ(n log n) because it's BOTH O(n log n) and Ω(n log n). Quicksort is O(n²) but Θ(n log n) on average.",
         },
         {
           type: "scenario",
           q: "Your sorting algorithm is O(n²) worst case but O(n) on nearly-sorted data. Your data is usually nearly sorted. Which algorithm should you use?",
-          a: "**Insertion sort** — which is exactly this: O(n²) worst, O(n) best/nearly-sorted. If you know your data is usually nearly sorted, insertion sort outperforms O(n log n) algorithms. This is why TimSort (Python/Java's default) uses insertion sort for small/nearly-sorted subarrays within merge sort."
-        }
-      ]
+          a: "**Insertion sort** — which is exactly this: O(n²) worst, O(n) best/nearly-sorted. If you know your data is usually nearly sorted, insertion sort outperforms O(n log n) algorithms. This is why TimSort (Python/Java's default) uses insertion sort for small/nearly-sorted subarrays within merge sort.",
+        },
+      ],
     },
     {
       id: "amortized-analysis",
@@ -534,30 +535,30 @@ class DynamicArrayTS<T> {
         "Thinking O(1) amortized means every operation is O(1) — some individual operations CAN be O(n), but they're rare enough",
         "Not understanding the doubling strategy — growing by a fixed amount (e.g., +10) gives O(n) amortized, not O(1)",
         "Applying amortized analysis to single operations — it only makes sense over a SEQUENCE of operations",
-        "Forgetting that amortized O(1) doesn't help with real-time systems — a single O(n) resize can cause a latency spike"
+        "Forgetting that amortized O(1) doesn't help with real-time systems — a single O(n) resize can cause a latency spike",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is amortized time complexity and how is it different from average case?",
-          a: "Amortized is the average cost per operation **guaranteed** over ANY sequence of n operations. Average case is the expected cost assuming a particular **probability distribution** of inputs. Amortized makes no assumptions about input — it's a worst-case guarantee for the total. Example: dynamic array push is O(1) amortized (guaranteed), not just O(1) on average."
+          a: "Amortized is the average cost per operation **guaranteed** over ANY sequence of n operations. Average case is the expected cost assuming a particular **probability distribution** of inputs. Amortized makes no assumptions about input — it's a worst-case guarantee for the total. Example: dynamic array push is O(1) amortized (guaranteed), not just O(1) on average.",
         },
         {
           type: "tricky",
           q: "Is Array.push() in JavaScript O(1) or O(n)?",
-          a: "Both! A single push CAN be O(n) when the internal buffer needs to resize. But over n pushes, the total work is O(n), making each push O(1) **amortized**. The resize uses a doubling strategy: total copies = 1 + 2 + 4 + ... + n/2 < n. So we report O(1) amortized. In interviews, saying 'O(1) amortized' is the correct answer."
+          a: "Both! A single push CAN be O(n) when the internal buffer needs to resize. But over n pushes, the total work is O(n), making each push O(1) **amortized**. The resize uses a doubling strategy: total copies = 1 + 2 + 4 + ... + n/2 < n. So we report O(1) amortized. In interviews, saying 'O(1) amortized' is the correct answer.",
         },
         {
           type: "conceptual",
           q: "Why does doubling the array give O(1) amortized but adding a fixed amount doesn't?",
-          a: "With doubling: resize costs form a geometric series (1 + 2 + 4 + ... + n ≈ 2n), so total cost for n pushes is O(n) → O(1) each. With fixed increment k: you resize every k pushes, copying i elements on the i-th resize. Total: k + 2k + 3k + ... ≈ n²/2k → O(n) each push. Doubling ensures resizes happen *exponentially* less often."
+          a: "With doubling: resize costs form a geometric series (1 + 2 + 4 + ... + n ≈ 2n), so total cost for n pushes is O(n) → O(1) each. With fixed increment k: you resize every k pushes, copying i elements on the i-th resize. Total: k + 2k + 3k + ... ≈ n²/2k → O(n) each push. Doubling ensures resizes happen *exponentially* less often.",
         },
         {
           type: "scenario",
           q: "You're building a real-time system where every operation must complete within 1ms. Can you use a dynamic array?",
-          a: "Not safely. Amortized O(1) means *most* pushes are fast, but a resize can take O(n) time — potentially hundreds of milliseconds for a large array. For real-time systems, use a pre-allocated fixed array, a linked list, or a dynamic array with incremental resizing (copy a few elements per push instead of all at once)."
-        }
-      ]
+          a: "Not safely. Amortized O(1) means *most* pushes are fast, but a resize can take O(n) time — potentially hundreds of milliseconds for a large array. For real-time systems, use a pre-allocated fixed array, a linked list, or a dynamic array with incremental resizing (copy a few elements per push instead of all at once).",
+        },
+      ],
     },
     {
       id: "recursion-fundamentals",
@@ -684,35 +685,35 @@ badRecursion(5); // 5 → 3 → 1 → -1 → -3 → ... 💥
         "Not moving toward the base case — recursive call must make the problem SMALLER",
         "Forgetting that each recursive call uses stack space — O(n) recursion depth = O(n) space",
         "Using recursion when iteration is simpler (factorial, fibonacci) — not everything needs recursion",
-        "Not using the 'leap of faith' — trying to trace every recursive call instead of trusting the recursive step"
+        "Not using the 'leap of faith' — trying to trace every recursive call instead of trusting the recursive step",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are the essential components of a recursive function?",
-          a: "1) **Base case**: a condition that returns a value directly without recursion. 2) **Recursive case**: the function calls itself with a smaller/simpler input. 3) **Progress toward base case**: each recursive call must move closer to the base case. Without all three, you get infinite recursion → stack overflow."
+          a: "1) **Base case**: a condition that returns a value directly without recursion. 2) **Recursive case**: the function calls itself with a smaller/simpler input. 3) **Progress toward base case**: each recursive call must move closer to the base case. Without all three, you get infinite recursion → stack overflow.",
         },
         {
           type: "tricky",
           q: "What is the time and space complexity of naive recursive fibonacci?",
-          a: "**Time: O(2ⁿ)** — each call spawns two more calls, creating a binary tree of depth n. **Space: O(n)** — the call stack depth is n (only one branch is active at a time). The time is exponential because we recompute the same values: fib(5) computes fib(3) twice, fib(2) three times, etc. Fix with memoization: O(n) time and space."
+          a: "**Time: O(2ⁿ)** — each call spawns two more calls, creating a binary tree of depth n. **Space: O(n)** — the call stack depth is n (only one branch is active at a time). The time is exponential because we recompute the same values: fib(5) computes fib(3) twice, fib(2) three times, etc. Fix with memoization: O(n) time and space.",
         },
         {
           type: "coding",
           q: "Write a recursive function to compute x^n in O(log n) time.",
-          a: "```js\nfunction power(x, n) {\n  if (n === 0) return 1;\n  if (n < 0) return 1 / power(x, -n);\n  if (n % 2 === 0) {\n    const half = power(x, n / 2);\n    return half * half;\n  }\n  return x * power(x, n - 1);\n}\n// Key insight: x^10 = (x^5)^2 — square the half instead of multiplying n times\n```"
+          a: "```js\nfunction power(x, n) {\n  if (n === 0) return 1;\n  if (n < 0) return 1 / power(x, -n);\n  if (n % 2 === 0) {\n    const half = power(x, n / 2);\n    return half * half;\n  }\n  return x * power(x, n - 1);\n}\n// Key insight: x^10 = (x^5)^2 — square the half instead of multiplying n times\n```",
         },
         {
           type: "conceptual",
           q: "What is the 'leap of faith' technique in recursion?",
-          a: "Instead of tracing every recursive call, **assume the recursive call returns the correct answer** for the smaller problem. Then focus only on: (1) What is the base case? (2) How do I combine the result of the recursive call with the current element? Example: In sumArray, assume sumArray(rest) correctly sums the rest — then just add the current element."
+          a: "Instead of tracing every recursive call, **assume the recursive call returns the correct answer** for the smaller problem. Then focus only on: (1) What is the base case? (2) How do I combine the result of the recursive call with the current element? Example: In sumArray, assume sumArray(rest) correctly sums the rest — then just add the current element.",
         },
         {
           type: "scenario",
           q: "When should you use recursion vs iteration?",
-          a: "Use **recursion** for: tree/graph traversal, divide & conquer, backtracking, problems with recursive structure (nested data). Use **iteration** for: simple loops, counting, accumulating, when stack depth is a concern. Most recursive solutions can be converted to iterative with an explicit stack. In production, prefer iteration for deep recursion to avoid stack overflow."
-        }
-      ]
+          a: "Use **recursion** for: tree/graph traversal, divide & conquer, backtracking, problems with recursive structure (nested data). Use **iteration** for: simple loops, counting, accumulating, when stack depth is a concern. Most recursive solutions can be converted to iterative with an explicit stack. In production, prefer iteration for deep recursion to avoid stack overflow.",
+        },
+      ],
     },
     {
       id: "call-stack-and-memory",
@@ -835,30 +836,30 @@ function demonstrateMemory(): void {
         "Not understanding that assigning an object to a new variable copies the REFERENCE, not the object — both point to the same heap memory",
         "Thinking JavaScript has manual memory management — it uses automatic garbage collection (mark-and-sweep)",
         "Forgetting that closures keep outer scope variables alive — this can cause memory leaks if large objects are captured",
-        "Confusing the call stack with the event loop — the call stack handles synchronous execution; the event loop handles async callbacks"
+        "Confusing the call stack with the event loop — the call stack handles synchronous execution; the event loop handles async callbacks",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the call stack, and what happens when a function is called?",
-          a: "The call stack is a LIFO data structure that tracks function execution. When a function is called: 1) A new **stack frame** is created containing local variables, arguments, and return address. 2) The frame is pushed onto the stack. 3) The function executes. 4) When it returns, the frame is popped. JavaScript has one call stack (single-threaded). If it gets too deep → stack overflow."
+          a: "The call stack is a LIFO data structure that tracks function execution. When a function is called: 1) A new **stack frame** is created containing local variables, arguments, and return address. 2) The frame is pushed onto the stack. 3) The function executes. 4) When it returns, the frame is popped. JavaScript has one call stack (single-threaded). If it gets too deep → stack overflow.",
         },
         {
           type: "tricky",
           q: "What is the output?\n```js\nlet a = { val: 1 };\nlet b = a;\nb.val = 2;\nconsole.log(a.val);\nlet c = 10;\nlet d = c;\nd = 20;\nconsole.log(c);\n```",
-          a: "`2` and `10`. `a` and `b` point to the **same object** on the heap — changing `b.val` changes `a.val`. `c` and `d` are **primitives** on the stack — `d = 20` creates a new value; `c` remains `10`. This is the fundamental difference between reference types and value types."
+          a: "`2` and `10`. `a` and `b` point to the **same object** on the heap — changing `b.val` changes `a.val`. `c` and `d` are **primitives** on the stack — `d = 20` creates a new value; `c` remains `10`. This is the fundamental difference between reference types and value types.",
         },
         {
           type: "conceptual",
           q: "What causes a stack overflow and how do you prevent it?",
-          a: "Stack overflow occurs when the call stack exceeds its size limit, usually from **infinite or very deep recursion**. Prevention: 1) Always have a valid base case. 2) Ensure progress toward the base case. 3) Convert deep recursion to iteration with an explicit stack. 4) Use tail call optimization (limited support). 5) Increase stack size (Node.js: `--stack-size` flag)."
+          a: "Stack overflow occurs when the call stack exceeds its size limit, usually from **infinite or very deep recursion**. Prevention: 1) Always have a valid base case. 2) Ensure progress toward the base case. 3) Convert deep recursion to iteration with an explicit stack. 4) Use tail call optimization (limited support). 5) Increase stack size (Node.js: `--stack-size` flag).",
         },
         {
           type: "scenario",
           q: "How would you debug a memory leak in a JavaScript application?",
-          a: "1) Use Chrome DevTools **Memory** tab — take heap snapshots and compare. 2) Look for growing detached DOM nodes, growing arrays, or objects that should have been GC'd. 3) Common culprits: forgotten event listeners, closures capturing large objects, global variables, intervals not cleared. 4) Use `WeakMap`/`WeakRef` for caches to allow GC."
-        }
-      ]
+          a: "1) Use Chrome DevTools **Memory** tab — take heap snapshots and compare. 2) Look for growing detached DOM nodes, growing arrays, or objects that should have been GC'd. 3) Common culprits: forgotten event listeners, closures capturing large objects, global variables, intervals not cleared. 4) Use `WeakMap`/`WeakRef` for caches to allow GC.",
+        },
+      ],
     },
     {
       id: "iteration-vs-recursion",
@@ -987,32 +988,32 @@ function sumIterative(arr) {
         "Not realizing iterative tree traversal needs an explicit stack — you replace the implicit call stack with your own",
         "Thinking tail call optimization works everywhere — only Safari supports TCO in JavaScript; Node.js does NOT",
         "Converting recursion to iteration incorrectly — the explicit stack must mirror the call stack's behavior exactly",
-        "Assuming recursion is always slower — for tree/graph problems, recursive code often runs at the same speed"
+        "Assuming recursion is always slower — for tree/graph problems, recursive code often runs at the same speed",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Can every recursive function be converted to iteration?",
-          a: "Yes — every recursive function can be converted to iteration using an explicit stack (or queue). The call stack is just a stack managed by the runtime; you can manage your own. However, some problems are MUCH more naturally expressed recursively (tree traversal, backtracking, divide & conquer). The iterative versions can be harder to read."
+          a: "Yes — every recursive function can be converted to iteration using an explicit stack (or queue). The call stack is just a stack managed by the runtime; you can manage your own. However, some problems are MUCH more naturally expressed recursively (tree traversal, backtracking, divide & conquer). The iterative versions can be harder to read.",
         },
         {
           type: "tricky",
           q: "What is tail call optimization and does JavaScript support it?",
-          a: "TCO reuses the current stack frame for a tail-position recursive call (the recursive call is the LAST operation). This makes tail recursion use O(1) space like iteration. JavaScript **technically** supports it in ES6 strict mode, but ONLY Safari implements it. V8 (Chrome/Node) intentionally doesn't implement TCO. In practice, don't rely on it — convert to iteration for deep recursion."
+          a: "TCO reuses the current stack frame for a tail-position recursive call (the recursive call is the LAST operation). This makes tail recursion use O(1) space like iteration. JavaScript **technically** supports it in ES6 strict mode, but ONLY Safari implements it. V8 (Chrome/Node) intentionally doesn't implement TCO. In practice, don't rely on it — convert to iteration for deep recursion.",
         },
         {
           type: "coding",
           q: "Convert this recursive function to iterative:\n```js\nfunction sumNested(arr) {\n  let sum = 0;\n  for (const item of arr) {\n    if (Array.isArray(item)) sum += sumNested(item);\n    else sum += item;\n  }\n  return sum;\n}\n```",
-          a: "```js\nfunction sumNestedIterative(arr) {\n  const stack = [...arr];\n  let sum = 0;\n  while (stack.length) {\n    const item = stack.pop();\n    if (Array.isArray(item)) {\n      stack.push(...item);\n    } else {\n      sum += item;\n    }\n  }\n  return sum;\n}\n```"
+          a: "```js\nfunction sumNestedIterative(arr) {\n  const stack = [...arr];\n  let sum = 0;\n  while (stack.length) {\n    const item = stack.pop();\n    if (Array.isArray(item)) {\n      stack.push(...item);\n    } else {\n      sum += item;\n    }\n  }\n  return sum;\n}\n```",
         },
         {
           type: "scenario",
           q: "You need to traverse a tree with 1 million nodes. Should you use recursion or iteration?",
-          a: "**Iteration** with an explicit stack. A balanced binary tree of 1M nodes has depth ~20 (log₂(1M) ≈ 20) — recursion would be fine. But if the tree is **skewed** (essentially a linked list), recursion depth = 1M → stack overflow. Iterative traversal handles any tree shape safely. In production, always use iteration for unbounded depth."
-        }
-      ]
-    }
-  ]
+          a: "**Iteration** with an explicit stack. A balanced binary tree of 1M nodes has depth ~20 (log₂(1M) ≈ 20) — recursion would be fine. But if the tree is **skewed** (essentially a linked list), recursion depth = 1M → stack overflow. Iterative traversal handles any tree shape safely. In production, always use iteration for unbounded depth.",
+        },
+      ],
+    },
+  ],
 };
 
 export default dsaPhase1;

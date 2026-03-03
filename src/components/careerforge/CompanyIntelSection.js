@@ -17,7 +17,14 @@ export default function CompanyIntelSection({ companyIntel }) {
       {companyIntel.tips?.length > 0 && (
         <div>
           <div style={subLabel}>Tips for This Company</div>
-          <ul style={{ paddingLeft: "1.25rem", color: "var(--text-secondary)", lineHeight: 1.8, margin: 0 }}>
+          <ul
+            style={{
+              paddingLeft: "1.25rem",
+              color: "var(--text-secondary)",
+              lineHeight: 1.8,
+              margin: 0,
+            }}
+          >
             {companyIntel.tips.map((tip, i) => (
               <li key={i}>{tip}</li>
             ))}
@@ -36,7 +43,11 @@ const cardStyle = {
   marginBottom: "1.25rem",
 };
 
-const headingStyle = { fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.75rem" };
+const headingStyle = {
+  fontSize: "1.1rem",
+  fontWeight: 700,
+  marginBottom: "0.75rem",
+};
 
 const subLabel = {
   fontSize: "0.78rem",

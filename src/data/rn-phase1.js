@@ -2,7 +2,8 @@ const rnPhase1 = {
   id: "phase-1",
   title: "Phase 1: Role Expectations — Senior vs Staff",
   emoji: "🎯",
-  description: "Understand what top companies expect from Senior and Staff React Native engineers — technical leadership, architecture ownership, decision-making authority, and interview structures.",
+  description:
+    "Understand what top companies expect from Senior and Staff React Native engineers — technical leadership, architecture ownership, decision-making authority, and interview structures.",
   topics: [
     {
       id: "senior-vs-staff-expectations",

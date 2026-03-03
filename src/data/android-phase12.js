@@ -2,7 +2,8 @@ const androidPhase12 = {
   id: "phase-12",
   title: "Phase 12: Interview Simulation Mode",
   emoji: "🎯",
-  description: "Full interview round simulations — coding, system design, Android deep dive, and behavioral practice with evaluation rubrics.",
+  description:
+    "Full interview round simulations — coding, system design, Android deep dive, and behavioral practice with evaluation rubrics.",
   topics: [
     {
       id: "coding-round-simulation",
@@ -143,7 +144,7 @@ B. Implement LRU Cache with O(1) get and put
         {
           type: "coding",
           q: "Given an array of meeting intervals [start, end], merge overlapping intervals.",
-          a: "```kotlin\nfun mergeIntervals(intervals: Array<IntArray>): Array<IntArray> {\n    if (intervals.isEmpty()) return emptyArray()\n    val sorted = intervals.sortedBy { it[0] }\n    val result = mutableListOf(sorted[0].clone())\n    for (i in 1 until sorted.size) {\n        val last = result.last()\n        if (sorted[i][0] <= last[1]) {\n            last[1] = maxOf(last[1], sorted[i][1])\n        } else {\n            result.add(sorted[i].clone())\n        }\n    }\n    return result.toTypedArray()\n}\n// Time: O(n log n), Space: O(n)\n// Edge: single interval, no overlaps, all overlapping\n```"
+          a: "```kotlin\nfun mergeIntervals(intervals: Array<IntArray>): Array<IntArray> {\n    if (intervals.isEmpty()) return emptyArray()\n    val sorted = intervals.sortedBy { it[0] }\n    val result = mutableListOf(sorted[0].clone())\n    for (i in 1 until sorted.size) {\n        val last = result.last()\n        if (sorted[i][0] <= last[1]) {\n            last[1] = maxOf(last[1], sorted[i][1])\n        } else {\n            result.add(sorted[i].clone())\n        }\n    }\n    return result.toTypedArray()\n}\n// Time: O(n log n), Space: O(n)\n// Edge: single interval, no overlaps, all overlapping\n```",
         },
       ],
     },
@@ -322,7 +323,7 @@ Focus on: Security, encryption, offline transactions.
         {
           type: "scenario",
           q: "Design the Android architecture for a streaming music app like Spotify.",
-          a: "**Requirements:** Stream music, offline playlists, background playback, queue management. **Architecture:** (1) **Playback:** MediaSessionService (foreground service) with ExoPlayer. Handles audio focus, hardware controls, notification. (2) **Offline:** Download tracks as encrypted files. Room DB for playlist/track metadata. WorkManager for download queue. (3) **Streaming:** ExoPlayer with adaptive bitrate (HLS/DASH). Cache recent tracks in LRU disk cache (200MB). (4) **Queue:** ViewModel manages play queue state. SavedStateHandle for queue persistence across process death. (5) **Sync:** Delta sync for playlists and library changes. FCM for push notifications (new releases). (6) **Background:** MediaSessionService keeps playback alive. Foreground notification with controls. Handle audio focus changes (pause for calls, duck for notifications). (7) **Key trade-off:** Cache size vs storage: 200MB allows ~50 cached songs, configurable by user."
+          a: "**Requirements:** Stream music, offline playlists, background playback, queue management. **Architecture:** (1) **Playback:** MediaSessionService (foreground service) with ExoPlayer. Handles audio focus, hardware controls, notification. (2) **Offline:** Download tracks as encrypted files. Room DB for playlist/track metadata. WorkManager for download queue. (3) **Streaming:** ExoPlayer with adaptive bitrate (HLS/DASH). Cache recent tracks in LRU disk cache (200MB). (4) **Queue:** ViewModel manages play queue state. SavedStateHandle for queue persistence across process death. (5) **Sync:** Delta sync for playlists and library changes. FCM for push notifications (new releases). (6) **Background:** MediaSessionService keeps playback alive. Foreground notification with controls. Handle audio focus changes (pause for calls, duck for notifications). (7) **Key trade-off:** Cache size vs storage: 200MB allows ~50 cached songs, configurable by user.",
         },
       ],
     },
@@ -441,7 +442,7 @@ Practice by having someone ask follow-up questions.`,
         {
           type: "conceptual",
           q: "Explain everything that happens when a user taps a button in an Android app, from the hardware touch to the UI update.",
-          a: "Full stack trace: (1) **Hardware:** Touch sensor detects finger → generates interrupt → Linux kernel processes input event. (2) **Input pipeline:** InputDispatcher (in system_server) receives the event → determines which window should receive it → sends via input channel (socket pair) to the app process. (3) **App process:** Looper on the main thread picks up the InputEvent from the MessageQueue → ViewRootImpl handles the event → dispatches through the View hierarchy (dispatchTouchEvent → onTouchEvent). (4) **View system:** The Button's onTouchEvent detects ACTION_UP → calls performClick → invokes the OnClickListener. (5) **State update:** Listener updates ViewModel state (e.g., StateFlow.value = new state). (6) **Recomposition (Compose):** Snapshot system detects state change → schedules recomposition → Composer re-executes affected composable → generates new layout nodes. (7) **Rendering:** UI thread records display list → RenderThread executes GPU commands → SurfaceFlinger composites → display shows updated frame. Total: ~1-2 frames (16-32ms)."
+          a: "Full stack trace: (1) **Hardware:** Touch sensor detects finger → generates interrupt → Linux kernel processes input event. (2) **Input pipeline:** InputDispatcher (in system_server) receives the event → determines which window should receive it → sends via input channel (socket pair) to the app process. (3) **App process:** Looper on the main thread picks up the InputEvent from the MessageQueue → ViewRootImpl handles the event → dispatches through the View hierarchy (dispatchTouchEvent → onTouchEvent). (4) **View system:** The Button's onTouchEvent detects ACTION_UP → calls performClick → invokes the OnClickListener. (5) **State update:** Listener updates ViewModel state (e.g., StateFlow.value = new state). (6) **Recomposition (Compose):** Snapshot system detects state change → schedules recomposition → Composer re-executes affected composable → generates new layout nodes. (7) **Rendering:** UI thread records display list → RenderThread executes GPU commands → SurfaceFlinger composites → display shows updated frame. Total: ~1-2 frames (16-32ms).",
         },
       ],
     },

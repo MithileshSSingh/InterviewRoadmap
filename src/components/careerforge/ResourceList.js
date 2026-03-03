@@ -12,7 +12,16 @@ export default function ResourceList({ resources = [] }) {
   if (!resources.length) return null;
 
   return (
-    <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+    <ul
+      style={{
+        listStyle: "none",
+        padding: 0,
+        margin: 0,
+        display: "flex",
+        flexDirection: "column",
+        gap: "0.4rem",
+      }}
+    >
       {resources.map((res, i) => (
         <li
           key={i}
@@ -29,12 +38,18 @@ export default function ResourceList({ resources = [] }) {
               href={res.url}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "var(--accent-blue)", textDecoration: "none", flex: 1 }}
+              style={{
+                color: "var(--accent-blue)",
+                textDecoration: "none",
+                flex: 1,
+              }}
             >
               {res.title}
             </a>
           ) : (
-            <span style={{ flex: 1, color: "var(--text-primary)" }}>{res.title}</span>
+            <span style={{ flex: 1, color: "var(--text-primary)" }}>
+              {res.title}
+            </span>
           )}
           <span
             style={{
@@ -50,7 +65,9 @@ export default function ResourceList({ resources = [] }) {
             {res.free ? "Free" : "Paid"}
           </span>
           {res.problemCount && (
-            <span style={{ fontSize: "0.65rem", color: "var(--text-secondary)" }}>
+            <span
+              style={{ fontSize: "0.65rem", color: "var(--text-secondary)" }}
+            >
               {res.problemCount} problems
             </span>
           )}

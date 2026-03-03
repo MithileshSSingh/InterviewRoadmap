@@ -240,25 +240,25 @@ public class OpportunityService {
       "Putting business logic directly in the trigger file — logic should be in handler/service classes for testability and reusability",
       "Not handling recursion — trigger A updates object B, trigger B updates object A → infinite loop → governor limit exception",
       "Modifying Trigger.new records in after triggers — after triggers have read-only records. Use before triggers to modify the triggering record's fields",
-      "Not checking which fields changed in update triggers — processing ALL updated records when only a subset actually changed wastes resources"
+      "Not checking which fields changed in update triggers — processing ALL updated records when only a subset actually changed wastes resources",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "What is the difference between before and after triggers? When would you use each?",
-        a: "**Before triggers:** Execute before the record is saved to the database. (1) The record does NOT have an Id yet (on insert). (2) You can modify the record's fields directly (no DML needed). (3) Use for: validation, setting default values, modifying fields. **After triggers:** Execute after the record is saved. (1) The record has an Id. (2) Records are read-only — you cannot modify them. (3) Use for: creating/updating related records, making callouts (@future), firing platform events. (4) Use for: any operation that needs the record's Id."
+        a: "**Before triggers:** Execute before the record is saved to the database. (1) The record does NOT have an Id yet (on insert). (2) You can modify the record's fields directly (no DML needed). (3) Use for: validation, setting default values, modifying fields. **After triggers:** Execute after the record is saved. (1) The record has an Id. (2) Records are read-only — you cannot modify them. (3) Use for: creating/updating related records, making callouts (@future), firing platform events. (4) Use for: any operation that needs the record's Id.",
       },
       {
         type: "scenario",
         q: "You have a trigger that works fine for single record saves but fails with 'Too many SOQL queries' during Data Loader imports. What's wrong?",
-        a: "The trigger has a SOQL query inside a for-each loop over Trigger.new. With single record saves, it executes 1 query. With Data Loader (200 records per batch), it executes 200 queries. **Fix:** (1) Move the SOQL query OUTSIDE the loop. (2) Collect all needed IDs in a Set from Trigger.new. (3) Execute ONE query with WHERE Id IN :ids. (4) Build a Map from the results. (5) Use the Map inside the loop for O(1) lookups. This reduces 200 queries to 1, regardless of batch size."
+        a: "The trigger has a SOQL query inside a for-each loop over Trigger.new. With single record saves, it executes 1 query. With Data Loader (200 records per batch), it executes 200 queries. **Fix:** (1) Move the SOQL query OUTSIDE the loop. (2) Collect all needed IDs in a Set from Trigger.new. (3) Execute ONE query with WHERE Id IN :ids. (4) Build a Map from the results. (5) Use the Map inside the loop for O(1) lookups. This reduces 200 queries to 1, regardless of batch size.",
       },
       {
         type: "tricky",
         q: "Why should you have only one trigger per object in Salesforce?",
-        a: "When multiple triggers exist on the same object, Salesforce does NOT guarantee their execution order. This creates: (1) **Unpredictable behavior** — the same data might produce different results depending on which trigger runs first. (2) **Debugging nightmares** — you can't reproduce issues consistently. (3) **Shared governor limits** — all triggers share the same transaction limits, and you can't control which trigger consumes resources first. **Solution:** One trigger per object that delegates to a handler class. The handler can call multiple service classes in a deterministic order."
-      }
-    ]
+        a: "When multiple triggers exist on the same object, Salesforce does NOT guarantee their execution order. This creates: (1) **Unpredictable behavior** — the same data might produce different results depending on which trigger runs first. (2) **Debugging nightmares** — you can't reproduce issues consistently. (3) **Shared governor limits** — all triggers share the same transaction limits, and you can't control which trigger consumes resources first. **Solution:** One trigger per object that delegates to a handler class. The handler can call multiple service classes in a deterministic order.",
+      },
+    ],
   },
   {
     id: "sf-async-apex",
@@ -496,25 +496,25 @@ public class WeeklyCleanupScheduler implements Schedulable {
       "Chaining Queueable from Queueable is limited to 1 child job in production (but unlimited in tests). For complex chains, use Batch Apex or Platform Events",
       "Not using Database.Stateful in Batch — without it, instance variables are reset between execute() chunks. Your counters will be wrong",
       "Testing async code without Test.startTest()/Test.stopTest() — async code doesn't execute in tests without these boundaries",
-      "Scheduling too many concurrent Batch jobs — the limit is 5 concurrent batch jobs. Additional jobs queue but may delay processing"
+      "Scheduling too many concurrent Batch jobs — the limit is 5 concurrent batch jobs. Additional jobs queue but may delay processing",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "What are the four types of asynchronous Apex and when would you use each?",
-        a: "**@future** — Simplest. Fire-and-forget, primitive params only, no chaining. Use for simple callouts from triggers. **Queueable** — Enhanced @future. Accepts complex params, supports chaining, returns Job ID. Use for complex async logic needing monitoring. **Batch** — For large volumes (millions of records). Processes in chunks with separate governor limits per chunk. Use for mass updates, data migrations, nightly processing. **Schedulable** — Cron-based scheduling. Typically launches Batch or Queueable jobs. Use for recurring scheduled operations. **Decision tree:** Simple callout? → @future. Complex logic? → Queueable. Large data volume? → Batch. Recurring schedule? → Schedulable."
+        a: "**@future** — Simplest. Fire-and-forget, primitive params only, no chaining. Use for simple callouts from triggers. **Queueable** — Enhanced @future. Accepts complex params, supports chaining, returns Job ID. Use for complex async logic needing monitoring. **Batch** — For large volumes (millions of records). Processes in chunks with separate governor limits per chunk. Use for mass updates, data migrations, nightly processing. **Schedulable** — Cron-based scheduling. Typically launches Batch or Queueable jobs. Use for recurring scheduled operations. **Decision tree:** Simple callout? → @future. Complex logic? → Queueable. Large data volume? → Batch. Recurring schedule? → Schedulable.",
       },
       {
         type: "tricky",
         q: "What is Database.Stateful and why would you use it in Batch Apex?",
-        a: "By default, Batch Apex is **stateless** — instance variables are reset between each execute() chunk. Each chunk gets a fresh instance. **Database.Stateful** preserves instance variable values across all execute() invocations. **Use case:** Tracking cumulative counts (total processed, total errors), building a summary report in finish(), accumulating IDs for post-processing. **Warning:** Stateful increases memory usage because the entire object is serialized/deserialized between chunks. Keep stateful variables small — don't store entire SObject lists."
+        a: "By default, Batch Apex is **stateless** — instance variables are reset between each execute() chunk. Each chunk gets a fresh instance. **Database.Stateful** preserves instance variable values across all execute() invocations. **Use case:** Tracking cumulative counts (total processed, total errors), building a summary report in finish(), accumulating IDs for post-processing. **Warning:** Stateful increases memory usage because the entire object is serialized/deserialized between chunks. Keep stateful variables small — don't store entire SObject lists.",
       },
       {
         type: "coding",
         q: "Write a Batch Apex class that deactivates all Contacts not modified in the last year.",
-        a: "```apex\npublic class DeactivateOldContacts implements Database.Batchable<SObject>, Database.Stateful {\n    public Integer deactivatedCount = 0;\n    \n    public Database.QueryLocator start(Database.BatchableContext bc) {\n        return Database.getQueryLocator([\n            SELECT Id, Active__c FROM Contact\n            WHERE LastModifiedDate < LAST_N_DAYS:365\n            AND Active__c = true\n        ]);\n    }\n    \n    public void execute(Database.BatchableContext bc, List<Contact> scope) {\n        for (Contact c : scope) {\n            c.Active__c = false;\n        }\n        update scope;\n        deactivatedCount += scope.size();\n    }\n    \n    public void finish(Database.BatchableContext bc) {\n        System.debug('Deactivated contacts: ' + deactivatedCount);\n    }\n}\n// Execute: Database.executeBatch(new DeactivateOldContacts(), 200);\n```"
-      }
-    ]
+        a: "```apex\npublic class DeactivateOldContacts implements Database.Batchable<SObject>, Database.Stateful {\n    public Integer deactivatedCount = 0;\n    \n    public Database.QueryLocator start(Database.BatchableContext bc) {\n        return Database.getQueryLocator([\n            SELECT Id, Active__c FROM Contact\n            WHERE LastModifiedDate < LAST_N_DAYS:365\n            AND Active__c = true\n        ]);\n    }\n    \n    public void execute(Database.BatchableContext bc, List<Contact> scope) {\n        for (Contact c : scope) {\n            c.Active__c = false;\n        }\n        update scope;\n        deactivatedCount += scope.size();\n    }\n    \n    public void finish(Database.BatchableContext bc) {\n        System.debug('Deactivated contacts: ' + deactivatedCount);\n    }\n}\n// Execute: Database.executeBatch(new DeactivateOldContacts(), 200);\n```",
+      },
+    ],
   },
   {
     id: "sf-platform-events",
@@ -711,20 +711,20 @@ public class AccountCDCHandler {
       "Not setting resume checkpoints in event triggers — without checkpoints, missed events during failures cannot be replayed",
       "Publishing too many events in a single transaction — limit is 150,000 published events per hour per org",
       "Not handling event delivery failures — event triggers can fail and retry; use setResumeCheckpoint to avoid reprocessing",
-      "Confusing Platform Events with Change Data Capture — Platform Events are custom with explicit publish; CDC is automatic for tracked object changes"
+      "Confusing Platform Events with Change Data Capture — Platform Events are custom with explicit publish; CDC is automatic for tracked object changes",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "What are Platform Events and how do they differ from Change Data Capture?",
-        a: "**Platform Events** are custom events you define (like custom objects but for messaging). You explicitly publish them via EventBus.publish(). They have custom fields with semantic meaning. Use for: cross-system integration, decoupling complex logic, custom business events. **Change Data Capture (CDC)** automatically publishes events when tracked objects change — CREATE, UPDATE, DELETE, UNDELETE. No publish code needed. CDC events contain the changed fields and their values. Use for: syncing record changes to external systems, real-time replication, audit trails. **Key difference:** Platform Events = you control what and when to publish. CDC = automatic capture of all record changes."
+        a: "**Platform Events** are custom events you define (like custom objects but for messaging). You explicitly publish them via EventBus.publish(). They have custom fields with semantic meaning. Use for: cross-system integration, decoupling complex logic, custom business events. **Change Data Capture (CDC)** automatically publishes events when tracked objects change — CREATE, UPDATE, DELETE, UNDELETE. No publish code needed. CDC events contain the changed fields and their values. Use for: syncing record changes to external systems, real-time replication, audit trails. **Key difference:** Platform Events = you control what and when to publish. CDC = automatic capture of all record changes.",
       },
       {
         type: "scenario",
         q: "How would you use Platform Events to decouple a complex trigger that's hitting governor limits?",
-        a: "**Problem:** A trigger on Opportunity processes stages, creates tasks, updates accounts, sends notifications, and syncs to ERP — all sharing a single transaction's limits. **Solution:** (1) The Opportunity trigger publishes a Platform Event with essential data (OppId, AccountId, Amount, Stage). (2) An event trigger subscriber creates Tasks (separate transaction, separate limits). (3) Another subscriber updates Account revenue (separate transaction). (4) A Flow subscriber handles notifications. (5) An external subscriber (CometD) handles ERP sync. **Result:** The original trigger uses minimal limits (just one EventBus.publish). Each subscriber handles its own logic with its own governor limits."
-      }
-    ]
+        a: "**Problem:** A trigger on Opportunity processes stages, creates tasks, updates accounts, sends notifications, and syncs to ERP — all sharing a single transaction's limits. **Solution:** (1) The Opportunity trigger publishes a Platform Event with essential data (OppId, AccountId, Amount, Stage). (2) An event trigger subscriber creates Tasks (separate transaction, separate limits). (3) Another subscriber updates Account revenue (separate transaction). (4) A Flow subscriber handles notifications. (5) An external subscriber (CometD) handles ERP sync. **Result:** The original trigger uses minimal limits (just one EventBus.publish). Each subscriber handles its own logic with its own governor limits.",
+      },
+    ],
   },
   {
     id: "sf-test-classes",
@@ -987,26 +987,26 @@ private class OrderEventTest {
       "Using SeeAllData=true when not needed — this makes tests dependent on org data and causes failures in different environments",
       "Not testing bulk scenarios (200 records) — code that works for 1 record may hit governor limits with 200",
       "Forgetting Test.startTest() and Test.stopTest() — async code won't execute without these, and governor limits won't reset",
-      "Hard-coding record IDs in tests — IDs are different across orgs. Always create test data dynamically"
+      "Hard-coding record IDs in tests — IDs are different across orgs. Always create test data dynamically",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "What is the minimum code coverage required in Salesforce and why shouldn't you aim for just the minimum?",
-        a: "**Minimum: 75%** overall Apex code coverage to deploy to production, with at least 1% for each individual class. **Why aim higher:** (1) 75% coverage doesn't guarantee business logic is correct — tests without assertions provide coverage but no validation. (2) Complex classes should have 90%+ coverage to catch edge cases. (3) Tests serve as documentation — they show HOW the code should behave. (4) Good tests catch regression bugs when code changes. (5) Senior developers focus on **behavioral testing**, not percentage: positive cases, negative cases, bulk, security, and edge cases."
+        a: "**Minimum: 75%** overall Apex code coverage to deploy to production, with at least 1% for each individual class. **Why aim higher:** (1) 75% coverage doesn't guarantee business logic is correct — tests without assertions provide coverage but no validation. (2) Complex classes should have 90%+ coverage to catch edge cases. (3) Tests serve as documentation — they show HOW the code should behave. (4) Good tests catch regression bugs when code changes. (5) Senior developers focus on **behavioral testing**, not percentage: positive cases, negative cases, bulk, security, and edge cases.",
       },
       {
         type: "tricky",
         q: "What does Test.startTest() and Test.stopTest() actually do?",
-        a: "**Test.startTest():** (1) Resets all governor limits — the code between startTest/stopTest gets FRESH limits, separate from the test setup code. (2) Without this, your test data setup consumes limits that your actual code needs. **Test.stopTest():** (1) Forces all asynchronous code (@future, Queueable, Batch, Platform Events) to execute SYNCHRONOUSLY. Without stopTest(), async code never runs in tests. (2) Marks the end of the 'measured' section. You should do all assertions AFTER stopTest() to verify async results."
+        a: "**Test.startTest():** (1) Resets all governor limits — the code between startTest/stopTest gets FRESH limits, separate from the test setup code. (2) Without this, your test data setup consumes limits that your actual code needs. **Test.stopTest():** (1) Forces all asynchronous code (@future, Queueable, Batch, Platform Events) to execute SYNCHRONOUSLY. Without stopTest(), async code never runs in tests. (2) Marks the end of the 'measured' section. You should do all assertions AFTER stopTest() to verify async results.",
       },
       {
         type: "coding",
         q: "Write a test method that verifies a trigger rejects Accounts with duplicate names.",
-        a: "```apex\n@isTest\nstatic void testDuplicateAccountRejected() {\n    // Create first account\n    Account acc1 = new Account(Name = 'Duplicate Corp');\n    insert acc1;\n    \n    // Try to create duplicate\n    Account acc2 = new Account(Name = 'Duplicate Corp');\n    \n    Test.startTest();\n    Database.SaveResult sr = Database.insert(acc2, false);\n    Test.stopTest();\n    \n    System.assert(!sr.isSuccess(), 'Duplicate account should be rejected');\n    System.assert(\n        sr.getErrors()[0].getMessage().contains('Duplicate'),\n        'Error message should mention duplicate:' + sr.getErrors()[0].getMessage()\n    );\n}\n```"
-      }
-    ]
-  }
+        a: "```apex\n@isTest\nstatic void testDuplicateAccountRejected() {\n    // Create first account\n    Account acc1 = new Account(Name = 'Duplicate Corp');\n    insert acc1;\n    \n    // Try to create duplicate\n    Account acc2 = new Account(Name = 'Duplicate Corp');\n    \n    Test.startTest();\n    Database.SaveResult sr = Database.insert(acc2, false);\n    Test.stopTest();\n    \n    System.assert(!sr.isSuccess(), 'Duplicate account should be rejected');\n    System.assert(\n        sr.getErrors()[0].getMessage().contains('Duplicate'),\n        'Error message should mention duplicate:' + sr.getErrors()[0].getMessage()\n    );\n}\n```",
+      },
+    ],
+  },
 ];
 
 export default sfPhase3b;

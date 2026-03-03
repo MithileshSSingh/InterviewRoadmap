@@ -24,14 +24,16 @@ export function buildMarkdown(roadmap) {
 
   lines.push(`# ${rm.meta.role} at ${rm.meta.company} — Career Roadmap`);
   lines.push(
-    `**Experience:** ${rm.meta.experienceLevel} | **Prep Time:** ${rm.meta.totalWeeks} weeks | **Generated:** ${new Date(rm.meta.generatedAt).toLocaleDateString()}\n`
+    `**Experience:** ${rm.meta.experienceLevel} | **Prep Time:** ${rm.meta.totalWeeks} weeks | **Generated:** ${new Date(rm.meta.generatedAt).toLocaleDateString()}\n`,
   );
 
   // Role Intel
   lines.push(`## Role Intel`);
   if (rm.roleIntel.description) lines.push(`${rm.roleIntel.description}\n`);
   if (rm.roleIntel.requiredSkills?.length)
-    lines.push(`**Required Skills:** ${rm.roleIntel.requiredSkills.join(", ")}`);
+    lines.push(
+      `**Required Skills:** ${rm.roleIntel.requiredSkills.join(", ")}`,
+    );
   if (rm.roleIntel.keyResponsibilities?.length) {
     lines.push(`\n**Key Responsibilities:**`);
     rm.roleIntel.keyResponsibilities.forEach((r) => lines.push(`- ${r}`));
@@ -42,13 +44,13 @@ export function buildMarkdown(roadmap) {
 
   // Interview Process
   lines.push(
-    `## Interview Process (${rm.interviewProcess.totalRounds} rounds — ${rm.interviewProcess.timeline})`
+    `## Interview Process (${rm.interviewProcess.totalRounds} rounds — ${rm.interviewProcess.timeline})`,
   );
   if (rm.interviewProcess.rounds?.length) {
     lines.push(`| Round | Type | Duration | Focus |`);
     lines.push(`|-------|------|----------|-------|`);
     rm.interviewProcess.rounds.forEach((r) =>
-      lines.push(`| ${r.round} | ${r.type} | ${r.duration} | ${r.focus} |`)
+      lines.push(`| ${r.round} | ${r.type} | ${r.duration} | ${r.focus} |`),
     );
   }
   lines.push("");
@@ -60,8 +62,8 @@ export function buildMarkdown(roadmap) {
     lines.push(`|-------|------|-----------|--------------|-------|`);
     rm.salaryIntel.levels.forEach((l) =>
       lines.push(
-        `| ${l.level} | ${l.base} | ${l.totalComp} | ${l.equity4yr} | ${l.bonus} |`
-      )
+        `| ${l.level} | ${l.base} | ${l.totalComp} | ${l.equity4yr} | ${l.bonus} |`,
+      ),
     );
   }
   const salSources = rm.salaryIntel.sources?.join(", ") || "LLM estimate";
@@ -71,20 +73,22 @@ export function buildMarkdown(roadmap) {
   lines.push(`## Study Plan`);
   (rm.phases ?? []).forEach((phase) => {
     lines.push(
-      `\n### Phase ${phase.phaseNumber}: ${phase.title} (${phase.durationWeeks} weeks)`
+      `\n### Phase ${phase.phaseNumber}: ${phase.title} (${phase.durationWeeks} weeks)`,
     );
     if (phase.description) lines.push(phase.description);
     phase.topics.forEach((topic) => {
       const check = topic.completed ? "x" : " ";
       lines.push(
-        `\n- [${check}] **${topic.name}** | ${topic.difficulty} | ~${topic.estimatedHours}h`
+        `\n- [${check}] **${topic.name}** | ${topic.difficulty} | ~${topic.estimatedHours}h`,
       );
       if (topic.subtopics?.length)
         lines.push(`  - Subtopics: ${topic.subtopics.join(", ")}`);
       if (topic.resources?.length) {
         lines.push(`  - Resources:`);
         topic.resources.forEach((r) =>
-          lines.push(`    - [${r.title}](${r.url}) (${r.free ? "free" : "paid"})`)
+          lines.push(
+            `    - [${r.title}](${r.url}) (${r.free ? "free" : "paid"})`,
+          ),
         );
       }
     });
@@ -99,7 +103,9 @@ export function buildMarkdown(roadmap) {
     lines.push(`**Key Concepts:** ${rm.systemDesign.keyConcepts.join(", ")}`);
   if (rm.systemDesign.resources?.length) {
     lines.push(`**Resources:**`);
-    rm.systemDesign.resources.forEach((r) => lines.push(`- [${r.title}](${r.url})`));
+    rm.systemDesign.resources.forEach((r) =>
+      lines.push(`- [${r.title}](${r.url})`),
+    );
   }
   lines.push("");
 
@@ -121,7 +127,7 @@ export function buildMarkdown(roadmap) {
   if (rm.peopleIntel.referralSearches?.length) {
     lines.push(`\n**LinkedIn Searches:**`);
     rm.peopleIntel.referralSearches.forEach((s) =>
-      lines.push(`- [${s.label}](${s.url}) — ${s.description}`)
+      lines.push(`- [${s.label}](${s.url}) — ${s.description}`),
     );
   }
   if (rm.peopleIntel.tips?.length) {
@@ -152,14 +158,14 @@ function buildHtmlBody(roadmap) {
   const roundRows = (rm.interviewProcess.rounds ?? [])
     .map(
       (r) =>
-        `<tr><td>${esc(r.round)}</td><td>${esc(r.type)}</td><td>${esc(r.duration)}</td><td>${esc(r.focus)}</td></tr>`
+        `<tr><td>${esc(r.round)}</td><td>${esc(r.type)}</td><td>${esc(r.duration)}</td><td>${esc(r.focus)}</td></tr>`,
     )
     .join("");
 
   const salRows = (rm.salaryIntel.levels ?? [])
     .map(
       (l) =>
-        `<tr><td>${esc(l.level)}</td><td>${esc(l.base)}</td><td>${esc(l.totalComp)}</td><td>${esc(l.equity4yr)}</td><td>${esc(l.bonus)}</td></tr>`
+        `<tr><td>${esc(l.level)}</td><td>${esc(l.base)}</td><td>${esc(l.totalComp)}</td><td>${esc(l.equity4yr)}</td><td>${esc(l.bonus)}</td></tr>`,
     )
     .join("");
 
@@ -172,7 +178,7 @@ function buildHtmlBody(roadmap) {
             ? `<ul style="margin:0.2rem 0 0 1.2rem">${topic.resources
                 .map(
                   (r) =>
-                    `<li><a href="${esc(r.url)}">${esc(r.title)}</a> (${r.free ? "free" : "paid"})</li>`
+                    `<li><a href="${esc(r.url)}">${esc(r.title)}</a> (${r.free ? "free" : "paid"})</li>`,
                 )
                 .join("")}</ul>`
             : "";
@@ -193,7 +199,7 @@ function buildHtmlBody(roadmap) {
   const linkedInHtml = (rm.peopleIntel.referralSearches ?? [])
     .map(
       (s) =>
-        `<li><a href="${esc(s.url)}">${esc(s.label)}</a> — ${esc(s.description)}</li>`
+        `<li><a href="${esc(s.url)}">${esc(s.label)}</a> — ${esc(s.description)}</li>`,
     )
     .join("");
 
@@ -306,7 +312,11 @@ export function exportRoadmap(roadmap, format) {
   const slug = buildSlug(roadmap);
 
   if (format === "json") {
-    downloadFile(JSON.stringify(roadmap, null, 2), `${slug}-roadmap.json`, "application/json");
+    downloadFile(
+      JSON.stringify(roadmap, null, 2),
+      `${slug}-roadmap.json`,
+      "application/json",
+    );
   } else if (format === "markdown") {
     downloadFile(buildMarkdown(roadmap), `${slug}-roadmap.md`, "text/markdown");
   } else if (format === "pdf") {
@@ -317,6 +327,10 @@ export function exportRoadmap(roadmap, format) {
     win.focus();
     setTimeout(() => win.print(), 500);
   } else if (format === "doc") {
-    downloadFile(buildWordHtml(roadmap), `${slug}-roadmap.doc`, "application/msword");
+    downloadFile(
+      buildWordHtml(roadmap),
+      `${slug}-roadmap.doc`,
+      "application/msword",
+    );
   }
 }

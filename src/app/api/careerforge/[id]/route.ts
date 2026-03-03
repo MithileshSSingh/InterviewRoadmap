@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -24,16 +24,18 @@ export async function GET(
     // Merge topic completion state from DB into the phases
     if (result && roadmap.topicProgress.length > 0) {
       const completedIds = new Set(
-        roadmap.topicProgress.filter((t) => t.completed).map((t) => t.topicId)
+        roadmap.topicProgress.filter((t) => t.completed).map((t) => t.topicId),
       );
       if (result.phases) {
-        result.phases = result.phases.map((phase: { topics: { id: string }[] }) => ({
-          ...phase,
-          topics: phase.topics.map((topic: { id: string }) => ({
-            ...topic,
-            completed: completedIds.has(topic.id),
-          })),
-        }));
+        result.phases = result.phases.map(
+          (phase: { topics: { id: string }[] }) => ({
+            ...phase,
+            topics: phase.topics.map((topic: { id: string }) => ({
+              ...topic,
+              completed: completedIds.has(topic.id),
+            })),
+          }),
+        );
       }
     }
 
@@ -51,13 +53,16 @@ export async function GET(
     });
   } catch (err) {
     console.error("[CareerForge GET] Error:", err);
-    return NextResponse.json({ error: "Failed to fetch roadmap" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch roadmap" },
+      { status: 500 },
+    );
   }
 }
 
 export async function DELETE(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -65,6 +70,9 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[CareerForge DELETE] Error:", err);
-    return NextResponse.json({ error: "Failed to delete roadmap" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete roadmap" },
+      { status: 500 },
+    );
   }
 }

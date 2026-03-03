@@ -104,20 +104,20 @@ function minCostClimbing(cost: number[]): number {
       "Forgetting the base case — every DP needs properly initialized base cases",
       "Wrong state definition — if dp[i] doesn't clearly represent something, the recurrence will be wrong",
       "Not optimizing space — many 1D DP problems only need the last 1-2 values, not the full array",
-      "Jumping to DP without trying simpler approaches first — greedy or brute force may be sufficient"
+      "Jumping to DP without trying simpler approaches first — greedy or brute force may be sufficient",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "What is dynamic programming and when do you use it?",
-        a: "DP solves problems with **overlapping sub-problems** and **optimal substructure** by storing sub-problem results to avoid recomputation. Use when: 1) The problem asks for min/max/count of ways. 2) You can break it into smaller versions of itself. 3) Recursion has repeated states. 4) Greedy provably doesn't work. Keywords: 'minimum', 'maximum', 'how many ways', 'is it possible'."
+        a: "DP solves problems with **overlapping sub-problems** and **optimal substructure** by storing sub-problem results to avoid recomputation. Use when: 1) The problem asks for min/max/count of ways. 2) You can break it into smaller versions of itself. 3) Recursion has repeated states. 4) Greedy provably doesn't work. Keywords: 'minimum', 'maximum', 'how many ways', 'is it possible'.",
       },
       {
         type: "coding",
         q: "House Robber: Given an array of house values, find max money robbing non-adjacent houses.",
-        a: "```js\nfunction rob(nums) {\n  if (nums.length === 1) return nums[0];\n  let prev2 = 0, prev1 = 0;\n  for (const n of nums) {\n    const curr = Math.max(prev1, prev2 + n);\n    prev2 = prev1;\n    prev1 = curr;\n  }\n  return prev1;\n}\n// dp[i] = max(dp[i-1], dp[i-2] + nums[i])\n// O(n) time, O(1) space\n```"
-      }
-    ]
+        a: "```js\nfunction rob(nums) {\n  if (nums.length === 1) return nums[0];\n  let prev2 = 0, prev1 = 0;\n  for (const n of nums) {\n    const curr = Math.max(prev1, prev2 + n);\n    prev2 = prev1;\n    prev1 = curr;\n  }\n  return prev1;\n}\n// dp[i] = max(dp[i-1], dp[i-2] + nums[i])\n// O(n) time, O(1) space\n```",
+      },
+    ],
   },
   {
     id: "dp-1d-problems",
@@ -238,20 +238,20 @@ function maxProduct(nums: number[]): number {
       "Forgetting that LIS has both O(n²) and O(n log n) solutions — interviewers often expect the faster one",
       "Not tracking both max and min product in max product subarray — negative × negative = positive",
       "Initializing dp array with wrong values — often should be 0, Infinity, or -Infinity depending on min/max",
-      "Not considering the coin change 'impossible' case — return -1 if amount can't be made"
+      "Not considering the coin change 'impossible' case — return -1 if amount can't be made",
     ],
     interviewQuestions: [
       {
         type: "coding",
         q: "Find the length of the longest increasing subsequence in O(n log n).",
-        a: "```js\nfunction lengthOfLIS(nums) {\n  const tails = [];\n  for (const num of nums) {\n    let lo = 0, hi = tails.length;\n    while (lo < hi) {\n      const mid = (lo + hi) >>> 1;\n      if (tails[mid] < num) lo = mid + 1;\n      else hi = mid;\n    }\n    tails[lo] = num; // Replace or extend\n  }\n  return tails.length;\n}\n// tails[i] = smallest tail of all increasing subsequences of length i+1\n// Binary search to find insertion point\n```"
+        a: "```js\nfunction lengthOfLIS(nums) {\n  const tails = [];\n  for (const num of nums) {\n    let lo = 0, hi = tails.length;\n    while (lo < hi) {\n      const mid = (lo + hi) >>> 1;\n      if (tails[mid] < num) lo = mid + 1;\n      else hi = mid;\n    }\n    tails[lo] = num; // Replace or extend\n  }\n  return tails.length;\n}\n// tails[i] = smallest tail of all increasing subsequences of length i+1\n// Binary search to find insertion point\n```",
       },
       {
         type: "conceptual",
         q: "How do you optimize 1D DP from O(n) space to O(1)?",
-        a: "If dp[i] only depends on a fixed number of previous values (e.g., dp[i-1] and dp[i-2]), replace the array with variables: `prev2`, `prev1`, `curr`. After computing curr, shift: prev2 = prev1, prev1 = curr. This is called **rolling/sliding window optimization**. Works for Fibonacci, house robber, climbing stairs, decode ways."
-      }
-    ]
+        a: "If dp[i] only depends on a fixed number of previous values (e.g., dp[i-1] and dp[i-2]), replace the array with variables: `prev2`, `prev1`, `curr`. After computing curr, shift: prev2 = prev1, prev1 = curr. This is called **rolling/sliding window optimization**. Works for Fibonacci, house robber, climbing stairs, decode ways.",
+      },
+    ],
   },
   {
     id: "dp-2d-problems",
@@ -375,20 +375,20 @@ function knapsack(weights: number[], values: number[], capacity: number): number
       "Not initializing the first row and column for grid DP — they represent base cases",
       "Confusing subsequence (not contiguous) with substring (contiguous) — LCS is subsequence",
       "Not understanding edit distance operations — insert, delete, replace correspond to specific dp directions",
-      "Using 2D space when 1D suffices — many 2D problems can be optimized to use only the previous row"
+      "Using 2D space when 1D suffices — many 2D problems can be optimized to use only the previous row",
     ],
     interviewQuestions: [
       {
         type: "coding",
         q: "Find the edit distance between two strings.",
-        a: "```js\nfunction editDistance(s1, s2) {\n  const m = s1.length, n = s2.length;\n  const dp = Array.from({length:m+1}, (_,i) => \n    Array.from({length:n+1}, (_,j) => i===0?j:j===0?i:0));\n  for (let i=1; i<=m; i++)\n    for (let j=1; j<=n; j++)\n      dp[i][j] = s1[i-1]===s2[j-1] ? dp[i-1][j-1] :\n        1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);\n  return dp[m][n];\n}\n// O(mn) time, O(mn) space\n```"
+        a: "```js\nfunction editDistance(s1, s2) {\n  const m = s1.length, n = s2.length;\n  const dp = Array.from({length:m+1}, (_,i) => \n    Array.from({length:n+1}, (_,j) => i===0?j:j===0?i:0));\n  for (let i=1; i<=m; i++)\n    for (let j=1; j<=n; j++)\n      dp[i][j] = s1[i-1]===s2[j-1] ? dp[i-1][j-1] :\n        1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);\n  return dp[m][n];\n}\n// O(mn) time, O(mn) space\n```",
       },
       {
         type: "conceptual",
         q: "How does the LCS recurrence work?",
-        a: "For strings s1[0..i-1] and s2[0..j-1]: If s1[i-1] === s2[j-1]: dp[i][j] = dp[i-1][j-1] + 1 (both chars match, extend LCS). Else: dp[i][j] = max(dp[i-1][j], dp[i][j-1]) (skip one char from either string, take the better option). Base: dp[0][j] = dp[i][0] = 0 (empty string has LCS 0)."
-      }
-    ]
+        a: "For strings s1[0..i-1] and s2[0..j-1]: If s1[i-1] === s2[j-1]: dp[i][j] = dp[i-1][j-1] + 1 (both chars match, extend LCS). Else: dp[i][j] = max(dp[i-1][j], dp[i][j-1]) (skip one char from either string, take the better option). Base: dp[0][j] = dp[i][0] = 0 (empty string has LCS 0).",
+      },
+    ],
   },
   {
     id: "dp-advanced",
@@ -519,20 +519,20 @@ function canPartition(nums: number[]): boolean {
       "Confusing 0/1 knapsack (each item once) with unbounded (items reusable) — different iteration order",
       "Not recognizing state machine DP — keywords: 'state', 'cooldown', 'at most k transactions'",
       "Bitmask DP only works for n ≤ ~20 due to 2ⁿ states — don't try with n = 100",
-      "Interval DP: filling in wrong order — must fill by increasing length, not row by row"
+      "Interval DP: filling in wrong order — must fill by increasing length, not row by row",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "What are the different types of knapsack problems?",
-        a: "1) **0/1 Knapsack**: each item once, choose to include or not. 2) **Unbounded**: items can be reused (coin change, rod cutting). 3) **Bounded**: each item has a count. Key difference in 1D optimization: 0/1 iterates capacity right-to-left, unbounded iterates left-to-right. This prevents/allows reusing items."
+        a: "1) **0/1 Knapsack**: each item once, choose to include or not. 2) **Unbounded**: items can be reused (coin change, rod cutting). 3) **Bounded**: each item has a count. Key difference in 1D optimization: 0/1 iterates capacity right-to-left, unbounded iterates left-to-right. This prevents/allows reusing items.",
       },
       {
         type: "coding",
         q: "Can you partition an array into two subsets with equal sum?",
-        a: "```js\nfunction canPartition(nums) {\n  const sum = nums.reduce((a,b) => a+b, 0);\n  if (sum % 2) return false;\n  const target = sum / 2;\n  const dp = new Array(target+1).fill(false);\n  dp[0] = true;\n  for (const num of nums) {\n    for (let j = target; j >= num; j--) // Right-to-left!\n      dp[j] = dp[j] || dp[j-num];\n  }\n  return dp[target];\n}\n// O(n × sum) time, O(sum) space\n```"
-      }
-    ]
+        a: "```js\nfunction canPartition(nums) {\n  const sum = nums.reduce((a,b) => a+b, 0);\n  if (sum % 2) return false;\n  const target = sum / 2;\n  const dp = new Array(target+1).fill(false);\n  dp[0] = true;\n  for (const num of nums) {\n    for (let j = target; j >= num; j--) // Right-to-left!\n      dp[j] = dp[j] || dp[j-num];\n  }\n  return dp[target];\n}\n// O(n × sum) time, O(sum) space\n```",
+      },
+    ],
   },
   {
     id: "memoization-vs-tabulation",
@@ -657,20 +657,20 @@ function memoize<T extends (...args: any[]) => any>(fn: T): T {
       "Not recognizing that memoization can stack overflow for deep recursion — switch to tabulation",
       "Assuming tabulation always computes unnecessary states — sometimes the iteration order naturally skips them",
       "Forgetting that tabulation enables space optimization (rolling array) but memoization doesn't",
-      "Using memoization in production for non-recursive scenarios — tabulation is usually more efficient"
+      "Using memoization in production for non-recursive scenarios — tabulation is usually more efficient",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "When would you prefer memoization over tabulation?",
-        a: "1) When the recursive structure is **natural and clear** — easier to derive. 2) When **not all sub-problems** are needed (sparse state space). 3) When the **iteration order** for tabulation is complex. 4) During interviews when you need a **quick correct solution**. Prefer tabulation when: you need space optimization, risk stack overflow, or need max performance."
+        a: "1) When the recursive structure is **natural and clear** — easier to derive. 2) When **not all sub-problems** are needed (sparse state space). 3) When the **iteration order** for tabulation is complex. 4) During interviews when you need a **quick correct solution**. Prefer tabulation when: you need space optimization, risk stack overflow, or need max performance.",
       },
       {
         type: "tricky",
         q: "Can memoization cause stack overflow? When?",
-        a: "Yes! If the recursion depth is O(n) and n is large (>10,000), the call stack overflows. Example: `fibMemo(50000)` crashes even with caching because you recurse 50,000 deep before hitting cached values. Solution: convert to tabulation (iterative), or use iterative deepening, or increase stack size."
-      }
-    ]
+        a: "Yes! If the recursion depth is O(n) and n is large (>10,000), the call stack overflows. Example: `fibMemo(50000)` crashes even with caching because you recurse 50,000 deep before hitting cached values. Solution: convert to tabulation (iterative), or use iterative deepening, or increase stack size.",
+      },
+    ],
   },
   {
     id: "recursion-advanced",
@@ -804,21 +804,21 @@ console.log(factTrampoline(100000)); // No stack overflow!`,
       "Relying on TCO in JavaScript — only Safari supports it; use iteration or trampoline for production",
       "Not recognizing tree recursion's exponential nature — always check if memoization is needed",
       "Writing 'fake' tail recursion where work happens after the call — n * factorial(n-1) is NOT tail recursive",
-      "Using recursion for very deep problems without considering stack limits — convert to iterative"
+      "Using recursion for very deep problems without considering stack limits — convert to iterative",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "What is the difference between linear and tree recursion?",
-        a: "**Linear recursion**: one recursive call per invocation, creating a chain. Space is O(n) for the call stack. Example: factorial. **Tree recursion**: multiple recursive calls, creating a tree of calls. Time is often exponential (2ⁿ for binary tree recursion). Example: fibonacci, subsets. Tree recursion often has overlapping sub-problems → use memoization."
+        a: "**Linear recursion**: one recursive call per invocation, creating a chain. Space is O(n) for the call stack. Example: factorial. **Tree recursion**: multiple recursive calls, creating a tree of calls. Time is often exponential (2ⁿ for binary tree recursion). Example: fibonacci, subsets. Tree recursion often has overlapping sub-problems → use memoization.",
       },
       {
         type: "coding",
         q: "Implement the trampoline pattern to prevent stack overflow in recursive functions.",
-        a: "```js\nfunction trampoline(fn) {\n  return (...args) => {\n    let result = fn(...args);\n    while (typeof result === 'function') result = result();\n    return result;\n  };\n}\n// Usage: return () => recurse(n-1) instead of recurse(n-1)\n// Each 'bounce' uses constant stack space\n```"
-      }
-    ]
-  }
+        a: "```js\nfunction trampoline(fn) {\n  return (...args) => {\n    let result = fn(...args);\n    while (typeof result === 'function') result = result();\n    return result;\n  };\n}\n// Usage: return () => recurse(n-1) instead of recurse(n-1)\n// Each 'bounce' uses constant stack space\n```",
+      },
+    ],
+  },
 ];
 
 export default dsaPhase3b;

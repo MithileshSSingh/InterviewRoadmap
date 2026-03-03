@@ -2,7 +2,8 @@ const dsaPhase3 = {
   id: "phase-3",
   title: "Phase 3: Algorithmic Patterns",
   emoji: "🟡",
-  description: "Master core problem-solving patterns — prefix sum, advanced binary search, divide & conquer, backtracking, greedy, and dynamic programming.",
+  description:
+    "Master core problem-solving patterns — prefix sum, advanced binary search, divide & conquer, backtracking, greedy, and dynamic programming.",
   topics: [
     {
       id: "prefix-sum",
@@ -117,20 +118,20 @@ function buildFromDiff(diff: number[]): number[] {
         "Not considering negative numbers — prefix sum works with negatives, but some optimizations (like pruning) don't",
         "Forgetting the base case {0: 1} in the hash map for subarray sum = k — counts subarrays starting from index 0",
         "Using prefix sum for single queries — not worth it for one-time range sum (just loop)",
-        "Not recognizing prefix sum pattern — keywords: 'range', 'subarray sum', 'cumulative'"
+        "Not recognizing prefix sum pattern — keywords: 'range', 'subarray sum', 'cumulative'",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Count the number of subarrays that sum to k.",
-          a: "```js\nfunction subarraySum(nums, k) {\n  const map = new Map([[0, 1]]); // BASE CASE\n  let sum = 0, count = 0;\n  for (const n of nums) {\n    sum += n;\n    if (map.has(sum - k)) count += map.get(sum - k);\n    map.set(sum, (map.get(sum) || 0) + 1);\n  }\n  return count;\n}\n// O(n) time, O(n) space\n// Key: prefix[j]-prefix[i]=k means subarray (i,j] sums to k\n```"
+          a: "```js\nfunction subarraySum(nums, k) {\n  const map = new Map([[0, 1]]); // BASE CASE\n  let sum = 0, count = 0;\n  for (const n of nums) {\n    sum += n;\n    if (map.has(sum - k)) count += map.get(sum - k);\n    map.set(sum, (map.get(sum) || 0) + 1);\n  }\n  return count;\n}\n// O(n) time, O(n) space\n// Key: prefix[j]-prefix[i]=k means subarray (i,j] sums to k\n```",
         },
         {
           type: "conceptual",
           q: "How does prefix sum turn O(n) range queries into O(1)?",
-          a: "By pre-computing cumulative sums. prefix[i] = sum of elements 0..i. Then sum(i..j) = prefix[j] - prefix[i-1]. This subtraction is O(1). The preprocessing is O(n), but each subsequent query is O(1). This is a classic time-space tradeoff: O(n) extra space for O(1) queries."
-        }
-      ]
+          a: "By pre-computing cumulative sums. prefix[i] = sum of elements 0..i. Then sum(i..j) = prefix[j] - prefix[i-1]. This subtraction is O(1). The preprocessing is O(n), but each subsequent query is O(1). This is a classic time-space tradeoff: O(n) extra space for O(1) queries.",
+        },
+      ],
     },
     {
       id: "binary-search-advanced",
@@ -239,20 +240,20 @@ function searchMatrix(matrix: number[][], target: number): boolean {
         "Not identifying the monotonic condition — binary search on answer ONLY works when the feasibility is monotonic",
         "Wrong initialization of lo/hi bounds — lo should be the minimum possible answer, hi the maximum",
         "Not handling edge cases: single element, all same elements, empty input",
-        "Infinite loop when lo = hi - 1 and mid = lo always — ensure the search space shrinks each iteration"
+        "Infinite loop when lo = hi - 1 and mid = lo always — ensure the search space shrinks each iteration",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Koko has piles of bananas and h hours. Find minimum eating speed to finish all bananas.",
-          a: "```js\nfunction minEatingSpeed(piles, h) {\n  let lo = 1, hi = Math.max(...piles);\n  while (lo < hi) {\n    const mid = (lo + hi) >>> 1;\n    const hours = piles.reduce((s, p) => s + Math.ceil(p / mid), 0);\n    if (hours <= h) hi = mid;\n    else lo = mid + 1;\n  }\n  return lo;\n}\n// Binary search on the answer (speed)\n// Monotonic: higher speed → fewer hours (always feasible)\n```"
+          a: "```js\nfunction minEatingSpeed(piles, h) {\n  let lo = 1, hi = Math.max(...piles);\n  while (lo < hi) {\n    const mid = (lo + hi) >>> 1;\n    const hours = piles.reduce((s, p) => s + Math.ceil(p / mid), 0);\n    if (hours <= h) hi = mid;\n    else lo = mid + 1;\n  }\n  return lo;\n}\n// Binary search on the answer (speed)\n// Monotonic: higher speed → fewer hours (always feasible)\n```",
         },
         {
           type: "conceptual",
           q: "How do you identify when to use 'binary search on the answer space'?",
-          a: "Three conditions: 1) The answer lies in a **bounded range** [min, max]. 2) You can write a **feasibility function** `canDo(mid)` that checks if mid is achievable. 3) The feasibility is **monotonic** — once it becomes true, it stays true for all larger (or smaller) values. Common keywords: 'minimize the maximum', 'maximize the minimum', 'find the minimum X such that'."
-        }
-      ]
+          a: "Three conditions: 1) The answer lies in a **bounded range** [min, max]. 2) You can write a **feasibility function** `canDo(mid)` that checks if mid is achievable. 3) The feasibility is **monotonic** — once it becomes true, it stays true for all larger (or smaller) values. Common keywords: 'minimize the maximum', 'maximize the minimum', 'find the minimum X such that'.",
+        },
+      ],
     },
     {
       id: "fast-slow-pointers",
@@ -368,20 +369,20 @@ function findDuplicate(nums: number[]): number {
         "Forgetting to check for no-cycle case — fast reaches null means no cycle",
         "Not resetting slow to head in phase 2 of cycle detection — both must move at speed 1",
         "Applying Floyd's to problems without cyclic structure — it only works when there's a cycle",
-        "Confusing the meeting point with the cycle start — they are NOT the same (phase 1 vs phase 2)"
+        "Confusing the meeting point with the cycle start — they are NOT the same (phase 1 vs phase 2)",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "How does Floyd's cycle detection algorithm work and why?",
-          a: "Two pointers: slow (1 step) and fast (2 steps). If there's a cycle, fast eventually laps slow (they meet inside the cycle). To find cycle START: reset slow to head, move both at speed 1 — they meet at the cycle entrance. Math: if distance to cycle = a, meeting point inside cycle = b, cycle length = c, then a = c - b, which is why the two-phase approach works."
+          a: "Two pointers: slow (1 step) and fast (2 steps). If there's a cycle, fast eventually laps slow (they meet inside the cycle). To find cycle START: reset slow to head, move both at speed 1 — they meet at the cycle entrance. Math: if distance to cycle = a, meeting point inside cycle = b, cycle length = c, then a = c - b, which is why the two-phase approach works.",
         },
         {
           type: "coding",
           q: "Find the duplicate number in an array of n+1 integers where each is in [1, n]. O(1) space.",
-          a: "```js\nfunction findDuplicate(nums) {\n  let slow = nums[0], fast = nums[0];\n  do { slow = nums[slow]; fast = nums[nums[fast]]; }\n  while (slow !== fast);\n  slow = nums[0];\n  while (slow !== fast) { slow = nums[slow]; fast = nums[fast]; }\n  return slow;\n}\n// Treat array as linked list: value at index i points to index nums[i]\n// Duplicate means two indices point to same value → cycle!\n```"
-        }
-      ]
+          a: "```js\nfunction findDuplicate(nums) {\n  let slow = nums[0], fast = nums[0];\n  do { slow = nums[slow]; fast = nums[nums[fast]]; }\n  while (slow !== fast);\n  slow = nums[0];\n  while (slow !== fast) { slow = nums[slow]; fast = nums[fast]; }\n  return slow;\n}\n// Treat array as linked list: value at index i points to index nums[i]\n// Duplicate means two indices point to same value → cycle!\n```",
+        },
+      ],
     },
     {
       id: "divide-and-conquer",
@@ -493,20 +494,20 @@ function power(base: number, exp: number): number {
         "Inefficient combining step — the combine step can dominate complexity if not optimized",
         "Creating too many new arrays (memory overhead) — in-place D&C is often preferred",
         "Using D&C when a simpler approach exists — Kadane's O(n) beats D&C O(n log n) for max subarray",
-        "Not applying the Master Theorem to analyze complexity — essential for understanding D&C performance"
+        "Not applying the Master Theorem to analyze complexity — essential for understanding D&C performance",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the divide and conquer paradigm? Give three examples.",
-          a: "D&C solves problems by: 1) **Dividing** into smaller sub-problems. 2) **Conquering** each recursively. 3) **Combining** results. Examples: **Merge Sort** (divide array, sort halves, merge), **Binary Search** (divide search space, check one half), **Quick Sort** (partition, sort sub-arrays). The key is that sub-problems are independent and the combine step is efficient."
+          a: "D&C solves problems by: 1) **Dividing** into smaller sub-problems. 2) **Conquering** each recursively. 3) **Combining** results. Examples: **Merge Sort** (divide array, sort halves, merge), **Binary Search** (divide search space, check one half), **Quick Sort** (partition, sort sub-arrays). The key is that sub-problems are independent and the combine step is efficient.",
         },
         {
           type: "coding",
           q: "Find kth largest element in an unsorted array in average O(n) time.",
-          a: "```js\nfunction findKthLargest(nums, k) {\n  k = nums.length - k; // Convert to kth smallest\n  function quickselect(lo, hi) {\n    const pivot = nums[hi];\n    let i = lo;\n    for (let j = lo; j < hi; j++) {\n      if (nums[j] < pivot) { [nums[i], nums[j]] = [nums[j], nums[i]]; i++; }\n    }\n    [nums[i], nums[hi]] = [nums[hi], nums[i]];\n    if (i === k) return nums[i];\n    return i < k ? quickselect(i+1, hi) : quickselect(lo, i-1);\n  }\n  return quickselect(0, nums.length - 1);\n}\n```"
-        }
-      ]
+          a: "```js\nfunction findKthLargest(nums, k) {\n  k = nums.length - k; // Convert to kth smallest\n  function quickselect(lo, hi) {\n    const pivot = nums[hi];\n    let i = lo;\n    for (let j = lo; j < hi; j++) {\n      if (nums[j] < pivot) { [nums[i], nums[j]] = [nums[j], nums[i]]; i++; }\n    }\n    [nums[i], nums[hi]] = [nums[hi], nums[i]];\n    if (i === k) return nums[i];\n    return i < k ? quickselect(i+1, hi) : quickselect(lo, i-1);\n  }\n  return quickselect(0, nums.length - 1);\n}\n```",
+        },
+      ],
     },
     {
       id: "backtracking",
@@ -647,20 +648,20 @@ function exist(board: string[][], word: string): boolean {
         "Not creating a copy when recording solutions — push([...current]) not push(current)",
         "Not pruning — leads to exploring unnecessary branches; always look for ways to skip",
         "Confusing subsets (2ⁿ), permutations (n!), and combinations (nCk)",
-        "Modifying global state instead of passing state through parameters"
+        "Modifying global state instead of passing state through parameters",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is backtracking and how does it differ from brute force?",
-          a: "Backtracking builds solutions incrementally as a decision tree and **abandons (prunes) branches** that can't lead to valid solutions. Brute force tries ALL possible solutions without pruning. Backtracking is brute force WITH intelligence — it still explores exponentially but skips provably invalid paths. Example: N-Queens prunes columns and diagonals, avoiding most of the n^n possibilities."
+          a: "Backtracking builds solutions incrementally as a decision tree and **abandons (prunes) branches** that can't lead to valid solutions. Brute force tries ALL possible solutions without pruning. Backtracking is brute force WITH intelligence — it still explores exponentially but skips provably invalid paths. Example: N-Queens prunes columns and diagonals, avoiding most of the n^n possibilities.",
         },
         {
           type: "coding",
           q: "Generate all valid combinations of n pairs of parentheses.",
-          a: "```js\nfunction generateParens(n) {\n  const result = [];\n  function bt(s, open, close) {\n    if (s.length === 2 * n) { result.push(s); return; }\n    if (open < n) bt(s + '(', open + 1, close);\n    if (close < open) bt(s + ')', open, close + 1);\n  }\n  bt('', 0, 0);\n  return result;\n}\n// Pruning: only add ')' if close < open\n// This eliminates all invalid sequences\n```"
-        }
-      ]
+          a: "```js\nfunction generateParens(n) {\n  const result = [];\n  function bt(s, open, close) {\n    if (s.length === 2 * n) { result.push(s); return; }\n    if (open < n) bt(s + '(', open + 1, close);\n    if (close < open) bt(s + ')', open, close + 1);\n  }\n  bt('', 0, 0);\n  return result;\n}\n// Pruning: only add ')' if close < open\n// This eliminates all invalid sequences\n```",
+        },
+      ],
     },
     {
       id: "greedy-algorithms",
@@ -789,22 +790,22 @@ function findContentChildren(greed: number[], cookies: number[]): number {
         "Not sorting first — most greedy algorithms require sorting by some criteria",
         "Not proving correctness — greedy can give wrong answers; always verify with counterexamples",
         "Confusing greedy with DP — if you need to consider future states, it's not greedy",
-        "Choosing the wrong greedy criterion — e.g., sorting intervals by start time instead of end time"
+        "Choosing the wrong greedy criterion — e.g., sorting intervals by start time instead of end time",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "When does a greedy algorithm give an optimal solution?",
-          a: "When the problem has both: 1) **Optimal substructure** — optimal solution to the problem contains optimal solutions to sub-problems. 2) **Greedy choice property** — a locally optimal choice leads to a globally optimal solution. Examples: fractional knapsack, activity selection, Huffman coding. Counter-example: 0/1 knapsack needs DP because greedy choice is suboptimal."
+          a: "When the problem has both: 1) **Optimal substructure** — optimal solution to the problem contains optimal solutions to sub-problems. 2) **Greedy choice property** — a locally optimal choice leads to a globally optimal solution. Examples: fractional knapsack, activity selection, Huffman coding. Counter-example: 0/1 knapsack needs DP because greedy choice is suboptimal.",
         },
         {
           type: "coding",
           q: "Find the minimum number of meeting rooms needed for a list of intervals.",
-          a: "```js\nfunction minMeetingRooms(intervals) {\n  const starts = intervals.map(i => i[0]).sort((a,b) => a-b);\n  const ends = intervals.map(i => i[1]).sort((a,b) => a-b);\n  let rooms = 0, maxRooms = 0, s = 0, e = 0;\n  while (s < starts.length) {\n    if (starts[s] < ends[e]) { rooms++; s++; }\n    else { rooms--; e++; }\n    maxRooms = Math.max(maxRooms, rooms);\n  }\n  return maxRooms;\n}\n// O(n log n) — sort + sweep line\n```"
-        }
-      ]
-    }
-  ]
+          a: "```js\nfunction minMeetingRooms(intervals) {\n  const starts = intervals.map(i => i[0]).sort((a,b) => a-b);\n  const ends = intervals.map(i => i[1]).sort((a,b) => a-b);\n  let rooms = 0, maxRooms = 0, s = 0, e = 0;\n  while (s < starts.length) {\n    if (starts[s] < ends[e]) { rooms++; s++; }\n    else { rooms--; e++; }\n    maxRooms = Math.max(maxRooms, rooms);\n  }\n  return maxRooms;\n}\n// O(n log n) — sort + sweep line\n```",
+        },
+      ],
+    },
+  ],
 };
 
 export default dsaPhase3;

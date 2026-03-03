@@ -2,7 +2,8 @@ const androidPhase5 = {
   id: "phase-5",
   title: "Phase 5: Performance & Optimization",
   emoji: "⚡",
-  description: "Master performance profiling and optimization — memory leaks, ANR debugging, UI jank, battery optimization, and caching strategies.",
+  description:
+    "Master performance profiling and optimization — memory leaks, ANR debugging, UI jank, battery optimization, and caching strategies.",
   topics: [
     {
       id: "memory-leak-detection",
@@ -111,7 +112,7 @@ class MyApplication : Application() {
         {
           type: "scenario",
           q: "Your production app has increasing crash reports for OOM. How do you investigate?",
-          a: "1) **Analyze crashes:** Group OOM crashes by screen/flow in Crashlytics. Identify the most common paths. 2) **Reproduce locally:** Navigate through the top crash paths with Memory Profiler running. Watch for heap growth that doesn't recover. 3) **LeakCanary:** Run debug build through the crash paths. Check for Activity/Fragment leaks. 4) **Heap dump analysis:** Capture heap dump, sort by retained size. Look for unexpected large objects (bitmaps, long lists) and multiple instances of Activities. 5) **Fix patterns:** (a) Use Coil/Glide for image lifecycle management. (b) Clear view bindings in Fragment.onDestroyView(). (c) Switch to lifecycleScope/viewModelScope. 6) **Regression test:** Add memory benchmark tests."
+          a: "1) **Analyze crashes:** Group OOM crashes by screen/flow in Crashlytics. Identify the most common paths. 2) **Reproduce locally:** Navigate through the top crash paths with Memory Profiler running. Watch for heap growth that doesn't recover. 3) **LeakCanary:** Run debug build through the crash paths. Check for Activity/Fragment leaks. 4) **Heap dump analysis:** Capture heap dump, sort by retained size. Look for unexpected large objects (bitmaps, long lists) and multiple instances of Activities. 5) **Fix patterns:** (a) Use Coil/Glide for image lifecycle management. (b) Clear view bindings in Fragment.onDestroyView(). (c) Switch to lifecycleScope/viewModelScope. 6) **Regression test:** Add memory benchmark tests.",
         },
       ],
     },
@@ -221,7 +222,7 @@ if (BuildConfig.DEBUG) {
         {
           type: "scenario",
           q: "Your app's ANR rate is 2% on Play Console. How do you bring it below 0.47%?",
-          a: "1) **Analyze:** Download ANR clusters from Play Console. Group by stack trace — usually 3-5 root causes cover 80% of ANRs. 2) **Top causes:** (a) SharedPreferences.commit() → switch to apply() or DataStore. (b) Database queries on main thread → Room with Dispatchers.IO. (c) Heavy layout inflation → simplify layouts or use ViewStub for deferred inflation. (d) Lock contention → reduce synchronized blocks, use concurrent data structures. 3) **Prevention:** Enable StrictMode in debug, add lint rules for main-thread violations, CI check for ANR patterns. 4) **Monitor:** Set up alerting for ANR rate increase in Play Console. Target: below 0.47% for good Android Vitals."
+          a: "1) **Analyze:** Download ANR clusters from Play Console. Group by stack trace — usually 3-5 root causes cover 80% of ANRs. 2) **Top causes:** (a) SharedPreferences.commit() → switch to apply() or DataStore. (b) Database queries on main thread → Room with Dispatchers.IO. (c) Heavy layout inflation → simplify layouts or use ViewStub for deferred inflation. (d) Lock contention → reduce synchronized blocks, use concurrent data structures. 3) **Prevention:** Enable StrictMode in debug, add lint rules for main-thread violations, CI check for ANR patterns. 4) **Monitor:** Set up alerting for ANR rate increase in Play Console. Target: below 0.47% for good Android Vitals.",
         },
       ],
     },
@@ -341,7 +342,7 @@ fun FilteredList(items: List<Item>, query: String) {
         {
           type: "scenario",
           q: "Users report your app's list scrolling is choppy. How do you diagnose and fix it?",
-          a: "1) **Profile:** Record a Perfetto trace during scroll. Look for frames exceeding 16ms. 2) **Common fixes:** (a) Ensure images use Coil/Glide with proper sizing and caching. (b) Add stable keys to LazyColumn items. (c) Reduce layout depth — flatten nested layouts. (d) Check for object allocation in bind/composable functions. (e) Use AsyncListDiffer/keys for efficient updates. 3) **Compose-specific:** Check Compiler metrics for skippable/restartable functions. Add @Stable/@Immutable annotations. Use derivedStateOf for filtered lists. 4) **Verify:** Run Macrobenchmark to measure frame timing statistically."
+          a: "1) **Profile:** Record a Perfetto trace during scroll. Look for frames exceeding 16ms. 2) **Common fixes:** (a) Ensure images use Coil/Glide with proper sizing and caching. (b) Add stable keys to LazyColumn items. (c) Reduce layout depth — flatten nested layouts. (d) Check for object allocation in bind/composable functions. (e) Use AsyncListDiffer/keys for efficient updates. 3) **Compose-specific:** Check Compiler metrics for skippable/restartable functions. Add @Stable/@Immutable annotations. Use derivedStateOf for filtered lists. 4) **Verify:** Run Macrobenchmark to measure frame timing statistically.",
         },
       ],
     },
@@ -463,7 +464,7 @@ class LocationTracker @Inject constructor(
         {
           type: "scenario",
           q: "Users report your app drains battery. How do you investigate and fix?",
-          a: "1) **Profile:** Use Battery Historian to analyze wake locks, alarms, network activity attributed to your app. 2) **Common culprits:** (a) Wake locks without timeouts — add 10-minute max timeout. (b) High-frequency location polling — reduce to significant motion or geofence-based. (c) Background sync too frequent — use WorkManager with battery constraints. (d) Network polling — switch to push notifications (FCM) for real-time updates. 3) **Quick wins:** Use WorkManager exclusively for background work, enable OkHttp caching, batch network requests. 4) **Monitor:** Track battery stats in Android Vitals on Play Console."
+          a: "1) **Profile:** Use Battery Historian to analyze wake locks, alarms, network activity attributed to your app. 2) **Common culprits:** (a) Wake locks without timeouts — add 10-minute max timeout. (b) High-frequency location polling — reduce to significant motion or geofence-based. (c) Background sync too frequent — use WorkManager with battery constraints. (d) Network polling — switch to push notifications (FCM) for real-time updates. 3) **Quick wins:** Use WorkManager exclusively for background work, enable OkHttp caching, batch network requests. 4) **Monitor:** Track battery stats in Android Vitals on Play Console.",
         },
       ],
     },
@@ -592,7 +593,7 @@ fun CachedImage(url: String, modifier: Modifier = Modifier) {
         {
           type: "conceptual",
           q: "Design a caching strategy for a social media feed with high-frequency updates.",
-          a: "Multi-layer approach: (1) **In-memory:** LruCache for current session's viewed posts. Instant access, limited to ~100 posts. (2) **Room DB:** Persistent cache of the last 500 posts. Source of truth for the UI via Flow. (3) **Network:** Pull-to-refresh or automatic refresh every 2 minutes when app is foregrounded. (4) **Invalidation:** Server push via FCM for new posts (incremental), user pull-to-refresh for full refresh. (5) **Stale data policy:** Show cached data immediately, fetch updates in background. New posts appear with a 'new posts available' banner. (6) **Pagination:** Cache first 3 pages, fetch remaining on demand."
+          a: "Multi-layer approach: (1) **In-memory:** LruCache for current session's viewed posts. Instant access, limited to ~100 posts. (2) **Room DB:** Persistent cache of the last 500 posts. Source of truth for the UI via Flow. (3) **Network:** Pull-to-refresh or automatic refresh every 2 minutes when app is foregrounded. (4) **Invalidation:** Server push via FCM for new posts (incremental), user pull-to-refresh for full refresh. (5) **Stale data policy:** Show cached data immediately, fetch updates in background. New posts appear with a 'new posts available' banner. (6) **Pagination:** Cache first 3 pages, fetch remaining on demand.",
         },
       ],
     },

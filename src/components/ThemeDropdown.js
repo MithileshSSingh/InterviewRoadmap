@@ -28,7 +28,9 @@ export default function ThemeDropdown() {
         aria-label="Select theme"
         title="Select theme"
       >
-        <span className="theme-trigger-emoji">{activeTheme?.emoji || "🎨"}</span>
+        <span className="theme-trigger-emoji">
+          {activeTheme?.emoji || "🎨"}
+        </span>
       </button>
 
       {isOpen && (
@@ -51,7 +53,11 @@ export default function ThemeDropdown() {
                   <span className="theme-item-name">{theme.name}</span>
                   <div className="theme-item-preview">
                     {theme.preview.map((color, i) => (
-                      <div key={i} className="theme-item-swatch" style={{ background: color }} />
+                      <div
+                        key={i}
+                        className="theme-item-swatch"
+                        style={{ background: color }}
+                      />
                     ))}
                   </div>
                 </div>

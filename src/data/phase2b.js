@@ -46,15 +46,35 @@ const amounts = prices.match(/(?<=\\$)\\d+/g); // ["100", "15", "115"]`,
       "Using greedy quantifiers (`.*`) when lazy (`.*?`) is needed — greedy matches too much",
       "Not using the `g` flag when you need all matches, not just the first",
       "Forgetting that `^` and `$` match start/end of string, not line (unless `m` flag is used)",
-      "Complex regex is hard to maintain — consider splitting into multiple simpler checks or use named groups"
+      "Complex regex is hard to maintain — consider splitting into multiple simpler checks or use named groups",
     ],
     interviewQuestions: [
-      { type: "coding", q: "Write a regex to validate a strong password (8+ chars, upper, lower, number, special).", a: "```js\nconst strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,}$/;\n```\nUses positive lookaheads `(?=...)` to check each requirement without consuming characters." },
-      { type: "conceptual", q: "What is the difference between `match()` and `matchAll()`?", a: "`match()` with `g` flag returns an array of matches (no groups). Without `g`, returns first match with groups. `matchAll()` returns an iterator of ALL matches, each with full group info. Always requires the `g` flag." },
-      { type: "tricky", q: "What does `/^$/.test('')` return?", a: "`true`. `^` matches the start and `$` matches the end. An empty string has a start immediately followed by an end, so the pattern matches." },
-      { type: "coding", q: "Write a function to extract all URLs from a text string.", a: "```js\nfunction extractURLs(text) {\n  const regex = /https?:\\/\\/[^\\s]+/gi;\n  return text.match(regex) || [];\n}\n```" },
-      { type: "scenario", q: "When should you avoid using regex?", a: "Avoid regex for: 1) Parsing HTML/XML (use a DOM parser), 2) Very complex validations (use a dedicated library), 3) When string methods like `includes`, `startsWith`, `split` suffice, 4) When readability matters more than cleverness. Regex is best for pattern matching, not structural parsing." }
-    ]
+      {
+        type: "coding",
+        q: "Write a regex to validate a strong password (8+ chars, upper, lower, number, special).",
+        a: "```js\nconst strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,}$/;\n```\nUses positive lookaheads `(?=...)` to check each requirement without consuming characters.",
+      },
+      {
+        type: "conceptual",
+        q: "What is the difference between `match()` and `matchAll()`?",
+        a: "`match()` with `g` flag returns an array of matches (no groups). Without `g`, returns first match with groups. `matchAll()` returns an iterator of ALL matches, each with full group info. Always requires the `g` flag.",
+      },
+      {
+        type: "tricky",
+        q: "What does `/^$/.test('')` return?",
+        a: "`true`. `^` matches the start and `$` matches the end. An empty string has a start immediately followed by an end, so the pattern matches.",
+      },
+      {
+        type: "coding",
+        q: "Write a function to extract all URLs from a text string.",
+        a: "```js\nfunction extractURLs(text) {\n  const regex = /https?:\\/\\/[^\\s]+/gi;\n  return text.match(regex) || [];\n}\n```",
+      },
+      {
+        type: "scenario",
+        q: "When should you avoid using regex?",
+        a: "Avoid regex for: 1) Parsing HTML/XML (use a DOM parser), 2) Very complex validations (use a dedicated library), 3) When string methods like `includes`, `startsWith`, `split` suffice, 4) When readability matters more than cleverness. Regex is best for pattern matching, not structural parsing.",
+      },
+    ],
   },
   {
     id: "local-session-storage-cookies",
@@ -110,15 +130,35 @@ window.addEventListener("storage", (e) => {
       "Forgetting to `JSON.stringify()` objects before storing and `JSON.parse()` when retrieving",
       "Not handling the case when `getItem()` returns `null` — `JSON.parse(null)` returns `null`, not an error",
       "Setting cookies without `Secure`, `HttpOnly`, and `SameSite` flags — security vulnerability",
-      "Exceeding storage limits without error handling — use try/catch around `setItem`"
+      "Exceeding storage limits without error handling — use try/catch around `setItem`",
     ],
     interviewQuestions: [
-      { type: "conceptual", q: "What are the differences between localStorage, sessionStorage, and cookies?", a: "**localStorage**: ~5MB, persists forever, not sent to server, same-origin. **sessionStorage**: ~5MB, cleared on tab close, not sent to server, tab-specific. **Cookies**: ~4KB, configurable expiry, sent with EVERY HTTP request, can be path-scoped, accessible from server." },
-      { type: "conceptual", q: "Why shouldn't you store sensitive data in localStorage?", a: "localStorage is accessible by ANY JavaScript running on the same origin. If an attacker injects a script (XSS attack), they can read ALL localStorage data. Sensitive data (auth tokens, personal info) should use HttpOnly cookies (inaccessible to JS) or server-side sessions." },
-      { type: "coding", q: "Write a utility class for localStorage with expiry support.", a: "```js\nclass StorageWithExpiry {\n  set(key, value, ttlMs) {\n    const item = { value, expiry: Date.now() + ttlMs };\n    localStorage.setItem(key, JSON.stringify(item));\n  }\n  get(key) {\n    const raw = localStorage.getItem(key);\n    if (!raw) return null;\n    const item = JSON.parse(raw);\n    if (Date.now() > item.expiry) {\n      localStorage.removeItem(key);\n      return null;\n    }\n    return item.value;\n  }\n}\n```" },
-      { type: "tricky", q: "Does the `storage` event fire in the same tab that modified localStorage?", a: "NO. The `storage` event only fires in OTHER tabs/windows of the same origin. It's designed for cross-tab communication. To detect changes in the same tab, you'd need to create a custom event system or wrapper around `setItem`." },
-      { type: "scenario", q: "How would you implement cross-tab communication using localStorage?", a: "Use the `storage` event: Tab A calls `localStorage.setItem('msg', data)`, and Tab B listens with `window.addEventListener('storage', handler)`. The handler fires with the key, old value, and new value. For more robust pub/sub, use `BroadcastChannel` API instead." }
-    ]
+      {
+        type: "conceptual",
+        q: "What are the differences between localStorage, sessionStorage, and cookies?",
+        a: "**localStorage**: ~5MB, persists forever, not sent to server, same-origin. **sessionStorage**: ~5MB, cleared on tab close, not sent to server, tab-specific. **Cookies**: ~4KB, configurable expiry, sent with EVERY HTTP request, can be path-scoped, accessible from server.",
+      },
+      {
+        type: "conceptual",
+        q: "Why shouldn't you store sensitive data in localStorage?",
+        a: "localStorage is accessible by ANY JavaScript running on the same origin. If an attacker injects a script (XSS attack), they can read ALL localStorage data. Sensitive data (auth tokens, personal info) should use HttpOnly cookies (inaccessible to JS) or server-side sessions.",
+      },
+      {
+        type: "coding",
+        q: "Write a utility class for localStorage with expiry support.",
+        a: "```js\nclass StorageWithExpiry {\n  set(key, value, ttlMs) {\n    const item = { value, expiry: Date.now() + ttlMs };\n    localStorage.setItem(key, JSON.stringify(item));\n  }\n  get(key) {\n    const raw = localStorage.getItem(key);\n    if (!raw) return null;\n    const item = JSON.parse(raw);\n    if (Date.now() > item.expiry) {\n      localStorage.removeItem(key);\n      return null;\n    }\n    return item.value;\n  }\n}\n```",
+      },
+      {
+        type: "tricky",
+        q: "Does the `storage` event fire in the same tab that modified localStorage?",
+        a: "NO. The `storage` event only fires in OTHER tabs/windows of the same origin. It's designed for cross-tab communication. To detect changes in the same tab, you'd need to create a custom event system or wrapper around `setItem`.",
+      },
+      {
+        type: "scenario",
+        q: "How would you implement cross-tab communication using localStorage?",
+        a: "Use the `storage` event: Tab A calls `localStorage.setItem('msg', data)`, and Tab B listens with `window.addEventListener('storage', handler)`. The handler fires with the key, old value, and new value. For more robust pub/sub, use `BroadcastChannel` API instead.",
+      },
+    ],
   },
   {
     id: "json",
@@ -185,15 +225,35 @@ const deepCopy = JSON.parse(JSON.stringify(user));`,
       "`JSON.parse(JSON.stringify(obj))` loses Date objects (become strings), undefined values, and functions",
       "Not wrapping `JSON.parse` in try/catch — invalid JSON throws SyntaxError",
       "`JSON.stringify` can't handle circular references — throws TypeError",
-      "JSON keys MUST be double-quoted strings — single quotes or unquoted keys are invalid JSON"
+      "JSON keys MUST be double-quoted strings — single quotes or unquoted keys are invalid JSON",
     ],
     interviewQuestions: [
-      { type: "tricky", q: "What will `JSON.stringify({ a: undefined, b: function(){}, c: Symbol() })` return?", a: "`'{}'`. All three values (`undefined`, functions, Symbols) are omitted by `JSON.stringify`. If they're in an array, they become `null` instead: `JSON.stringify([undefined])` → `'[null]'`." },
-      { type: "conceptual", q: "What are the limitations of using `JSON.parse(JSON.stringify(obj))` for deep cloning?", a: "It loses: `undefined` (omitted), functions, Symbols, Dates (become strings), RegExp (become `{}`), Map/Set (become `{}`), `Infinity`/`NaN` (become `null`), circular references (throws error). Use `structuredClone(obj)` for a proper deep clone." },
-      { type: "coding", q: "Write a function that safely parses JSON with a fallback value.", a: "```js\nfunction safeParse(json, fallback = null) {\n  try {\n    return JSON.parse(json);\n  } catch {\n    return fallback;\n  }\n}\n```" },
-      { type: "conceptual", q: "What is `toJSON()` and when is it useful?", a: "`toJSON()` is a method you define on an object to customize its JSON serialization. When `JSON.stringify` encounters an object with `toJSON()`, it calls that method and serializes the return value instead. Useful for: excluding sensitive data, formatting dates, simplifying complex objects." },
-      { type: "scenario", q: "How would you handle circular references in JSON serialization?", a: "Use a replacer function with a WeakSet: ```js\nfunction safeStringify(obj) {\n  const seen = new WeakSet();\n  return JSON.stringify(obj, (key, value) => {\n    if (typeof value === 'object' && value !== null) {\n      if (seen.has(value)) return '[Circular]';\n      seen.add(value);\n    }\n    return value;\n  });\n}\n```" }
-    ]
+      {
+        type: "tricky",
+        q: "What will `JSON.stringify({ a: undefined, b: function(){}, c: Symbol() })` return?",
+        a: "`'{}'`. All three values (`undefined`, functions, Symbols) are omitted by `JSON.stringify`. If they're in an array, they become `null` instead: `JSON.stringify([undefined])` → `'[null]'`.",
+      },
+      {
+        type: "conceptual",
+        q: "What are the limitations of using `JSON.parse(JSON.stringify(obj))` for deep cloning?",
+        a: "It loses: `undefined` (omitted), functions, Symbols, Dates (become strings), RegExp (become `{}`), Map/Set (become `{}`), `Infinity`/`NaN` (become `null`), circular references (throws error). Use `structuredClone(obj)` for a proper deep clone.",
+      },
+      {
+        type: "coding",
+        q: "Write a function that safely parses JSON with a fallback value.",
+        a: "```js\nfunction safeParse(json, fallback = null) {\n  try {\n    return JSON.parse(json);\n  } catch {\n    return fallback;\n  }\n}\n```",
+      },
+      {
+        type: "conceptual",
+        q: "What is `toJSON()` and when is it useful?",
+        a: "`toJSON()` is a method you define on an object to customize its JSON serialization. When `JSON.stringify` encounters an object with `toJSON()`, it calls that method and serializes the return value instead. Useful for: excluding sensitive data, formatting dates, simplifying complex objects.",
+      },
+      {
+        type: "scenario",
+        q: "How would you handle circular references in JSON serialization?",
+        a: "Use a replacer function with a WeakSet: ```js\nfunction safeStringify(obj) {\n  const seen = new WeakSet();\n  return JSON.stringify(obj, (key, value) => {\n    if (typeof value === 'object' && value !== null) {\n      if (seen.has(value)) return '[Circular]';\n      seen.add(value);\n    }\n    return value;\n  });\n}\n```",
+      },
+    ],
   },
   {
     id: "date-time",
@@ -259,15 +319,35 @@ console.log(rtf.format(2, "hour"));   // "in 2 hours"`,
       "`new Date('2024-01-15')` may be interpreted as UTC, while `new Date('01/15/2024')` is local time",
       "Date objects are mutable — `setDate()` modifies the original! Clone first: `new Date(original)`",
       "Using string concatenation for formatting instead of `Intl.DateTimeFormat` or `toLocaleString`",
-      "Not accounting for daylight saving time when doing date arithmetic"
+      "Not accounting for daylight saving time when doing date arithmetic",
     ],
     interviewQuestions: [
-      { type: "tricky", q: "What does `new Date(2024, 0, 32)` return?", a: "February 1, 2024. JavaScript automatically rolls over overflow values. January has 31 days, so day 32 becomes February 1. Similarly, `new Date(2024, 12, 1)` gives January 1, 2025 (month 12 overflows)." },
-      { type: "conceptual", q: "Why are months 0-indexed in JavaScript's Date?", a: "It's inherited from Java's `java.util.Date` (which JavaScript's Date was modeled after). Jan=0, Dec=11. This is widely considered a design mistake and is one reason the Temporal API was created." },
-      { type: "coding", q: "Write a function that returns a human-readable 'time ago' string.", a: "```js\nfunction timeAgo(date) {\n  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);\n  const intervals = [\n    [31536000, 'year'], [2592000, 'month'],\n    [86400, 'day'], [3600, 'hour'], [60, 'minute']\n  ];\n  for (const [secs, label] of intervals) {\n    const count = Math.floor(seconds / secs);\n    if (count >= 1) return `${count} ${label}${count > 1 ? 's' : ''} ago`;\n  }\n  return 'just now';\n}\n```" },
-      { type: "conceptual", q: "What is the Temporal API and why is it being developed?", a: "Temporal is a proposed replacement for Date that fixes its problems: immutable by default, proper time zone support, separate types for dates, times, and date-times, 1-indexed months, no ambiguous parsing, and nanosecond precision. It's at Stage 3 in TC39." },
-      { type: "scenario", q: "How would you handle dates across different time zones in a web app?", a: "1) Store all dates as UTC in the database. 2) Send ISO strings in API responses. 3) Convert to user's local time zone ONLY for display. 4) Use `Intl.DateTimeFormat` with `timeZone` option. 5) For complex cases, use a library like `date-fns-tz` or the upcoming Temporal API." }
-    ]
+      {
+        type: "tricky",
+        q: "What does `new Date(2024, 0, 32)` return?",
+        a: "February 1, 2024. JavaScript automatically rolls over overflow values. January has 31 days, so day 32 becomes February 1. Similarly, `new Date(2024, 12, 1)` gives January 1, 2025 (month 12 overflows).",
+      },
+      {
+        type: "conceptual",
+        q: "Why are months 0-indexed in JavaScript's Date?",
+        a: "It's inherited from Java's `java.util.Date` (which JavaScript's Date was modeled after). Jan=0, Dec=11. This is widely considered a design mistake and is one reason the Temporal API was created.",
+      },
+      {
+        type: "coding",
+        q: "Write a function that returns a human-readable 'time ago' string.",
+        a: "```js\nfunction timeAgo(date) {\n  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);\n  const intervals = [\n    [31536000, 'year'], [2592000, 'month'],\n    [86400, 'day'], [3600, 'hour'], [60, 'minute']\n  ];\n  for (const [secs, label] of intervals) {\n    const count = Math.floor(seconds / secs);\n    if (count >= 1) return `${count} ${label}${count > 1 ? 's' : ''} ago`;\n  }\n  return 'just now';\n}\n```",
+      },
+      {
+        type: "conceptual",
+        q: "What is the Temporal API and why is it being developed?",
+        a: "Temporal is a proposed replacement for Date that fixes its problems: immutable by default, proper time zone support, separate types for dates, times, and date-times, 1-indexed months, no ambiguous parsing, and nanosecond precision. It's at Stage 3 in TC39.",
+      },
+      {
+        type: "scenario",
+        q: "How would you handle dates across different time zones in a web app?",
+        a: "1) Store all dates as UTC in the database. 2) Send ISO strings in API responses. 3) Convert to user's local time zone ONLY for display. 4) Use `Intl.DateTimeFormat` with `timeZone` option. 5) For complex cases, use a library like `date-fns-tz` or the upcoming Temporal API.",
+      },
+    ],
   },
   {
     id: "modules",
@@ -326,15 +406,35 @@ async function loadChart() {
       "Forgetting to add `type: 'module'` in package.json or use `.mjs` extension for ESM in Node.js",
       "Circular imports causing `undefined` values — restructure code to avoid circular dependencies",
       "Using `require()` in browser without a bundler — browsers only support `import`/`export`",
-      "Not knowing that `import` statements are hoisted and run before any code in the file"
+      "Not knowing that `import` statements are hoisted and run before any code in the file",
     ],
     interviewQuestions: [
-      { type: "conceptual", q: "What is the difference between ES Modules and CommonJS?", a: "**ESM**: `import`/`export`, static (analyzed before execution, enables tree-shaking), async loading in browsers, strict mode by default. **CJS**: `require`/`module.exports`, dynamic (evaluated at runtime), synchronous only, works in Node.js. ESM is the modern standard; CJS is legacy Node.js." },
-      { type: "conceptual", q: "What is tree-shaking and how do modules enable it?", a: "Tree-shaking removes unused exports from the final bundle. It's possible because ESM imports are STATIC — the bundler knows at build time exactly which exports are used. CJS's dynamic `require()` can't be tree-shaken because imports depend on runtime values." },
-      { type: "tricky", q: "What happens if two modules import each other (circular dependency)?", a: "In ESM, the module that's imported second gets the partially-executed version (bindings may be `undefined` at first, but update later since ESM exports are live bindings). In CJS, you get whatever `module.exports` was at the point the cycle was detected — often incomplete. Best practice: avoid circular imports." },
-      { type: "coding", q: "Write a module that exports a singleton database connection.", a: "```js\n// db.js\nclass Database {\n  constructor() {\n    if (Database.instance) return Database.instance;\n    this.connection = 'connected';\n    Database.instance = this;\n  }\n}\nexport default new Database();\n// Every import gets the same instance\n```" },
-      { type: "scenario", q: "When would you use dynamic `import()` instead of static `import`?", a: "1) Code splitting — load heavy modules only when needed. 2) Conditional imports — load polyfills only for older browsers. 3) Lazy loading routes in SPAs. 4) Loading modules based on user actions (e.g., chart library on 'Show Graph' click). 5) When the module path is computed dynamically." }
-    ]
+      {
+        type: "conceptual",
+        q: "What is the difference between ES Modules and CommonJS?",
+        a: "**ESM**: `import`/`export`, static (analyzed before execution, enables tree-shaking), async loading in browsers, strict mode by default. **CJS**: `require`/`module.exports`, dynamic (evaluated at runtime), synchronous only, works in Node.js. ESM is the modern standard; CJS is legacy Node.js.",
+      },
+      {
+        type: "conceptual",
+        q: "What is tree-shaking and how do modules enable it?",
+        a: "Tree-shaking removes unused exports from the final bundle. It's possible because ESM imports are STATIC — the bundler knows at build time exactly which exports are used. CJS's dynamic `require()` can't be tree-shaken because imports depend on runtime values.",
+      },
+      {
+        type: "tricky",
+        q: "What happens if two modules import each other (circular dependency)?",
+        a: "In ESM, the module that's imported second gets the partially-executed version (bindings may be `undefined` at first, but update later since ESM exports are live bindings). In CJS, you get whatever `module.exports` was at the point the cycle was detected — often incomplete. Best practice: avoid circular imports.",
+      },
+      {
+        type: "coding",
+        q: "Write a module that exports a singleton database connection.",
+        a: "```js\n// db.js\nclass Database {\n  constructor() {\n    if (Database.instance) return Database.instance;\n    this.connection = 'connected';\n    Database.instance = this;\n  }\n}\nexport default new Database();\n// Every import gets the same instance\n```",
+      },
+      {
+        type: "scenario",
+        q: "When would you use dynamic `import()` instead of static `import`?",
+        a: "1) Code splitting — load heavy modules only when needed. 2) Conditional imports — load polyfills only for older browsers. 3) Lazy loading routes in SPAs. 4) Loading modules based on user actions (e.g., chart library on 'Show Graph' click). 5) When the module path is computed dynamically.",
+      },
+    ],
   },
   {
     id: "iterators-generators",
@@ -420,16 +520,36 @@ console.log([...outer()]); // [1, "a", "b", 2]`,
       "Calling a generator function returns an iterator, NOT the result — you must call `next()` or use `for...of`",
       "Not understanding that `for...of` ignores the `return` value of a generator (only `yield` values)",
       "Creating infinite generators without a termination condition in the consumer — infinite loop!",
-      "Confusing `yield` (pauses and returns) with `return` (ends the generator)"
+      "Confusing `yield` (pauses and returns) with `return` (ends the generator)",
     ],
     interviewQuestions: [
-      { type: "conceptual", q: "What is the difference between an iterator and an iterable?", a: "An **iterable** is an object with a `[Symbol.iterator]()` method (e.g., arrays, strings). An **iterator** is the object returned by that method, with a `next()` method that returns `{ value, done }`. All iterables can produce iterators, but not all iterators are iterable." },
-      { type: "conceptual", q: "What are generator functions and how do they differ from regular functions?", a: "Generators (`function*`) can pause execution with `yield` and resume later with `next()`. They return an iterator object. Unlike regular functions that run to completion, generators are lazy — they compute values on demand. They maintain their internal state between calls." },
-      { type: "coding", q: "Write a generator that yields chunks of an array of a given size.", a: "```js\nfunction* chunks(arr, size) {\n  for (let i = 0; i < arr.length; i += size) {\n    yield arr.slice(i, i + size);\n  }\n}\nconsole.log([...chunks([1,2,3,4,5], 2)]);\n// [[1,2], [3,4], [5]]\n```" },
-      { type: "tricky", q: "What does `yield*` do?", a: "`yield*` delegates to another generator or iterable. Instead of yielding the entire iterable as one value, it yields each value individually. `function* foo() { yield* [1,2,3]; }` is equivalent to yielding 1, then 2, then 3 separately. It also forwards `return` values from delegated generators." },
-      { type: "scenario", q: "What are practical use cases for generators?", a: "1) Lazy evaluation of large/infinite sequences (fibonacci, paginated data). 2) Implementing custom iterables. 3) Async flow control (before async/await existed). 4) State machines. 5) Streaming/piping data processing. 6) Unique ID generation. 7) Tree/graph traversal with pausing." }
-    ]
-  }
+      {
+        type: "conceptual",
+        q: "What is the difference between an iterator and an iterable?",
+        a: "An **iterable** is an object with a `[Symbol.iterator]()` method (e.g., arrays, strings). An **iterator** is the object returned by that method, with a `next()` method that returns `{ value, done }`. All iterables can produce iterators, but not all iterators are iterable.",
+      },
+      {
+        type: "conceptual",
+        q: "What are generator functions and how do they differ from regular functions?",
+        a: "Generators (`function*`) can pause execution with `yield` and resume later with `next()`. They return an iterator object. Unlike regular functions that run to completion, generators are lazy — they compute values on demand. They maintain their internal state between calls.",
+      },
+      {
+        type: "coding",
+        q: "Write a generator that yields chunks of an array of a given size.",
+        a: "```js\nfunction* chunks(arr, size) {\n  for (let i = 0; i < arr.length; i += size) {\n    yield arr.slice(i, i + size);\n  }\n}\nconsole.log([...chunks([1,2,3,4,5], 2)]);\n// [[1,2], [3,4], [5]]\n```",
+      },
+      {
+        type: "tricky",
+        q: "What does `yield*` do?",
+        a: "`yield*` delegates to another generator or iterable. Instead of yielding the entire iterable as one value, it yields each value individually. `function* foo() { yield* [1,2,3]; }` is equivalent to yielding 1, then 2, then 3 separately. It also forwards `return` values from delegated generators.",
+      },
+      {
+        type: "scenario",
+        q: "What are practical use cases for generators?",
+        a: "1) Lazy evaluation of large/infinite sequences (fibonacci, paginated data). 2) Implementing custom iterables. 3) Async flow control (before async/await existed). 4) State machines. 5) Streaming/piping data processing. 6) Unique ID generation. 7) Tree/graph traversal with pausing.",
+      },
+    ],
+  },
 ];
 
 export default phase2b;

@@ -2,7 +2,8 @@ const androidPhase7 = {
   id: "phase-7",
   title: "Phase 7: Android + Backend Integration",
   emoji: "🔌",
-  description: "Master API design, security, authentication, pagination, and backend integration patterns for production Android apps.",
+  description:
+    "Master API design, security, authentication, pagination, and backend integration patterns for production Android apps.",
   topics: [
     {
       id: "api-contract-design",
@@ -109,7 +110,7 @@ class ApiException(val httpCode: Int, val error: ApiError) : Exception(error.mes
         {
           type: "conceptual",
           q: "How would you design API contracts that work well for both mobile and web clients?",
-          a: "**Strategy:** (1) Use field selection (/users?fields=id,name,avatar) so mobile fetches less data than web. (2) Provide aggregate endpoints for mobile (/dashboard returns combined data that web fetches separately). (3) Use response compression (gzip) — more important for mobile. (4) Design for offline — include ETags for cache validation, timestamps for delta sync. (5) Consider BFF (Backend For Frontend) — a mobile-specific API layer that aggregates backend microservices. (6) Use pagination with cursor-based approach (not offset) for infinite scroll."
+          a: "**Strategy:** (1) Use field selection (/users?fields=id,name,avatar) so mobile fetches less data than web. (2) Provide aggregate endpoints for mobile (/dashboard returns combined data that web fetches separately). (3) Use response compression (gzip) — more important for mobile. (4) Design for offline — include ETags for cache validation, timestamps for delta sync. (5) Consider BFF (Backend For Frontend) — a mobile-specific API layer that aggregates backend microservices. (6) Use pagination with cursor-based approach (not offset) for infinite scroll.",
         },
       ],
     },
@@ -227,7 +228,7 @@ fun ArticleList(viewModel: ArticleViewModel = hiltViewModel()) {
         {
           type: "conceptual",
           q: "Why is cursor-based pagination better than offset-based for mobile apps?",
-          a: "Offset pagination uses `OFFSET n LIMIT m` which has issues: (1) If a new item is inserted at the top while you're on page 3, a previous item shifts to page 4 and appears as a duplicate when you load the next page. (2) Large offsets are slow in databases (must scan and skip n rows). Cursor-based uses a unique, ordered field (like an ID or timestamp) as a bookmark: `WHERE id > last_seen_id LIMIT 20`. This is (1) stable — insertions don't affect subsequent pages, (2) performant — uses index-based seeks, not offset scans, (3) reliable for infinite scroll on mobile."
+          a: "Offset pagination uses `OFFSET n LIMIT m` which has issues: (1) If a new item is inserted at the top while you're on page 3, a previous item shifts to page 4 and appears as a duplicate when you load the next page. (2) Large offsets are slow in databases (must scan and skip n rows). Cursor-based uses a unique, ordered field (like an ID or timestamp) as a bookmark: `WHERE id > last_seen_id LIMIT 20`. This is (1) stable — insertions don't affect subsequent pages, (2) performant — uses index-based seeks, not offset scans, (3) reliable for infinite scroll on mobile.",
         },
       ],
     },
@@ -357,12 +358,12 @@ class TokenStorage @Inject constructor(
         {
           type: "conceptual",
           q: "Explain the OAuth 2.0 + PKCE flow for mobile apps. Why is PKCE necessary?",
-          a: "PKCE (Proof Key for Code Exchange) solves a fundamental mobile security problem: mobile apps can't securely store a client_secret (APKs can be decompiled). Without PKCE, an attacker could intercept the authorization code (via a malicious app registered for the same redirect URI) and exchange it for tokens. PKCE prevents this: the client generates a random code_verifier, sends its SHA256 hash (code_challenge) with the auth request. When exchanging the code, the client sends the original code_verifier. The server verifies the hash matches. An attacker who intercepts the code can't generate the correct code_verifier."
+          a: "PKCE (Proof Key for Code Exchange) solves a fundamental mobile security problem: mobile apps can't securely store a client_secret (APKs can be decompiled). Without PKCE, an attacker could intercept the authorization code (via a malicious app registered for the same redirect URI) and exchange it for tokens. PKCE prevents this: the client generates a random code_verifier, sends its SHA256 hash (code_challenge) with the auth request. When exchanging the code, the client sends the original code_verifier. The server verifies the hash matches. An attacker who intercepts the code can't generate the correct code_verifier.",
         },
         {
           type: "tricky",
           q: "How do you handle concurrent token refresh requests?",
-          a: "Use a mutex/lock to ensure only one refresh happens at a time. Without this, multiple expired-token API calls trigger simultaneous refresh requests, causing race conditions (refresh token may be invalidated after first use). Implementation: Use `Mutex` from kotlinx.coroutines. The first caller acquires the lock and refreshes. Subsequent callers suspend until the lock is released, then use the new token. Alternative: OkHttp's Authenticator interface serializes authentication retries automatically."
+          a: "Use a mutex/lock to ensure only one refresh happens at a time. Without this, multiple expired-token API calls trigger simultaneous refresh requests, causing race conditions (refresh token may be invalidated after first use). Implementation: Use `Mutex` from kotlinx.coroutines. The first caller acquires the lock and refreshes. Subsequent callers suspend until the lock is released, then use the new token. Alternative: OkHttp's Authenticator interface serializes authentication retries automatically.",
         },
       ],
     },

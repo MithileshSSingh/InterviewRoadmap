@@ -2,7 +2,8 @@ const phase5 = {
   id: "phase-5",
   title: "Phase 5: Projects & Real-World Application",
   emoji: "🟣",
-  description: "Put everything together by building real-world projects that combine multiple concepts from previous phases.",
+  description:
+    "Put everything together by building real-world projects that combine multiple concepts from previous phases.",
   topics: [
     {
       id: "project-quiz-app",
@@ -160,15 +161,35 @@ const questions = [
         "Modifying the original questions array (mutation) — always work with a copy",
         "Not removing old event listeners when re-rendering — causes duplicate handlers",
         "Hardcoding the correct answer index — makes it easy to cheat via DevTools",
-        "Not handling the edge case when time runs out"
+        "Not handling the edge case when time runs out",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "How would you structure the state management for a quiz app?", a: "Keep state in a single object: `{ currentIndex, score, answers[], timeLeft, isActive }`. Update state through defined methods only. Re-render UI from state (state → UI pattern). Store results in localStorage. This mirrors how frameworks like React manage state." },
-        { type: "coding", q: "Write a function to shuffle an array (Fisher-Yates algorithm).", a: "```js\nfunction shuffle(arr) {\n  const copy = [...arr];\n  for (let i = copy.length - 1; i > 0; i--) {\n    const j = Math.floor(Math.random() * (i + 1));\n    [copy[i], copy[j]] = [copy[j], copy[i]];\n  }\n  return copy;\n}\n```" },
-        { type: "scenario", q: "How would you prevent cheating in a client-side quiz app?", a: "You can't fully prevent it client-side. Mitigations: 1) Shuffle options. 2) Don't include correct answers in HTML (fetch after selection). 3) Server-side validation. 4) Time limits. 5) Anti-devtools detection (not reliable). For serious quizzes, ALL validation must be server-side." },
-        { type: "conceptual", q: "What DOM manipulation techniques are used in this project?", a: "1) `innerHTML` for templating (careful with user input). 2) `querySelector/All` for selection. 3) `classList.add` for visual feedback. 4) `addEventListener` with delegation for options. 5) `dataset` attributes for storing option indices. 6) Dynamic element creation." },
-        { type: "coding", q: "Write a timer function that counts down and calls a callback at zero.", a: "```js\nfunction countdown(seconds, onTick, onComplete) {\n  let remaining = seconds;\n  const timer = setInterval(() => {\n    remaining--;\n    onTick(remaining);\n    if (remaining <= 0) {\n      clearInterval(timer);\n      onComplete();\n    }\n  }, 1000);\n  return () => clearInterval(timer);\n}\n```" }
-      ]
+        {
+          type: "conceptual",
+          q: "How would you structure the state management for a quiz app?",
+          a: "Keep state in a single object: `{ currentIndex, score, answers[], timeLeft, isActive }`. Update state through defined methods only. Re-render UI from state (state → UI pattern). Store results in localStorage. This mirrors how frameworks like React manage state.",
+        },
+        {
+          type: "coding",
+          q: "Write a function to shuffle an array (Fisher-Yates algorithm).",
+          a: "```js\nfunction shuffle(arr) {\n  const copy = [...arr];\n  for (let i = copy.length - 1; i > 0; i--) {\n    const j = Math.floor(Math.random() * (i + 1));\n    [copy[i], copy[j]] = [copy[j], copy[i]];\n  }\n  return copy;\n}\n```",
+        },
+        {
+          type: "scenario",
+          q: "How would you prevent cheating in a client-side quiz app?",
+          a: "You can't fully prevent it client-side. Mitigations: 1) Shuffle options. 2) Don't include correct answers in HTML (fetch after selection). 3) Server-side validation. 4) Time limits. 5) Anti-devtools detection (not reliable). For serious quizzes, ALL validation must be server-side.",
+        },
+        {
+          type: "conceptual",
+          q: "What DOM manipulation techniques are used in this project?",
+          a: "1) `innerHTML` for templating (careful with user input). 2) `querySelector/All` for selection. 3) `classList.add` for visual feedback. 4) `addEventListener` with delegation for options. 5) `dataset` attributes for storing option indices. 6) Dynamic element creation.",
+        },
+        {
+          type: "coding",
+          q: "Write a timer function that counts down and calls a callback at zero.",
+          a: "```js\nfunction countdown(seconds, onTick, onComplete) {\n  let remaining = seconds;\n  const timer = setInterval(() => {\n    remaining--;\n    onTick(remaining);\n    if (remaining <= 0) {\n      clearInterval(timer);\n      onComplete();\n    }\n  }, 1000);\n  return () => clearInterval(timer);\n}\n```",
+        },
+      ],
     },
     {
       id: "project-weather-app",
@@ -318,15 +339,35 @@ async function handleSearch(city) {
         "Not handling the case when geolocation permission is denied",
         "Not URL-encoding the city name — spaces and special characters break the URL",
         "Forgetting to show loading state while fetching — app feels unresponsive",
-        "Not debouncing search input — too many API calls on every keystroke"
+        "Not debouncing search input — too many API calls on every keystroke",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "How would you handle API key security in a frontend app?", a: "Never expose API keys client-side. Options: 1) Create a backend proxy that holds the key. 2) Use serverless functions (Vercel/Netlify). 3) Restrict key by domain/IP in the API dashboard. 4) Use OAuth tokens instead of API keys. 5) Environment variables for build-time substitution." },
-        { type: "coding", q: "Write a fetch wrapper with retry, timeout, and loading state.", a: "```js\nasync function fetchWithRetry(url, { retries = 3, timeout = 5000 } = {}) {\n  for (let i = 0; i <= retries; i++) {\n    const controller = new AbortController();\n    const timer = setTimeout(() => controller.abort(), timeout);\n    try {\n      const res = await fetch(url, { signal: controller.signal });\n      clearTimeout(timer);\n      if (!res.ok) throw new Error(`HTTP ${res.status}`);\n      return res.json();\n    } catch (err) {\n      clearTimeout(timer);\n      if (i === retries) throw err;\n      await new Promise(r => setTimeout(r, 1000 * 2 ** i));\n    }\n  }\n}\n```" },
-        { type: "scenario", q: "The weather API has a rate limit of 60 calls/minute. How do you handle this?", a: "1) Cache responses in localStorage with TTL (e.g., 10 min). 2) Debounce search input (300ms). 3) Show cached data while re-fetching. 4) Queue requests and process at intervals. 5) Show a friendly message if rate limited (429 status)." },
-        { type: "conceptual", q: "Why use `Promise.all` for fetching current weather and forecast?", a: "Both requests are independent — they don't depend on each other. `Promise.all` runs them in parallel, finishing in the time of the slowest request (~1x). Sequential await would take ~2x. If one fails and the other is optional, use `Promise.allSettled` instead." },
-        { type: "coding", q: "Write a cache function for API responses with TTL.", a: "```js\nconst apiCache = new Map();\nasync function cachedFetch(url, ttl = 600000) {\n  const cached = apiCache.get(url);\n  if (cached && Date.now() - cached.time < ttl) return cached.data;\n  const data = await fetch(url).then(r => r.json());\n  apiCache.set(url, { data, time: Date.now() });\n  return data;\n}\n```" }
-      ]
+        {
+          type: "conceptual",
+          q: "How would you handle API key security in a frontend app?",
+          a: "Never expose API keys client-side. Options: 1) Create a backend proxy that holds the key. 2) Use serverless functions (Vercel/Netlify). 3) Restrict key by domain/IP in the API dashboard. 4) Use OAuth tokens instead of API keys. 5) Environment variables for build-time substitution.",
+        },
+        {
+          type: "coding",
+          q: "Write a fetch wrapper with retry, timeout, and loading state.",
+          a: "```js\nasync function fetchWithRetry(url, { retries = 3, timeout = 5000 } = {}) {\n  for (let i = 0; i <= retries; i++) {\n    const controller = new AbortController();\n    const timer = setTimeout(() => controller.abort(), timeout);\n    try {\n      const res = await fetch(url, { signal: controller.signal });\n      clearTimeout(timer);\n      if (!res.ok) throw new Error(`HTTP ${res.status}`);\n      return res.json();\n    } catch (err) {\n      clearTimeout(timer);\n      if (i === retries) throw err;\n      await new Promise(r => setTimeout(r, 1000 * 2 ** i));\n    }\n  }\n}\n```",
+        },
+        {
+          type: "scenario",
+          q: "The weather API has a rate limit of 60 calls/minute. How do you handle this?",
+          a: "1) Cache responses in localStorage with TTL (e.g., 10 min). 2) Debounce search input (300ms). 3) Show cached data while re-fetching. 4) Queue requests and process at intervals. 5) Show a friendly message if rate limited (429 status).",
+        },
+        {
+          type: "conceptual",
+          q: "Why use `Promise.all` for fetching current weather and forecast?",
+          a: "Both requests are independent — they don't depend on each other. `Promise.all` runs them in parallel, finishing in the time of the slowest request (~1x). Sequential await would take ~2x. If one fails and the other is optional, use `Promise.allSettled` instead.",
+        },
+        {
+          type: "coding",
+          q: "Write a cache function for API responses with TTL.",
+          a: "```js\nconst apiCache = new Map();\nasync function cachedFetch(url, ttl = 600000) {\n  const cached = apiCache.get(url);\n  if (cached && Date.now() - cached.time < ttl) return cached.data;\n  const data = await fetch(url).then(r => r.json());\n  apiCache.set(url, { data, time: Date.now() });\n  return data;\n}\n```",
+        },
+      ],
     },
     {
       id: "project-task-manager",
@@ -485,15 +526,35 @@ function renderTasks(manager, container) {
         "Mutating the task array directly instead of using methods — breaks reactivity",
         "Not debouncing localStorage writes — saving on every keystroke is expensive",
         "Forgetting to re-render after state changes",
-        "Not handling the case when localStorage is full (5MB limit)"
+        "Not handling the case when localStorage is full (5MB limit)",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is the CRUD pattern and how does it map to HTTP methods?", a: "**C**reate = POST, **R**ead = GET, **U**pdate = PUT/PATCH, **D**elete = DELETE. In the task manager: addTask (Create), getTasks (Read), editTask/toggleTask (Update), deleteTask (Delete). CRUD is the foundation of most data-driven applications." },
-        { type: "coding", q: "Implement a simple state management system with subscribers.", a: "```js\nfunction createStore(initial) {\n  let state = initial;\n  const listeners = new Set();\n  return {\n    getState: () => state,\n    setState: (update) => {\n      state = typeof update === 'function'\n        ? update(state) : { ...state, ...update };\n      listeners.forEach(fn => fn(state));\n    },\n    subscribe: (fn) => {\n      listeners.add(fn);\n      return () => listeners.delete(fn);\n    }\n  };\n}\n```" },
-        { type: "scenario", q: "How would you handle data migration if you change the task schema?", a: "1) Add version to stored data: `{ version: 1, tasks: [...] }`. 2) On load, check version. 3) If outdated, run migration function that transforms old format to new. 4) Write migration for each version bump. 5) Save updated data with new version. This is similar to database migrations." },
-        { type: "conceptual", q: "Why use `crypto.randomUUID()` instead of array indices as IDs?", a: "Array indices change when items are deleted or reordered. UUIDs are globally unique and stable — they never change regardless of array position. This prevents bugs with: stale references, event delegation, and reconciliation (similar to React's `key` prop)." },
-        { type: "coding", q: "Write a function to export tasks as JSON and import from JSON.", a: "```js\nfunction exportTasks() {\n  const data = localStorage.getItem('tasks');\n  const blob = new Blob([data], { type: 'application/json' });\n  const url = URL.createObjectURL(blob);\n  const a = document.createElement('a');\n  a.href = url;\n  a.download = 'tasks.json';\n  a.click();\n  URL.revokeObjectURL(url);\n}\nfunction importTasks(file) {\n  const reader = new FileReader();\n  reader.onload = (e) => {\n    const tasks = JSON.parse(e.target.result);\n    localStorage.setItem('tasks', JSON.stringify(tasks));\n  };\n  reader.readAsText(file);\n}\n```" }
-      ]
+        {
+          type: "conceptual",
+          q: "What is the CRUD pattern and how does it map to HTTP methods?",
+          a: "**C**reate = POST, **R**ead = GET, **U**pdate = PUT/PATCH, **D**elete = DELETE. In the task manager: addTask (Create), getTasks (Read), editTask/toggleTask (Update), deleteTask (Delete). CRUD is the foundation of most data-driven applications.",
+        },
+        {
+          type: "coding",
+          q: "Implement a simple state management system with subscribers.",
+          a: "```js\nfunction createStore(initial) {\n  let state = initial;\n  const listeners = new Set();\n  return {\n    getState: () => state,\n    setState: (update) => {\n      state = typeof update === 'function'\n        ? update(state) : { ...state, ...update };\n      listeners.forEach(fn => fn(state));\n    },\n    subscribe: (fn) => {\n      listeners.add(fn);\n      return () => listeners.delete(fn);\n    }\n  };\n}\n```",
+        },
+        {
+          type: "scenario",
+          q: "How would you handle data migration if you change the task schema?",
+          a: "1) Add version to stored data: `{ version: 1, tasks: [...] }`. 2) On load, check version. 3) If outdated, run migration function that transforms old format to new. 4) Write migration for each version bump. 5) Save updated data with new version. This is similar to database migrations.",
+        },
+        {
+          type: "conceptual",
+          q: "Why use `crypto.randomUUID()` instead of array indices as IDs?",
+          a: "Array indices change when items are deleted or reordered. UUIDs are globally unique and stable — they never change regardless of array position. This prevents bugs with: stale references, event delegation, and reconciliation (similar to React's `key` prop).",
+        },
+        {
+          type: "coding",
+          q: "Write a function to export tasks as JSON and import from JSON.",
+          a: "```js\nfunction exportTasks() {\n  const data = localStorage.getItem('tasks');\n  const blob = new Blob([data], { type: 'application/json' });\n  const url = URL.createObjectURL(blob);\n  const a = document.createElement('a');\n  a.href = url;\n  a.download = 'tasks.json';\n  a.click();\n  URL.revokeObjectURL(url);\n}\nfunction importTasks(file) {\n  const reader = new FileReader();\n  reader.onload = (e) => {\n    const tasks = JSON.parse(e.target.result);\n    localStorage.setItem('tasks', JSON.stringify(tasks));\n  };\n  reader.readAsText(file);\n}\n```",
+        },
+      ],
     },
     {
       id: "project-chat-app",
@@ -632,15 +693,35 @@ document.querySelector("#messageInput").addEventListener("input", debouncedTypin
         "Sending messages without checking `readyState` — causes errors if connection is closed",
         "Not debouncing typing indicators — floods the server with typing events",
         "Not sanitizing messages before rendering — XSS vulnerability through chat messages",
-        "Storing all chat history in memory — paginate and load history from server"
+        "Storing all chat history in memory — paginate and load history from server",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "How do WebSockets differ from HTTP requests?", a: "HTTP is request/response — client initiates, server responds, connection closes. WebSockets are full-duplex — both client and server can send messages anytime over a persistent connection. WebSockets have lower latency (no request overhead) and are ideal for real-time features." },
-        { type: "coding", q: "Write a WebSocket reconnection handler with exponential backoff.", a: "```js\nfunction createReconnector(url, maxRetries = 5) {\n  let attempts = 0;\n  function connect() {\n    const ws = new WebSocket(url);\n    ws.onopen = () => { attempts = 0; };\n    ws.onclose = () => {\n      if (attempts < maxRetries) {\n        const delay = Math.min(1000 * 2 ** attempts++, 30000);\n        setTimeout(connect, delay);\n      }\n    };\n    return ws;\n  }\n  return connect();\n}\n```" },
-        { type: "scenario", q: "How would you scale a WebSocket-based chat app to millions of users?", a: "1) Horizontal scaling with sticky sessions or a pub/sub broker (Redis). 2) Message queues for delivery guarantees. 3) Room-based partitioning. 4) Connection pools per server. 5) Rate limiting per user. 6) Message compression. 7) Lazy-load chat history from database." },
-        { type: "conceptual", q: "What is the WebSocket handshake process?", a: "1) Client sends an HTTP GET request with `Upgrade: websocket` and `Connection: Upgrade` headers. 2) Server responds with 101 Switching Protocols. 3) Connection upgrades from HTTP to WebSocket. 4) Both sides can now send messages freely. The handshake uses HTTP, then 'upgrades' the protocol." },
-        { type: "coding", q: "Implement a simple message queue for offline messages.", a: "```js\nclass MessageQueue {\n  #queue = [];\n  enqueue(msg) { this.#queue.push(msg); }\n  flush(sendFn) {\n    while (this.#queue.length > 0) {\n      sendFn(this.#queue.shift());\n    }\n  }\n  get size() { return this.#queue.length; }\n}\n// Usage: queue messages when offline, flush on reconnect\n```" }
-      ]
+        {
+          type: "conceptual",
+          q: "How do WebSockets differ from HTTP requests?",
+          a: "HTTP is request/response — client initiates, server responds, connection closes. WebSockets are full-duplex — both client and server can send messages anytime over a persistent connection. WebSockets have lower latency (no request overhead) and are ideal for real-time features.",
+        },
+        {
+          type: "coding",
+          q: "Write a WebSocket reconnection handler with exponential backoff.",
+          a: "```js\nfunction createReconnector(url, maxRetries = 5) {\n  let attempts = 0;\n  function connect() {\n    const ws = new WebSocket(url);\n    ws.onopen = () => { attempts = 0; };\n    ws.onclose = () => {\n      if (attempts < maxRetries) {\n        const delay = Math.min(1000 * 2 ** attempts++, 30000);\n        setTimeout(connect, delay);\n      }\n    };\n    return ws;\n  }\n  return connect();\n}\n```",
+        },
+        {
+          type: "scenario",
+          q: "How would you scale a WebSocket-based chat app to millions of users?",
+          a: "1) Horizontal scaling with sticky sessions or a pub/sub broker (Redis). 2) Message queues for delivery guarantees. 3) Room-based partitioning. 4) Connection pools per server. 5) Rate limiting per user. 6) Message compression. 7) Lazy-load chat history from database.",
+        },
+        {
+          type: "conceptual",
+          q: "What is the WebSocket handshake process?",
+          a: "1) Client sends an HTTP GET request with `Upgrade: websocket` and `Connection: Upgrade` headers. 2) Server responds with 101 Switching Protocols. 3) Connection upgrades from HTTP to WebSocket. 4) Both sides can now send messages freely. The handshake uses HTTP, then 'upgrades' the protocol.",
+        },
+        {
+          type: "coding",
+          q: "Implement a simple message queue for offline messages.",
+          a: "```js\nclass MessageQueue {\n  #queue = [];\n  enqueue(msg) { this.#queue.push(msg); }\n  flush(sendFn) {\n    while (this.#queue.length > 0) {\n      sendFn(this.#queue.shift());\n    }\n  }\n  get size() { return this.#queue.length; }\n}\n// Usage: queue messages when offline, flush on reconnect\n```",
+        },
+      ],
     },
     {
       id: "project-fullstack",
@@ -802,17 +883,37 @@ class ApiClient {
         "Not validating input on the server — client-side validation can be bypassed",
         "Storing JWT in localStorage (XSS risk) — use HttpOnly cookies for production",
         "Not handling token expiration — redirect to login when 401 is received",
-        "CORS issues — configure CORS middleware properly for your frontend origin"
+        "CORS issues — configure CORS middleware properly for your frontend origin",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is REST and what are its principles?", a: "REST (Representational State Transfer) principles: 1) Client-server separation. 2) Stateless — each request contains all info needed. 3) Uniform interface (consistent URL patterns). 4) Resource-based (nouns, not verbs): `/users/123` not `/getUser?id=123`. 5) HTTP methods map to actions (GET, POST, PUT, DELETE). 6) Cacheable responses." },
-        { type: "coding", q: "Write Express middleware for request logging and error handling.", a: "```js\n// Logger\napp.use((req, res, next) => {\n  console.log(`${req.method} ${req.url}`);\n  next();\n});\n// Error handler (must have 4 params)\napp.use((err, req, res, next) => {\n  console.error(err.stack);\n  res.status(err.statusCode || 500).json({\n    error: err.message || 'Internal Server Error'\n  });\n});\n```" },
-        { type: "conceptual", q: "How does JWT authentication work?", a: "1) User sends credentials. 2) Server verifies, creates a JWT (header.payload.signature). 3) Client stores JWT and sends it in `Authorization: Bearer <token>` header. 4) Server verifies signature on each request. JWTs are stateless — the server doesn't store sessions. Tradeoff: can't easily revoke individual tokens." },
-        { type: "scenario", q: "How would you structure a full-stack project for scalability?", a: "1) Separate API and frontend codebases. 2) MVC/Service pattern for backend. 3) Environment-based config. 4) Database migrations. 5) API versioning (`/api/v1/`). 6) Rate limiting and caching. 7) Dockerize for consistent environments. 8) CI/CD pipeline. 9) Monitoring and logging." },
-        { type: "coding", q: "Write a middleware that validates request body against a schema.", a: "```js\nfunction validate(schema) {\n  return (req, res, next) => {\n    const errors = [];\n    for (const [key, rules] of Object.entries(schema)) {\n      const value = req.body[key];\n      if (rules.required && !value)\n        errors.push(`${key} is required`);\n      if (rules.type && typeof value !== rules.type)\n        errors.push(`${key} must be ${rules.type}`);\n      if (rules.minLength && value?.length < rules.minLength)\n        errors.push(`${key} must be at least ${rules.minLength} chars`);\n    }\n    if (errors.length) return res.status(400).json({ errors });\n    next();\n  };\n}\n// Usage: app.post('/api/posts', validate({ title: { required: true, type: 'string' } }), handler);\n```" }
-      ]
-    }
-  ]
+        {
+          type: "conceptual",
+          q: "What is REST and what are its principles?",
+          a: "REST (Representational State Transfer) principles: 1) Client-server separation. 2) Stateless — each request contains all info needed. 3) Uniform interface (consistent URL patterns). 4) Resource-based (nouns, not verbs): `/users/123` not `/getUser?id=123`. 5) HTTP methods map to actions (GET, POST, PUT, DELETE). 6) Cacheable responses.",
+        },
+        {
+          type: "coding",
+          q: "Write Express middleware for request logging and error handling.",
+          a: "```js\n// Logger\napp.use((req, res, next) => {\n  console.log(`${req.method} ${req.url}`);\n  next();\n});\n// Error handler (must have 4 params)\napp.use((err, req, res, next) => {\n  console.error(err.stack);\n  res.status(err.statusCode || 500).json({\n    error: err.message || 'Internal Server Error'\n  });\n});\n```",
+        },
+        {
+          type: "conceptual",
+          q: "How does JWT authentication work?",
+          a: "1) User sends credentials. 2) Server verifies, creates a JWT (header.payload.signature). 3) Client stores JWT and sends it in `Authorization: Bearer <token>` header. 4) Server verifies signature on each request. JWTs are stateless — the server doesn't store sessions. Tradeoff: can't easily revoke individual tokens.",
+        },
+        {
+          type: "scenario",
+          q: "How would you structure a full-stack project for scalability?",
+          a: "1) Separate API and frontend codebases. 2) MVC/Service pattern for backend. 3) Environment-based config. 4) Database migrations. 5) API versioning (`/api/v1/`). 6) Rate limiting and caching. 7) Dockerize for consistent environments. 8) CI/CD pipeline. 9) Monitoring and logging.",
+        },
+        {
+          type: "coding",
+          q: "Write a middleware that validates request body against a schema.",
+          a: "```js\nfunction validate(schema) {\n  return (req, res, next) => {\n    const errors = [];\n    for (const [key, rules] of Object.entries(schema)) {\n      const value = req.body[key];\n      if (rules.required && !value)\n        errors.push(`${key} is required`);\n      if (rules.type && typeof value !== rules.type)\n        errors.push(`${key} must be ${rules.type}`);\n      if (rules.minLength && value?.length < rules.minLength)\n        errors.push(`${key} must be at least ${rules.minLength} chars`);\n    }\n    if (errors.length) return res.status(400).json({ errors });\n    next();\n  };\n}\n// Usage: app.post('/api/posts', validate({ title: { required: true, type: 'string' } }), handler);\n```",
+        },
+      ],
+    },
+  ],
 };
 
 export default phase5;

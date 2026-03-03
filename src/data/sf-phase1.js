@@ -2,7 +2,8 @@ const sfPhase1 = {
   id: "phase-1",
   title: "Phase 1: Role Expectations & Career Path",
   emoji: "🎯",
-  description: "Understand the Salesforce Developer → Senior Developer → Technical Architect career trajectory, interview structures, certification roadmap, and what differentiates each level.",
+  description:
+    "Understand the Salesforce Developer → Senior Developer → Technical Architect career trajectory, interview structures, certification roadmap, and what differentiates each level.",
   topics: [
     {
       id: "sf-developer-responsibilities",
@@ -101,30 +102,30 @@ private class CaseAssignmentTest {
         "Not understanding the difference between before and after triggers — before triggers modify records without DML, after triggers have record IDs",
         "Ignoring bulkification — code that works for 1 record fails when Data Loader inserts 200 records",
         "Choosing code over declarative solutions — always evaluate if a Flow, Validation Rule, or Formula can solve the problem first",
-        "Not considering the security context — running SOQL 'with sharing' vs 'without sharing' has major implications"
+        "Not considering the security context — running SOQL 'with sharing' vs 'without sharing' has major implications",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What does a typical day look like for a Salesforce Developer in an enterprise?",
-          a: "A typical day involves: (1) Morning standup to review sprint tasks. (2) Developing Apex triggers, classes, or LWC components based on user stories. (3) Writing SOQL queries to investigate data issues. (4) Code reviews for team members' pull requests. (5) Writing unit tests (75%+ coverage required). (6) Collaborating with admins on declarative vs. code decisions. (7) Debugging production issues via debug logs. (8) Deploying changes through CI/CD or change sets. The key emphasis is on bulkified, governor-limit-aware code that follows Salesforce best practices."
+          a: "A typical day involves: (1) Morning standup to review sprint tasks. (2) Developing Apex triggers, classes, or LWC components based on user stories. (3) Writing SOQL queries to investigate data issues. (4) Code reviews for team members' pull requests. (5) Writing unit tests (75%+ coverage required). (6) Collaborating with admins on declarative vs. code decisions. (7) Debugging production issues via debug logs. (8) Deploying changes through CI/CD or change sets. The key emphasis is on bulkified, governor-limit-aware code that follows Salesforce best practices.",
         },
         {
           type: "conceptual",
           q: "When should you use declarative tools vs. writing Apex code?",
-          a: "**Declarative first** is the Salesforce philosophy. Use declarative when: (1) Flows can handle the automation logic. (2) Validation rules can enforce data integrity. (3) Formula fields can compute derived values. (4) Process Builder (legacy) handles simple field updates. Use code when: (1) Complex business logic with conditional branching that Flows can't handle efficiently. (2) Integration callouts to external systems. (3) Complex data transformations across multiple objects. (4) Custom UI beyond standard Lightning components. (5) Performance-critical operations needing fine-tuned SOQL."
+          a: "**Declarative first** is the Salesforce philosophy. Use declarative when: (1) Flows can handle the automation logic. (2) Validation rules can enforce data integrity. (3) Formula fields can compute derived values. (4) Process Builder (legacy) handles simple field updates. Use code when: (1) Complex business logic with conditional branching that Flows can't handle efficiently. (2) Integration callouts to external systems. (3) Complex data transformations across multiple objects. (4) Custom UI beyond standard Lightning components. (5) Performance-critical operations needing fine-tuned SOQL.",
         },
         {
           type: "scenario",
           q: "You see a trigger with a SOQL query inside a for loop. What's the problem and how do you fix it?",
-          a: "This is a **bulkification violation**. In a for loop iterating over Trigger.new (up to 200 records in a bulk operation), each iteration fires a SOQL query. With 200 records, that's 200 queries — exceeding the 100 SOQL query governor limit. **Fix:** Move the SOQL query outside the loop. Collect all needed IDs into a Set, query once with a WHERE IN clause, build a Map<Id, SObject> from results, then reference the map inside the loop. This pattern converts O(n) queries to O(1)."
+          a: "This is a **bulkification violation**. In a for loop iterating over Trigger.new (up to 200 records in a bulk operation), each iteration fires a SOQL query. With 200 records, that's 200 queries — exceeding the 100 SOQL query governor limit. **Fix:** Move the SOQL query outside the loop. Collect all needed IDs into a Set, query once with a WHERE IN clause, build a Map<Id, SObject> from results, then reference the map inside the loop. This pattern converts O(n) queries to O(1).",
         },
         {
           type: "tricky",
           q: "What are the top 5 governor limits every Salesforce developer must know?",
-          a: "**Per-transaction limits:** (1) **100 SOQL queries** (synchronous) / 200 (asynchronous). (2) **150 DML statements** per transaction. (3) **10,000 DML rows** per transaction. (4) **50,000 SOQL rows** returned per transaction. (5) **10-second CPU time limit** (synchronous) / 60 seconds (async). Also critical: 100 callouts per transaction, 6MB heap size (sync) / 12MB (async), and 100 future method invocations per transaction."
-        }
-      ]
+          a: "**Per-transaction limits:** (1) **100 SOQL queries** (synchronous) / 200 (asynchronous). (2) **150 DML statements** per transaction. (3) **10,000 DML rows** per transaction. (4) **50,000 SOQL rows** returned per transaction. (5) **10-second CPU time limit** (synchronous) / 60 seconds (async). Also critical: 100 callouts per transaction, 6MB heap size (sync) / 12MB (async), and 100 future method invocations per transaction.",
+        },
+      ],
     },
     {
       id: "sf-senior-developer-expectations",
@@ -293,30 +294,30 @@ public class AccountService {
         "Not building reusable frameworks — writing one-off triggers for each object instead of a shared trigger framework",
         "Ignoring the declarative layer — senior developers should know when Flows are better than Apex, even if they prefer code",
         "Not considering the order of execution — triggers, flows, validation rules, and process builders all interact in a specific order",
-        "Failing to mentor — senior developers who don't grow others are not demonstrating leadership"
+        "Failing to mentor — senior developers who don't grow others are not demonstrating leadership",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What differentiates a Senior Salesforce Developer from a mid-level developer?",
-          a: "**Senior-level signals:** (1) **Architectural ownership** — designs solutions across objects and systems, not just individual features. (2) **Framework thinking** — builds reusable trigger frameworks, service layers, and utility patterns. (3) **Governor limit mastery** — proactively designs around limits, not reactively debugging them. (4) **Technical leadership** — establishes coding standards, leads code reviews, mentors juniors. (5) **Cross-functional influence** — partners with architects and admins, translates business to technical. (6) **Production ownership** — owns incident response, root cause analysis, and monitoring."
+          a: "**Senior-level signals:** (1) **Architectural ownership** — designs solutions across objects and systems, not just individual features. (2) **Framework thinking** — builds reusable trigger frameworks, service layers, and utility patterns. (3) **Governor limit mastery** — proactively designs around limits, not reactively debugging them. (4) **Technical leadership** — establishes coding standards, leads code reviews, mentors juniors. (5) **Cross-functional influence** — partners with architects and admins, translates business to technical. (6) **Production ownership** — owns incident response, root cause analysis, and monitoring.",
         },
         {
           type: "scenario",
           q: "You inherit a Salesforce org with 47 individual triggers, no framework, and frequent governor limit failures. How do you approach this?",
-          a: "**Phased approach:** (1) **Audit** — catalog all 47 triggers, identify which objects have multiple triggers (order of execution issue), document business logic. (2) **Framework** — implement a trigger handler framework (like the one shown) with recursion prevention and bypass switches. (3) **Prioritize** — start migrating triggers on objects with governor limit failures first. (4) **Service Layer** — extract business logic into service classes, triggers become thin dispatchers. (5) **Test Coverage** — write comprehensive tests for each migrated trigger. (6) **Deploy Incrementally** — migrate 3-5 triggers per sprint, validate in sandbox. (7) **Standards** — document the new pattern and train the team. Expected timeline: 2-3 months for a team of 3."
+          a: "**Phased approach:** (1) **Audit** — catalog all 47 triggers, identify which objects have multiple triggers (order of execution issue), document business logic. (2) **Framework** — implement a trigger handler framework (like the one shown) with recursion prevention and bypass switches. (3) **Prioritize** — start migrating triggers on objects with governor limit failures first. (4) **Service Layer** — extract business logic into service classes, triggers become thin dispatchers. (5) **Test Coverage** — write comprehensive tests for each migrated trigger. (6) **Deploy Incrementally** — migrate 3-5 triggers per sprint, validate in sandbox. (7) **Standards** — document the new pattern and train the team. Expected timeline: 2-3 months for a team of 3.",
         },
         {
           type: "conceptual",
           q: "Explain the Salesforce Order of Execution for a record save.",
-          a: "When a record is saved: (1) Load original record from database (updates). (2) Load new field values from request. (3) System validation rules (required fields, field types). (4) **Before triggers** execute. (5) Custom validation rules. (6) **Duplicate rules**. (7) Record saved to database (not committed). (8) **After triggers** execute. (9) Assignment rules. (10) Auto-response rules. (11) Workflow rules (legacy). (12) Flows (after-save). (13) Escalation rules. (14) Roll-up summary fields calculated. (15) **DML committed.** Understanding this is critical for debugging — validation errors after before-trigger changes, or re-triggered logic from workflow field updates."
+          a: "When a record is saved: (1) Load original record from database (updates). (2) Load new field values from request. (3) System validation rules (required fields, field types). (4) **Before triggers** execute. (5) Custom validation rules. (6) **Duplicate rules**. (7) Record saved to database (not committed). (8) **After triggers** execute. (9) Assignment rules. (10) Auto-response rules. (11) Workflow rules (legacy). (12) Flows (after-save). (13) Escalation rules. (14) Roll-up summary fields calculated. (15) **DML committed.** Understanding this is critical for debugging — validation errors after before-trigger changes, or re-triggered logic from workflow field updates.",
         },
         {
           type: "tricky",
           q: "Why should you use 'with sharing' vs 'without sharing' in Apex classes?",
-          a: "'**with sharing**' enforces the running user's record-level security (sharing rules, OWD, role hierarchy). '**without sharing**' runs in system context — the user can access all records. **Best practice:** Always use 'with sharing' by default for security. Use 'without sharing' only when you explicitly need system-level access (e.g., a utility class that counts all records for reporting). Classes that don't declare either inherit the sharing context of the calling class. **Critical in interviews:** If a trigger calls a class 'with sharing', SOQL queries in that class respect the running user's access, which can cause unexpected 'no records found' errors."
-        }
-      ]
+          a: "'**with sharing**' enforces the running user's record-level security (sharing rules, OWD, role hierarchy). '**without sharing**' runs in system context — the user can access all records. **Best practice:** Always use 'with sharing' by default for security. Use 'without sharing' only when you explicitly need system-level access (e.g., a utility class that counts all records for reporting). Classes that don't declare either inherit the sharing context of the calling class. **Critical in interviews:** If a trigger calls a class 'with sharing', SOQL queries in that class respect the running user's access, which can cause unexpected 'no records found' errors.",
+        },
+      ],
     },
     {
       id: "sf-technical-architect-path",
@@ -463,25 +464,25 @@ public class IntegrationOrchestrator {
         "Ignoring the total cost of ownership — custom code requires ongoing maintenance; AppExchange solutions may have licensing costs but lower maintenance",
         "Over-engineering — adding complexity (middleware, custom frameworks) when simpler Salesforce-native solutions exist",
         "Not considering data archival strategy — production orgs grow; without archival, performance degrades over years",
-        "Ignoring change management — the best architecture fails if users don't adopt it"
+        "Ignoring change management — the best architecture fails if users don't adopt it",
       ],
       interviewQuestions: [
         {
           type: "scenario",
           q: "A global company with 50,000 Salesforce users across 12 countries needs a single view of customer data. They currently have 6 separate orgs. How would you architect this?",
-          a: "**Approach:** (1) **Assessment** — catalog data in all 6 orgs, identify overlapping customer records. (2) **Architecture options:** (a) Org consolidation into 1-2 orgs with territory management — simplest but risky migration. (b) Hub-and-spoke with a master data management (MDM) system — each regional org syncs to a central MDM. (c) Salesforce Connect with external objects — real-time cross-org visibility without data duplication. (3) **Recommendation:** Hub-and-spoke with Salesforce-to-Salesforce or MuleSoft integration. Central org holds the golden customer record; regional orgs sync relevant data. (4) **Data governance:** Define who owns the customer record, conflict resolution rules, sync frequency. (5) **Compliance:** GDPR for EU data — may require EU-based data residency, affecting org geography."
+          a: "**Approach:** (1) **Assessment** — catalog data in all 6 orgs, identify overlapping customer records. (2) **Architecture options:** (a) Org consolidation into 1-2 orgs with territory management — simplest but risky migration. (b) Hub-and-spoke with a master data management (MDM) system — each regional org syncs to a central MDM. (c) Salesforce Connect with external objects — real-time cross-org visibility without data duplication. (3) **Recommendation:** Hub-and-spoke with Salesforce-to-Salesforce or MuleSoft integration. Central org holds the golden customer record; regional orgs sync relevant data. (4) **Data governance:** Define who owns the customer record, conflict resolution rules, sync frequency. (5) **Compliance:** GDPR for EU data — may require EU-based data residency, affecting org geography.",
         },
         {
           type: "conceptual",
           q: "What is the difference between a Solution Architect and a Technical Architect in Salesforce?",
-          a: "**Solution Architect** focuses on a specific project or implementation — designs the object model, automation, integrations for that project scope. **Technical Architect** owns the entire platform vision across all projects — sets standards, defines the integration strategy, manages technical debt, approves architectural decisions, and ensures all solutions align with the long-term platform roadmap. The CTA typically oversees multiple Solution Architects and ensures enterprise-wide consistency."
+          a: "**Solution Architect** focuses on a specific project or implementation — designs the object model, automation, integrations for that project scope. **Technical Architect** owns the entire platform vision across all projects — sets standards, defines the integration strategy, manages technical debt, approves architectural decisions, and ensures all solutions align with the long-term platform roadmap. The CTA typically oversees multiple Solution Architects and ensures enterprise-wide consistency.",
         },
         {
           type: "scenario",
           q: "You're asked to migrate an org with 200 custom objects and 500M records to a new org. How do you approach this?",
-          a: "**Phased approach:** (1) **Discovery** — document all 200 objects, relationships, automation, integrations. Identify technical debt to leave behind. (2) **Architecture** — design the target org's data model (opportunity to optimize). Plan metadata deployment order (dependencies). (3) **Metadata migration** — deploy using SFDX packages in dependency order. (4) **Data migration strategy:** For 500M records, use a tiered approach: (a) Reference data first (picklists, record types). (b) Parent objects next (Accounts, Contacts). (c) Child objects (Opportunities, Cases) in batches. (d) Use Bulk API 2.0 with parallel processing. (e) Plan for 2-4 week data migration window. (5) **Validation** — record counts, relationship integrity, automation testing. (6) **Cutover** — delta sync for records changed during migration, DNS cutover, user communication."
-        }
-      ]
+          a: "**Phased approach:** (1) **Discovery** — document all 200 objects, relationships, automation, integrations. Identify technical debt to leave behind. (2) **Architecture** — design the target org's data model (opportunity to optimize). Plan metadata deployment order (dependencies). (3) **Metadata migration** — deploy using SFDX packages in dependency order. (4) **Data migration strategy:** For 500M records, use a tiered approach: (a) Reference data first (picklists, record types). (b) Parent objects next (Accounts, Contacts). (c) Child objects (Opportunities, Cases) in batches. (d) Use Bulk API 2.0 with parallel processing. (e) Plan for 2-4 week data migration window. (5) **Validation** — record counts, relationship integrity, automation testing. (6) **Cutover** — delta sync for records changed during migration, DNS cutover, user communication.",
+        },
+      ],
     },
     {
       id: "sf-interview-structure",
@@ -654,25 +655,25 @@ public class ValidationEngine {
         "Ignoring behavioral rounds — at senior and architect levels, behavioral rounds have veto power",
         "Not practicing whiteboard/verbal communication — you need to explain your thinking clearly while coding",
         "Over-preparing for one area and ignoring others — interviews test breadth AND depth",
-        "Not asking clarifying questions — jumping into a solution without understanding requirements is a red flag at any level"
+        "Not asking clarifying questions — jumping into a solution without understanding requirements is a red flag at any level",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What certifications should a Salesforce Developer pursue and in what order?",
-          a: "**Recommended progression:** (1) **Platform Developer I** (PD1) — fundamental Apex, SOQL, triggers, testing. (2) **Platform Developer II** (PD2) — advanced Apex, integration, performance. (3) **Platform App Builder** — declarative tools, data model design. (4) **JavaScript Developer I** — LWC, modern JavaScript. (5) **Sharing and Visibility Designer** — security model deep dive. (6) **Data Architecture and Management Designer** — large data volume. (7) **Integration Architect** — enterprise integration patterns. (8) **Application Architect** (supercredential combining designer certs). (9) **System Architect** (supercredential). (10) **Certified Technical Architect (CTA)** — the pinnacle."
+          a: "**Recommended progression:** (1) **Platform Developer I** (PD1) — fundamental Apex, SOQL, triggers, testing. (2) **Platform Developer II** (PD2) — advanced Apex, integration, performance. (3) **Platform App Builder** — declarative tools, data model design. (4) **JavaScript Developer I** — LWC, modern JavaScript. (5) **Sharing and Visibility Designer** — security model deep dive. (6) **Data Architecture and Management Designer** — large data volume. (7) **Integration Architect** — enterprise integration patterns. (8) **Application Architect** (supercredential combining designer certs). (9) **System Architect** (supercredential). (10) **Certified Technical Architect (CTA)** — the pinnacle.",
         },
         {
           type: "scenario",
           q: "You're in an interview and the interviewer asks you to design something you've never built before. What do you do?",
-          a: "**Don't panic — this is the point.** Interviewers want to see your problem-solving process, not a rehearsed answer. (1) **Acknowledge** — 'I haven't built this specific solution, but let me walk through my approach.' (2) **Clarify** — ask questions about requirements, scale, constraints. (3) **Decompose** — break the problem into components you DO understand. (4) **Map to patterns** — relate unknown components to known patterns. (5) **Design iteratively** — start with a high-level architecture, then drill into critical areas. (6) **State assumptions** — be explicit about what you're assuming. (7) **Discuss trade-offs** — show you understand there are multiple valid approaches."
+          a: "**Don't panic — this is the point.** Interviewers want to see your problem-solving process, not a rehearsed answer. (1) **Acknowledge** — 'I haven't built this specific solution, but let me walk through my approach.' (2) **Clarify** — ask questions about requirements, scale, constraints. (3) **Decompose** — break the problem into components you DO understand. (4) **Map to patterns** — relate unknown components to known patterns. (5) **Design iteratively** — start with a high-level architecture, then drill into critical areas. (6) **State assumptions** — be explicit about what you're assuming. (7) **Discuss trade-offs** — show you understand there are multiple valid approaches.",
         },
         {
           type: "conceptual",
           q: "How does the Salesforce Developer interview differ from a general software engineer interview?",
-          a: "**Key differences:** (1) **Platform-specific** — you must know governor limits, bulkification, multi-tenant constraints. These don't exist in standard software engineering. (2) **Declarative knowledge** — interviewers expect you to know when NOT to write code. (3) **Security model** — Salesforce's sharing model is unique; general security knowledge isn't enough. (4) **No algorithm-heavy DSA** — unlike FAANG, Salesforce interviews focus on platform mastery, not LeetCode. (5) **Deployment knowledge** — metadata-driven deployment is a core competency. (6) **CRM domain** — understanding Sales Cloud, Service Cloud, and CRM concepts is expected."
-        }
-      ]
+          a: "**Key differences:** (1) **Platform-specific** — you must know governor limits, bulkification, multi-tenant constraints. These don't exist in standard software engineering. (2) **Declarative knowledge** — interviewers expect you to know when NOT to write code. (3) **Security model** — Salesforce's sharing model is unique; general security knowledge isn't enough. (4) **No algorithm-heavy DSA** — unlike FAANG, Salesforce interviews focus on platform mastery, not LeetCode. (5) **Deployment knowledge** — metadata-driven deployment is a core competency. (6) **CRM domain** — understanding Sales Cloud, Service Cloud, and CRM concepts is expected.",
+        },
+      ],
     },
     {
       id: "sf-certification-progression",
@@ -841,22 +842,22 @@ public class DynamicQueryBuilder {
         "Skipping the Administrator cert — even for developers, admin fundamentals (security model, automation) are heavily tested in PD1",
         "Not maintaining certifications — expired certs look worse than no certs on a resume",
         "Over-relying on brain dumps — Salesforce regularly rotates questions; understanding concepts is more reliable than memorizing answers",
-        "Waiting until you feel 'ready' — schedule the exam first, then prepare with a deadline"
+        "Waiting until you feel 'ready' — schedule the exam first, then prepare with a deadline",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Which Salesforce certifications are most valued by employers for a developer role?",
-          a: "For developers: (1) **Platform Developer I** — table stakes; almost required for any Salesforce dev role. (2) **Platform Developer II** — signals senior-level competency; significantly increases market value. (3) **JavaScript Developer I** — increasingly important with LWC adoption. (4) **Platform App Builder** — shows you understand declarative tools (clicks vs. code). Beyond these, **Sharing and Visibility Designer** and **Integration Architecture Designer** are highly valued for senior/architect roles. Multiple certifications compound — a developer with PD1 + PD2 + App Builder commands 20-30% higher compensation than PD1 alone."
+          a: "For developers: (1) **Platform Developer I** — table stakes; almost required for any Salesforce dev role. (2) **Platform Developer II** — signals senior-level competency; significantly increases market value. (3) **JavaScript Developer I** — increasingly important with LWC adoption. (4) **Platform App Builder** — shows you understand declarative tools (clicks vs. code). Beyond these, **Sharing and Visibility Designer** and **Integration Architecture Designer** are highly valued for senior/architect roles. Multiple certifications compound — a developer with PD1 + PD2 + App Builder commands 20-30% higher compensation than PD1 alone.",
         },
         {
           type: "conceptual",
           q: "What's the difference between the CTA certification and all other Salesforce certifications?",
-          a: "All other Salesforce certs are **multiple-choice exams** (60-minute online proctored). The CTA is a **live board review**: (1) You receive a complex business scenario 2 weeks in advance. (2) You design a complete enterprise architecture. (3) You present your solution to a panel of existing CTAs for 30 minutes. (4) The panel grills you for 30 minutes with deep-dive questions and 'what-if' challenges. (5) Pass rate is estimated at 5-10%. (6) There are only ~350 CTAs worldwide. It's the highest designation in the Salesforce ecosystem and directly correlates with $200K+ compensation."
-        }
-      ]
-    }
-  ]
+          a: "All other Salesforce certs are **multiple-choice exams** (60-minute online proctored). The CTA is a **live board review**: (1) You receive a complex business scenario 2 weeks in advance. (2) You design a complete enterprise architecture. (3) You present your solution to a panel of existing CTAs for 30 minutes. (4) The panel grills you for 30 minutes with deep-dive questions and 'what-if' challenges. (5) Pass rate is estimated at 5-10%. (6) There are only ~350 CTAs worldwide. It's the highest designation in the Salesforce ecosystem and directly correlates with $200K+ compensation.",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase1;

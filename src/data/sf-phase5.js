@@ -2,7 +2,8 @@ const sfPhase5 = {
   id: "phase-5",
   title: "Phase 5: Integration & Enterprise Architecture",
   emoji: "🔌",
-  description: "Master REST/SOAP APIs, OAuth flows, Named Credentials, callouts, Platform Events, Change Data Capture, middleware patterns, and enterprise integration architecture.",
+  description:
+    "Master REST/SOAP APIs, OAuth flows, Named Credentials, callouts, Platform Events, Change Data Capture, middleware patterns, and enterprise integration architecture.",
   topics: [
     {
       id: "sf-rest-soap-apis",
@@ -201,20 +202,20 @@ public class TriggerCalloutService {
         "Not using Named Credentials — hard-coding credentials in Apex is a security vulnerability and fails security reviews",
         "Ignoring callout governor limits — 100 callouts per transaction, 120-second total timeout. Plan for limits in bulk scenarios",
         "Not writing HttpCalloutMock tests — callouts cannot be made in test context. Without mocks, your code has 0% test coverage for callout logic",
-        "Not handling HTTP error responses — checking only for 200 misses 201, 204, and other valid success codes. Check for ranges (200-299)"
+        "Not handling HTTP error responses — checking only for 200 misses 201, 204, and other valid success codes. Check for ranges (200-299)",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are Named Credentials and why should you use them?",
-          a: "Named Credentials store authentication credentials (username/password, OAuth tokens, certificates) securely in Salesforce metadata. **Why use them:** (1) **Security** — credentials are encrypted, never in code. (2) **Environment portability** — different credentials in sandbox vs production without code changes. (3) **No Remote Site Setting needed** — Named Credentials automatically whitelist the endpoint. (4) **Auto-authentication** — handles OAuth token refresh automatically. (5) **Security review compliance** — AppExchange and enterprise reviews require Named Credentials."
+          a: "Named Credentials store authentication credentials (username/password, OAuth tokens, certificates) securely in Salesforce metadata. **Why use them:** (1) **Security** — credentials are encrypted, never in code. (2) **Environment portability** — different credentials in sandbox vs production without code changes. (3) **No Remote Site Setting needed** — Named Credentials automatically whitelist the endpoint. (4) **Auto-authentication** — handles OAuth token refresh automatically. (5) **Security review compliance** — AppExchange and enterprise reviews require Named Credentials.",
         },
         {
           type: "scenario",
           q: "You need to make a callout from a trigger. How do you handle this?",
-          a: "Callouts cannot be made synchronously from triggers (mixed DML restriction). **Solutions:** (1) **@future(callout=true)** — simplest. Pass record IDs as Set<Id>, re-query inside the future method. Limitation: max 50 future calls/transaction, no chaining. (2) **Queueable with Database.AllowsCallouts** — more control. Accepts SObject params, can chain, returns Job ID. (3) **Platform Events** — publish an event from the trigger, subscribe with a trigger on the event that makes the callout. Best for decoupling. **Best practice:** Queueable for most cases. Platform Events for complex/decoupled scenarios."
-        }
-      ]
+          a: "Callouts cannot be made synchronously from triggers (mixed DML restriction). **Solutions:** (1) **@future(callout=true)** — simplest. Pass record IDs as Set<Id>, re-query inside the future method. Limitation: max 50 future calls/transaction, no chaining. (2) **Queueable with Database.AllowsCallouts** — more control. Accepts SObject params, can chain, returns Job ID. (3) **Platform Events** — publish an event from the trigger, subscribe with a trigger on the event that makes the callout. Best for decoupling. **Best practice:** Queueable for most cases. Platform Events for complex/decoupled scenarios.",
+        },
+      ],
     },
     {
       id: "sf-oauth-authentication",
@@ -382,15 +383,15 @@ global with sharing class SecureRestApi {
         "Not implementing refresh token logic — access tokens expire. Without refresh logic, integrations break",
         "Using the same Connected App for all environments — create separate Connected Apps for dev/sandbox/production",
         "Granting too broad OAuth scopes — 'full' scope gives complete access. Use minimum required scopes (api, refresh_token)",
-        "Not monitoring Connected App usage — unauthorized access can go undetected without monitoring"
+        "Not monitoring Connected App usage — unauthorized access can go undetected without monitoring",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Explain the different OAuth flows in Salesforce and when to use each.",
-          a: "**Web Server (Auth Code):** User-facing web apps. User logs in → code → token exchange. Most secure for web. **JWT Bearer:** Server-to-server. No user interaction. App signs JWT with certificate. Use for: automated integrations, CI/CD. **Client Credentials:** Machine-to-machine. Client ID + Secret → token. No user context. Use for: backend services. **Device Flow:** Limited-input devices. Device shows code, user authorizes elsewhere. **Refresh Token:** Renew expired tokens without re-auth. **Key decision:** User involved? → Web Server or Device. No user? → JWT or Client Credentials."
-        }
-      ]
+          a: "**Web Server (Auth Code):** User-facing web apps. User logs in → code → token exchange. Most secure for web. **JWT Bearer:** Server-to-server. No user interaction. App signs JWT with certificate. Use for: automated integrations, CI/CD. **Client Credentials:** Machine-to-machine. Client ID + Secret → token. No user context. Use for: backend services. **Device Flow:** Limited-input devices. Device shows code, user authorizes elsewhere. **Refresh Token:** Renew expired tokens without re-auth. **Key decision:** User involved? → Web Server or Device. No user? → JWT or Client Credentials.",
+        },
+      ],
     },
     {
       id: "sf-integration-patterns",
@@ -635,22 +636,22 @@ public class RetryableCallout {
         "Not implementing retry logic — network failures are inevitable. Always design for retry with backoff",
         "Point-to-point integration for 5+ systems — creates a spaghetti architecture. Use middleware (MuleSoft) for complex integrations",
         "Not logging integration operations — without logs, debugging production integration failures is nearly impossible",
-        "Ignoring rate limits on external APIs — sending 10,000 requests per minute to an API with a 100/min limit causes cascading failures"
+        "Ignoring rate limits on external APIs — sending 10,000 requests per minute to an API with a 100/min limit causes cascading failures",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are the main integration patterns for Salesforce and when would you use each?",
-          a: "**Request-Reply (Sync):** Real-time lookup/validation. User waits for response. 120s timeout. **Fire-and-Forget (Async):** Non-critical updates. No response needed. @future/Queueable/Events. **Batch Sync:** Nightly bulk transfers. Millions of records. Batch Apex + Bulk API. **Event-Driven:** Real-time reactions. Platform Events/CDC. Decoupled producers and consumers. **Data Virtualization:** Access without import. Salesforce Connect/External Objects. **Decision factors:** latency requirements, data volume, fault tolerance, coupling tolerance."
+          a: "**Request-Reply (Sync):** Real-time lookup/validation. User waits for response. 120s timeout. **Fire-and-Forget (Async):** Non-critical updates. No response needed. @future/Queueable/Events. **Batch Sync:** Nightly bulk transfers. Millions of records. Batch Apex + Bulk API. **Event-Driven:** Real-time reactions. Platform Events/CDC. Decoupled producers and consumers. **Data Virtualization:** Access without import. Salesforce Connect/External Objects. **Decision factors:** latency requirements, data volume, fault tolerance, coupling tolerance.",
         },
         {
           type: "scenario",
           q: "You need to integrate Salesforce with SAP, Workday, and a custom data warehouse. How would you architect this?",
-          a: "**Hub-and-spoke with MuleSoft:** (1) **MuleSoft as the integration hub** — all systems connect to MuleSoft, not directly to each other. (2) **Salesforce → MuleSoft:** Platform Events for real-time changes, Batch API for nightly bulk sync. (3) **MuleSoft → SAP:** SAP connector for order/inventory data. Transform Salesforce format to SAP IDocs. (4) **MuleSoft → Workday:** REST API for employee data sync. Handle HR data sensitivity (PII masking). (5) **MuleSoft → Data Warehouse:** Batch jobs for analytical data. (6) **Benefits:** Centralized monitoring, reusable transformations, guaranteed delivery, error handling. (7) **Alternative without MuleSoft:** Direct point-to-point, but exponentially more complex with 3+ systems."
-        }
-      ]
-    }
-  ]
+          a: "**Hub-and-spoke with MuleSoft:** (1) **MuleSoft as the integration hub** — all systems connect to MuleSoft, not directly to each other. (2) **Salesforce → MuleSoft:** Platform Events for real-time changes, Batch API for nightly bulk sync. (3) **MuleSoft → SAP:** SAP connector for order/inventory data. Transform Salesforce format to SAP IDocs. (4) **MuleSoft → Workday:** REST API for employee data sync. Handle HR data sensitivity (PII masking). (5) **MuleSoft → Data Warehouse:** Batch jobs for analytical data. (6) **Benefits:** Centralized monitoring, reusable transformations, guaranteed delivery, error handling. (7) **Alternative without MuleSoft:** Direct point-to-point, but exponentially more complex with 3+ systems.",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase5;

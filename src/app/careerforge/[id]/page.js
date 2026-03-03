@@ -39,7 +39,9 @@ export default function RoadmapPage() {
         setViewState("complete");
       } else if (rm.status === "error") {
         setViewState("error");
-        setErrorMessage(rm.errorMessage ?? "Generation failed. Please try again.");
+        setErrorMessage(
+          rm.errorMessage ?? "Generation failed. Please try again.",
+        );
       } else {
         // pending or running — connect to SSE
         startStreaming();
@@ -60,7 +62,10 @@ export default function RoadmapPage() {
       signal: controller.signal,
       onEvent: (event) => {
         if (event.type === "status") {
-          setAgentStatuses((prev) => ({ ...prev, [event.agent]: event.message }));
+          setAgentStatuses((prev) => ({
+            ...prev,
+            [event.agent]: event.message,
+          }));
         }
         if (event.type === "progress") {
           setProgress((prev) => Math.max(prev, event.percent));
@@ -75,7 +80,9 @@ export default function RoadmapPage() {
                 setViewState("complete");
               } else {
                 setViewState("error");
-                setErrorMessage("Roadmap was generated but could not be loaded.");
+                setErrorMessage(
+                  "Roadmap was generated but could not be loaded.",
+                );
               }
             })
             .catch(() => {
@@ -100,7 +107,14 @@ export default function RoadmapPage() {
 
   if (viewState === "checking") {
     return (
-      <div style={{ maxWidth: 600, margin: "4rem auto", textAlign: "center", padding: "1rem" }}>
+      <div
+        style={{
+          maxWidth: 600,
+          margin: "4rem auto",
+          textAlign: "center",
+          padding: "1rem",
+        }}
+      >
         <div
           style={{
             width: 40,
@@ -112,7 +126,9 @@ export default function RoadmapPage() {
             margin: "0 auto 1rem",
           }}
         />
-        <p style={{ color: "var(--text-secondary)" }}>Loading your roadmap...</p>
+        <p style={{ color: "var(--text-secondary)" }}>
+          Loading your roadmap...
+        </p>
         <style>{`@keyframes cf-spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
@@ -132,11 +148,15 @@ export default function RoadmapPage() {
         }}
       >
         <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>⚠️</div>
-        <h2 style={{ fontWeight: 700, marginBottom: "0.5rem" }}>Generation Failed</h2>
+        <h2 style={{ fontWeight: 700, marginBottom: "0.5rem" }}>
+          Generation Failed
+        </h2>
         <p style={{ color: "var(--text-secondary)", marginBottom: "1.5rem" }}>
           {errorMessage ?? "Something went wrong. Please try again."}
         </p>
-        <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center" }}>
+        <div
+          style={{ display: "flex", gap: "0.75rem", justifyContent: "center" }}
+        >
           <button
             onClick={() => {
               setViewState("checking");
@@ -177,7 +197,9 @@ export default function RoadmapPage() {
   }
 
   if (viewState === "streaming") {
-    return <StreamingProgress agentStatuses={agentStatuses} progress={progress} />;
+    return (
+      <StreamingProgress agentStatuses={agentStatuses} progress={progress} />
+    );
   }
 
   // complete

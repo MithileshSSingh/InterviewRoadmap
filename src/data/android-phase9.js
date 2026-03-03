@@ -2,7 +2,8 @@ const androidPhase9 = {
   id: "phase-9",
   title: "Phase 9: DSA for Google Interviews",
   emoji: "🧮",
-  description: "Senior-level DSA preparation for Google — essential patterns, must-practice problems, and optimization strategies.",
+  description:
+    "Senior-level DSA preparation for Google — essential patterns, must-practice problems, and optimization strategies.",
   topics: [
     {
       id: "dsa-topics-for-google",
@@ -153,12 +154,12 @@ fun nextGreaterElements(nums: IntArray): IntArray {
         {
           type: "coding",
           q: "Given a list of intervals representing meeting times, find the minimum number of conference rooms required.",
-          a: "```kotlin\nfun minMeetingRooms(intervals: Array<IntArray>): Int {\n    val starts = intervals.map { it[0] }.sorted()\n    val ends = intervals.map { it[1] }.sorted()\n    var rooms = 0\n    var maxRooms = 0\n    var s = 0\n    var e = 0\n    while (s < starts.size) {\n        if (starts[s] < ends[e]) {\n            rooms++\n            maxRooms = maxOf(maxRooms, rooms)\n            s++\n        } else {\n            rooms--\n            e++\n        }\n    }\n    return maxRooms\n}\n// O(n log n) time, O(n) space\n// Alternative: use a min-heap of end times\n```"
+          a: "```kotlin\nfun minMeetingRooms(intervals: Array<IntArray>): Int {\n    val starts = intervals.map { it[0] }.sorted()\n    val ends = intervals.map { it[1] }.sorted()\n    var rooms = 0\n    var maxRooms = 0\n    var s = 0\n    var e = 0\n    while (s < starts.size) {\n        if (starts[s] < ends[e]) {\n            rooms++\n            maxRooms = maxOf(maxRooms, rooms)\n            s++\n        } else {\n            rooms--\n            e++\n        }\n    }\n    return maxRooms\n}\n// O(n log n) time, O(n) space\n// Alternative: use a min-heap of end times\n```",
         },
         {
           type: "coding",
           q: "Implement an LRU Cache with O(1) get and put operations.",
-          a: "```kotlin\nclass LRUCache(private val capacity: Int) {\n    private val map = HashMap<Int, Node>()\n    private val head = Node(0, 0) // dummy\n    private val tail = Node(0, 0) // dummy\n    init { head.next = tail; tail.prev = head }\n    \n    fun get(key: Int): Int {\n        val node = map[key] ?: return -1\n        remove(node)\n        addToHead(node)\n        return node.value\n    }\n    \n    fun put(key: Int, value: Int) {\n        map[key]?.let { remove(it) }\n        val node = Node(key, value)\n        map[key] = node\n        addToHead(node)\n        if (map.size > capacity) {\n            val lru = tail.prev!!\n            remove(lru)\n            map.remove(lru.key)\n        }\n    }\n    \n    private fun addToHead(node: Node) {\n        node.next = head.next\n        node.prev = head\n        head.next!!.prev = node\n        head.next = node\n    }\n    \n    private fun remove(node: Node) {\n        node.prev!!.next = node.next\n        node.next!!.prev = node.prev\n    }\n    \n    data class Node(val key: Int, var value: Int, var prev: Node? = null, var next: Node? = null)\n}\n```"
+          a: "```kotlin\nclass LRUCache(private val capacity: Int) {\n    private val map = HashMap<Int, Node>()\n    private val head = Node(0, 0) // dummy\n    private val tail = Node(0, 0) // dummy\n    init { head.next = tail; tail.prev = head }\n    \n    fun get(key: Int): Int {\n        val node = map[key] ?: return -1\n        remove(node)\n        addToHead(node)\n        return node.value\n    }\n    \n    fun put(key: Int, value: Int) {\n        map[key]?.let { remove(it) }\n        val node = Node(key, value)\n        map[key] = node\n        addToHead(node)\n        if (map.size > capacity) {\n            val lru = tail.prev!!\n            remove(lru)\n            map.remove(lru.key)\n        }\n    }\n    \n    private fun addToHead(node: Node) {\n        node.next = head.next\n        node.prev = head\n        head.next!!.prev = node\n        head.next = node\n    }\n    \n    private fun remove(node: Node) {\n        node.prev!!.next = node.next\n        node.next!!.prev = node.prev\n    }\n    \n    data class Node(val key: Int, var value: Int, var prev: Node? = null, var next: Node? = null)\n}\n```",
         },
       ],
     },
@@ -278,7 +279,7 @@ For each problem, identify the pattern BEFORE solving:
         {
           type: "conceptual",
           q: "How do you approach a problem you've never seen before in an interview?",
-          a: "Systematic pattern matching: (1) **Read and restate** — make sure you understand the problem. (2) **Identify constraints** — sorted? contiguous? optimal? all possibilities? These are pattern triggers. (3) **Match to pattern** — sorted + pair → two pointers. Subarray + condition → sliding window. Shortest path → BFS. All combinations → backtracking. Min/max + choices → DP. (4) **Start with brute force** — it's ok to start with O(n²) and optimize. Shows you understand the problem. (5) **Optimize** — apply the pattern to reduce complexity. (6) **If truly stuck** — simplify the problem (smaller input, fewer constraints) and solve that first."
+          a: "Systematic pattern matching: (1) **Read and restate** — make sure you understand the problem. (2) **Identify constraints** — sorted? contiguous? optimal? all possibilities? These are pattern triggers. (3) **Match to pattern** — sorted + pair → two pointers. Subarray + condition → sliding window. Shortest path → BFS. All combinations → backtracking. Min/max + choices → DP. (4) **Start with brute force** — it's ok to start with O(n²) and optimize. Shows you understand the problem. (5) **Optimize** — apply the pattern to reduce complexity. (6) **If truly stuck** — simplify the problem (smaller input, fewer constraints) and solve that first.",
         },
       ],
     },
@@ -399,7 +400,7 @@ class SpiralIterator(matrix: Array<IntArray>) : Iterator<Int> {
         {
           type: "scenario",
           q: "You're 20 minutes into a 45-minute coding round and realize your approach is wrong. What do you do?",
-          a: "**Don't panic. This happens and is expected.** (1) Stop coding and tell the interviewer: 'I realize this approach has a flaw because [specific reason]. Let me reconsider.' (2) Take 2 minutes to identify the correct pattern. (3) If you have a better approach, explain it and start coding. (4) If stuck, share your thinking with the interviewer. Say: 'I'm considering X and Y approaches. X handles [case] well but [issue]. Can I get a hint on the right direction?' Google evaluates how you handle setbacks. Pivoting gracefully with clear communication is a strong signal."
+          a: "**Don't panic. This happens and is expected.** (1) Stop coding and tell the interviewer: 'I realize this approach has a flaw because [specific reason]. Let me reconsider.' (2) Take 2 minutes to identify the correct pattern. (3) If you have a better approach, explain it and start coding. (4) If stuck, share your thinking with the interviewer. Say: 'I'm considering X and Y approaches. X handles [case] well but [issue]. Can I get a hint on the right direction?' Google evaluates how you handle setbacks. Pivoting gracefully with clear communication is a strong signal.",
         },
       ],
     },

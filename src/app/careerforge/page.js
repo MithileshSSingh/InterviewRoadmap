@@ -84,7 +84,12 @@ export default function CareerForgePage() {
       const res = await fetch("/api/careerforge/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: role.trim(), company: company.trim(), experienceLevel, sessionId }),
+        body: JSON.stringify({
+          role: role.trim(),
+          company: company.trim(),
+          experienceLevel,
+          sessionId,
+        }),
       });
 
       if (!res.ok) {
@@ -138,12 +143,24 @@ export default function CareerForgePage() {
   return (
     <div style={{ maxWidth: 760, margin: "0 auto", padding: "2rem 1rem" }}>
       {/* Hero */}
-      <div className="hero" style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+      <div
+        className="hero"
+        style={{ textAlign: "center", marginBottom: "2.5rem" }}
+      >
         <div style={{ fontSize: "3rem", marginBottom: "0.5rem" }}>🤖</div>
-        <h1 style={{ fontSize: "2.2rem", marginBottom: "0.75rem" }}>Roadmap AI</h1>
-        <p style={{ color: "var(--text-secondary)", maxWidth: 520, margin: "0 auto" }}>
-          Enter a role and company to generate a personalized AI career roadmap — interview
-          process, salary data, LinkedIn referral strategy, and a phased study plan.
+        <h1 style={{ fontSize: "2.2rem", marginBottom: "0.75rem" }}>
+          Roadmap AI
+        </h1>
+        <p
+          style={{
+            color: "var(--text-secondary)",
+            maxWidth: 520,
+            margin: "0 auto",
+          }}
+        >
+          Enter a role and company to generate a personalized AI career roadmap
+          — interview process, salary data, LinkedIn referral strategy, and a
+          phased study plan.
         </p>
       </div>
 
@@ -163,7 +180,13 @@ export default function CareerForgePage() {
           <div>
             <label
               htmlFor="role"
-              style={{ display: "block", marginBottom: "0.4rem", color: "var(--text-secondary)", fontSize: "0.85rem", fontWeight: 600 }}
+              style={{
+                display: "block",
+                marginBottom: "0.4rem",
+                color: "var(--text-secondary)",
+                fontSize: "0.85rem",
+                fontWeight: 600,
+              }}
             >
               Job Role
             </label>
@@ -187,7 +210,9 @@ export default function CareerForgePage() {
               }}
             />
             <datalist id="role-suggestions">
-              {ROLE_SUGGESTIONS.map((r) => <option key={r} value={r} />)}
+              {ROLE_SUGGESTIONS.map((r) => (
+                <option key={r} value={r} />
+              ))}
             </datalist>
           </div>
 
@@ -195,7 +220,13 @@ export default function CareerForgePage() {
           <div>
             <label
               htmlFor="company"
-              style={{ display: "block", marginBottom: "0.4rem", color: "var(--text-secondary)", fontSize: "0.85rem", fontWeight: 600 }}
+              style={{
+                display: "block",
+                marginBottom: "0.4rem",
+                color: "var(--text-secondary)",
+                fontSize: "0.85rem",
+                fontWeight: 600,
+              }}
             >
               Company
             </label>
@@ -219,14 +250,22 @@ export default function CareerForgePage() {
               }}
             />
             <datalist id="company-suggestions">
-              {COMPANY_SUGGESTIONS.map((c) => <option key={c} value={c} />)}
+              {COMPANY_SUGGESTIONS.map((c) => (
+                <option key={c} value={c} />
+              ))}
             </datalist>
           </div>
 
           {/* Experience Level */}
           <div>
             <label
-              style={{ display: "block", marginBottom: "0.4rem", color: "var(--text-secondary)", fontSize: "0.85rem", fontWeight: 600 }}
+              style={{
+                display: "block",
+                marginBottom: "0.4rem",
+                color: "var(--text-secondary)",
+                fontSize: "0.85rem",
+                fontWeight: 600,
+              }}
             >
               Experience Level
             </label>
@@ -241,9 +280,18 @@ export default function CareerForgePage() {
                     padding: "0.45rem 1rem",
                     borderRadius: "var(--radius)",
                     border: "1px solid",
-                    borderColor: experienceLevel === level ? "var(--accent-blue)" : "var(--border)",
-                    background: experienceLevel === level ? "var(--accent-blue)" : "var(--bg-secondary)",
-                    color: experienceLevel === level ? "var(--bg-primary)" : "var(--text-primary)",
+                    borderColor:
+                      experienceLevel === level
+                        ? "var(--accent-blue)"
+                        : "var(--border)",
+                    background:
+                      experienceLevel === level
+                        ? "var(--accent-blue)"
+                        : "var(--bg-secondary)",
+                    color:
+                      experienceLevel === level
+                        ? "var(--bg-primary)"
+                        : "var(--text-primary)",
                     cursor: "pointer",
                     fontWeight: experienceLevel === level ? 700 : 400,
                     fontSize: "0.9rem",
@@ -257,7 +305,11 @@ export default function CareerForgePage() {
         </div>
 
         {error && (
-          <p style={{ color: "#ef4444", marginTop: "1rem", fontSize: "0.9rem" }}>{error}</p>
+          <p
+            style={{ color: "#ef4444", marginTop: "1rem", fontSize: "0.9rem" }}
+          >
+            {error}
+          </p>
         )}
 
         <button
@@ -305,7 +357,14 @@ export default function CareerForgePage() {
       {/* History */}
       {history.length > 0 && (
         <div>
-          <h2 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "1rem", color: "var(--text-secondary)" }}>
+          <h2
+            style={{
+              fontSize: "1.1rem",
+              fontWeight: 700,
+              marginBottom: "1rem",
+              color: "var(--text-secondary)",
+            }}
+          >
             Recent Roadmaps
           </h2>
           <div style={{ display: "grid", gap: "0.75rem" }}>
@@ -343,8 +402,14 @@ export default function CareerForgePage() {
                       {item.status}
                     </span>
                   </div>
-                  <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
-                    {item.experienceLevel} · {new Date(item.createdAt).toLocaleDateString()}
+                  <div
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "var(--text-secondary)",
+                    }}
+                  >
+                    {item.experienceLevel} ·{" "}
+                    {new Date(item.createdAt).toLocaleDateString()}
                   </div>
                 </Link>
                 {/* Export button — only for completed roadmaps */}
@@ -354,15 +419,23 @@ export default function CareerForgePage() {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        setExportOpenId(exportOpenId === item.id ? null : item.id);
+                        setExportOpenId(
+                          exportOpenId === item.id ? null : item.id,
+                        );
                       }}
                       title="Export"
                       style={{
                         background: "none",
                         border: "1px solid var(--border)",
                         borderRadius: "var(--radius)",
-                        color: exportLoadingId === item.id ? "var(--text-muted)" : "var(--text-secondary)",
-                        cursor: exportLoadingId === item.id ? "not-allowed" : "pointer",
+                        color:
+                          exportLoadingId === item.id
+                            ? "var(--text-muted)"
+                            : "var(--text-secondary)",
+                        cursor:
+                          exportLoadingId === item.id
+                            ? "not-allowed"
+                            : "pointer",
                         fontSize: "0.8rem",
                         fontWeight: 600,
                         padding: "0.25rem 0.6rem",
@@ -376,17 +449,29 @@ export default function CareerForgePage() {
                     {exportOpenId === item.id && (
                       <>
                         <div
-                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExportOpenId(null); }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setExportOpenId(null);
+                          }}
                           style={{ position: "fixed", inset: 0, zIndex: 9 }}
                         />
                         <ExportDropdown
                           options={[
                             { label: "📄 Export as JSON", format: "json" },
-                            { label: "📝 Export as Markdown", format: "markdown" },
+                            {
+                              label: "📝 Export as Markdown",
+                              format: "markdown",
+                            },
                             { label: "🖨️ Export as PDF", format: "pdf" },
                             { label: "📃 Export as Word .doc", format: "doc" },
                           ]}
-                          onSelect={(format) => handleCardExport(item.id, format, { preventDefault: () => {}, stopPropagation: () => {} })}
+                          onSelect={(format) =>
+                            handleCardExport(item.id, format, {
+                              preventDefault: () => {},
+                              stopPropagation: () => {},
+                            })
+                          }
                         />
                       </>
                     )}

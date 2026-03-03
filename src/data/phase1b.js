@@ -63,35 +63,35 @@ console.log(apply(add, 5, 3)); // 8
       "Trying to return an object from an arrow function without wrapping in parentheses: `() => { name: 'a' }` returns `undefined`!",
       "Using `arguments` object in arrow functions — it doesn't exist; use rest parameters instead",
       "Not understanding that function expressions are NOT hoisted, while declarations ARE",
-      "Overusing arrow functions — don't use them for object methods or when you need `this`"
+      "Overusing arrow functions — don't use them for object methods or when you need `this`",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "What is the difference between function declarations and function expressions?",
-        a: "Declarations are hoisted (can be called before they appear in code) and are named. Expressions are NOT hoisted and can be anonymous or named. Arrow functions are a type of expression. Declarations use the `function` keyword as the first word; expressions are assigned to variables."
+        a: "Declarations are hoisted (can be called before they appear in code) and are named. Expressions are NOT hoisted and can be anonymous or named. Arrow functions are a type of expression. Declarations use the `function` keyword as the first word; expressions are assigned to variables.",
       },
       {
         type: "tricky",
         q: "What will this output?\n```js\nvar a = 1;\nfunction b() {\n  a = 10;\n  return;\n  function a() {}\n}\nb();\nconsole.log(a);\n```",
-        a: "`1`. Inside `b()`, `function a()` is hoisted, creating a LOCAL `a`. The `a = 10` modifies the local `a`, not the global one. The global `a` remains `1`."
+        a: "`1`. Inside `b()`, `function a()` is hoisted, creating a LOCAL `a`. The `a = 10` modifies the local `a`, not the global one. The global `a` remains `1`.",
       },
       {
         type: "conceptual",
         q: "Why can't arrow functions be used as constructors?",
-        a: "Arrow functions don't have a `[[Construct]]` internal method or a `prototype` property. They can't create new objects with `new`. They also don't have their own `this` — they inherit it lexically, which conflicts with how constructors need `this` to refer to the new instance."
+        a: "Arrow functions don't have a `[[Construct]]` internal method or a `prototype` property. They can't create new objects with `new`. They also don't have their own `this` — they inherit it lexically, which conflicts with how constructors need `this` to refer to the new instance.",
       },
       {
         type: "coding",
         q: "Write a function `once(fn)` that ensures `fn` can only be called once. Subsequent calls return the first result.",
-        a: "```js\nfunction once(fn) {\n  let called = false;\n  let result;\n  return function(...args) {\n    if (!called) {\n      called = true;\n      result = fn(...args);\n    }\n    return result;\n  };\n}\n```"
+        a: "```js\nfunction once(fn) {\n  let called = false;\n  let result;\n  return function(...args) {\n    if (!called) {\n      called = true;\n      result = fn(...args);\n    }\n    return result;\n  };\n}\n```",
       },
       {
         type: "scenario",
         q: "When would you use a function declaration vs an arrow function vs a function expression?",
-        a: "**Declaration:** Top-level functions, hoisting needed, recursive functions. **Arrow function:** Callbacks, array methods (`.map`, `.filter`), when you want lexical `this`. **Expression:** When you need a named function for stack traces but don't want hoisting, or for conditional function definitions."
-      }
-    ]
+        a: "**Declaration:** Top-level functions, hoisting needed, recursive functions. **Arrow function:** Callbacks, array methods (`.map`, `.filter`), when you want lexical `this`. **Expression:** When you need a named function for stack traces but don't want hoisting, or for conditional function definitions.",
+      },
+    ],
   },
   {
     id: "arrays-array-methods",
@@ -172,35 +172,35 @@ const range = Array.from({length: 5}, (_, i) => i + 1); // [1,2,3,4,5]`,
       "Forgetting that `sort()` sorts as STRINGS by default — `[10, 2, 1].sort()` → `[1, 10, 2]`! Use `.sort((a,b) => a - b)`",
       "Using `map` when you should use `forEach` (for side effects) or `filter` (for subsetting)",
       "Mutating the original array with `splice`, `sort`, `reverse` when you didn't intend to — use `slice`, `toSorted`, `toReversed`",
-      "Forgetting the initial value in `reduce` — without it, the first element becomes the accumulator, which fails on empty arrays"
+      "Forgetting the initial value in `reduce` — without it, the first element becomes the accumulator, which fails on empty arrays",
     ],
     interviewQuestions: [
       {
         type: "coding",
         q: "Implement a `groupBy` function that groups array elements by a given key.",
-        a: "```js\nfunction groupBy(arr, key) {\n  return arr.reduce((groups, item) => {\n    const val = item[key];\n    groups[val] = groups[val] || [];\n    groups[val].push(item);\n    return groups;\n  }, {});\n}\n```"
+        a: "```js\nfunction groupBy(arr, key) {\n  return arr.reduce((groups, item) => {\n    const val = item[key];\n    groups[val] = groups[val] || [];\n    groups[val].push(item);\n    return groups;\n  }, {});\n}\n```",
       },
       {
         type: "tricky",
         q: "What will `[1, 2, 3].map(parseInt)` return?",
-        a: "`[1, NaN, NaN]`. `map` passes `(value, index, array)` to the callback. `parseInt` accepts `(string, radix)`. So: `parseInt(1, 0)` → `1`, `parseInt(2, 1)` → `NaN` (radix 1 invalid), `parseInt(3, 2)` → `NaN` (3 isn't valid in binary)."
+        a: "`[1, NaN, NaN]`. `map` passes `(value, index, array)` to the callback. `parseInt` accepts `(string, radix)`. So: `parseInt(1, 0)` → `1`, `parseInt(2, 1)` → `NaN` (radix 1 invalid), `parseInt(3, 2)` → `NaN` (3 isn't valid in binary).",
       },
       {
         type: "conceptual",
         q: "What is the difference between `map` and `forEach`?",
-        a: "`map` returns a **new array** with transformed elements. `forEach` returns `undefined` — it's for side effects only (logging, DOM manipulation). `map` is chainable; `forEach` is not. Use `map` when you need a result; `forEach` when you don't."
+        a: "`map` returns a **new array** with transformed elements. `forEach` returns `undefined` — it's for side effects only (logging, DOM manipulation). `map` is chainable; `forEach` is not. Use `map` when you need a result; `forEach` when you don't.",
       },
       {
         type: "coding",
         q: "Write a function to find the intersection of two arrays.",
-        a: "```js\nfunction intersection(a, b) {\n  const setB = new Set(b);\n  return [...new Set(a)].filter(x => setB.has(x));\n}\n```"
+        a: "```js\nfunction intersection(a, b) {\n  const setB = new Set(b);\n  return [...new Set(a)].filter(x => setB.has(x));\n}\n```",
       },
       {
         type: "scenario",
         q: "You have an array of 1 million objects. You need to filter, then map. Should you chain or combine into a single `reduce`? Why?",
-        a: "For 1M items, a single `reduce` pass is more efficient (one iteration vs two). However, for readability and maintainability, chaining `filter().map()` is clearer and only ~2x slower. In most cases, readability wins. Use `reduce` if benchmarks show it's a bottleneck."
-      }
-    ]
+        a: "For 1M items, a single `reduce` pass is more efficient (one iteration vs two). However, for readability and maintainability, chaining `filter().map()` is clearer and only ~2x slower. In most cases, readability wins. Use `reduce` if benchmarks show it's a bottleneck.",
+      },
+    ],
   },
   {
     id: "objects",
@@ -280,35 +280,35 @@ for (const [key, value] of Object.entries(person)) {
       "Shallow copy with spread `{...obj}` doesn't deep clone — nested objects are still references",
       "Using `delete obj.prop` is slow — set to `undefined` if performance matters, or use destructuring to exclude",
       "Checking property existence with `if (obj.prop)` fails when the value is falsy — use `in` operator or `Object.hasOwn()`",
-      "`Object.freeze()` is shallow — nested objects can still be modified"
+      "`Object.freeze()` is shallow — nested objects can still be modified",
     ],
     interviewQuestions: [
       {
         type: "tricky",
         q: "What will this output?\n```js\nconst obj = { a: 1, b: 2, a: 3 };\nconsole.log(obj);\n```",
-        a: "`{ a: 3, b: 2 }`. When duplicate keys exist in an object literal, the last one wins. The first `a: 1` is overwritten by `a: 3`."
+        a: "`{ a: 3, b: 2 }`. When duplicate keys exist in an object literal, the last one wins. The first `a: 1` is overwritten by `a: 3`.",
       },
       {
         type: "conceptual",
         q: "What is the difference between `Object.freeze()` and `Object.seal()`?",
-        a: "`Object.freeze()` prevents adding, removing, AND modifying properties (complete immutability at the top level). `Object.seal()` prevents adding and removing properties but ALLOWS modifying existing ones. Both are shallow — nested objects are unaffected."
+        a: "`Object.freeze()` prevents adding, removing, AND modifying properties (complete immutability at the top level). `Object.seal()` prevents adding and removing properties but ALLOWS modifying existing ones. Both are shallow — nested objects are unaffected.",
       },
       {
         type: "coding",
         q: "Write a function to deep clone an object without using `JSON.parse(JSON.stringify())`.",
-        a: "```js\nfunction deepClone(obj) {\n  if (obj === null || typeof obj !== 'object') return obj;\n  if (Array.isArray(obj)) return obj.map(deepClone);\n  return Object.fromEntries(\n    Object.entries(obj).map(([k, v]) => [k, deepClone(v)])\n  );\n}\n// Modern: structuredClone(obj)\n```"
+        a: "```js\nfunction deepClone(obj) {\n  if (obj === null || typeof obj !== 'object') return obj;\n  if (Array.isArray(obj)) return obj.map(deepClone);\n  return Object.fromEntries(\n    Object.entries(obj).map(([k, v]) => [k, deepClone(v)])\n  );\n}\n// Modern: structuredClone(obj)\n```",
       },
       {
         type: "tricky",
         q: "What does `Object.keys()` return for an array `[1, 2, 3]`?",
-        a: "`['0', '1', '2']`. Arrays are objects, and their indices are string keys. `Object.keys()` returns all enumerable own property keys as strings."
+        a: "`['0', '1', '2']`. Arrays are objects, and their indices are string keys. `Object.keys()` returns all enumerable own property keys as strings.",
       },
       {
         type: "scenario",
         q: "How would you make an object truly deeply immutable?",
-        a: "Recursively freeze all nested objects: ```js\nfunction deepFreeze(obj) {\n  Object.freeze(obj);\n  Object.values(obj).forEach(val => {\n    if (typeof val === 'object' && val !== null && !Object.isFrozen(val)) {\n      deepFreeze(val);\n    }\n  });\n  return obj;\n}\n``` Or use `structuredClone()` + `Object.freeze()` for copies."
-      }
-    ]
+        a: "Recursively freeze all nested objects: ```js\nfunction deepFreeze(obj) {\n  Object.freeze(obj);\n  Object.values(obj).forEach(val => {\n    if (typeof val === 'object' && val !== null && !Object.isFrozen(val)) {\n      deepFreeze(val);\n    }\n  });\n  return obj;\n}\n``` Or use `structuredClone()` + `Object.freeze()` for copies.",
+      },
+    ],
   },
   {
     id: "scope-hoisting",
@@ -393,35 +393,35 @@ console.log(inc()); // 2`,
       "Not understanding that `var` inside an `if` or `for` block is still function-scoped, not block-scoped",
       "Confusing function declaration hoisting (fully hoisted) with function expression hoisting (only the `var` is hoisted)",
       "Accidentally creating global variables by forgetting `let`/`const`/`var` — in non-strict mode, `x = 5` creates a global",
-      "Not knowing that each `let` in a for-loop creates a NEW binding per iteration, while `var` shares one"
+      "Not knowing that each `let` in a for-loop creates a NEW binding per iteration, while `var` shares one",
     ],
     interviewQuestions: [
       {
         type: "tricky",
         q: "What will this output?\n```js\nvar x = 1;\nfunction foo() {\n  console.log(x);\n  var x = 2;\n  console.log(x);\n}\nfoo();\n```",
-        a: "`undefined`, then `2`. The `var x` inside `foo` is hoisted to the top of the function, shadowing the global `x`. So the first `console.log` sees the hoisted-but-uninitialized local `x` (which is `undefined`), then after `x = 2`, it prints `2`."
+        a: "`undefined`, then `2`. The `var x` inside `foo` is hoisted to the top of the function, shadowing the global `x`. So the first `console.log` sees the hoisted-but-uninitialized local `x` (which is `undefined`), then after `x = 2`, it prints `2`.",
       },
       {
         type: "conceptual",
         q: "Explain the Temporal Dead Zone (TDZ) with an example.",
-        a: "TDZ is the time between entering a scope and the `let`/`const` declaration. Accessing the variable during TDZ throws `ReferenceError`. ```js\n{ console.log(x); // ReferenceError (TDZ)\n  let x = 5; }\n``` This prevents bugs from using variables before initialization, unlike `var` which gives `undefined`."
+        a: "TDZ is the time between entering a scope and the `let`/`const` declaration. Accessing the variable during TDZ throws `ReferenceError`. ```js\n{ console.log(x); // ReferenceError (TDZ)\n  let x = 5; }\n``` This prevents bugs from using variables before initialization, unlike `var` which gives `undefined`.",
       },
       {
         type: "tricky",
         q: "What will this output?\n```js\nfunction test() {\n  console.log(a);\n  console.log(foo());\n  var a = 1;\n  function foo() {\n    return 2;\n  }\n}\ntest();\n```",
-        a: "`undefined` then `2`. `var a` is hoisted (as `undefined`). `function foo` is fully hoisted (declaration + body). So `foo()` is callable and returns `2`, but `a` is `undefined` at that point."
+        a: "`undefined` then `2`. `var a` is hoisted (as `undefined`). `function foo` is fully hoisted (declaration + body). So `foo()` is callable and returns `2`, but `a` is `undefined` at that point.",
       },
       {
         type: "coding",
         q: "Fix this code so it prints 0, 1, 2 instead of 3, 3, 3:\n```js\nfor (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 100);\n}\n```",
-        a: "```js\n// Solution 1: Use let\nfor (let i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 100);\n}\n// Solution 2: IIFE\nfor (var i = 0; i < 3; i++) {\n  (function(j) {\n    setTimeout(() => console.log(j), 100);\n  })(i);\n}\n```"
+        a: "```js\n// Solution 1: Use let\nfor (let i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 100);\n}\n// Solution 2: IIFE\nfor (var i = 0; i < 3; i++) {\n  (function(j) {\n    setTimeout(() => console.log(j), 100);\n  })(i);\n}\n```",
       },
       {
         type: "conceptual",
         q: "What is the scope chain and how does JavaScript resolve variable lookups?",
-        a: "When accessing a variable, JS first looks in the current scope. If not found, it goes up to the parent scope, then grandparent, and so on up to the global scope. This is the **scope chain**. If not found anywhere, it throws `ReferenceError`. Each function creates a new link in the chain. The scope chain is determined at **definition** time (lexical scoping), NOT at call time."
-      }
-    ]
+        a: "When accessing a variable, JS first looks in the current scope. If not found, it goes up to the parent scope, then grandparent, and so on up to the global scope. This is the **scope chain**. If not found anywhere, it throws `ReferenceError`. Each function creates a new link in the chain. The scope chain is determined at **definition** time (lexical scoping), NOT at call time.",
+      },
+    ],
   },
   {
     id: "template-literals-destructuring",
@@ -501,35 +501,35 @@ createUser({ name: "Charlie", age: 28 });`,
       "Destructuring `null` or `undefined` throws — always provide a default: `const { a } = obj || {}`",
       "Order matters for array destructuring but NOT for object destructuring",
       "Forgetting the alias syntax: `{ name: localName }` means 'extract `name` and call it `localName`', NOT 'extract `localName`'",
-      "Overusing deep destructuring makes code harder to read — balance convenience with clarity"
+      "Overusing deep destructuring makes code harder to read — balance convenience with clarity",
     ],
     interviewQuestions: [
       {
         type: "coding",
         q: "Use destructuring to extract the first and last items from an array, and put the rest in a middle variable.",
-        a: "```js\nconst arr = [1, 2, 3, 4, 5];\nconst [first, ...middle] = arr;\nconst last = middle.pop();\n// Or:\nconst [f, ...rest] = arr;\nconst [l] = rest.splice(-1);\n```"
+        a: "```js\nconst arr = [1, 2, 3, 4, 5];\nconst [first, ...middle] = arr;\nconst last = middle.pop();\n// Or:\nconst [f, ...rest] = arr;\nconst [l] = rest.splice(-1);\n```",
       },
       {
         type: "tricky",
         q: "What will this output?\n```js\nconst { a: { b } = {} } = { a: undefined };\nconsole.log(b);\n```",
-        a: "`undefined`. When `a` is `undefined`, the default `{}` kicks in. Destructuring `b` from `{}` gives `undefined` since `b` doesn't exist in the empty object."
+        a: "`undefined`. When `a` is `undefined`, the default `{}` kicks in. Destructuring `b` from `{}` gives `undefined` since `b` doesn't exist in the empty object.",
       },
       {
         type: "conceptual",
         q: "What are tagged template literals and when are they useful?",
-        a: "Tagged templates pass template literal parts to a function: the string parts as an array and interpolated values as additional arguments. Used for: HTML sanitization, i18n/localization, CSS-in-JS (styled-components), SQL query builders (preventing injection), and custom formatting."
+        a: "Tagged templates pass template literal parts to a function: the string parts as an array and interpolated values as additional arguments. Used for: HTML sanitization, i18n/localization, CSS-in-JS (styled-components), SQL query builders (preventing injection), and custom formatting.",
       },
       {
         type: "coding",
         q: "Write a function that uses destructuring to merge user settings with defaults.",
-        a: "```js\nfunction applySettings({ theme = 'dark', fontSize = 14, lang = 'en', ...rest } = {}) {\n  return { theme, fontSize, lang, ...rest };\n}\napplySettings({ fontSize: 18 });\n// { theme: 'dark', fontSize: 18, lang: 'en' }\n```"
+        a: "```js\nfunction applySettings({ theme = 'dark', fontSize = 14, lang = 'en', ...rest } = {}) {\n  return { theme, fontSize, lang, ...rest };\n}\napplySettings({ fontSize: 18 });\n// { theme: 'dark', fontSize: 18, lang: 'en' }\n```",
       },
       {
         type: "scenario",
         q: "How does destructuring improve function signatures in real-world code?",
-        a: "Instead of `function createUser(name, age, role, active)` (unnamed positional args), use `function createUser({ name, age, role = 'user', active = true })`. Benefits: order doesn't matter, parameters are self-documenting, easy defaults, caller sees what they're passing, and you can add new params without breaking existing calls."
-      }
-    ]
+        a: "Instead of `function createUser(name, age, role, active)` (unnamed positional args), use `function createUser({ name, age, role = 'user', active = true })`. Benefits: order doesn't matter, parameters are self-documenting, easy defaults, caller sees what they're passing, and you can add new params without breaking existing calls.",
+      },
+    ],
   },
   {
     id: "spread-rest-operators",
@@ -592,36 +592,36 @@ log("ERROR", "Server down", "Code: 500");`,
       "Rest parameter must be the LAST parameter in a function definition",
       "Can't use spread on non-iterables: `...123` throws — only arrays, strings, Maps, Sets, etc.",
       "Order matters with object spread: `{ ...a, ...b }` — `b`'s properties override `a`'s",
-      "Confusing the `arguments` object with rest parameters — `arguments` is not a real array and doesn't work in arrow functions"
+      "Confusing the `arguments` object with rest parameters — `arguments` is not a real array and doesn't work in arrow functions",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "What is the difference between the spread and rest operators?",
-        a: "Both use `...` but are contextual opposites. **Spread** expands an iterable into individual elements (used in function calls, arrays, objects). **Rest** collects multiple elements into a single array/object (used in function params, destructuring). Spread unpacks; rest packs."
+        a: "Both use `...` but are contextual opposites. **Spread** expands an iterable into individual elements (used in function calls, arrays, objects). **Rest** collects multiple elements into a single array/object (used in function params, destructuring). Spread unpacks; rest packs.",
       },
       {
         type: "tricky",
         q: "What will this output?\n```js\nconst a = { x: 1, y: 2 };\nconst b = { y: 3, z: 4 };\nconst c = { ...a, ...b };\nconst d = { ...b, ...a };\nconsole.log(c, d);\n```",
-        a: "`c = { x: 1, y: 3, z: 4 }`, `d = { x: 1, y: 2, z: 4 }`. With spread, later properties override earlier ones. In `c`, `b`'s `y: 3` overrides `a`'s `y: 2`. In `d`, `a`'s `y: 2` overrides `b`'s `y: 3`."
+        a: "`c = { x: 1, y: 3, z: 4 }`, `d = { x: 1, y: 2, z: 4 }`. With spread, later properties override earlier ones. In `c`, `b`'s `y: 3` overrides `a`'s `y: 2`. In `d`, `a`'s `y: 2` overrides `b`'s `y: 3`.",
       },
       {
         type: "coding",
         q: "Write a function that removes specified properties from an object immutably.",
-        a: "```js\nfunction omit(obj, ...keys) {\n  return Object.fromEntries(\n    Object.entries(obj).filter(([k]) => !keys.includes(k))\n  );\n}\n// Or using rest:\nfunction omit(obj, ...keys) {\n  const result = { ...obj };\n  keys.forEach(k => delete result[k]);\n  return result;\n}\n```"
+        a: "```js\nfunction omit(obj, ...keys) {\n  return Object.fromEntries(\n    Object.entries(obj).filter(([k]) => !keys.includes(k))\n  );\n}\n// Or using rest:\nfunction omit(obj, ...keys) {\n  const result = { ...obj };\n  keys.forEach(k => delete result[k]);\n  return result;\n}\n```",
       },
       {
         type: "conceptual",
         q: "Why is `...args` preferred over the `arguments` object?",
-        a: "`...args` is a real Array (has `map`, `filter`, etc.). `arguments` is array-like but NOT an array. Rest params work in arrow functions; `arguments` does NOT. Rest can capture a subset of args. Rest is clearer and more explicit about what a function accepts."
+        a: "`...args` is a real Array (has `map`, `filter`, etc.). `arguments` is array-like but NOT an array. Rest params work in arrow functions; `arguments` does NOT. Rest can capture a subset of args. Rest is clearer and more explicit about what a function accepts.",
       },
       {
         type: "scenario",
         q: "How would you use spread to implement an immutable state update in a React-like app?",
-        a: "```js\nconst state = { user: { name: 'A', age: 25 }, items: [1,2] };\n// Update nested property immutably:\nconst newState = {\n  ...state,\n  user: { ...state.user, age: 26 },\n  items: [...state.items, 3]\n};\n// Original state is untouched\n```"
-      }
-    ]
-  }
+        a: "```js\nconst state = { user: { name: 'A', age: 25 }, items: [1,2] };\n// Update nested property immutably:\nconst newState = {\n  ...state,\n  user: { ...state.user, age: 26 },\n  items: [...state.items, 3]\n};\n// Original state is untouched\n```",
+      },
+    ],
+  },
 ];
 
 export default phase1b;

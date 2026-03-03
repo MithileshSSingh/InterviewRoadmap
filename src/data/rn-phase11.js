@@ -2,7 +2,8 @@ const rnPhase11 = {
   id: "phase-11",
   title: "Phase 11: Testing & Release Excellence",
   emoji: "🧪",
-  description: "Comprehensive testing strategy — unit, integration, component, E2E (Detox), mocking native modules, CI/CD pipelines, code review standards, release management, and observability.",
+  description:
+    "Comprehensive testing strategy — unit, integration, component, E2E (Detox), mocking native modules, CI/CD pipelines, code review standards, release management, and observability.",
   topics: [
     {
       id: "testing-strategy",

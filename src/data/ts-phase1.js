@@ -2,7 +2,8 @@ const tsPhase1 = {
   id: "phase-1",
   title: "Phase 1: TypeScript Foundations",
   emoji: "🟢",
-  description: "Master the building blocks of TypeScript — type annotations, inference, interfaces, unions, functions, enums, and the compiler.",
+  description:
+    "Master the building blocks of TypeScript — type annotations, inference, interfaces, unions, functions, enums, and the compiler.",
   topics: [
     {
       id: "ts-why-and-setup",
@@ -75,35 +76,35 @@ greet("Alice"); // ✅ Works
         "Using `any` everywhere to 'make it work' — this defeats the entire purpose of TypeScript",
         "Not enabling `strict: true` in tsconfig — without it, many type checks are disabled and you lose most of TS's value",
         "Confusing TypeScript with a different language — it's JavaScript with types, not a replacement. All JS knowledge applies directly",
-        "Thinking you need to annotate everything — TypeScript's type inference is powerful; annotate parameters and return types, let inference handle the rest"
+        "Thinking you need to annotate everything — TypeScript's type inference is powerful; annotate parameters and return types, let inference handle the rest",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is TypeScript and how does it relate to JavaScript?",
-          a: "TypeScript is a statically-typed superset of JavaScript. Every valid JS is valid TS. TypeScript adds optional type annotations that are checked at compile time and completely erased in the output. The result is plain JavaScript with zero runtime overhead. It's developed by Microsoft and is the standard for large-scale JS projects."
+          a: "TypeScript is a statically-typed superset of JavaScript. Every valid JS is valid TS. TypeScript adds optional type annotations that are checked at compile time and completely erased in the output. The result is plain JavaScript with zero runtime overhead. It's developed by Microsoft and is the standard for large-scale JS projects.",
         },
         {
           type: "conceptual",
           q: "What happens to TypeScript types at runtime?",
-          a: "They don't exist. TypeScript types are erased during compilation — the output is plain JavaScript with no type information. This means you cannot check types at runtime using TypeScript syntax (e.g., `if (x is string)` doesn't exist at runtime). For runtime type checks, you still use `typeof`, `instanceof`, or custom guards."
+          a: "They don't exist. TypeScript types are erased during compilation — the output is plain JavaScript with no type information. This means you cannot check types at runtime using TypeScript syntax (e.g., `if (x is string)` doesn't exist at runtime). For runtime type checks, you still use `typeof`, `instanceof`, or custom guards.",
         },
         {
           type: "conceptual",
           q: "Why should you enable `strict: true` in tsconfig.json?",
-          a: "`strict: true` enables all strict type-checking options: `strictNullChecks`, `noImplicitAny`, `strictFunctionTypes`, `strictBindCallApply`, and more. Without it, TypeScript allows many unsafe patterns (like implicit `any` and nullable access). It's the difference between TypeScript being helpful vs. being a false sense of security."
+          a: "`strict: true` enables all strict type-checking options: `strictNullChecks`, `noImplicitAny`, `strictFunctionTypes`, `strictBindCallApply`, and more. Without it, TypeScript allows many unsafe patterns (like implicit `any` and nullable access). It's the difference between TypeScript being helpful vs. being a false sense of security.",
         },
         {
           type: "tricky",
           q: "Is there any runtime performance cost to using TypeScript?",
-          a: "No. TypeScript types are completely erased during compilation. The output JavaScript is identical to what you'd write by hand. There's a build-time cost (compilation), but zero runtime cost. In some cases, TypeScript can actually lead to faster code because the developer is forced to think about types, avoiding implicit coercion chains."
+          a: "No. TypeScript types are completely erased during compilation. The output JavaScript is identical to what you'd write by hand. There's a build-time cost (compilation), but zero runtime cost. In some cases, TypeScript can actually lead to faster code because the developer is forced to think about types, avoiding implicit coercion chains.",
         },
         {
           type: "scenario",
           q: "You're joining a large JavaScript project with 200+ files. How would you migrate it to TypeScript?",
-          a: "Incremental migration: 1) Add tsconfig with `allowJs: true` and `strict: false`. 2) Rename files from `.js` to `.ts` one module at a time, starting with leaf modules (no dependents). 3) Fix type errors in each file. 4) Gradually enable strict options one by one. 5) Add ambient declarations (`.d.ts`) for untyped third-party code. Never do a big-bang migration."
-        }
-      ]
+          a: "Incremental migration: 1) Add tsconfig with `allowJs: true` and `strict: false`. 2) Rename files from `.js` to `.ts` one module at a time, starting with leaf modules (no dependents). 3) Fix type errors in each file. 4) Gradually enable strict options one by one. 5) Add ambient declarations (`.d.ts`) for untyped third-party code. Never do a big-bang migration.",
+        },
+      ],
     },
     {
       id: "core-type-system",
@@ -187,35 +188,35 @@ let readonly_arr: readonly number[] = [1, 2, 3];
         "Confusing `void` with `undefined` — `void` means 'no meaningful return'; a `void` function CAN return `undefined` implicitly",
         "Not understanding structural typing — coming from Java/C#, developers expect nominal typing and add unnecessary `implements` clauses",
         "Thinking `never` is the same as `void` — `void` returns nothing; `never` means the function NEVER returns (throws or infinite loop)",
-        "Over-annotating when inference would suffice — `let x: number = 5` is redundant; `let x = 5` is cleaner and equally type-safe"
+        "Over-annotating when inference would suffice — `let x: number = 5` is redundant; `let x = 5` is cleaner and equally type-safe",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the difference between `any` and `unknown` in TypeScript?",
-          a: "`any` disables ALL type checking — you can do anything with it, access any property, call any method. `unknown` is the type-safe counterpart — it accepts any value but you MUST narrow it (via `typeof`, `instanceof`, etc.) before using it. `unknown` says 'I don't know the type yet'; `any` says 'I don't care about types'. Always prefer `unknown` over `any`."
+          a: "`any` disables ALL type checking — you can do anything with it, access any property, call any method. `unknown` is the type-safe counterpart — it accepts any value but you MUST narrow it (via `typeof`, `instanceof`, etc.) before using it. `unknown` says 'I don't know the type yet'; `any` says 'I don't care about types'. Always prefer `unknown` over `any`.",
         },
         {
           type: "conceptual",
           q: "What is structural typing and how does it differ from nominal typing?",
-          a: "TypeScript uses structural typing (duck typing): types are compatible if they have the same shape (properties and methods), regardless of their declared name. Java/C# use nominal typing: types are compatible only if they share the same declaration. In TS, `{ x: number, y: number }` satisfies `interface Point { x: number; y: number }` without any `implements` keyword."
+          a: "TypeScript uses structural typing (duck typing): types are compatible if they have the same shape (properties and methods), regardless of their declared name. Java/C# use nominal typing: types are compatible only if they share the same declaration. In TS, `{ x: number, y: number }` satisfies `interface Point { x: number; y: number }` without any `implements` keyword.",
         },
         {
           type: "tricky",
           q: "What is the type of `const x = 'hello'` vs `let x = 'hello'`?",
-          a: "`const x = 'hello'` has type `\"hello\"` (string literal type) because `const` can never be reassigned — TS narrows to the exact value. `let x = 'hello'` has type `string` because `let` can be reassigned to any string. This is called 'literal narrowing' and is important for discriminated unions and type guards."
+          a: "`const x = 'hello'` has type `\"hello\"` (string literal type) because `const` can never be reassigned — TS narrows to the exact value. `let x = 'hello'` has type `string` because `let` can be reassigned to any string. This is called 'literal narrowing' and is important for discriminated unions and type guards.",
         },
         {
           type: "conceptual",
           q: "When does the `never` type occur in TypeScript?",
-          a: "`never` represents a value that never occurs: 1) Functions that always throw. 2) Functions with infinite loops. 3) Exhaustiveness checks in switch/if-else (the remaining case after all options handled). 4) Intersection of incompatible types: `string & number` = `never`. It's the bottom type — `never` is assignable to everything, but nothing is assignable to `never`."
+          a: "`never` represents a value that never occurs: 1) Functions that always throw. 2) Functions with infinite loops. 3) Exhaustiveness checks in switch/if-else (the remaining case after all options handled). 4) Intersection of incompatible types: `string & number` = `never`. It's the bottom type — `never` is assignable to everything, but nothing is assignable to `never`.",
         },
         {
           type: "coding",
           q: "Write a function that accepts `unknown` input and safely extracts a name string from it.",
-          a: "```ts\\nfunction getName(input: unknown): string {\\n  if (\\n    typeof input === 'object' &&\\n    input !== null &&\\n    'name' in input &&\\n    typeof (input as { name: unknown }).name === 'string'\\n  ) {\\n    return (input as { name: string }).name;\\n  }\\n  return 'Unknown';\\n}\\n```"
-        }
-      ]
+          a: "```ts\\nfunction getName(input: unknown): string {\\n  if (\\n    typeof input === 'object' &&\\n    input !== null &&\\n    'name' in input &&\\n    typeof (input as { name: unknown }).name === 'string'\\n  ) {\\n    return (input as { name: string }).name;\\n  }\\n  return 'Unknown';\\n}\\n```",
+        },
+      ],
     },
     {
       id: "interfaces-and-type-aliases",
@@ -326,35 +327,35 @@ const headers: StringMap = {
         "Not knowing about declaration merging — interfaces with the same name in the same scope are automatically merged, which can cause surprising behavior",
         "Using `&` (intersection) when `extends` would give clearer error messages — intersection conflicts produce confusing types",
         "Confusing `readonly` with deep immutability — `readonly` only prevents reassignment of the property itself, not mutation of nested objects",
-        "Over-using index signatures `[key: string]: any` — this weakens type safety; use `Record<string, SpecificType>` or a proper interface instead"
+        "Over-using index signatures `[key: string]: any` — this weakens type safety; use `Record<string, SpecificType>` or a proper interface instead",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are the key differences between `interface` and `type` in TypeScript?",
-          a: "1) **Declaration merging**: interfaces merge, types don't. 2) **Union/intersection**: only types can create unions (`A | B`). 3) **Extends**: interfaces use `extends`, types use `&`. 4) **Primitives/tuples/functions**: only types can alias these. 5) **Error messages**: interfaces produce clearer errors. In practice, use interfaces for object shapes and public APIs, types for unions and complex type operations."
+          a: "1) **Declaration merging**: interfaces merge, types don't. 2) **Union/intersection**: only types can create unions (`A | B`). 3) **Extends**: interfaces use `extends`, types use `&`. 4) **Primitives/tuples/functions**: only types can alias these. 5) **Error messages**: interfaces produce clearer errors. In practice, use interfaces for object shapes and public APIs, types for unions and complex type operations.",
         },
         {
           type: "tricky",
           q: "What happens if you declare the same interface name twice?",
-          a: "TypeScript **merges** them (declaration merging). Both declarations are combined into a single interface. This is how library type definitions extend built-in types (e.g., adding properties to `Window` or `Express.Request`). Type aliases would produce a duplicate identifier error."
+          a: "TypeScript **merges** them (declaration merging). Both declarations are combined into a single interface. This is how library type definitions extend built-in types (e.g., adding properties to `Window` or `Express.Request`). Type aliases would produce a duplicate identifier error.",
         },
         {
           type: "coding",
           q: "Create a type-safe configuration object that requires `apiUrl` but optionally accepts `timeout` and `retries`.",
-          a: "```ts\\ninterface AppConfig {\\n  apiUrl: string;\\n  timeout?: number;\\n  retries?: number;\\n  headers?: Record<string, string>;\\n}\\n\\nfunction createClient(config: AppConfig) {\\n  const { apiUrl, timeout = 5000, retries = 3 } = config;\\n  // ...\\n}\\n```"
+          a: "```ts\\ninterface AppConfig {\\n  apiUrl: string;\\n  timeout?: number;\\n  retries?: number;\\n  headers?: Record<string, string>;\\n}\\n\\nfunction createClient(config: AppConfig) {\\n  const { apiUrl, timeout = 5000, retries = 3 } = config;\\n  // ...\\n}\\n```",
         },
         {
           type: "conceptual",
           q: "What does `readonly` do on an interface property? Is it deep or shallow?",
-          a: "`readonly` prevents reassignment of the property itself at compile time. It's **shallow** — you can still mutate nested objects/arrays. `readonly items: string[]` prevents `obj.items = newArray` but allows `obj.items.push('new')`. For deep immutability, use `Readonly<T>` recursively or libraries like Immer."
+          a: "`readonly` prevents reassignment of the property itself at compile time. It's **shallow** — you can still mutate nested objects/arrays. `readonly items: string[]` prevents `obj.items = newArray` but allows `obj.items.push('new')`. For deep immutability, use `Readonly<T>` recursively or libraries like Immer.",
         },
         {
           type: "scenario",
           q: "You're designing a public API SDK in TypeScript. Should you use interfaces or type aliases for your exported types?",
-          a: "Use **interfaces** for public APIs. Reasons: 1) Consumers can extend them for their needs. 2) Declaration merging allows augmenting without modifying source. 3) Better error messages. 4) Follows TypeScript team's recommendation. Use types internally for unions, mapped types, and computed types that consumers shouldn't extend."
-        }
-      ]
+          a: "Use **interfaces** for public APIs. Reasons: 1) Consumers can extend them for their needs. 2) Declaration merging allows augmenting without modifying source. 3) Better error messages. 4) Follows TypeScript team's recommendation. Use types internally for unions, mapped types, and computed types that consumers shouldn't extend.",
+        },
+      ],
     },
     {
       id: "unions-intersections-literals",
@@ -458,35 +459,35 @@ type ClassName = \`\${Color}-\${Size}\`; // "red-sm" | "red-md" | ... (9 combos!
         "Not handling all cases in a discriminated union — use `never` in the default case for exhaustiveness checking",
         "Thinking intersection of primitives works like union — `string & number` is `never` because no value can be both",
         "Forgetting that `null` and `undefined` are separate types in strict mode — `string | null` and `string | undefined` are different",
-        "Using union types when a discriminated union would be safer — always prefer tagged unions for state management"
+        "Using union types when a discriminated union would be safer — always prefer tagged unions for state management",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is a discriminated union and why is it so powerful in TypeScript?",
-          a: "A discriminated union is a union of object types where each member has a common property (discriminant) with a unique literal type value. TypeScript uses the discriminant in `switch`/`if` to automatically narrow the type, giving you access to member-specific properties. It eliminates `as` casts, prevents impossible states, and enables exhaustiveness checking."
+          a: "A discriminated union is a union of object types where each member has a common property (discriminant) with a unique literal type value. TypeScript uses the discriminant in `switch`/`if` to automatically narrow the type, giving you access to member-specific properties. It eliminates `as` casts, prevents impossible states, and enables exhaustiveness checking.",
         },
         {
           type: "tricky",
           q: "What is the type of `string & number`?",
-          a: "`never`. No value can simultaneously be a string AND a number. When you intersect incompatible types, the result is `never` — the empty type with no values. This is useful for detecting impossible states at compile time."
+          a: "`never`. No value can simultaneously be a string AND a number. When you intersect incompatible types, the result is `never` — the empty type with no values. This is useful for detecting impossible states at compile time.",
         },
         {
           type: "coding",
           q: "Write an exhaustive switch that handles a discriminated union and errors at compile time if a case is missing.",
-          a: "```ts\\ntype Shape =\\n  | { kind: 'circle'; radius: number }\\n  | { kind: 'square'; side: number };\\n\\nfunction area(shape: Shape): number {\\n  switch (shape.kind) {\\n    case 'circle': return Math.PI * shape.radius ** 2;\\n    case 'square': return shape.side ** 2;\\n    default: {\\n      const _exhaustive: never = shape;\\n      return _exhaustive; // Compile error if a case is missing\\n    }\\n  }\\n}\\n```"
+          a: "```ts\\ntype Shape =\\n  | { kind: 'circle'; radius: number }\\n  | { kind: 'square'; side: number };\\n\\nfunction area(shape: Shape): number {\\n  switch (shape.kind) {\\n    case 'circle': return Math.PI * shape.radius ** 2;\\n    case 'square': return shape.side ** 2;\\n    default: {\\n      const _exhaustive: never = shape;\\n      return _exhaustive; // Compile error if a case is missing\\n    }\\n  }\\n}\\n```",
         },
         {
           type: "conceptual",
           q: "What are template literal types and how are they useful?",
-          a: "Template literal types use backtick syntax at the type level: `` type Route = \\`/api/\\${string}\\` ``. Combined with unions, they create all combinations: `type Event = \\`on\\${\\\"Click\\\" | \\\"Hover\\\"}\\`` = `\"onClick\" | \"onHover\"`. Used in React event types, CSS-in-JS, API route typing, and any string pattern where you want type-safe templates."
+          a: 'Template literal types use backtick syntax at the type level: `` type Route = \\`/api/\\${string}\\` ``. Combined with unions, they create all combinations: `type Event = \\`on\\${\\"Click\\" | \\"Hover\\"}\\`` = `"onClick" | "onHover"`. Used in React event types, CSS-in-JS, API route typing, and any string pattern where you want type-safe templates.',
         },
         {
           type: "scenario",
           q: "You're modeling API responses that can be success or various error types. How would you type this?",
-          a: "Use a discriminated union with a `status` discriminant: ```ts\\ntype ApiResponse<T> =\\n  | { status: 'success'; data: T }\\n  | { status: 'error'; code: number; message: string }\\n  | { status: 'unauthorized'; redirectUrl: string };\\n```\\nThis prevents accessing `data` before checking `status`, eliminates impossible states, and makes error handling exhaustive."
-        }
-      ]
+          a: "Use a discriminated union with a `status` discriminant: ```ts\\ntype ApiResponse<T> =\\n  | { status: 'success'; data: T }\\n  | { status: 'error'; code: number; message: string }\\n  | { status: 'unauthorized'; redirectUrl: string };\\n```\\nThis prevents accessing `data` before checking `status`, eliminates impossible states, and makes error handling exhaustive.",
+        },
+      ],
     },
     {
       id: "functions-and-overloads",
@@ -585,35 +586,35 @@ const fn: VoidFn = () => { return true; }; // ✅ No error! void ignores return
         "Thinking `() => void` means 'returns undefined' — `void` means the return value is IGNORED, not that it must be `undefined`. Callbacks typed as `void` can return anything",
         "Forgetting that optional parameters must come after required ones — `(a?: string, b: number)` is invalid",
         "Not typing `this` in callbacks that depend on context — leads to runtime errors when `this` is the wrong object",
-        "Over-using overloads when a union parameter or generic would be simpler — overloads should be a last resort for complex input/output mappings"
+        "Over-using overloads when a union parameter or generic would be simpler — overloads should be a last resort for complex input/output mappings",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are function overloads in TypeScript and when should you use them?",
-          a: "Overloads define multiple call signatures for one function, letting TypeScript select the correct return type based on input types. Use when: the return type depends on the input type in ways a generic can't express. Example: `createElement('a')` returns `HTMLAnchorElement`, `createElement('div')` returns `HTMLDivElement`. Don't use for simple unions — generics are usually cleaner."
+          a: "Overloads define multiple call signatures for one function, letting TypeScript select the correct return type based on input types. Use when: the return type depends on the input type in ways a generic can't express. Example: `createElement('a')` returns `HTMLAnchorElement`, `createElement('div')` returns `HTMLDivElement`. Don't use for simple unions — generics are usually cleaner.",
         },
         {
           type: "tricky",
           q: "Why does TypeScript allow returning a value from a function typed as `() => void`?",
-          a: "By design. `void` in a callback position means 'the return value will be IGNORED', not 'must return nothing'. This allows `Array.forEach(callback)` to accept callbacks like `(item) => array.push(item)` where `.push()` returns a number. If `void` was strict, many common patterns would break."
+          a: "By design. `void` in a callback position means 'the return value will be IGNORED', not 'must return nothing'. This allows `Array.forEach(callback)` to accept callbacks like `(item) => array.push(item)` where `.push()` returns a number. If `void` was strict, many common patterns would break.",
         },
         {
           type: "coding",
           q: "Write a type-safe event emitter with typed event names and payloads.",
-          a: "```ts\\ninterface EventMap {\\n  login: { userId: string };\\n  logout: void;\\n  error: { message: string; code: number };\\n}\\n\\nfunction on<K extends keyof EventMap>(\\n  event: K,\\n  handler: (payload: EventMap[K]) => void\\n): void {\\n  // ...\\n}\\n\\non('login', (payload) => {\\n  console.log(payload.userId); // ✅ Type-safe!\\n});\\n```"
+          a: "```ts\\ninterface EventMap {\\n  login: { userId: string };\\n  logout: void;\\n  error: { message: string; code: number };\\n}\\n\\nfunction on<K extends keyof EventMap>(\\n  event: K,\\n  handler: (payload: EventMap[K]) => void\\n): void {\\n  // ...\\n}\\n\\non('login', (payload) => {\\n  console.log(payload.userId); // ✅ Type-safe!\\n});\\n```",
         },
         {
           type: "conceptual",
           q: "What is the difference between `(a: string) => void` and `(a: string) => undefined`?",
-          a: "`() => void` means the return value is ignored — the function CAN return anything, but callers shouldn't use it. `() => undefined` means the function MUST return `undefined` (or return nothing). `void` is used for callbacks where you don't care about the return; `undefined` is used when you explicitly need `undefined`."
+          a: "`() => void` means the return value is ignored — the function CAN return anything, but callers shouldn't use it. `() => undefined` means the function MUST return `undefined` (or return nothing). `void` is used for callbacks where you don't care about the return; `undefined` is used when you explicitly need `undefined`.",
         },
         {
           type: "scenario",
           q: "You're building a utility that wraps `fetch` calls. How would you type it to return different types based on the URL pattern?",
-          a: "Use function overloads or generic constraints: ```ts\\nfunction api<T>(url: string): Promise<T>;\\nfunction api(url: '/users'): Promise<User[]>;\\nfunction api(url: '/users/:id'): Promise<User>;\\nasync function api(url: string): Promise<unknown> {\\n  const res = await fetch(url);\\n  return res.json();\\n}\\n``` Or better: use a generic with a URL-to-type map for full type safety."
-        }
-      ]
+          a: "Use function overloads or generic constraints: ```ts\\nfunction api<T>(url: string): Promise<T>;\\nfunction api(url: '/users'): Promise<User[]>;\\nfunction api(url: '/users/:id'): Promise<User>;\\nasync function api(url: string): Promise<unknown> {\\n  const res = await fetch(url);\\n  return res.json();\\n}\\n``` Or better: use a generic with a URL-to-type map for full type safety.",
+        },
+      ],
     },
     {
       id: "enums-tuples-special-types",
@@ -729,37 +730,37 @@ function process(input: unknown) {
         "Not knowing enums generate runtime JavaScript — unlike types/interfaces, enums are NOT erased at compile time",
         "Using `const enum` across module boundaries — it can cause issues with declaration files and some bundlers (e.g., isolatedModules)",
         "Thinking tuples can have any length — tuples have a FIXED length; TypeScript will error if you try to access beyond the declared positions",
-        "Forgetting `as const` on object literals — without it, `{ role: 'admin' }` has type `{ role: string }` instead of `{ role: 'admin' }`"
+        "Forgetting `as const` on object literals — without it, `{ role: 'admin' }` has type `{ role: string }` instead of `{ role: 'admin' }`",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Should you use enums or union literal types in TypeScript? Why?",
-          a: "Prefer **union literal types** or **`as const` objects** over enums. Reasons: 1) Enums generate runtime code (not type-erased). 2) `const enum` has bundler compatibility issues. 3) Union literals are zero-cost and tree-shakeable. 4) `as const` gives you both runtime values AND type safety. Enums are fine in existing codebases, but new code should prefer alternatives."
+          a: "Prefer **union literal types** or **`as const` objects** over enums. Reasons: 1) Enums generate runtime code (not type-erased). 2) `const enum` has bundler compatibility issues. 3) Union literals are zero-cost and tree-shakeable. 4) `as const` gives you both runtime values AND type safety. Enums are fine in existing codebases, but new code should prefer alternatives.",
         },
         {
           type: "tricky",
           q: "What is `as const` and how does it change the inferred type?",
-          a: "`as const` applies the narrowest/deepest immutability: 1) All properties become `readonly`. 2) Literal values stay literal (e.g., `42` not `number`, `\"hello\"` not `string`). 3) Arrays become `readonly` tuples. 4) Objects are deeply readonly. It's a const assertion — tells TS 'this value will never change'. Essential for deriving union types from runtime objects."
+          a: "`as const` applies the narrowest/deepest immutability: 1) All properties become `readonly`. 2) Literal values stay literal (e.g., `42` not `number`, `\"hello\"` not `string`). 3) Arrays become `readonly` tuples. 4) Objects are deeply readonly. It's a const assertion — tells TS 'this value will never change'. Essential for deriving union types from runtime objects.",
         },
         {
           type: "coding",
           q: "Derive a union type from the values of a constant object using `as const`.",
-          a: "```ts\\nconst HTTP_METHODS = {\\n  Get: 'GET',\\n  Post: 'POST',\\n  Put: 'PUT',\\n  Delete: 'DELETE'\\n} as const;\\n\\ntype HttpMethod = typeof HTTP_METHODS[keyof typeof HTTP_METHODS];\\n// 'GET' | 'POST' | 'PUT' | 'DELETE'\\n```"
+          a: "```ts\\nconst HTTP_METHODS = {\\n  Get: 'GET',\\n  Post: 'POST',\\n  Put: 'PUT',\\n  Delete: 'DELETE'\\n} as const;\\n\\ntype HttpMethod = typeof HTTP_METHODS[keyof typeof HTTP_METHODS];\\n// 'GET' | 'POST' | 'PUT' | 'DELETE'\\n```",
         },
         {
           type: "conceptual",
           q: "What are named tuples and labeled tuple elements?",
-          a: "Named tuples (TS 4.0+) add labels to tuple positions for documentation: `type Point = [x: number, y: number, z: number]`. The labels don't affect runtime behavior but appear in IDE hints and error messages, making code much more readable. They're especially useful for function parameter types and destructured returns."
+          a: "Named tuples (TS 4.0+) add labels to tuple positions for documentation: `type Point = [x: number, y: number, z: number]`. The labels don't affect runtime behavior but appear in IDE hints and error messages, making code much more readable. They're especially useful for function parameter types and destructured returns.",
         },
         {
           type: "scenario",
           q: "How would you create a type-safe constant configuration that's accessible at both runtime and compile time?",
-          a: "Use `as const` with derived types: ```ts\\nconst CONFIG = { maxRetries: 3, timeout: 5000, env: 'production' } as const;\\ntype Config = typeof CONFIG;\\ntype ConfigKey = keyof Config;\\ntype ConfigValue = Config[ConfigKey];\\n```\\nYou get: runtime access (`CONFIG.timeout`), type narrowing (literal types), and readonly protection — all without enums or duplicate declarations."
-        }
-      ]
-    }
-  ]
+          a: "Use `as const` with derived types: ```ts\\nconst CONFIG = { maxRetries: 3, timeout: 5000, env: 'production' } as const;\\ntype Config = typeof CONFIG;\\ntype ConfigKey = keyof Config;\\ntype ConfigValue = Config[ConfigKey];\\n```\\nYou get: runtime access (`CONFIG.timeout`), type narrowing (literal types), and readonly protection — all without enums or duplicate declarations.",
+        },
+      ],
+    },
+  ],
 };
 
 export default tsPhase1;

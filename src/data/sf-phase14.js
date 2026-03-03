@@ -2,7 +2,8 @@ const sfPhase14 = {
   id: "phase-14",
   title: "Phase 14: Interview Simulation & Career Growth",
   emoji: "🎯",
-  description: "Technical interview preparation — mock interview questions, system design exercises, whiteboard coding, behavioral questions, and strategies for Developer, Senior, and Architect interviews.",
+  description:
+    "Technical interview preparation — mock interview questions, system design exercises, whiteboard coding, behavioral questions, and strategies for Developer, Senior, and Architect interviews.",
   topics: [
     {
       id: "sf-interview-preparation",
@@ -247,25 +248,25 @@ public class LeadScoringEngine {
         "Not practicing out loud — knowing the answer in your head is different from articulating it clearly under interview pressure",
         "Focusing only on coding — senior interviews are 50% architecture and communication. Practice system design and stakeholder communication",
         "Not asking about requirements and constraints — in system design interviews, always ask about scale (users, data volume), performance requirements, and budget",
-        "Over-engineering interview answers — start simple, then add complexity. Show you understand the tradeoffs between simple and complex solutions"
+        "Over-engineering interview answers — start simple, then add complexity. Show you understand the tradeoffs between simple and complex solutions",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Walk me through the Order of Execution when a record is saved in Salesforce.",
-          a: "**Salesforce Order of Execution:** (1) Load original record (or initialize defaults for new records). (2) Load new field values from request. (3) Execute **before-save Flows** (Record-Triggered). (4) Execute system validation rules (required fields, field format). (5) Execute **before triggers**. (6) Execute custom validation rules. (7) Save record to database (but don't commit). (8) Execute **after triggers**. (9) Execute assignment rules. (10) Execute auto-response rules. (11) Execute **after-save Flows** (Record-Triggered). (12) Execute entitlement rules. (13) Execute roll-up summary field calculations. (14) Execute cross-object workflow rules. (15) Execute post-commit logic (sending emails, etc.). (16) **Commit** all DML to database."
+          a: "**Salesforce Order of Execution:** (1) Load original record (or initialize defaults for new records). (2) Load new field values from request. (3) Execute **before-save Flows** (Record-Triggered). (4) Execute system validation rules (required fields, field format). (5) Execute **before triggers**. (6) Execute custom validation rules. (7) Save record to database (but don't commit). (8) Execute **after triggers**. (9) Execute assignment rules. (10) Execute auto-response rules. (11) Execute **after-save Flows** (Record-Triggered). (12) Execute entitlement rules. (13) Execute roll-up summary field calculations. (14) Execute cross-object workflow rules. (15) Execute post-commit logic (sending emails, etc.). (16) **Commit** all DML to database.",
         },
         {
           type: "scenario",
           q: "Design a system for a ride-sharing company to track drivers, riders, trips, and payments on Salesforce.",
-          a: "**Data Model:** Driver__c (license, vehicle, rating), Rider__c (linked to Contact), Trip__c (MD to Driver, Lookup to Rider — start/end location, status, fare), Payment__c (MD to Trip). **Security:** OWD Private. Drivers see only their trips. Riders see only their trips. Operations team (role) sees all. **Automation:** Before-save Flow: calculate estimated fare based on distance. After-save trigger: match rider requests with available drivers (custom matching algorithm in Apex). Platform Events: real-time trip status updates to driver and rider mobile apps. Scheduled Flow: daily settlement calculations for driver payouts. **Integration:** Google Maps API via Named Credentials for distance calculation. Payment gateway (Stripe) via Queueable callouts. **Scale:** 10K trips/day → Big Objects for archiving trips older than 1 year. Custom indexes on Trip__c(Status__c, Driver__c, Start_Time__c)."
+          a: "**Data Model:** Driver__c (license, vehicle, rating), Rider__c (linked to Contact), Trip__c (MD to Driver, Lookup to Rider — start/end location, status, fare), Payment__c (MD to Trip). **Security:** OWD Private. Drivers see only their trips. Riders see only their trips. Operations team (role) sees all. **Automation:** Before-save Flow: calculate estimated fare based on distance. After-save trigger: match rider requests with available drivers (custom matching algorithm in Apex). Platform Events: real-time trip status updates to driver and rider mobile apps. Scheduled Flow: daily settlement calculations for driver payouts. **Integration:** Google Maps API via Named Credentials for distance calculation. Payment gateway (Stripe) via Queueable callouts. **Scale:** 10K trips/day → Big Objects for archiving trips older than 1 year. Custom indexes on Trip__c(Status__c, Driver__c, Start_Time__c).",
         },
         {
           type: "tricky",
           q: "You're given 30 seconds to explain to a VP of Sales why a feature request will take 3 sprints instead of 1.",
-          a: "**The 30-second pitch:** 'The feature you described — automatic territory reassignment — touches our core data security model. If we do this in one sprint, we risk breaking visibility for all 500 sales reps. Here's the safe approach: Sprint 1 — build and test the reassignment logic in sandbox with your data. Sprint 2 — pilot with one region (50 reps), measure impact, get feedback. Sprint 3 — roll out to all regions with kill-switch for safety. This approach protects your team's pipeline visibility and gives us a rollback plan if anything goes wrong.' **Why this works:** Acknowledges the business need, explains risk in business terms, shows concrete plan, demonstrates safety thinking."
-        }
-      ]
+          a: "**The 30-second pitch:** 'The feature you described — automatic territory reassignment — touches our core data security model. If we do this in one sprint, we risk breaking visibility for all 500 sales reps. Here's the safe approach: Sprint 1 — build and test the reassignment logic in sandbox with your data. Sprint 2 — pilot with one region (50 reps), measure impact, get feedback. Sprint 3 — roll out to all regions with kill-switch for safety. This approach protects your team's pipeline visibility and gives us a rollback plan if anything goes wrong.' **Why this works:** Acknowledges the business need, explains risk in business terms, shows concrete plan, demonstrates safety thinking.",
+        },
+      ],
     },
     {
       id: "sf-career-growth-certifications",
@@ -435,22 +436,22 @@ public class AccountTriggerHandlerTest {
         "Staying in your comfort zone — if you only do triggers and Apex, you won't grow into architecture roles. Push into LWC, integration, and security",
         "Not networking within the Salesforce ecosystem — the Salesforce job market is heavily referral-based. Active community participation opens opportunities",
         "Studying for CTA too early — the CTA requires deep enterprise experience. Most successful candidates have 8-15 years of experience",
-        "Ignoring soft skills — at the senior and architect level, communication, stakeholder management, and presentation skills are as important as technical skills"
+        "Ignoring soft skills — at the senior and architect level, communication, stakeholder management, and presentation skills are as important as technical skills",
       ],
       interviewQuestions: [
         {
           type: "behavioral",
           q: "Tell me about a time you made a technical decision that had significant business impact.",
-          a: "**STAR Format:** **Situation:** Our Salesforce org had been growing rapidly — 2M+ Account records — and our sales team was experiencing 15-second page load times. **Task:** I was asked to diagnose and fix the performance issues within 2 weeks before quarterly business review. **Action:** I analyzed debug logs and found non-selective queries in 3 trigger handlers. I proposed: (1) Custom indexes on 4 frequently filtered fields (submitted to Salesforce Support). (2) Refactored trigger handlers from 3 separate to 1 unified framework. (3) Moved non-critical processing to Queueable Apex. (4) Implemented caching for frequently accessed configuration data. **Result:** Page load times dropped from 15 seconds to under 2 seconds. We identified this improved sales rep productivity by ~20 minutes per day. The approach was adopted as a standard pattern for all future development."
+          a: "**STAR Format:** **Situation:** Our Salesforce org had been growing rapidly — 2M+ Account records — and our sales team was experiencing 15-second page load times. **Task:** I was asked to diagnose and fix the performance issues within 2 weeks before quarterly business review. **Action:** I analyzed debug logs and found non-selective queries in 3 trigger handlers. I proposed: (1) Custom indexes on 4 frequently filtered fields (submitted to Salesforce Support). (2) Refactored trigger handlers from 3 separate to 1 unified framework. (3) Moved non-critical processing to Queueable Apex. (4) Implemented caching for frequently accessed configuration data. **Result:** Page load times dropped from 15 seconds to under 2 seconds. We identified this improved sales rep productivity by ~20 minutes per day. The approach was adopted as a standard pattern for all future development.",
         },
         {
           type: "scenario",
           q: "You disagree with a solution architect's integration approach. How do you handle it?",
-          a: "**Professional approach:** (1) **Understand their perspective first** — ask questions to understand their reasoning and constraints I might not be aware of. (2) **Prepare data** — build a proof of concept or analysis showing the tradeoffs. For example, if they propose synchronous REST callouts and I believe Platform Events would be better, I'd show: latency comparison, governor limit impact, failure handling differences. (3) **Present alternatives, not objections** — 'Here's another approach that might address the scalability concern...' not 'Your approach won't work.' (4) **Focus on business outcomes** — frame the discussion in terms of reliability, cost, and user experience, not technical preference. (5) **Defer gracefully** — if the team decides to go with their approach, document my concerns constructively and monitor for the issues I predicted."
-        }
-      ]
-    }
-  ]
+          a: "**Professional approach:** (1) **Understand their perspective first** — ask questions to understand their reasoning and constraints I might not be aware of. (2) **Prepare data** — build a proof of concept or analysis showing the tradeoffs. For example, if they propose synchronous REST callouts and I believe Platform Events would be better, I'd show: latency comparison, governor limit impact, failure handling differences. (3) **Present alternatives, not objections** — 'Here's another approach that might address the scalability concern...' not 'Your approach won't work.' (4) **Focus on business outcomes** — frame the discussion in terms of reliability, cost, and user experience, not technical preference. (5) **Defer gracefully** — if the team decides to go with their approach, document my concerns constructively and monitor for the issues I predicted.",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase14;

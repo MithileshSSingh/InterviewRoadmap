@@ -2,7 +2,8 @@ const androidPhase1 = {
   id: "phase-1",
   title: "Phase 1: Interview Structure at Google",
   emoji: "🎯",
-  description: "Understand the Google Senior Android interview process — rounds, evaluation criteria, and what separates senior from mid-level candidates.",
+  description:
+    "Understand the Google Senior Android interview process — rounds, evaluation criteria, and what separates senior from mid-level candidates.",
   topics: [
     {
       id: "google-interview-rounds",

@@ -7,12 +7,12 @@ import CodeBlock from "@/components/CodeBlock";
 import Accordion from "@/components/Accordion";
 import TopicChatBot from "@/components/TopicChatBot";
 
-import { marked } from 'marked';
+import { marked } from "marked";
 
 function renderMarkdown(text) {
   if (!text) return null;
   // Some legacy data might still have literal string "\n" instead of actual newlines
-  const processed = text.replace(/\\n/g, '\n');
+  const processed = text.replace(/\\n/g, "\n");
   return marked.parse(processed);
 }
 
@@ -33,7 +33,8 @@ export default function TopicPage() {
 
   // Prev/next within phase
   const prevTopic = topicIndex > 0 ? phase.topics[topicIndex - 1] : null;
-  const nextTopic = topicIndex < phase.topics.length - 1 ? phase.topics[topicIndex + 1] : null;
+  const nextTopic =
+    topicIndex < phase.topics.length - 1 ? phase.topics[topicIndex + 1] : null;
 
   let prevLink = prevTopic ? { phase: phase.id, topic: prevTopic } : null;
   let nextLink = nextTopic ? { phase: phase.id, topic: nextTopic } : null;
@@ -61,9 +62,13 @@ export default function TopicPage() {
       <div className="breadcrumb">
         <Link href="/">All Roadmaps</Link>
         <span>›</span>
-        <Link href={`/roadmap/${slug}`}>{meta.emoji} {meta.title}</Link>
+        <Link href={`/roadmap/${slug}`}>
+          {meta.emoji} {meta.title}
+        </Link>
         <span>›</span>
-        <Link href={`/roadmap/${slug}/${phase.id}`}>{phase.title.split(":")[0]}</Link>
+        <Link href={`/roadmap/${slug}/${phase.id}`}>
+          {phase.title.split(":")[0]}
+        </Link>
         <span>›</span>
         <span>{topic.title}</span>
       </div>
@@ -72,54 +77,84 @@ export default function TopicPage() {
 
       {/* Explanation */}
       <section className="section">
-        <h2 className="section-title"><span className="icon">📖</span> Concept</h2>
-        <div className="explanation" dangerouslySetInnerHTML={{ __html: renderMarkdown(topic.explanation) }} />
+        <h2 className="section-title">
+          <span className="icon">📖</span> Concept
+        </h2>
+        <div
+          className="explanation"
+          dangerouslySetInnerHTML={{
+            __html: renderMarkdown(topic.explanation),
+          }}
+        />
       </section>
 
       {/* Code Example */}
       <section className="section">
-        <h2 className="section-title"><span className="icon">💻</span> Code Example</h2>
+        <h2 className="section-title">
+          <span className="icon">💻</span> Code Example
+        </h2>
         <CodeBlock code={topic.codeExample} />
       </section>
 
       {/* Exercise */}
       <section className="section">
-        <h2 className="section-title"><span className="icon">🏋️</span> Practice Exercise</h2>
+        <h2 className="section-title">
+          <span className="icon">🏋️</span> Practice Exercise
+        </h2>
         <div className="exercise-card">
-          <div className="exercise-text" dangerouslySetInnerHTML={{ __html: renderMarkdown(topic.exercise) }} />
+          <div
+            className="exercise-text"
+            dangerouslySetInnerHTML={{ __html: renderMarkdown(topic.exercise) }}
+          />
         </div>
       </section>
 
       {/* Common Mistakes */}
       <section className="section">
-        <h2 className="section-title"><span className="icon">⚠️</span> Common Mistakes</h2>
+        <h2 className="section-title">
+          <span className="icon">⚠️</span> Common Mistakes
+        </h2>
         <ul className="mistakes-list">
           {topic.commonMistakes.map((mistake, i) => (
-            <li key={i} dangerouslySetInnerHTML={{ __html: renderMarkdown(mistake) }} />
+            <li
+              key={i}
+              dangerouslySetInnerHTML={{ __html: renderMarkdown(mistake) }}
+            />
           ))}
         </ul>
       </section>
 
       {/* Interview Questions */}
       <section className="section">
-        <h2 className="section-title"><span className="icon">💼</span> Interview Questions</h2>
+        <h2 className="section-title">
+          <span className="icon">💼</span> Interview Questions
+        </h2>
         <Accordion items={topic.interviewQuestions} />
       </section>
 
       {/* Navigation */}
       <div className="topic-nav">
         {prevLink ? (
-          <Link href={`/roadmap/${slug}/${prevLink.phase}/${prevLink.topic.id}`}>
+          <Link
+            href={`/roadmap/${slug}/${prevLink.phase}/${prevLink.topic.id}`}
+          >
             <span className="nav-label">← Previous</span>
             <span className="nav-title">{prevLink.topic.title}</span>
           </Link>
-        ) : <div />}
+        ) : (
+          <div />
+        )}
         {nextLink ? (
-          <Link href={`/roadmap/${slug}/${nextLink.phase}/${nextLink.topic.id}`} style={{ textAlign: "right", marginLeft: "auto" }}>
+          <Link
+            href={`/roadmap/${slug}/${nextLink.phase}/${nextLink.topic.id}`}
+            style={{ textAlign: "right", marginLeft: "auto" }}
+          >
             <span className="nav-label">Next →</span>
             <span className="nav-title">{nextLink.topic.title}</span>
           </Link>
-        ) : <div />}
+        ) : (
+          <div />
+        )}
       </div>
 
       {/* Topic Chatbot */}

@@ -2,7 +2,8 @@ const rnPhase5 = {
   id: "phase-5",
   title: "Phase 5: Performance & Scalability",
   emoji: "🚀",
-  description: "Master re-render control, FlatList optimization, image strategies, startup time, bundle splitting, memory optimization, battery efficiency, and offline-first architecture for apps serving millions.",
+  description:
+    "Master re-render control, FlatList optimization, image strategies, startup time, bundle splitting, memory optimization, battery efficiency, and offline-first architecture for apps serving millions.",
   topics: [
     {
       id: "rerender-control",

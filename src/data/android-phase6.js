@@ -2,7 +2,8 @@ const androidPhase6 = {
   id: "phase-6",
   title: "Phase 6: System Design for Mobile",
   emoji: "🏛️",
-  description: "Design large-scale mobile systems — offline-first sync, chat apps, real-time updates, notification systems, and crash resiliency strategies.",
+  description:
+    "Design large-scale mobile systems — offline-first sync, chat apps, real-time updates, notification systems, and crash resiliency strategies.",
   topics: [
     {
       id: "designing-offline-sync",
@@ -141,7 +142,7 @@ class SyncEngine @Inject constructor(
         {
           type: "scenario",
           q: "Design the sync system for Google Keep. How do you handle conflicts when a user edits the same note on two devices offline?",
-          a: "**Strategy: Field-level merge with fallback to LWW.** (1) Each change tracks which fields were modified (title, content, color, checklist items). (2) If Device A changed the title and Device B changed the content, merge both — no conflict. (3) If both changed the same field, use LWW with server timestamp. (4) For checklist items, use a CRDT-like approach: each item has a unique ID, additions and deletions are tracked independently. (5) For text content conflicts: save both versions, let user pick (similar to Git merge conflicts). (6) **Sync flow:** Push local changes → server detects field-level conflicts → server merges or marks as conflict → client applies merged result."
+          a: "**Strategy: Field-level merge with fallback to LWW.** (1) Each change tracks which fields were modified (title, content, color, checklist items). (2) If Device A changed the title and Device B changed the content, merge both — no conflict. (3) If both changed the same field, use LWW with server timestamp. (4) For checklist items, use a CRDT-like approach: each item has a unique ID, additions and deletions are tracked independently. (5) For text content conflicts: save both versions, let user pick (similar to Git merge conflicts). (6) **Sync flow:** Push local changes → server detects field-level conflicts → server merges or marks as conflict → client applies merged result.",
         },
       ],
     },
@@ -280,7 +281,7 @@ class ChatRepository @Inject constructor(
         {
           type: "scenario",
           q: "Design the Android architecture for a WhatsApp-like messaging app.",
-          a: "**Key components:** (1) **Connection layer:** WebSocket for real-time when active, FCM for background notifications. Reconnection with exponential backoff. (2) **Data layer:** Room DB per conversation (or single DB with conversation_id index). Message entity with id, timestamp, content, delivery_state, media_url. (3) **Sync:** On app open, fetch messages since last server timestamp. Background: FCM triggers WorkManager sync. (4) **Media:** Separate upload pipeline — upload image → get URL → send message with URL. Show placeholder during upload. (5) **Ordering:** Server assigns monotonically increasing sequence numbers per conversation. Client sorts by sequence number. (6) **Delivery receipts:** Separate lightweight messages (DELIVERED/READ) sent via same WebSocket. (7) **Offline:** All messages saved locally first. Sent queue processed when online."
+          a: "**Key components:** (1) **Connection layer:** WebSocket for real-time when active, FCM for background notifications. Reconnection with exponential backoff. (2) **Data layer:** Room DB per conversation (or single DB with conversation_id index). Message entity with id, timestamp, content, delivery_state, media_url. (3) **Sync:** On app open, fetch messages since last server timestamp. Background: FCM triggers WorkManager sync. (4) **Media:** Separate upload pipeline — upload image → get URL → send message with URL. Show placeholder during upload. (5) **Ordering:** Server assigns monotonically increasing sequence numbers per conversation. Client sorts by sequence number. (6) **Delivery receipts:** Separate lightweight messages (DELIVERED/READ) sent via same WebSocket. (7) **Offline:** All messages saved locally first. Sent queue processed when online.",
         },
       ],
     },
@@ -405,7 +406,7 @@ class RealTimeManager @Inject constructor(
         {
           type: "scenario",
           q: "Design a live sports score update system for an Android app with 1M DAU.",
-          a: "**Architecture:** (1) **Foreground:** SSE connection to stream score updates. Low latency, efficient for one-directional data. (2) **Background:** FCM for important events (goals, game end). (3) **Data:** Room DB stores current scores + game state. UI observes via Flow. (4) **Scale:** CDN + edge servers for SSE distribution. Client connects to nearest edge. (5) **Battery:** Connect SSE only on active game screens. Disconnect on background. FCM handles rest. (6) **Offline:** Show last cached scores with 'last updated' timestamp. (7) **Reliability:** Client-side deduplication via event IDs. Reconnect fetches missed events from REST endpoint using last_event_id."
+          a: "**Architecture:** (1) **Foreground:** SSE connection to stream score updates. Low latency, efficient for one-directional data. (2) **Background:** FCM for important events (goals, game end). (3) **Data:** Room DB stores current scores + game state. UI observes via Flow. (4) **Scale:** CDN + edge servers for SSE distribution. Client connects to nearest edge. (5) **Battery:** Connect SSE only on active game screens. Disconnect on background. FCM handles rest. (6) **Offline:** Show last cached scores with 'last updated' timestamp. (7) **Reliability:** Client-side deduplication via event IDs. Reconnect fetches missed events from REST endpoint using last_event_id.",
         },
       ],
     },
@@ -534,7 +535,7 @@ fun NotificationPermissionRequest() {
         {
           type: "scenario",
           q: "Design a notification system for a social media app. How do you handle grouping, priority, and user preferences?",
-          a: "**Channels:** messages (HIGH), likes (DEFAULT), follows (DEFAULT), system (LOW). **Grouping:** Group notifications by type — multiple likes become '5 people liked your post'. Use NotificationCompat.InboxStyle or MessagingStyle. **Priority:** Messages = heads-up, likes = silent, follows = default sound. **User prefs:** Expose channel settings via Intent to system notification settings. Server-side: don't send notifications for muted conversations. **Smart delivery:** Batch non-urgent notifications (likes, follows) into periodic digests. Send messages immediately. **Rate limiting:** Max 10 notifications per minute per user to avoid spam perception."
+          a: "**Channels:** messages (HIGH), likes (DEFAULT), follows (DEFAULT), system (LOW). **Grouping:** Group notifications by type — multiple likes become '5 people liked your post'. Use NotificationCompat.InboxStyle or MessagingStyle. **Priority:** Messages = heads-up, likes = silent, follows = default sound. **User prefs:** Expose channel settings via Intent to system notification settings. Server-side: don't send notifications for muted conversations. **Smart delivery:** Batch non-urgent notifications (likes, follows) into periodic digests. Send messages immediately. **Rate limiting:** Max 10 notifications per minute per user to avoid spam perception.",
         },
       ],
     },
@@ -659,7 +660,7 @@ sealed interface Resource<out T> {
         {
           type: "scenario",
           q: "Your app has a 1% crash rate on Play Console. How do you reduce it to below 0.1%?",
-          a: "1) **Analyze:** Prioritize crashes by impact (frequency × affected users) in Crashlytics. Top 5 crashes usually account for 80%. 2) **Common fixes:** (a) NullPointerException → Adopt Kotlin nullability, add null checks for Java interop. (b) IllegalStateException from Fragment transactions → Use Navigation Component. (c) OutOfMemoryError → Proper image loading with Coil/Glide, fix leaks. (d) NetworkOnMainThreadException → Move to Dispatchers.IO. 3) **Prevention:** (a) Add global exception handler for context before crash. (b) Use sealed types for state management — eliminate impossible states. (c) Process death testing in CI. (d) Canary releases to catch regressions early. 4) **Monitor:** Set up alerts for crash rate threshold."
+          a: "1) **Analyze:** Prioritize crashes by impact (frequency × affected users) in Crashlytics. Top 5 crashes usually account for 80%. 2) **Common fixes:** (a) NullPointerException → Adopt Kotlin nullability, add null checks for Java interop. (b) IllegalStateException from Fragment transactions → Use Navigation Component. (c) OutOfMemoryError → Proper image loading with Coil/Glide, fix leaks. (d) NetworkOnMainThreadException → Move to Dispatchers.IO. 3) **Prevention:** (a) Add global exception handler for context before crash. (b) Use sealed types for state management — eliminate impossible states. (c) Process death testing in CI. (d) Canary releases to catch regressions early. 4) **Monitor:** Set up alerts for crash rate threshold.",
         },
       ],
     },

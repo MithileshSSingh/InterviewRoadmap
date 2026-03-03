@@ -121,25 +121,25 @@ function sieve(n: number): number[] {
       "Forgetting that in Big-O, log base doesn't matter — log₂(n), log₃(n), log₁₀(n) all differ by a constant factor",
       "Not recognizing the arithmetic series pattern — if inner loop runs 1+2+3+...+n times, that's O(n²), not O(n)",
       "Using floating-point math for integer problems — leads to precision errors; use integer arithmetic",
-      "Not knowing that √n iterations is O(√n), which is between O(log n) and O(n) — used in prime checks and some optimizations"
+      "Not knowing that √n iterations is O(√n), which is between O(log n) and O(n) — used in prime checks and some optimizations",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "Why does binary search have O(log n) complexity?",
-        a: "Binary search halves the search space each iteration: n → n/2 → n/4 → ... → 1. The number of halvings until you reach 1 is log₂(n). Mathematically: n/2^k = 1 → k = log₂(n). This is why 'divide in half' algorithms are logarithmic. log₂(1,000,000) ≈ 20, so binary search checks at most 20 elements in a million-element array."
+        a: "Binary search halves the search space each iteration: n → n/2 → n/4 → ... → 1. The number of halvings until you reach 1 is log₂(n). Mathematically: n/2^k = 1 → k = log₂(n). This is why 'divide in half' algorithms are logarithmic. log₂(1,000,000) ≈ 20, so binary search checks at most 20 elements in a million-element array.",
       },
       {
         type: "coding",
         q: "Write a function to find GCD of two numbers. What's its time complexity?",
-        a: "```js\nfunction gcd(a, b) {\n  while (b !== 0) {\n    [a, b] = [b, a % b];\n  }\n  return a;\n}\n// Time: O(log(min(a,b))) — each step reduces the larger number by at least half\n// This is the Euclidean algorithm, one of the oldest algorithms known\n```"
+        a: "```js\nfunction gcd(a, b) {\n  while (b !== 0) {\n    [a, b] = [b, a % b];\n  }\n  return a;\n}\n// Time: O(log(min(a,b))) — each step reduces the larger number by at least half\n// This is the Euclidean algorithm, one of the oldest algorithms known\n```",
       },
       {
         type: "tricky",
         q: "Why is the safe way to compute the midpoint `low + (high - low) / 2` instead of `(low + high) / 2`?",
-        a: "`(low + high)` can overflow if both are large positive integers (in languages with fixed-size integers). In JavaScript, numbers are 64-bit floats so overflow is less common, but `(low + high) >>> 1` is the safest — the unsigned right shift handles large values correctly and automatically floors the result."
-      }
-    ]
+        a: "`(low + high)` can overflow if both are large positive integers (in languages with fixed-size integers). In JavaScript, numbers are 64-bit floats so overflow is less common, but `(low + high) >>> 1` is the safest — the unsigned right shift handles large values correctly and automatically floors the result.",
+      },
+    ],
   },
   {
     id: "bit-manipulation-basics",
@@ -248,25 +248,25 @@ function missingNumber(nums: number[]): number {
       "Using bit shifts for multiplication/division when clarity matters more than micro-optimization",
       "Not understanding two's complement — ~5 is -6, not what you might expect",
       "Forgetting that XOR swap fails when a and b are the same variable (reference)",
-      "Using signed right shift (>>) when you need unsigned (>>>) for negative numbers"
+      "Using signed right shift (>>) when you need unsigned (>>>) for negative numbers",
     ],
     interviewQuestions: [
       {
         type: "coding",
         q: "Find the single number in an array where every other number appears exactly twice.",
-        a: "```js\nfunction singleNumber(nums) {\n  return nums.reduce((xor, num) => xor ^ num, 0);\n}\n// XOR properties: a^a=0, a^0=a\n// All pairs cancel out, leaving the single number\n// Time: O(n), Space: O(1)\n```"
+        a: "```js\nfunction singleNumber(nums) {\n  return nums.reduce((xor, num) => xor ^ num, 0);\n}\n// XOR properties: a^a=0, a^0=a\n// All pairs cancel out, leaving the single number\n// Time: O(n), Space: O(1)\n```",
       },
       {
         type: "tricky",
         q: "Why does `n & (n-1)` remove the lowest set bit?",
-        a: "Consider n = 12 (1100). n-1 = 11 (1011). n & (n-1) = 1000. When you subtract 1, the lowest set bit becomes 0 and all lower bits become 1. AND-ing with the original clears the lowest set bit and preserves all higher bits. This is Brian Kernighan's trick for counting set bits."
+        a: "Consider n = 12 (1100). n-1 = 11 (1011). n & (n-1) = 1000. When you subtract 1, the lowest set bit becomes 0 and all lower bits become 1. AND-ing with the original clears the lowest set bit and preserves all higher bits. This is Brian Kernighan's trick for counting set bits.",
       },
       {
         type: "conceptual",
         q: "When is bit manipulation useful in real-world applications?",
-        a: "1) **Permissions/flags**: Unix file permissions (rwx = 7 = 111). 2) **Feature flags**: enable/disable features with a single integer. 3) **Network masks**: IP subnetting uses AND masking. 4) **Graphics**: pixel manipulation, alpha blending. 5) **Compression**: Huffman coding. 6) **Cryptography**: XOR is foundational. 7) **Bloom filters**: use bit arrays for membership testing."
-      }
-    ]
+        a: "1) **Permissions/flags**: Unix file permissions (rwx = 7 = 111). 2) **Feature flags**: enable/disable features with a single integer. 3) **Network masks**: IP subnetting uses AND masking. 4) **Graphics**: pixel manipulation, alpha blending. 5) **Compression**: Huffman coding. 6) **Cryptography**: XOR is foundational. 7) **Bloom filters**: use bit arrays for membership testing.",
+      },
+    ],
   },
   {
     id: "problem-solving-approach",
@@ -397,25 +397,25 @@ function hasPath(graph: Map<number, number[]>, start: number, end: number): bool
       "Not asking clarifying questions in interviews — interviewers EXPECT you to ask about edge cases, constraints, and assumptions",
       "Trying to find the optimal solution immediately — start with brute force, then optimize",
       "Not considering constraints to determine acceptable complexity — n ≤ 1000 means O(n²) is fine",
-      "Memorizing solutions instead of understanding patterns — you'll fail on any variation you haven't seen"
+      "Memorizing solutions instead of understanding patterns — you'll fail on any variation you haven't seen",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "How do you approach a problem you've never seen before in an interview?",
-        a: "UMPIRE: 1) **Understand** — restate the problem, ask about edge cases and constraints. 2) **Match** — identify which pattern it fits (sliding window? DP? graph?). 3) **Plan** — describe your approach and complexity before coding. 4) **Implement** — write clean code. 5) **Review** — trace through an example. 6) **Evaluate** — discuss optimization. Starting with brute force is always valid."
+        a: "UMPIRE: 1) **Understand** — restate the problem, ask about edge cases and constraints. 2) **Match** — identify which pattern it fits (sliding window? DP? graph?). 3) **Plan** — describe your approach and complexity before coding. 4) **Implement** — write clean code. 5) **Review** — trace through an example. 6) **Evaluate** — discuss optimization. Starting with brute force is always valid.",
       },
       {
         type: "scenario",
         q: "You're stuck on a problem in an interview. What do you do?",
-        a: "1) Think out loud — the interviewer can hint. 2) Start with brute force — even O(n³) shows problem-solving. 3) Look at constraints — they tell you the expected complexity. 4) Draw examples — visual patterns emerge. 5) Try a smaller input — solve by hand. 6) Consider common patterns: hash map, two pointers, sorting. 7) Ask for a hint — better than silence."
+        a: "1) Think out loud — the interviewer can hint. 2) Start with brute force — even O(n³) shows problem-solving. 3) Look at constraints — they tell you the expected complexity. 4) Draw examples — visual patterns emerge. 5) Try a smaller input — solve by hand. 6) Consider common patterns: hash map, two pointers, sorting. 7) Ask for a hint — better than silence.",
       },
       {
         type: "conceptual",
         q: "How do constraints help you determine the expected solution?",
-        a: "Constraints directly map to complexity: n ≤ 10 → O(n!), n ≤ 20 → O(2ⁿ), n ≤ 500 → O(n³), n ≤ 10⁴ → O(n²), n ≤ 10⁶ → O(n log n), n ≤ 10⁸ → O(n). If n = 10⁵, the interviewer expects O(n log n) or better. This eliminates entire categories of approaches before you start."
-      }
-    ]
+        a: "Constraints directly map to complexity: n ≤ 10 → O(n!), n ≤ 20 → O(2ⁿ), n ≤ 500 → O(n³), n ≤ 10⁴ → O(n²), n ≤ 10⁶ → O(n log n), n ≤ 10⁸ → O(n). If n = 10⁵, the interviewer expects O(n log n) or better. This eliminates entire categories of approaches before you start.",
+      },
+    ],
   },
   {
     id: "input-output-patterns",
@@ -545,25 +545,25 @@ function testEdgeCases() {
       "Assuming all numbers are positive — many problems have negative numbers that change the approach",
       "Not testing with the smallest valid input (n=0, n=1) — most bugs appear at boundaries",
       "Forgetting that strings can contain spaces, special characters, or be case-sensitive",
-      "Not considering integer overflow — (lo + hi) / 2 can overflow in many languages"
+      "Not considering integer overflow — (lo + hi) / 2 can overflow in many languages",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "What edge cases would you consider for a function that finds the maximum subarray sum?",
-        a: "1) Empty array → return 0 or error. 2) Single element → return that element. 3) All negative numbers → return the least negative. 4) All positive → return the entire sum. 5) Mix of positive/negative. 6) Array with zeros. 7) Very large numbers (overflow). 8) Array of length 1 million (performance)."
+        a: "1) Empty array → return 0 or error. 2) Single element → return that element. 3) All negative numbers → return the least negative. 4) All positive → return the entire sum. 5) Mix of positive/negative. 6) Array with zeros. 7) Very large numbers (overflow). 8) Array of length 1 million (performance).",
       },
       {
         type: "scenario",
         q: "In an interview, how do you demonstrate edge case awareness?",
-        a: "Before coding: 'Let me consider edge cases — empty input, single element, duplicates, negative values.' After coding: 'Let me trace through edge cases: empty array returns null, single element returns itself, all duplicates returns the value.' This shows production-level thinking and is a major positive signal."
+        a: "Before coding: 'Let me consider edge cases — empty input, single element, duplicates, negative values.' After coding: 'Let me trace through edge cases: empty array returns null, single element returns itself, all duplicates returns the value.' This shows production-level thinking and is a major positive signal.",
       },
       {
         type: "coding",
         q: "Write a robust division function that handles all edge cases.",
-        a: "```ts\nfunction safeDivide(a: number, b: number): number | null {\n  if (b === 0) return null;                    // Division by zero\n  if (!Number.isFinite(a) || !Number.isFinite(b)) return null; // Infinity/NaN\n  if (Number.isNaN(a) || Number.isNaN(b)) return null;\n  return a / b;\n}\n```"
-      }
-    ]
+        a: "```ts\nfunction safeDivide(a: number, b: number): number | null {\n  if (b === 0) return null;                    // Division by zero\n  if (!Number.isFinite(a) || !Number.isFinite(b)) return null; // Infinity/NaN\n  if (Number.isNaN(a) || Number.isNaN(b)) return null;\n  return a / b;\n}\n```",
+      },
+    ],
   },
   {
     id: "dsa-learning-plan",
@@ -686,21 +686,21 @@ function startInterviewTimer(minutes: number = 45): void {
       "Spending 3 hours on one hard problem — time-box and learn from editorials",
       "Only solving Easy problems and never progressing to Medium — Medium is the interview standard",
       "Not doing mock interviews — solving problems alone is different from explaining your approach",
-      "Cramming the week before interviews instead of consistent daily practice — consistency wins"
+      "Cramming the week before interviews instead of consistent daily practice — consistency wins",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "How many LeetCode problems should I solve to be interview-ready?",
-        a: "Quality over quantity. **150-200 curated problems** covering all major patterns (Blind 75, NeetCode 150) is far better than 1000 random ones. Focus on: understanding WHY a pattern works, recognizing WHEN to apply it, and being able to IMPLEMENT it clean in 20 minutes. If you can solve most Medium problems in one pattern within 25 minutes, you know that pattern."
+        a: "Quality over quantity. **150-200 curated problems** covering all major patterns (Blind 75, NeetCode 150) is far better than 1000 random ones. Focus on: understanding WHY a pattern works, recognizing WHEN to apply it, and being able to IMPLEMENT it clean in 20 minutes. If you can solve most Medium problems in one pattern within 25 minutes, you know that pattern.",
       },
       {
         type: "scenario",
         q: "What should a typical study day look like?",
-        a: "**2-3 hour block:** 1) 15 min review yesterday's mistakes. 2) 30 min study a concept/pattern. 3) 60 min solve 2-3 problems in that pattern. 4) 15 min analyze solutions and note patterns. 5) 15 min update mistake journal and pattern tracker. On weekends: mock interview + review week's mistakes. This builds both understanding AND speed."
-      }
-    ]
-  }
+        a: "**2-3 hour block:** 1) 15 min review yesterday's mistakes. 2) 30 min study a concept/pattern. 3) 60 min solve 2-3 problems in that pattern. 4) 15 min analyze solutions and note patterns. 5) 15 min update mistake journal and pattern tracker. On weekends: mock interview + review week's mistakes. This builds both understanding AND speed.",
+      },
+    ],
+  },
 ];
 
 export default dsaPhase1b;

@@ -2,7 +2,8 @@ const rnPhase7 = {
   id: "phase-7",
   title: "Phase 7: State Management at Scale",
   emoji: "🗄️",
-  description: "Master state management architectures — Redux Toolkit, middleware patterns, Sagas vs Thunks, Zustand, Context limitations, state normalization, optimistic UI, cache invalidation, and offline queues.",
+  description:
+    "Master state management architectures — Redux Toolkit, middleware patterns, Sagas vs Thunks, Zustand, Context limitations, state normalization, optimistic UI, cache invalidation, and offline queues.",
   topics: [
     {
       id: "state-architecture-patterns",

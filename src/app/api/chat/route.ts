@@ -1,9 +1,17 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { StateGraph, MessagesAnnotation } from "@langchain/langgraph";
-import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
+import {
+  HumanMessage,
+  SystemMessage,
+  AIMessage,
+} from "@langchain/core/messages";
 import { NextResponse } from "next/server";
 
-const ALLOWED_MODELS = ["google/gemini-2.0-flash-001", "google/gemini-2.0-flash-lite-preview-02-05", "google/gemini-3-flash-preview"];
+const ALLOWED_MODELS = [
+  "google/gemini-2.0-flash-001",
+  "google/gemini-2.0-flash-lite-preview-02-05",
+  "google/gemini-3-flash-preview",
+];
 const STREAM_HEADERS = {
   "Content-Type": "text/event-stream; charset=utf-8",
   "Cache-Control": "no-cache, no-transform",
@@ -37,7 +45,9 @@ function isValidChatRequestBody(body: unknown): body is ChatRequestBody {
   });
 }
 
-async function parseChatRequestBody(request: Request): Promise<ChatRequestBody | null> {
+async function parseChatRequestBody(
+  request: Request,
+): Promise<ChatRequestBody | null> {
   const contentType = request.headers.get("content-type") || "";
 
   if (contentType.includes("application/json")) {
@@ -89,7 +99,9 @@ function extractChunkText(messageChunk: unknown): string {
 function extractAssistantFromUpdate(updateChunk: unknown): string {
   if (!updateChunk || typeof updateChunk !== "object") return "";
 
-  for (const nodeUpdate of Object.values(updateChunk as Record<string, unknown>)) {
+  for (const nodeUpdate of Object.values(
+    updateChunk as Record<string, unknown>,
+  )) {
     if (!nodeUpdate || typeof nodeUpdate !== "object") continue;
 
     const messages = (nodeUpdate as { messages?: unknown }).messages;
@@ -112,23 +124,30 @@ export async function POST(request: Request) {
     if (!body) {
       return NextResponse.json(
         { error: "Invalid payload format." },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const { messages } = body;
 
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
-      console.error("[Chat API] OPENROUTER_API_KEY is not configured in .env.local");
+      console.error(
+        "[Chat API] OPENROUTER_API_KEY is not configured in .env.local",
+      );
       return NextResponse.json(
-        { error: "The assistant is not configured yet. Please contact the administrator." },
-        { status: 503 }
+        {
+          error:
+            "The assistant is not configured yet. Please contact the administrator.",
+        },
+        { status: 503 },
       );
     }
 
     const modelName = process.env.FREE_MODEL;
     // Check if user has explicitly asked for a model that contains google/, if not allow custom openrouter model string
-    const selectedModel = modelName.includes("/") ? modelName : `google/${modelName}`;
+    const selectedModel = modelName.includes("/")
+      ? modelName
+      : `google/${modelName}`;
 
     // Convert incoming messages to LangChain message objects
     const langchainMessages = messages.map((msg) => {
@@ -149,8 +168,7 @@ export async function POST(request: Request) {
       apiKey: apiKey,
       configuration: {
         baseURL: "https://openrouter.ai/api/v1",
-        defaultHeaders: {
-        },
+        defaultHeaders: {},
       },
     });
 
@@ -183,14 +201,22 @@ export async function POST(request: Request) {
 
           const iterator = await graph.stream(
             { messages: langchainMessages },
-            { streamMode: ["messages", "updates"] }
+            { streamMode: ["messages", "updates"] },
           );
 
-          for await (const [mode, chunk] of iterator as AsyncIterable<[string, unknown]>) {
+          for await (const [mode, chunk] of iterator as AsyncIterable<
+            [string, unknown]
+          >) {
             if (mode === "messages" && Array.isArray(chunk)) {
-              const [messageChunk, metadata] = chunk as [unknown, { langgraph_node?: string }];
+              const [messageChunk, metadata] = chunk as [
+                unknown,
+                { langgraph_node?: string },
+              ];
 
-              if (metadata?.langgraph_node && metadata.langgraph_node !== "callModel") {
+              if (
+                metadata?.langgraph_node &&
+                metadata.langgraph_node !== "callModel"
+              ) {
                 continue;
               }
 
@@ -203,7 +229,8 @@ export async function POST(request: Request) {
 
             if (mode === "updates") {
               const contentFromUpdate = extractAssistantFromUpdate(chunk);
-              if (contentFromUpdate) fallbackContentFromUpdates = contentFromUpdate;
+              if (contentFromUpdate)
+                fallbackContentFromUpdates = contentFromUpdate;
             }
           }
 
@@ -232,7 +259,7 @@ export async function POST(request: Request) {
     console.error("[Chat API] Unexpected error:", err);
     return NextResponse.json(
       { error: "Something went wrong. Please try again later." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

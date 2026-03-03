@@ -25,7 +25,15 @@ export default function SystemDesignSection({ systemDesign }) {
           <div style={subLabel}>Key Concepts</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
             {systemDesign.keyConcepts.map((c) => (
-              <span key={c} style={{ ...tagStyle, background: "var(--accent-blue)22", color: "var(--accent-blue)", border: "1px solid var(--accent-blue)44" }}>
+              <span
+                key={c}
+                style={{
+                  ...tagStyle,
+                  background: "var(--accent-blue)22",
+                  color: "var(--accent-blue)",
+                  border: "1px solid var(--accent-blue)44",
+                }}
+              >
                 {c}
               </span>
             ))}
@@ -51,7 +59,11 @@ const cardStyle = {
   marginBottom: "1.25rem",
 };
 
-const headingStyle = { fontSize: "1.1rem", fontWeight: 700, marginBottom: "1rem" };
+const headingStyle = {
+  fontSize: "1.1rem",
+  fontWeight: 700,
+  marginBottom: "1rem",
+};
 
 const subLabel = {
   fontSize: "0.78rem",

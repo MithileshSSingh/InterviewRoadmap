@@ -2,7 +2,8 @@ const tsPhase4 = {
   id: "phase-4",
   title: "Phase 4: TypeScript in Real Projects",
   emoji: "🔴",
-  description: "Apply TypeScript to production codebases — React, Node.js, state management, library authoring, and architecture patterns.",
+  description:
+    "Apply TypeScript to production codebases — React, Node.js, state management, library authoring, and architecture patterns.",
   topics: [
     {
       id: "typing-react",
@@ -159,35 +160,35 @@ function useAuth(): AuthContext {
         "Typing state as the initial value's type only — `useState('')` gives `string`, but if state can be `null`, use `useState<string | null>(null)`",
         "Forgetting that `useRef<T>(null)` starts as null — always use optional chaining `ref.current?.method()` or check for null",
         "Creating context without a null check — `createContext(undefined as any)` is unsafe; use a custom hook that throws if context is null",
-        "Over-typing event handlers — `(e: React.ChangeEvent<HTMLInputElement>) => void` on every handler; often the inline type is inferred"
+        "Over-typing event handlers — `(e: React.ChangeEvent<HTMLInputElement>) => void` on every handler; often the inline type is inferred",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Should you use `React.FC<Props>` or direct prop typing?",
-          a: "Direct prop typing is recommended: `function Btn(props: Props)`. `React.FC` had issues: 1) Implicit `children` (removed in React 18). 2) Doesn't support generics well. 3) Adds component return type constraints. Direct typing is simpler, supports generics, and is what the React team recommends."
+          a: "Direct prop typing is recommended: `function Btn(props: Props)`. `React.FC` had issues: 1) Implicit `children` (removed in React 18). 2) Doesn't support generics well. 3) Adds component return type constraints. Direct typing is simpler, supports generics, and is what the React team recommends.",
         },
         {
           type: "coding",
           q: "Create a type-safe `useLocalStorage<T>` hook.",
-          a: "```ts\\nfunction useLocalStorage<T>(key: string, initial: T) {\\n  const [value, setValue] = useState<T>(() => {\\n    const stored = localStorage.getItem(key);\\n    return stored ? JSON.parse(stored) : initial;\\n  });\\n\\n  useEffect(() => {\\n    localStorage.setItem(key, JSON.stringify(value));\\n  }, [key, value]);\\n\\n  return [value, setValue] as const;\\n}\\n// const [theme, setTheme] = useLocalStorage('theme', 'dark');\\n// theme: string, setTheme: Dispatch<SetStateAction<string>>\\n```"
+          a: "```ts\\nfunction useLocalStorage<T>(key: string, initial: T) {\\n  const [value, setValue] = useState<T>(() => {\\n    const stored = localStorage.getItem(key);\\n    return stored ? JSON.parse(stored) : initial;\\n  });\\n\\n  useEffect(() => {\\n    localStorage.setItem(key, JSON.stringify(value));\\n  }, [key, value]);\\n\\n  return [value, setValue] as const;\\n}\\n// const [theme, setTheme] = useLocalStorage('theme', 'dark');\\n// theme: string, setTheme: Dispatch<SetStateAction<string>>\\n```",
         },
         {
           type: "tricky",
           q: "How do you make a generic React component?",
-          a: "Use a generic function (not `React.FC`): `function List<T>(props: ListProps<T>) { ... }`. The generic T flows through props — if `items` is `User[]`, the `renderItem` callback receives `User`. For arrow functions: `const List = <T,>(props: ListProps<T>) => ...` (comma after T prevents JSX ambiguity)."
+          a: "Use a generic function (not `React.FC`): `function List<T>(props: ListProps<T>) { ... }`. The generic T flows through props — if `items` is `User[]`, the `renderItem` callback receives `User`. For arrow functions: `const List = <T,>(props: ListProps<T>) => ...` (comma after T prevents JSX ambiguity).",
         },
         {
           type: "conceptual",
           q: "How should you type React Context for type safety?",
-          a: "1) Define the context type interface. 2) Create context with `createContext<Type | null>(null)`. 3) Create a custom hook: `function useMyContext() { const ctx = useContext(MyContext); if (!ctx) throw new Error('...'); return ctx; }`. This gives non-null types to consumers without casting. Never use `as any` for default values."
+          a: "1) Define the context type interface. 2) Create context with `createContext<Type | null>(null)`. 3) Create a custom hook: `function useMyContext() { const ctx = useContext(MyContext); if (!ctx) throw new Error('...'); return ctx; }`. This gives non-null types to consumers without casting. Never use `as any` for default values.",
         },
         {
           type: "scenario",
           q: "You're building a data table component. How would you type it for maximum reusability?",
-          a: "```ts\\ninterface Column<T> {\\n  key: keyof T & string;\\n  header: string;\\n  render?: (value: T[keyof T], row: T) => ReactNode;\\n}\\ninterface TableProps<T> {\\n  data: T[];\\n  columns: Column<T>[];\\n  onRowClick?: (row: T) => void;\\n}\\nfunction Table<T extends Record<string, any>>({\\n  data, columns, onRowClick\\n}: TableProps<T>) { ... }\\n```\\nGeneric T flows through — columns are constrained to valid keys."
-        }
-      ]
+          a: "```ts\\ninterface Column<T> {\\n  key: keyof T & string;\\n  header: string;\\n  render?: (value: T[keyof T], row: T) => ReactNode;\\n}\\ninterface TableProps<T> {\\n  data: T[];\\n  columns: Column<T>[];\\n  onRowClick?: (row: T) => void;\\n}\\nfunction Table<T extends Record<string, any>>({\\n  data, columns, onRowClick\\n}: TableProps<T>) { ... }\\n```\\nGeneric T flows through — columns are constrained to valid keys.",
+        },
+      ],
     },
     {
       id: "typing-nodejs-express",
@@ -348,35 +349,35 @@ console.log("Express app with TypeScript types");`,
         "Using `any` for request/response types — defeats the purpose; always type the generics: `Request<Params, ResBody, ReqBody, Query>`",
         "Forgetting that Express query params are always strings — `req.query.page` is `string | undefined`, not `number`",
         "Not augmenting Request type for middleware-added properties — without declaration merging, `req.user` won't be typed",
-        "Typing the response but not enforcing it — `res.json()` doesn't validate the shape; it trusts your types. Bugs can still occur"
+        "Typing the response but not enforcing it — `res.json()` doesn't validate the shape; it trusts your types. Bugs can still occur",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "How do you type Express request handlers in TypeScript?",
-          a: "Use the `Request<Params, ResBody, ReqBody, Query>` generic: 1st param = URL params, 2nd = response body type, 3rd = request body type, 4th = query params type. The `Response<T>` generic types the `.json()` response. This gives compile-time safety for handler inputs and outputs."
+          a: "Use the `Request<Params, ResBody, ReqBody, Query>` generic: 1st param = URL params, 2nd = response body type, 3rd = request body type, 4th = query params type. The `Response<T>` generic types the `.json()` response. This gives compile-time safety for handler inputs and outputs.",
         },
         {
           type: "coding",
           q: "How do you add custom properties to Express Request using module augmentation?",
-          a: "```ts\\n// types/express.d.ts\\ndeclare global {\\n  namespace Express {\\n    interface Request {\\n      user?: { id: string; role: string };\\n      requestId: string;\\n    }\\n  }\\n}\\nexport {}; // Makes this a module\\n\\n// Now req.user and req.requestId are typed everywhere\\n```"
+          a: "```ts\\n// types/express.d.ts\\ndeclare global {\\n  namespace Express {\\n    interface Request {\\n      user?: { id: string; role: string };\\n      requestId: string;\\n    }\\n  }\\n}\\nexport {}; // Makes this a module\\n\\n// Now req.user and req.requestId are typed everywhere\\n```",
         },
         {
           type: "tricky",
           q: "Why should you validate request bodies at runtime even with TypeScript?",
-          a: "TypeScript types are erased at compile time — `req.body` is `any` at runtime regardless of your type annotation. A client can send anything. You MUST validate with runtime tools: Zod (`z.object({}).parse(req.body)`), class-validator, joi, etc. TypeScript ensures your code handles the validated data correctly; validation ensures the data is actually correct."
+          a: "TypeScript types are erased at compile time — `req.body` is `any` at runtime regardless of your type annotation. A client can send anything. You MUST validate with runtime tools: Zod (`z.object({}).parse(req.body)`), class-validator, joi, etc. TypeScript ensures your code handles the validated data correctly; validation ensures the data is actually correct.",
         },
         {
           type: "conceptual",
           q: "How do you type Express middleware that modifies the request?",
-          a: "Use module augmentation to add properties to the Express Request interface. Then in middleware, assign the property: `req.user = decoded;`. All subsequent handlers see the typed property. For conditional properties (might not exist if middleware doesn't run), use optional: `user?: UserInfo`. For required, use a typed wrapper: `assertAuthenticated(req)` that narrows."
+          a: "Use module augmentation to add properties to the Express Request interface. Then in middleware, assign the property: `req.user = decoded;`. All subsequent handlers see the typed property. For conditional properties (might not exist if middleware doesn't run), use optional: `user?: UserInfo`. For required, use a typed wrapper: `assertAuthenticated(req)` that narrows.",
         },
         {
           type: "scenario",
           q: "You're building a REST API with shared types between frontend and backend. How do you structure this?",
-          a: "Create a shared `types` package (or `shared/` folder in a monorepo): ```ts\\n// shared/types/api.ts\\nexport interface CreateUserDTO { name: string; email: string; }\\nexport interface UserResponse { id: string; name: string; email: string; }\\nexport interface ApiError { message: string; code: string; }\\n```\\nBoth frontend (fetch calls) and backend (handlers) import the same types. Use a monorepo tool (Turborepo, Nx) to manage the shared dependency."
-        }
-      ]
+          a: "Create a shared `types` package (or `shared/` folder in a monorepo): ```ts\\n// shared/types/api.ts\\nexport interface CreateUserDTO { name: string; email: string; }\\nexport interface UserResponse { id: string; name: string; email: string; }\\nexport interface ApiError { message: string; code: string; }\\n```\\nBoth frontend (fetch calls) and backend (handlers) import the same types. Use a monorepo tool (Turborepo, Nx) to manage the shared dependency.",
+        },
+      ],
     },
     {
       id: "typed-state-management",
@@ -514,35 +515,35 @@ console.log("State management with full TypeScript support");`,
         "Typing Redux state as `any` — always define `RootState = ReturnType<typeof store.getState>` for full inference",
         "Using `useSelector(state => state.user)` without RootState type — the selector parameter needs the typed root state",
         "Not typing async thunk error cases — `createAsyncThunk` has `pending`, `fulfilled`, AND `rejected` states; type all three",
-        "In Zustand, not providing the generic type — `create<StoreType>()` is essential for type inference to work correctly"
+        "In Zustand, not providing the generic type — `create<StoreType>()` is essential for type inference to work correctly",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "How does Redux Toolkit achieve type safety with createSlice?",
-          a: "RTK's `createSlice` infers action types and payload types from the reducer definitions. When you write `addTodo(state, action: PayloadAction<{text: string}>)`, RTK generates an action creator `addTodo({text: string})` that's fully typed. Combined with typed `RootState` and `AppDispatch`, the entire flow from dispatch to state selection is type-safe."
+          a: "RTK's `createSlice` infers action types and payload types from the reducer definitions. When you write `addTodo(state, action: PayloadAction<{text: string}>)`, RTK generates an action creator `addTodo({text: string})` that's fully typed. Combined with typed `RootState` and `AppDispatch`, the entire flow from dispatch to state selection is type-safe.",
         },
         {
           type: "coding",
           q: "Set up typed Redux hooks for a TypeScript project.",
-          a: "```ts\\nimport { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';\\nimport type { RootState, AppDispatch } from './store';\\n\\nexport const useAppDispatch = () => useDispatch<AppDispatch>();\\nexport const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;\\n\\n// Usage:\\nconst user = useAppSelector(state => state.auth.user);\\nconst dispatch = useAppDispatch();\\ndispatch(loginAction({ email: '...' })); // ✅ Fully typed\\n```"
+          a: "```ts\\nimport { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';\\nimport type { RootState, AppDispatch } from './store';\\n\\nexport const useAppDispatch = () => useDispatch<AppDispatch>();\\nexport const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;\\n\\n// Usage:\\nconst user = useAppSelector(state => state.auth.user);\\nconst dispatch = useAppDispatch();\\ndispatch(loginAction({ email: '...' })); // ✅ Fully typed\\n```",
         },
         {
           type: "tricky",
           q: "How does Zustand's TypeScript support differ from Redux?",
-          a: "Zustand infers types from the store definition. You define events with `create<StoreType>((set, get) => ({...}))` and the store is immediately typed. No action types, no reducers, no separate type declarations. Everything is co-located. For selectors, Zustand's types flow automatically: `useStore(s => s.user)` returns the correct type."
+          a: "Zustand infers types from the store definition. You define events with `create<StoreType>((set, get) => ({...}))` and the store is immediately typed. No action types, no reducers, no separate type declarations. Everything is co-located. For selectors, Zustand's types flow automatically: `useStore(s => s.user)` returns the correct type.",
         },
         {
           type: "conceptual",
           q: "What is the `PayloadAction<T>` type in Redux Toolkit?",
-          a: "`PayloadAction<T>` types a Redux action with a `payload` property of type `T` and a `type` string. It's used in `createSlice` reducers: `reducer(state, action: PayloadAction<{id: string}>)` ensures `action.payload.id` is typed as `string`. It replaces the manual `{ type: string; payload: T }` pattern."
+          a: "`PayloadAction<T>` types a Redux action with a `payload` property of type `T` and a `type` string. It's used in `createSlice` reducers: `reducer(state, action: PayloadAction<{id: string}>)` ensures `action.payload.id` is typed as `string`. It replaces the manual `{ type: string; payload: T }` pattern.",
         },
         {
           type: "scenario",
           q: "You're choosing between Redux Toolkit and Zustand for a new React project. Type safety considerations?",
-          a: "Both have excellent TS support. **RTK**: More ceremony but stronger patterns — typed actions prevent dispatch mistakes, `createAsyncThunk` types async lifecycle. Better for large teams needing strict patterns. **Zustand**: Less boilerplate, types flow naturally from store definition. Better for smaller apps or when simplicity matters. Choose RTK for large, complex state; Zustand for simpler, leaner projects."
-        }
-      ]
+          a: "Both have excellent TS support. **RTK**: More ceremony but stronger patterns — typed actions prevent dispatch mistakes, `createAsyncThunk` types async lifecycle. Better for large teams needing strict patterns. **Zustand**: Less boilerplate, types flow naturally from store definition. Better for smaller apps or when simplicity matters. Choose RTK for large, complex state; Zustand for simpler, leaner projects.",
+        },
+      ],
     },
     {
       id: "building-typed-libraries",
@@ -708,35 +709,35 @@ export function registerPlugin<K extends keyof PluginRegistry>(
         "Exporting too many types — minimize your public type surface; only export what consumers need",
         "Not testing types — use `tsd` or `expect-type` to verify your library's types work as expected for consumers",
         "Making every generic parameter required — use defaults (`<T = any>`) and inference so consumers rarely need to specify generics",
-        "Breaking types in minor versions — type changes are breaking changes! A type change can break consumer builds"
+        "Breaking types in minor versions — type changes are breaking changes! A type change can break consumer builds",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What should a library author consider for TypeScript type safety?",
-          a: "1) Generate `.d.ts` with `declaration: true`. 2) Ship source maps with `declarationMap: true`. 3) Use `exports` field in package.json with `types` condition. 4) Design generic APIs that infer types (minimize explicit generics). 5) Test types separately. 6) Support module augmentation for extensibility. 7) Treat type changes as breaking changes in semver."
+          a: "1) Generate `.d.ts` with `declaration: true`. 2) Ship source maps with `declarationMap: true`. 3) Use `exports` field in package.json with `types` condition. 4) Design generic APIs that infer types (minimize explicit generics). 5) Test types separately. 6) Support module augmentation for extensibility. 7) Treat type changes as breaking changes in semver.",
         },
         {
           type: "coding",
           q: "Design a type-safe plugin system using module augmentation.",
-          a: "```ts\\n// Library code:\\nexport interface PluginMap {}\\n\\nexport function use<K extends keyof PluginMap>(\\n  name: K,\\n  config: PluginMap[K]\\n): void { /* ... */ }\\n\\n// Consumer augments:\\ndeclare module 'my-lib' {\\n  interface PluginMap {\\n    logger: { level: 'info' | 'warn' | 'error' };\\n    cache: { ttl: number; maxSize: number };\\n  }\\n}\\n\\nuse('logger', { level: 'info' }); // ✅ Type-safe\\nuse('cache', { ttl: 300, maxSize: 100 }); // ✅\\n```"
+          a: "```ts\\n// Library code:\\nexport interface PluginMap {}\\n\\nexport function use<K extends keyof PluginMap>(\\n  name: K,\\n  config: PluginMap[K]\\n): void { /* ... */ }\\n\\n// Consumer augments:\\ndeclare module 'my-lib' {\\n  interface PluginMap {\\n    logger: { level: 'info' | 'warn' | 'error' };\\n    cache: { ttl: number; maxSize: number };\\n  }\\n}\\n\\nuse('logger', { level: 'info' }); // ✅ Type-safe\\nuse('cache', { ttl: 300, maxSize: 100 }); // ✅\\n```",
         },
         {
           type: "tricky",
           q: "Why are type changes considered breaking changes?",
-          a: "Changing a type can break consumer builds even if the runtime behavior is identical. Examples: narrowing a union (consumers handling the removed case), adding required properties, changing generic constraints. If `UserResponse` gains a required `role` field, consumers not providing it will fail to compile. Follow semver: type-breaking changes = major version bump."
+          a: "Changing a type can break consumer builds even if the runtime behavior is identical. Examples: narrowing a union (consumers handling the removed case), adding required properties, changing generic constraints. If `UserResponse` gains a required `role` field, consumers not providing it will fail to compile. Follow semver: type-breaking changes = major version bump.",
         },
         {
           type: "conceptual",
           q: "How do you test that your library's types are correct?",
-          a: "Use `tsd` or `expect-type` to write 'type tests' that verify your API types: `expectType<string>(myLib.getName())` asserts the return type. `expectError(myLib.getName(42))` asserts a type error. These tools compile the test file and check that type assertions hold — they don't run any code."
+          a: "Use `tsd` or `expect-type` to write 'type tests' that verify your API types: `expectType<string>(myLib.getName())` asserts the return type. `expectError(myLib.getName(42))` asserts a type error. These tools compile the test file and check that type assertions hold — they don't run any code.",
         },
         {
           type: "scenario",
           q: "You're publishing an npm library. How do you set up package.json for TypeScript?",
-          a: "```json\\n{\\n  \\\"name\\\": \\\"my-lib\\\",\\n  \\\"main\\\": \\\"./dist/index.js\\\",\\n  \\\"types\\\": \\\"./dist/index.d.ts\\\",\\n  \\\"exports\\\": {\\n    \\\".\\\": {\\n      \\\"types\\\": \\\"./dist/index.d.ts\\\",\\n      \\\"import\\\": \\\"./dist/index.mjs\\\",\\n      \\\"require\\\": \\\"./dist/index.cjs\\\"\\n    }\\n  },\\n  \\\"files\\\": [\\\"dist\\\"],\\n  \\\"scripts\\\": {\\n    \\\"build\\\": \\\"tsc && tsup\\\"\\n  }\\n}\\n```\\n`types` condition in `exports` must come first for TypeScript to resolve correctly."
-        }
-      ]
+          a: '```json\\n{\\n  \\"name\\": \\"my-lib\\",\\n  \\"main\\": \\"./dist/index.js\\",\\n  \\"types\\": \\"./dist/index.d.ts\\",\\n  \\"exports\\": {\\n    \\".\\": {\\n      \\"types\\": \\"./dist/index.d.ts\\",\\n      \\"import\\": \\"./dist/index.mjs\\",\\n      \\"require\\": \\"./dist/index.cjs\\"\\n    }\\n  },\\n  \\"files\\": [\\"dist\\"],\\n  \\"scripts\\": {\\n    \\"build\\": \\"tsc && tsup\\"\\n  }\\n}\\n```\\n`types` condition in `exports` must come first for TypeScript to resolve correctly.',
+        },
+      ],
     },
     {
       id: "architecture-scalability",
@@ -905,37 +906,37 @@ class UserService {
         "Boolean flag state — `{ isLoading: true, isError: true }` is possible but meaningless; use discriminated unions",
         "Catching errors and re-throwing as `any` — use Result types or typed error hierarchies to preserve error type information",
         "Giant `types.ts` files — co-locate types with their domain modules, not in a central dump file",
-        "Ignoring `any` in library types — `any` is viral; one `any` in a dependency can infect your entire codebase. Wrap with proper types"
+        "Ignoring `any` in library types — `any` is viral; one `any` in a dependency can infect your entire codebase. Wrap with proper types",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are branded types and when would you use them?",
-          a: "Branded types add a phantom property (exists only in the type system) to create nominally unique types from structural types. `type UserId = string & { __brand: 'UserId' }`. This prevents mixing structurally identical but semantically different values — passing a `PostId` where `UserId` is expected becomes a compile error. Use for IDs, validated data (email, URL), and monetary values."
+          a: "Branded types add a phantom property (exists only in the type system) to create nominally unique types from structural types. `type UserId = string & { __brand: 'UserId' }`. This prevents mixing structurally identical but semantically different values — passing a `PostId` where `UserId` is expected becomes a compile error. Use for IDs, validated data (email, URL), and monetary values.",
         },
         {
           type: "coding",
           q: "Model a payment processing flow where transitions between states are type-safe.",
-          a: "```ts\\ntype Payment =\\n  | { status: 'created'; amount: number }\\n  | { status: 'authorized'; amount: number; authCode: string }\\n  | { status: 'captured'; amount: number; captureId: string }\\n  | { status: 'refunded'; amount: number; refundId: string };\\n\\nfunction authorize(p: Extract<Payment, {status: 'created'}>):\\n  Extract<Payment, {status: 'authorized'}> {\\n  return { ...p, status: 'authorized', authCode: 'AUTH-123' };\\n}\\n// Only 'created' payments can be authorized — type-proven!\\n```"
+          a: "```ts\\ntype Payment =\\n  | { status: 'created'; amount: number }\\n  | { status: 'authorized'; amount: number; authCode: string }\\n  | { status: 'captured'; amount: number; captureId: string }\\n  | { status: 'refunded'; amount: number; refundId: string };\\n\\nfunction authorize(p: Extract<Payment, {status: 'created'}>):\\n  Extract<Payment, {status: 'authorized'}> {\\n  return { ...p, status: 'authorized', authCode: 'AUTH-123' };\\n}\\n// Only 'created' payments can be authorized — type-proven!\\n```",
         },
         {
           type: "tricky",
           q: "How do you handle the 'impossibility' of boolean flag combinations?",
-          a: "Boolean flags create 2^n possible states, most of which are invalid. `{ isLoading, isError, hasData }` has 8 combinations but only 4 are valid. Replace with a discriminated union: `type State = {status: 'idle'} | {status: 'loading'} | {status: 'success'; data: T} | {status: 'error'; error: E}`. Now only valid states are representable."
+          a: "Boolean flags create 2^n possible states, most of which are invalid. `{ isLoading, isError, hasData }` has 8 combinations but only 4 are valid. Replace with a discriminated union: `type State = {status: 'idle'} | {status: 'loading'} | {status: 'success'; data: T} | {status: 'error'; error: E}`. Now only valid states are representable.",
         },
         {
           type: "conceptual",
           q: "What is the Result/Either pattern and why use it instead of exceptions?",
-          a: "The Result type (`{ok: true; value: T} | {ok: false; error: E}`) makes error handling explicit in the type system. Unlike exceptions: 1) The return type SHOWS it can fail. 2) The compiler FORCES handling both cases. 3) Errors don't skip stack frames. 4) No try/catch needed. It's standard in Rust, Haskell, and increasingly popular in TypeScript for business logic."
+          a: "The Result type (`{ok: true; value: T} | {ok: false; error: E}`) makes error handling explicit in the type system. Unlike exceptions: 1) The return type SHOWS it can fail. 2) The compiler FORCES handling both cases. 3) Errors don't skip stack frames. 4) No try/catch needed. It's standard in Rust, Haskell, and increasingly popular in TypeScript for business logic.",
         },
         {
           type: "scenario",
           q: "You're leading a team of 10 developers on a large TypeScript project. What architectural TypeScript patterns would you enforce?",
-          a: "1) **Strict tsconfig** with `noUncheckedIndexedAccess`, `noImplicitAny`. 2) **Branded types** for all IDs and validated data. 3) **Discriminated unions** for all state — ban boolean flags. 4) **Result types** for all operations that can fail. 5) **Co-located types** (no central types dump). 6) **Zod/Valibot** at system boundaries (API, user input). 7) **ESLint TS rules** banning `any`, `@ts-ignore`. 8) **Type-only imports** enforced."
-        }
-      ]
-    }
-  ]
+          a: "1) **Strict tsconfig** with `noUncheckedIndexedAccess`, `noImplicitAny`. 2) **Branded types** for all IDs and validated data. 3) **Discriminated unions** for all state — ban boolean flags. 4) **Result types** for all operations that can fail. 5) **Co-located types** (no central types dump). 6) **Zod/Valibot** at system boundaries (API, user input). 7) **ESLint TS rules** banning `any`, `@ts-ignore`. 8) **Type-only imports** enforced.",
+        },
+      ],
+    },
+  ],
 };
 
 export default tsPhase4;

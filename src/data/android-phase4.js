@@ -2,7 +2,8 @@ const androidPhase4 = {
   id: "phase-4",
   title: "Phase 4: Kotlin Mastery (Senior Level)",
   emoji: "🟣",
-  description: "Master Kotlin's advanced features — coroutines internals, Flow, structured concurrency, DSL building, and advanced type system patterns.",
+  description:
+    "Master Kotlin's advanced features — coroutines internals, Flow, structured concurrency, DSL building, and advanced type system patterns.",
   topics: [
     {
       id: "coroutines-internals",
@@ -116,12 +117,12 @@ suspend fun fetchUserAndPosts(userId: String): UserWithPosts {
         {
           type: "conceptual",
           q: "How do Kotlin coroutines work under the hood?",
-          a: "The Kotlin compiler transforms suspend functions using **CPS (Continuation-Passing Style)**. Each suspend function is compiled into a state machine where each suspension point is a label/state. A hidden Continuation parameter is added to the function signature. When a suspend call actually suspends (returns COROUTINE_SUSPENDED), the continuation is stored, and the current thread is released. When the async operation completes, the continuation's resumeWith() is called, which re-enters the state machine at the saved label. The dispatcher determines which thread the continuation resumes on."
+          a: "The Kotlin compiler transforms suspend functions using **CPS (Continuation-Passing Style)**. Each suspend function is compiled into a state machine where each suspension point is a label/state. A hidden Continuation parameter is added to the function signature. When a suspend call actually suspends (returns COROUTINE_SUSPENDED), the continuation is stored, and the current thread is released. When the async operation completes, the continuation's resumeWith() is called, which re-enters the state machine at the saved label. The dispatcher determines which thread the continuation resumes on.",
         },
         {
           type: "tricky",
           q: "What's the difference between coroutineScope and supervisorScope?",
-          a: "**coroutineScope:** If any child fails, ALL siblings are cancelled, and the failure propagates to the parent. Use for operations where partial results are useless (fetch user + permissions together). **supervisorScope:** If one child fails, other children continue running. The failure does NOT propagate to siblings. Use for independent parallel operations (loading feed items where one failure shouldn't stop others). Key: in supervisorScope, you must handle errors in each child individually using try-catch or CoroutineExceptionHandler."
+          a: "**coroutineScope:** If any child fails, ALL siblings are cancelled, and the failure propagates to the parent. Use for operations where partial results are useless (fetch user + permissions together). **supervisorScope:** If one child fails, other children continue running. The failure does NOT propagate to siblings. Use for independent parallel operations (loading feed items where one failure shouldn't stop others). Key: in supervisorScope, you must handle errors in each child individually using try-catch or CoroutineExceptionHandler.",
         },
       ],
     },
@@ -245,12 +246,12 @@ suspend fun loadDashboard(): Dashboard {
         {
           type: "conceptual",
           q: "What is structured concurrency and why is it important?",
-          a: "Structured concurrency guarantees that: (1) A coroutine's lifetime is bounded by its scope — no leaked coroutines. (2) When a scope is cancelled, all children are cancelled automatically. (3) A parent waits for all children to complete before completing itself. (4) Failures propagate to the parent for centralized error handling. This eliminates the class of bugs from unmanaged threads: leaked operations, orphaned callbacks, resource cleanup failures. In Android, viewModelScope and lifecycleScope provide structured concurrency tied to component lifecycles."
+          a: "Structured concurrency guarantees that: (1) A coroutine's lifetime is bounded by its scope — no leaked coroutines. (2) When a scope is cancelled, all children are cancelled automatically. (3) A parent waits for all children to complete before completing itself. (4) Failures propagate to the parent for centralized error handling. This eliminates the class of bugs from unmanaged threads: leaked operations, orphaned callbacks, resource cleanup failures. In Android, viewModelScope and lifecycleScope provide structured concurrency tied to component lifecycles.",
         },
         {
           type: "coding",
           q: "Implement a retry mechanism with exponential backoff using structured concurrency.",
-          a: "```kotlin\nsuspend fun <T> retry(\n    times: Int = 3,\n    initialDelay: Long = 1000,\n    factor: Double = 2.0,\n    block: suspend () -> T\n): T {\n    var currentDelay = initialDelay\n    repeat(times - 1) {\n        try {\n            return block()\n        } catch (e: Exception) {\n            if (e is CancellationException) throw e\n            delay(currentDelay)\n            currentDelay = (currentDelay * factor).toLong()\n        }\n    }\n    return block() // Last attempt — let exception propagate\n}\n// Usage: val data = retry { api.fetchData() }\n```"
+          a: "```kotlin\nsuspend fun <T> retry(\n    times: Int = 3,\n    initialDelay: Long = 1000,\n    factor: Double = 2.0,\n    block: suspend () -> T\n): T {\n    var currentDelay = initialDelay\n    repeat(times - 1) {\n        try {\n            return block()\n        } catch (e: Exception) {\n            if (e is CancellationException) throw e\n            delay(currentDelay)\n            currentDelay = (currentDelay * factor).toLong()\n        }\n    }\n    return block() // Last attempt — let exception propagate\n}\n// Usage: val data = retry { api.fetchData() }\n```",
         },
       ],
     },
@@ -369,12 +370,12 @@ lifecycleScope.launch {
         {
           type: "conceptual",
           q: "Explain the difference between cold and hot flows with a real-world analogy.",
-          a: "**Cold Flow** is like a Netflix movie — each viewer (collector) gets their own independent playback from the beginning. The movie doesn't play until someone hits play. **Hot Flow** is like a live TV broadcast — it's always on. Viewers (collectors) see whatever is currently airing. StateFlow is like a news ticker that always shows the latest headline. SharedFlow is like a radio station — listeners hear the same signal. In Android: database queries are cold flows (each observer gets fresh data), UI state is a StateFlow (always has current value), one-time events (navigation) use SharedFlow."
+          a: "**Cold Flow** is like a Netflix movie — each viewer (collector) gets their own independent playback from the beginning. The movie doesn't play until someone hits play. **Hot Flow** is like a live TV broadcast — it's always on. Viewers (collectors) see whatever is currently airing. StateFlow is like a news ticker that always shows the latest headline. SharedFlow is like a radio station — listeners hear the same signal. In Android: database queries are cold flows (each observer gets fresh data), UI state is a StateFlow (always has current value), one-time events (navigation) use SharedFlow.",
         },
         {
           type: "tricky",
           q: "Why does SharingStarted.WhileSubscribed(5000) use a 5-second delay?",
-          a: "The 5-second stopTimeout handles configuration changes gracefully. During rotation: (1) Activity is destroyed — all collectors stop. (2) Without the timeout, the upstream Flow would be cancelled immediately. (3) Activity recreates and re-subscribes within ~1 second. (4) With 5-second delay, the upstream keeps running, so the new Activity gets cached data instantly — no re-fetch. If the user actually leaves (home button), the upstream cancels after 5 seconds, saving resources. This is specifically designed for Android's lifecycle: survive config changes, but clean up when truly backgrounded."
+          a: "The 5-second stopTimeout handles configuration changes gracefully. During rotation: (1) Activity is destroyed — all collectors stop. (2) Without the timeout, the upstream Flow would be cancelled immediately. (3) Activity recreates and re-subscribes within ~1 second. (4) With 5-second delay, the upstream keeps running, so the new Activity gets cached data instantly — no re-fetch. If the user actually leaves (home button), the upstream cancels after 5 seconds, saving resources. This is specifically designed for Android's lifecycle: survive config changes, but clean up when truly backgrounded.",
         },
       ],
     },
@@ -482,12 +483,12 @@ viewModelScope.launch {
         {
           type: "tricky",
           q: "What happens if you wrap a launch in try-catch? Does the catch block execute?",
-          a: "**No.** `launch` returns immediately with a Job. The exception happens inside the coroutine, which propagates UP through the Job hierarchy to the parent scope. The try-catch around `launch` is useless for coroutine exceptions. The correct approaches: (1) Put try-catch INSIDE the launch block. (2) Use CoroutineExceptionHandler in the launch context. (3) Use supervisorScope if you want to prevent propagation. The exception with `async`: it IS caught by try-catch around `.await()` — because await() rethrows the stored exception synchronously."
+          a: "**No.** `launch` returns immediately with a Job. The exception happens inside the coroutine, which propagates UP through the Job hierarchy to the parent scope. The try-catch around `launch` is useless for coroutine exceptions. The correct approaches: (1) Put try-catch INSIDE the launch block. (2) Use CoroutineExceptionHandler in the launch context. (3) Use supervisorScope if you want to prevent propagation. The exception with `async`: it IS caught by try-catch around `.await()` — because await() rethrows the stored exception synchronously.",
         },
         {
           type: "conceptual",
           q: "Design an error handling strategy for a production Android app using coroutines.",
-          a: "Layered approach: (1) **Repository layer:** Use Result<T> or sealed class to wrap API/DB errors. Never throw from repository methods. (2) **ViewModel layer:** Map Result to UiState (Success/Error). Use safeApiCall wrapper. (3) **Global handler:** CoroutineExceptionHandler on viewModelScope for unexpected errors → log to crash reporting. (4) **Cancellation:** Always rethrow CancellationException. Use ensureActive() in loops. (5) **Retry:** Implement retry with backoff at the repository level. (6) **Timeout:** Use withTimeout for network calls. This ensures: no silent failures, clean UI error states, proper cancellation, and crash reporting for unexpected errors."
+          a: "Layered approach: (1) **Repository layer:** Use Result<T> or sealed class to wrap API/DB errors. Never throw from repository methods. (2) **ViewModel layer:** Map Result to UiState (Success/Error). Use safeApiCall wrapper. (3) **Global handler:** CoroutineExceptionHandler on viewModelScope for unexpected errors → log to crash reporting. (4) **Cancellation:** Always rethrow CancellationException. Use ensureActive() in loops. (5) **Retry:** Implement retry with backoff at the repository level. (6) **Timeout:** Use withTimeout for network calls. This ensures: no silent failures, clean UI error states, proper cancellation, and crash reporting for unexpected errors.",
         },
       ],
     },
@@ -621,12 +622,12 @@ fun getUser(id: UserId): User { /* ... */ }
         {
           type: "conceptual",
           q: "What is the difference between inline and regular functions? When should you use inline?",
-          a: "Inline functions are expanded at the call site by the compiler — no function call overhead, no lambda object allocation. Use when: (1) The function takes lambda parameters — eliminates lambda object creation (significant in tight loops). (2) You need reified type parameters. (3) You need non-local returns from lambdas. **Don't use when:** the function body is large (increases bytecode), or there are no lambdas/reified types (no benefit). The `crossinline` modifier prevents non-local returns, `noinline` prevents inlining specific lambda parameters."
+          a: "Inline functions are expanded at the call site by the compiler — no function call overhead, no lambda object allocation. Use when: (1) The function takes lambda parameters — eliminates lambda object creation (significant in tight loops). (2) You need reified type parameters. (3) You need non-local returns from lambdas. **Don't use when:** the function body is large (increases bytecode), or there are no lambdas/reified types (no benefit). The `crossinline` modifier prevents non-local returns, `noinline` prevents inlining specific lambda parameters.",
         },
         {
           type: "coding",
           q: "How would you model a payment state machine using sealed types?",
-          a: "```kotlin\nsealed interface PaymentState {\n    data object Idle : PaymentState\n    data class Processing(val transactionId: String) : PaymentState\n    sealed interface Completed : PaymentState {\n        data class Success(val receiptId: String, val amount: Double) : Completed\n        data class Failed(val errorCode: Int, val message: String) : Completed\n        data class Refunded(val refundId: String) : Completed\n    }\n    data class RequiresAction(val actionType: String, val url: String) : PaymentState\n}\n// Nested sealed interfaces allow partial matching:\n// when (state) { is Completed -> ... } handles all completion states\n```"
+          a: "```kotlin\nsealed interface PaymentState {\n    data object Idle : PaymentState\n    data class Processing(val transactionId: String) : PaymentState\n    sealed interface Completed : PaymentState {\n        data class Success(val receiptId: String, val amount: Double) : Completed\n        data class Failed(val errorCode: Int, val message: String) : Completed\n        data class Refunded(val refundId: String) : Completed\n    }\n    data class RequiresAction(val actionType: String, val url: String) : PaymentState\n}\n// Nested sealed interfaces allow partial matching:\n// when (state) { is Completed -> ... } handles all completion states\n```",
         },
       ],
     },

@@ -13,7 +13,7 @@ const STREAM_HEADERS = {
 
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   const encoder = new TextEncoder();
@@ -44,13 +44,17 @@ export async function GET(
 
         // Guard: errored previously
         if (roadmap.status === "error") {
-          pushEvent({ type: "error", message: roadmap.errorMessage ?? "Pipeline failed" });
+          pushEvent({
+            type: "error",
+            message: roadmap.errorMessage ?? "Pipeline failed",
+          });
           controller.close();
           return;
         }
 
         // Dynamically import to avoid loading pipeline at module level
-        const { runCareerForgePipeline } = await import("@/lib/careerforge/pipeline");
+        const { runCareerForgePipeline } =
+          await import("@/lib/careerforge/pipeline");
 
         await runCareerForgePipeline({
           roadmapId: id,
@@ -65,8 +69,15 @@ export async function GET(
       } catch (err) {
         console.error("[CareerForge Stream] Unexpected error:", err);
         try {
-          const eventStr = JSON.stringify({ type: "error", message: "Pipeline failed unexpectedly. Please try again." } as CareerForgeSSEEvent);
-          controller.enqueue(encoder.encode(`data: ${Buffer.from(eventStr, "utf8").toString("base64")}\n\n`));
+          const eventStr = JSON.stringify({
+            type: "error",
+            message: "Pipeline failed unexpectedly. Please try again.",
+          } as CareerForgeSSEEvent);
+          controller.enqueue(
+            encoder.encode(
+              `data: ${Buffer.from(eventStr, "utf8").toString("base64")}\n\n`,
+            ),
+          );
           await prisma.roadmap.update({
             where: { id },
             data: { status: "error", errorMessage: String(err) },

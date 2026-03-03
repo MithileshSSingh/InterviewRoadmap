@@ -2,7 +2,8 @@ const sfPhase4 = {
   id: "phase-4",
   title: "Phase 4: Lightning Web Components (LWC)",
   emoji: "⚡",
-  description: "Master Lightning Web Components — lifecycle, wire service, Apex integration, component communication, custom events, Lightning Data Service, and performance optimization.",
+  description:
+    "Master Lightning Web Components — lifecycle, wire service, Apex integration, component communication, custom events, Lightning Data Service, and performance optimization.",
   topics: [
     {
       id: "sf-lwc-fundamentals",
@@ -205,25 +206,25 @@ export default class AccountDetailCard extends LightningElement {
         "Heavy operations in renderedCallback() — it runs after EVERY render. Use a boolean flag to run initialization logic only once",
         "Forgetting that @api properties are read-only inside the component — you can't reassign them. Copy to a local variable if you need to modify",
         "Mutating objects/arrays directly instead of using spread — reactive updates require new object references: this.items = [...this.items, newItem]",
-        "Not setting isExposed=true in the meta XML — the component won't appear in Lightning App Builder without it"
+        "Not setting isExposed=true in the meta XML — the component won't appear in Lightning App Builder without it",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Explain the LWC component lifecycle hooks and when each is called.",
-          a: "**constructor()** — Called when the component is created. Can't access DOM or public properties (not set yet). Call super(). Set initial state. **connectedCallback()** — Called when inserted into DOM. The component is in the document. Fetch data, start listeners. Fires multiple times if component is moved. **renderedCallback()** — Called after EVERY render/re-render. Use cautiously with a flag for one-time logic. Useful for imperative DOM manipulation after render. **disconnectedCallback()** — Called when removed from DOM. Clean up listeners, cancel subscriptions. **errorCallback(error, stack)** — Called when descendant component throws error. Error boundary pattern."
+          a: "**constructor()** — Called when the component is created. Can't access DOM or public properties (not set yet). Call super(). Set initial state. **connectedCallback()** — Called when inserted into DOM. The component is in the document. Fetch data, start listeners. Fires multiple times if component is moved. **renderedCallback()** — Called after EVERY render/re-render. Use cautiously with a flag for one-time logic. Useful for imperative DOM manipulation after render. **disconnectedCallback()** — Called when removed from DOM. Clean up listeners, cancel subscriptions. **errorCallback(error, stack)** — Called when descendant component throws error. Error boundary pattern.",
         },
         {
           type: "tricky",
           q: "What is the difference between @api, @track, and regular properties in LWC?",
-          a: "**@api** — Makes a property PUBLIC (parent can set it). Read-only within the component itself. Used for parent-to-child communication. **@track** — DEPRECATED in newer versions. Previously required for deep reactivity (objects/arrays). Now all properties are reactive by default for primitives. For objects/arrays, still need immutable updates. **Regular properties** — Reactive by default for primitives. Private to the component. Reassigning triggers re-render. Object mutation does NOT trigger re-render — use spread operator."
+          a: "**@api** — Makes a property PUBLIC (parent can set it). Read-only within the component itself. Used for parent-to-child communication. **@track** — DEPRECATED in newer versions. Previously required for deep reactivity (objects/arrays). Now all properties are reactive by default for primitives. For objects/arrays, still need immutable updates. **Regular properties** — Reactive by default for primitives. Private to the component. Reassigning triggers re-render. Object mutation does NOT trigger re-render — use spread operator.",
         },
         {
           type: "coding",
           q: "How do you pass data from a child LWC to a parent LWC?",
-          a: "Use **Custom Events**: Child dispatches an event, parent listens. ```javascript\n// Child (contactList.js)\nthis.dispatchEvent(new CustomEvent('contactselected', {\n    detail: { contactId: selectedId, contactName: name },\n    bubbles: false, // default\n    composed: false // doesn't cross shadow DOM\n}));\n\n// Parent (accountDetail.html)\n// <c-contact-list oncontactselected={handleContactSelected}>\n\n// Parent (accountDetail.js)\nhandleContactSelected(event) {\n    const { contactId, contactName } = event.detail;\n    console.log('Selected:', contactName);\n}\n```"
-        }
-      ]
+          a: "Use **Custom Events**: Child dispatches an event, parent listens. ```javascript\n// Child (contactList.js)\nthis.dispatchEvent(new CustomEvent('contactselected', {\n    detail: { contactId: selectedId, contactName: name },\n    bubbles: false, // default\n    composed: false // doesn't cross shadow DOM\n}));\n\n// Parent (accountDetail.html)\n// <c-contact-list oncontactselected={handleContactSelected}>\n\n// Parent (accountDetail.js)\nhandleContactSelected(event) {\n    const { contactId, contactName } = event.detail;\n    console.log('Selected:', contactName);\n}\n```",
+        },
+      ],
     },
     {
       id: "sf-lwc-wire-apex",
@@ -459,20 +460,20 @@ export default class RecordEditor extends LightningElement {
         "Forgetting the $ prefix for reactive wire parameters — @wire(getAccounts, { searchTerm: 'searchTerm' }) is a literal string, not reactive. Use '$searchTerm'",
         "Not holding a reference for refreshApex — you need to store the raw wire result to call refreshApex(this._wiredResult) later",
         "Performing DML in a cacheable method — cacheable=true enforces read-only. Use imperative calls for create/update/delete",
-        "Not handling both data and error from wire results — wire always returns { data, error }. Check both to handle loading and error states"
+        "Not handling both data and error from wire results — wire always returns { data, error }. Check both to handle loading and error states",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the difference between wire and imperative Apex calls in LWC?",
-          a: "**Wire:** Declarative, reactive. Data fetches automatically when reactive parameters change. Results are cached by LDS. Method must be @AuraEnabled(cacheable=true) — read-only, no DML. Best for displaying data. **Imperative:** Manual, controlled. You call the method explicitly (await apexMethod()). Can perform DML. You handle the Promise. Best for create/update/delete and user-triggered actions. **Key:** Wire is for reads; imperative is for writes. Wire caches; imperative doesn't."
+          a: "**Wire:** Declarative, reactive. Data fetches automatically when reactive parameters change. Results are cached by LDS. Method must be @AuraEnabled(cacheable=true) — read-only, no DML. Best for displaying data. **Imperative:** Manual, controlled. You call the method explicitly (await apexMethod()). Can perform DML. You handle the Promise. Best for create/update/delete and user-triggered actions. **Key:** Wire is for reads; imperative is for writes. Wire caches; imperative doesn't.",
         },
         {
           type: "tricky",
           q: "What is refreshApex and when do you need it?",
-          a: "**refreshApex(wiredResult)** forces a re-fetch of wired data from the server, bypassing the LDS cache. **When needed:** After performing a DML operation (imperative Apex), the wire cache is stale — it still shows old data. Call refreshApex to get fresh data. **Critical:** You must store the raw wire result reference (not just the .data) to pass to refreshApex. Pattern: `wiredHandler(result) { this._wiredResult = result; }` then `refreshApex(this._wiredResult);`"
-        }
-      ]
+          a: "**refreshApex(wiredResult)** forces a re-fetch of wired data from the server, bypassing the LDS cache. **When needed:** After performing a DML operation (imperative Apex), the wire cache is stale — it still shows old data. Call refreshApex to get fresh data. **Critical:** You must store the raw wire result reference (not just the .data) to pass to refreshApex. Pattern: `wiredHandler(result) { this._wiredResult = result; }` then `refreshApex(this._wiredResult);`",
+        },
+      ],
     },
     {
       id: "sf-lwc-communication",
@@ -703,20 +704,20 @@ export default class RealTimeNotifications extends LightningElement {
         "Not unsubscribing from LMS or empApi in disconnectedCallback — causes memory leaks and ghost event handlers",
         "Passing mutable objects in event.detail — the receiver can modify the original data. Use Object.freeze() or spread for immutability",
         "Using querySelector to communicate between components — this is fragile. Use @api properties, events, or LMS instead",
-        "Forgetting that LMS requires a Message Channel metadata XML file — it must be deployed to the org before the components can use it"
+        "Forgetting that LMS requires a Message Channel metadata XML file — it must be deployed to the org before the components can use it",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are the different ways LWC components can communicate with each other?",
-          a: "**4 patterns:** (1) **Parent → Child: @api properties** — parent passes data via attributes. Also @api methods that parent can call. (2) **Child → Parent: Custom Events** — child dispatches CustomEvent, parent listens with onEventName handler. Detail property carries data. (3) **Unrelated: Lightning Message Service** — publish/subscribe pattern. Works across LWC, Aura, and VF. Requires a Message Channel (metadata). (4) **Real-time: empApi** — subscribe to Platform Events for real-time server push. Use for live dashboards, notifications, collaborative features."
+          a: "**4 patterns:** (1) **Parent → Child: @api properties** — parent passes data via attributes. Also @api methods that parent can call. (2) **Child → Parent: Custom Events** — child dispatches CustomEvent, parent listens with onEventName handler. Detail property carries data. (3) **Unrelated: Lightning Message Service** — publish/subscribe pattern. Works across LWC, Aura, and VF. Requires a Message Channel (metadata). (4) **Real-time: empApi** — subscribe to Platform Events for real-time server push. Use for live dashboards, notifications, collaborative features.",
         },
         {
           type: "scenario",
           q: "You have a record list component and a map component on the same Lightning page. They're not related. How do you make selecting a record highlight its location on the map?",
-          a: "Use **Lightning Message Service (LMS)**: (1) Create a Message Channel (e.g., `Record_Selected__c`) with fields for recordId, latitude, longitude. (2) In the list component, publish a message when a record is selected. (3) In the map component, subscribe to the channel and update the map marker. **Why LMS:** The components don't share a parent, so events and @api won't work. LMS provides decoupled pub/sub communication across any components on the page."
-        }
-      ]
+          a: "Use **Lightning Message Service (LMS)**: (1) Create a Message Channel (e.g., `Record_Selected__c`) with fields for recordId, latitude, longitude. (2) In the list component, publish a message when a record is selected. (3) In the map component, subscribe to the channel and update the map marker. **Why LMS:** The components don't share a parent, so events and @api won't work. LMS provides decoupled pub/sub communication across any components on the page.",
+        },
+      ],
     },
     {
       id: "sf-lwc-performance-aura",
@@ -889,22 +890,22 @@ export default class LazyDetail extends LightningElement {
         "Not debouncing search input — every keystroke fires a wire call, wasting Apex calls and causing flickering UI",
         "Creating Aura components for new features — all new development should use LWC unless you need Aura-specific features (e.g., certain ISV packaging requirements)",
         "Fetching data in renderedCallback — it fires after every re-render, causing infinite loops of fetch → render → fetch. Use connectedCallback or wire instead",
-        "Not using Lightning Data Service when possible — LDS caches data and shares it across components. Custom Apex should only be used for complex queries LDS can't handle"
+        "Not using Lightning Data Service when possible — LDS caches data and shares it across components. Custom Apex should only be used for complex queries LDS can't handle",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are the key differences between Aura and LWC? Why should new projects use LWC?",
-          a: "**Aura:** Proprietary framework, higher overhead, XML markup, two-way data binding, application/component events, Salesforce-specific learning. **LWC:** Built on web standards (Custom Elements, Shadow DOM), native performance, HTML + JS classes, one-way data flow, standard DOM events, transferable skills. **Why LWC:** (1) 30-50% better performance (no framework overhead). (2) Standard web skills transfer. (3) Active Salesforce investment. (4) Smaller bundle sizes. (5) Better security (Shadow DOM encapsulation). Aura is in maintenance mode — only bug fixes, no new features."
+          a: "**Aura:** Proprietary framework, higher overhead, XML markup, two-way data binding, application/component events, Salesforce-specific learning. **LWC:** Built on web standards (Custom Elements, Shadow DOM), native performance, HTML + JS classes, one-way data flow, standard DOM events, transferable skills. **Why LWC:** (1) 30-50% better performance (no framework overhead). (2) Standard web skills transfer. (3) Active Salesforce investment. (4) Smaller bundle sizes. (5) Better security (Shadow DOM encapsulation). Aura is in maintenance mode — only bug fixes, no new features.",
         },
         {
           type: "scenario",
           q: "Your LWC component displays a table of 50,000 records and the page is very slow. How do you optimize it?",
-          a: "**Multi-layered optimization:** (1) **Server-side:** Add LIMIT and OFFSET to the Apex query. Return only 25-50 records per page. Add search/filter to reduce dataset server-side. (2) **Component:** Use `lightning-datatable` with `enable-infinite-loading` — it virtualizes the DOM, only rendering visible rows. (3) **Pagination:** Show page controls, load data on demand. (4) **Caching:** Use @AuraEnabled(cacheable=true) so LDS caches results. (5) **Lazy loading:** Load detail data only when user clicks a row. (6) **Debounce:** Add 300ms debounce to search/filter inputs. **Result:** Render 50 rows instead of 50,000; load more on scroll."
-        }
-      ]
-    }
-  ]
+          a: "**Multi-layered optimization:** (1) **Server-side:** Add LIMIT and OFFSET to the Apex query. Return only 25-50 records per page. Add search/filter to reduce dataset server-side. (2) **Component:** Use `lightning-datatable` with `enable-infinite-loading` — it virtualizes the DOM, only rendering visible rows. (3) **Pagination:** Show page controls, load data on demand. (4) **Caching:** Use @AuraEnabled(cacheable=true) so LDS caches results. (5) **Lazy loading:** Load detail data only when user clicks a row. (6) **Debounce:** Add 300ms debounce to search/filter inputs. **Result:** Render 50 rows instead of 50,000; load more on scroll.",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase4;

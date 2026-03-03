@@ -2,7 +2,8 @@ const phase3 = {
   id: "phase-3",
   title: "Phase 3: Asynchronous JavaScript",
   emoji: "🟠",
-  description: "Master the event loop, promises, async/await, and working with APIs — the heart of modern JavaScript.",
+  description:
+    "Master the event loop, promises, async/await, and working with APIs — the heart of modern JavaScript.",
   topics: [
     {
       id: "event-loop-call-stack",
@@ -78,15 +79,35 @@ queueMicrotask(() => console.log("Microtask!"));
         "Thinking JavaScript is multi-threaded — it's single-threaded; async operations are handled by the browser/runtime",
         "Not knowing microtasks (Promises) execute before macrotasks (setTimeout) — this is a very common interview question",
         "Long-running synchronous code blocks the event loop — use `requestAnimationFrame` or Web Workers for heavy computation",
-        "Forgetting that `async/await` is syntactic sugar over Promises — `await` pauses the function, not the entire thread"
+        "Forgetting that `async/await` is syntactic sugar over Promises — `await` pauses the function, not the entire thread",
       ],
       interviewQuestions: [
-        { type: "tricky", q: "What will this output?\n```js\nconsole.log('1');\nsetTimeout(() => console.log('2'), 0);\nPromise.resolve().then(() => console.log('3'));\nconsole.log('4');\n```", a: "`1, 4, 3, 2`. Sync code (1, 4) runs first. Then microtask queue (Promise → 3). Then macrotask queue (setTimeout → 2). Microtasks always execute before macrotasks." },
-        { type: "conceptual", q: "Explain the difference between the microtask queue and the macrotask queue.", a: "**Microtask queue**: Promises (.then), queueMicrotask, MutationObserver. ALL microtasks drain after each task. **Macrotask queue**: setTimeout, setInterval, I/O, UI rendering. ONE macrotask executes per loop iteration. Microtasks have higher priority — they all execute before the next macrotask." },
-        { type: "tricky", q: "What will this output?\n```js\nsetTimeout(() => console.log('A'), 0);\nsetTimeout(() => console.log('B'), 0);\nPromise.resolve().then(() => {\n  console.log('C');\n  setTimeout(() => console.log('D'), 0);\n});\nPromise.resolve().then(() => console.log('E'));\n```", a: "`C, E, A, B, D`. Both Promises (C, E) are microtasks and execute before any setTimeout (macrotask). Then timeouts execute in order: A, B, D (D was added last by the Promise callback)." },
-        { type: "conceptual", q: "What is the call stack and what happens when it overflows?", a: "The call stack is a LIFO structure tracking function execution. Each function call pushes a frame; each return pops one. If the stack exceeds its size limit (typically ~10,000-25,000 frames), you get `RangeError: Maximum call stack size exceeded`. This usually happens with infinite recursion." },
-        { type: "scenario", q: "Your app freezes when processing a large dataset. How would you fix it using your knowledge of the event loop?", a: "Break the work into chunks using: 1) `setTimeout(processChunk, 0)` to yield to the event loop between chunks, 2) `requestAnimationFrame` for visual updates, 3) Web Workers for truly parallel processing, 4) `requestIdleCallback` for low-priority work, 5) Async generators for lazy processing." }
-      ]
+        {
+          type: "tricky",
+          q: "What will this output?\n```js\nconsole.log('1');\nsetTimeout(() => console.log('2'), 0);\nPromise.resolve().then(() => console.log('3'));\nconsole.log('4');\n```",
+          a: "`1, 4, 3, 2`. Sync code (1, 4) runs first. Then microtask queue (Promise → 3). Then macrotask queue (setTimeout → 2). Microtasks always execute before macrotasks.",
+        },
+        {
+          type: "conceptual",
+          q: "Explain the difference between the microtask queue and the macrotask queue.",
+          a: "**Microtask queue**: Promises (.then), queueMicrotask, MutationObserver. ALL microtasks drain after each task. **Macrotask queue**: setTimeout, setInterval, I/O, UI rendering. ONE macrotask executes per loop iteration. Microtasks have higher priority — they all execute before the next macrotask.",
+        },
+        {
+          type: "tricky",
+          q: "What will this output?\n```js\nsetTimeout(() => console.log('A'), 0);\nsetTimeout(() => console.log('B'), 0);\nPromise.resolve().then(() => {\n  console.log('C');\n  setTimeout(() => console.log('D'), 0);\n});\nPromise.resolve().then(() => console.log('E'));\n```",
+          a: "`C, E, A, B, D`. Both Promises (C, E) are microtasks and execute before any setTimeout (macrotask). Then timeouts execute in order: A, B, D (D was added last by the Promise callback).",
+        },
+        {
+          type: "conceptual",
+          q: "What is the call stack and what happens when it overflows?",
+          a: "The call stack is a LIFO structure tracking function execution. Each function call pushes a frame; each return pops one. If the stack exceeds its size limit (typically ~10,000-25,000 frames), you get `RangeError: Maximum call stack size exceeded`. This usually happens with infinite recursion.",
+        },
+        {
+          type: "scenario",
+          q: "Your app freezes when processing a large dataset. How would you fix it using your knowledge of the event loop?",
+          a: "Break the work into chunks using: 1) `setTimeout(processChunk, 0)` to yield to the event loop between chunks, 2) `requestAnimationFrame` for visual updates, 3) Web Workers for truly parallel processing, 4) `requestIdleCallback` for low-priority work, 5) Async generators for lazy processing.",
+        },
+      ],
     },
     {
       id: "settimeout-setinterval",
@@ -160,15 +181,35 @@ function throttle(fn, limit) {
         "`setInterval` can drift — if the callback takes longer than the interval, executions stack up. Use recursive setTimeout instead",
         "Forgetting to clear intervals — memory leak! Always store the ID and clear on cleanup",
         "Passing a string to setTimeout (`setTimeout('alert(1)', 1000)`) — uses eval, security risk and worse performance",
-        "The timer ID is just a number — accidentally using it instead of clearing it is a common bug"
+        "The timer ID is just a number — accidentally using it instead of clearing it is a common bug",
       ],
       interviewQuestions: [
-        { type: "tricky", q: "What does `setTimeout(fn, 0)` actually do?", a: "It defers `fn` to the macrotask queue. It doesn't execute immediately — it runs after: 1) All remaining synchronous code, 2) All microtasks (Promises). The minimum delay is clamped to ~4ms for nested timeouts (HTML5 spec). It's used to yield to the event loop." },
-        { type: "conceptual", q: "Why is recursive setTimeout often preferred over setInterval?", a: "setInterval fires callbacks at fixed intervals regardless of execution time — if the callback takes 3s and interval is 2s, callbacks overlap. Recursive setTimeout starts the NEXT timer only after the current callback completes, ensuring consistent gaps and preventing overlap." },
-        { type: "coding", q: "Implement a simple debounce function.", a: "```js\nfunction debounce(fn, delay) {\n  let timer;\n  return function(...args) {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn.apply(this, args), delay);\n  };\n}\n```" },
-        { type: "tricky", q: "What will this output?\n```js\nfor (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}\n```", a: "`3, 3, 3`. `var` is function-scoped — all three closures share the same `i`. By the time timeouts fire, the loop has finished and `i` is `3`. Fix with `let` (block-scoped) or IIFE." },
-        { type: "scenario", q: "How would you implement a retry mechanism with exponential backoff?", a: "```js\nasync function retry(fn, maxRetries = 3) {\n  for (let i = 0; i < maxRetries; i++) {\n    try {\n      return await fn();\n    } catch (err) {\n      if (i === maxRetries - 1) throw err;\n      const delay = Math.pow(2, i) * 1000;\n      await new Promise(r => setTimeout(r, delay));\n    }\n  }\n}\n```" }
-      ]
+        {
+          type: "tricky",
+          q: "What does `setTimeout(fn, 0)` actually do?",
+          a: "It defers `fn` to the macrotask queue. It doesn't execute immediately — it runs after: 1) All remaining synchronous code, 2) All microtasks (Promises). The minimum delay is clamped to ~4ms for nested timeouts (HTML5 spec). It's used to yield to the event loop.",
+        },
+        {
+          type: "conceptual",
+          q: "Why is recursive setTimeout often preferred over setInterval?",
+          a: "setInterval fires callbacks at fixed intervals regardless of execution time — if the callback takes 3s and interval is 2s, callbacks overlap. Recursive setTimeout starts the NEXT timer only after the current callback completes, ensuring consistent gaps and preventing overlap.",
+        },
+        {
+          type: "coding",
+          q: "Implement a simple debounce function.",
+          a: "```js\nfunction debounce(fn, delay) {\n  let timer;\n  return function(...args) {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn.apply(this, args), delay);\n  };\n}\n```",
+        },
+        {
+          type: "tricky",
+          q: "What will this output?\n```js\nfor (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}\n```",
+          a: "`3, 3, 3`. `var` is function-scoped — all three closures share the same `i`. By the time timeouts fire, the loop has finished and `i` is `3`. Fix with `let` (block-scoped) or IIFE.",
+        },
+        {
+          type: "scenario",
+          q: "How would you implement a retry mechanism with exponential backoff?",
+          a: "```js\nasync function retry(fn, maxRetries = 3) {\n  for (let i = 0; i < maxRetries; i++) {\n    try {\n      return await fn();\n    } catch (err) {\n      if (i === maxRetries - 1) throw err;\n      const delay = Math.pow(2, i) * 1000;\n      await new Promise(r => setTimeout(r, delay));\n    }\n  }\n}\n```",
+        },
+      ],
     },
     {
       id: "callbacks-callback-hell",
@@ -246,15 +287,35 @@ function getUserPromise(id) {
         "Calling the callback more than once — a callback should be called exactly once",
         "Not returning after error callbacks — code continues to execute past the error handler",
         "Mixing sync and async callbacks — if a function sometimes calls back synchronously and sometimes async, it creates confusing behavior",
-        "Using callbacks when Promises/async-await is available — callbacks are legacy for most async patterns"
+        "Using callbacks when Promises/async-await is available — callbacks are legacy for most async patterns",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is callback hell and how do you avoid it?", a: "Callback hell is deeply nested callbacks creating a pyramid shape, making code hard to read, debug, and maintain. Solutions: 1) Named functions instead of anonymous, 2) Promises (.then chaining), 3) async/await, 4) Modularize — break into smaller functions, 5) Libraries like async.js." },
-        { type: "conceptual", q: "What is the error-first callback pattern?", a: "A Node.js convention where the first argument of a callback is an error (or null if successful), and subsequent arguments are the result. Example: `fs.readFile(path, (err, data) => { if (err) throw err; ... })`. This standardizes error handling across async operations." },
-        { type: "coding", q: "Write a function `promisify` that converts a callback-based function to return a Promise.", a: "```js\nfunction promisify(fn) {\n  return function(...args) {\n    return new Promise((resolve, reject) => {\n      fn(...args, (err, result) => {\n        if (err) reject(err);\n        else resolve(result);\n      });\n    });\n  };\n}\n```" },
-        { type: "tricky", q: "Is the callback in `[1,2,3].forEach(cb)` synchronous or asynchronous?", a: "**Synchronous**. `forEach` calls the callback immediately for each element, blocking until all iterations complete. Not all callbacks are async — `setTimeout`, `fetch`, and event listeners are async, but `map`, `filter`, `forEach`, `sort` callbacks are sync." },
-        { type: "scenario", q: "You inherit a codebase with deep callback nesting. How would you refactor it?", a: "1) Identify the async operations and their dependencies. 2) Wrap each callback-based function with `promisify` or rewrite as Promise-returning. 3) Replace nested callbacks with `.then()` chains or `async/await`. 4) Extract shared logic into helper functions. 5) Add proper error handling with `.catch()` or try/catch." }
-      ]
+        {
+          type: "conceptual",
+          q: "What is callback hell and how do you avoid it?",
+          a: "Callback hell is deeply nested callbacks creating a pyramid shape, making code hard to read, debug, and maintain. Solutions: 1) Named functions instead of anonymous, 2) Promises (.then chaining), 3) async/await, 4) Modularize — break into smaller functions, 5) Libraries like async.js.",
+        },
+        {
+          type: "conceptual",
+          q: "What is the error-first callback pattern?",
+          a: "A Node.js convention where the first argument of a callback is an error (or null if successful), and subsequent arguments are the result. Example: `fs.readFile(path, (err, data) => { if (err) throw err; ... })`. This standardizes error handling across async operations.",
+        },
+        {
+          type: "coding",
+          q: "Write a function `promisify` that converts a callback-based function to return a Promise.",
+          a: "```js\nfunction promisify(fn) {\n  return function(...args) {\n    return new Promise((resolve, reject) => {\n      fn(...args, (err, result) => {\n        if (err) reject(err);\n        else resolve(result);\n      });\n    });\n  };\n}\n```",
+        },
+        {
+          type: "tricky",
+          q: "Is the callback in `[1,2,3].forEach(cb)` synchronous or asynchronous?",
+          a: "**Synchronous**. `forEach` calls the callback immediately for each element, blocking until all iterations complete. Not all callbacks are async — `setTimeout`, `fetch`, and event listeners are async, but `map`, `filter`, `forEach`, `sort` callbacks are sync.",
+        },
+        {
+          type: "scenario",
+          q: "You inherit a codebase with deep callback nesting. How would you refactor it?",
+          a: "1) Identify the async operations and their dependencies. 2) Wrap each callback-based function with `promisify` or rewrite as Promise-returning. 3) Replace nested callbacks with `.then()` chains or `async/await`. 4) Extract shared logic into helper functions. 5) Add proper error handling with `.catch()` or try/catch.",
+        },
+      ],
     },
     {
       id: "promises",
@@ -349,15 +410,35 @@ const fastest = await Promise.any([
         "Forgetting `.catch()` at the end of a chain — unhandled rejections crash Node.js or show console warnings",
         "Creating a Promise inside a `.then()` without returning it — creates a 'floating' Promise",
         "Using `Promise.all` when one failure shouldn't stop everything — use `Promise.allSettled` instead",
-        "Resolving a Promise with a Promise — it actually waits for the inner Promise to settle (auto-unwrapping)"
+        "Resolving a Promise with a Promise — it actually waits for the inner Promise to settle (auto-unwrapping)",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What are the three states of a Promise?", a: "1) **Pending** — initial state, operation not completed. 2) **Fulfilled** — operation completed successfully, has a value. 3) **Rejected** — operation failed, has a reason (error). Once fulfilled or rejected, a Promise is **settled** and its state cannot change." },
-        { type: "tricky", q: "What will this output?\n```js\nPromise.resolve(1)\n  .then(x => x + 1)\n  .then(x => { throw new Error('fail') })\n  .then(x => x + 1)\n  .catch(err => 10)\n  .then(x => console.log(x));\n```", a: "`10`. The error skips the third `.then()` and goes to `.catch()`, which returns `10`. Since `.catch()` returns a resolved Promise, the final `.then()` receives `10`." },
-        { type: "conceptual", q: "What is the difference between `Promise.all`, `Promise.allSettled`, `Promise.race`, and `Promise.any`?", a: "**all**: Resolves when ALL resolve, rejects on FIRST rejection. **allSettled**: Always resolves with status of ALL (never rejects). **race**: Settles with the FIRST to settle (resolve or reject). **any**: Resolves with FIRST to resolve (ignores rejections, rejects only if ALL reject)." },
-        { type: "coding", q: "Implement a `timeout` wrapper for Promises.", a: "```js\nfunction withTimeout(promise, ms) {\n  const timeout = new Promise((_, reject) =>\n    setTimeout(() => reject(new Error('Timeout')), ms)\n  );\n  return Promise.race([promise, timeout]);\n}\n```" },
-        { type: "scenario", q: "You need to fetch data from 3 APIs. 2 are critical, 1 is optional. How would you handle this?", a: "Use `Promise.allSettled` for all 3, then check results: ```js\nconst [users, orders, recommendations] = await Promise.allSettled([...]);\nif (users.status === 'rejected') throw users.reason;\nif (orders.status === 'rejected') throw orders.reason;\nconst recs = recommendations.status === 'fulfilled' ? recommendations.value : [];\n```" }
-      ]
+        {
+          type: "conceptual",
+          q: "What are the three states of a Promise?",
+          a: "1) **Pending** — initial state, operation not completed. 2) **Fulfilled** — operation completed successfully, has a value. 3) **Rejected** — operation failed, has a reason (error). Once fulfilled or rejected, a Promise is **settled** and its state cannot change.",
+        },
+        {
+          type: "tricky",
+          q: "What will this output?\n```js\nPromise.resolve(1)\n  .then(x => x + 1)\n  .then(x => { throw new Error('fail') })\n  .then(x => x + 1)\n  .catch(err => 10)\n  .then(x => console.log(x));\n```",
+          a: "`10`. The error skips the third `.then()` and goes to `.catch()`, which returns `10`. Since `.catch()` returns a resolved Promise, the final `.then()` receives `10`.",
+        },
+        {
+          type: "conceptual",
+          q: "What is the difference between `Promise.all`, `Promise.allSettled`, `Promise.race`, and `Promise.any`?",
+          a: "**all**: Resolves when ALL resolve, rejects on FIRST rejection. **allSettled**: Always resolves with status of ALL (never rejects). **race**: Settles with the FIRST to settle (resolve or reject). **any**: Resolves with FIRST to resolve (ignores rejections, rejects only if ALL reject).",
+        },
+        {
+          type: "coding",
+          q: "Implement a `timeout` wrapper for Promises.",
+          a: "```js\nfunction withTimeout(promise, ms) {\n  const timeout = new Promise((_, reject) =>\n    setTimeout(() => reject(new Error('Timeout')), ms)\n  );\n  return Promise.race([promise, timeout]);\n}\n```",
+        },
+        {
+          type: "scenario",
+          q: "You need to fetch data from 3 APIs. 2 are critical, 1 is optional. How would you handle this?",
+          a: "Use `Promise.allSettled` for all 3, then check results: ```js\nconst [users, orders, recommendations] = await Promise.allSettled([...]);\nif (users.status === 'rejected') throw users.reason;\nif (orders.status === 'rejected') throw orders.reason;\nconst recs = recommendations.status === 'fulfilled' ? recommendations.value : [];\n```",
+        },
+      ],
     },
     {
       id: "async-await",
@@ -447,15 +528,35 @@ class ApiClient {
         "Forgetting try/catch — unhandled rejections in async functions go to `.catch()` or crash the process",
         "Using `await` at the top level without modules — only works in ES Modules or Chrome DevTools",
         "Returning `await promise` vs `return promise` — they're almost the same, but `return await` in try/catch catches the error",
-        "Forgetting that `async` functions always return a Promise — even if you return a plain value"
+        "Forgetting that `async` functions always return a Promise — even if you return a plain value",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "How does `async/await` work under the hood?", a: "`async/await` is syntactic sugar over Promises and generators. An `async` function returns a Promise. When `await` is encountered, the function is paused (like `yield` in a generator), the Promise is registered, and control returns to the event loop. When the Promise resolves, execution resumes from the pause point." },
-        { type: "tricky", q: "What's the difference between `return await promise` and `return promise`?", a: "Usually identical, but inside `try/catch`, `return await promise` catches the rejection in the current `catch` block, while `return promise` passes the rejection to the CALLER's error handler. Best practice: use `return await` inside try/catch, otherwise just `return`." },
-        { type: "coding", q: "Write an async function that fetches data with retry and exponential backoff.", a: "```js\nasync function fetchWithRetry(url, retries = 3) {\n  for (let i = 0; i < retries; i++) {\n    try {\n      const res = await fetch(url);\n      if (!res.ok) throw new Error(`HTTP ${res.status}`);\n      return await res.json();\n    } catch (err) {\n      if (i === retries - 1) throw err;\n      await new Promise(r => setTimeout(r, 2 ** i * 1000));\n    }\n  }\n}\n```" },
-        { type: "tricky", q: "What will happen?\n```js\nasync function foo() {\n  return 42;\n}\nconsole.log(foo());\n```", a: "`Promise { 42 }`. `async` functions ALWAYS return a Promise. Even though `42` is a plain value, it's wrapped in `Promise.resolve(42)`. To get the value, use `foo().then(v => console.log(v))` or `await foo()`." },
-        { type: "scenario", q: "You need to process 1000 API calls but the server only allows 10 concurrent requests. How do you handle this?", a: "Use a concurrency limiter: ```js\nasync function pool(tasks, concurrency) {\n  const results = [];\n  const executing = new Set();\n  for (const task of tasks) {\n    const p = task().then(r => (executing.delete(p), r));\n    executing.add(p);\n    results.push(p);\n    if (executing.size >= concurrency)\n      await Promise.race(executing);\n  }\n  return Promise.all(results);\n}\n```" }
-      ]
+        {
+          type: "conceptual",
+          q: "How does `async/await` work under the hood?",
+          a: "`async/await` is syntactic sugar over Promises and generators. An `async` function returns a Promise. When `await` is encountered, the function is paused (like `yield` in a generator), the Promise is registered, and control returns to the event loop. When the Promise resolves, execution resumes from the pause point.",
+        },
+        {
+          type: "tricky",
+          q: "What's the difference between `return await promise` and `return promise`?",
+          a: "Usually identical, but inside `try/catch`, `return await promise` catches the rejection in the current `catch` block, while `return promise` passes the rejection to the CALLER's error handler. Best practice: use `return await` inside try/catch, otherwise just `return`.",
+        },
+        {
+          type: "coding",
+          q: "Write an async function that fetches data with retry and exponential backoff.",
+          a: "```js\nasync function fetchWithRetry(url, retries = 3) {\n  for (let i = 0; i < retries; i++) {\n    try {\n      const res = await fetch(url);\n      if (!res.ok) throw new Error(`HTTP ${res.status}`);\n      return await res.json();\n    } catch (err) {\n      if (i === retries - 1) throw err;\n      await new Promise(r => setTimeout(r, 2 ** i * 1000));\n    }\n  }\n}\n```",
+        },
+        {
+          type: "tricky",
+          q: "What will happen?\n```js\nasync function foo() {\n  return 42;\n}\nconsole.log(foo());\n```",
+          a: "`Promise { 42 }`. `async` functions ALWAYS return a Promise. Even though `42` is a plain value, it's wrapped in `Promise.resolve(42)`. To get the value, use `foo().then(v => console.log(v))` or `await foo()`.",
+        },
+        {
+          type: "scenario",
+          q: "You need to process 1000 API calls but the server only allows 10 concurrent requests. How do you handle this?",
+          a: "Use a concurrency limiter: ```js\nasync function pool(tasks, concurrency) {\n  const results = [];\n  const executing = new Set();\n  for (const task of tasks) {\n    const p = task().then(r => (executing.delete(p), r));\n    executing.add(p);\n    results.push(p);\n    if (executing.size >= concurrency)\n      await Promise.race(executing);\n  }\n  return Promise.all(results);\n}\n```",
+        },
+      ],
     },
     {
       id: "fetch-api",
@@ -552,15 +653,35 @@ try {
         "Reading the response body twice — `.json()`, `.text()` etc. can only be called ONCE. Clone with `response.clone()` if needed",
         "Forgetting `Content-Type: application/json` header for POST/PUT requests",
         "Not handling the AbortError when using AbortController — it's a normal error that should be caught",
-        "Sending credentials (cookies) — `fetch` doesn't send cookies by default for cross-origin. Use `credentials: 'include'`"
+        "Sending credentials (cookies) — `fetch` doesn't send cookies by default for cross-origin. Use `credentials: 'include'`",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "Why doesn't `fetch` reject on 404 or 500 errors?", a: "`fetch` considers the request successful if a response is received from the server, regardless of status code. A 404/500 IS a valid HTTP response. `fetch` only rejects on network failures (DNS error, offline, CORS blocked). You must check `response.ok` (true for 200-299) manually." },
-        { type: "coding", q: "Write a `fetchWithTimeout` function that rejects after a specified time.", a: "```js\nasync function fetchWithTimeout(url, options = {}, timeout = 5000) {\n  const controller = new AbortController();\n  const id = setTimeout(() => controller.abort(), timeout);\n  try {\n    const response = await fetch(url, {\n      ...options,\n      signal: controller.signal\n    });\n    clearTimeout(id);\n    return response;\n  } catch (err) {\n    clearTimeout(id);\n    throw err;\n  }\n}\n```" },
-        { type: "conceptual", q: "What is the difference between `fetch` and `XMLHttpRequest`?", a: "`fetch`: Promise-based, cleaner API, no callback hell, supports streaming, built-in AbortController, doesn't reject on HTTP errors. `XMLHttpRequest`: Event-based, supports progress events natively, can be synchronous (bad practice), works in older browsers. `fetch` is the modern standard." },
-        { type: "tricky", q: "What happens if you call `response.json()` twice?", a: "The second call throws: `TypeError: body stream already read`. Response bodies are streams that can only be consumed once. To read multiple times, clone first: `const clone = response.clone(); await response.json(); await clone.text();`" },
-        { type: "scenario", q: "How would you implement request deduplication for the same URL?", a: "```js\nconst pending = new Map();\nasync function dedupedFetch(url) {\n  if (pending.has(url)) return pending.get(url);\n  const promise = fetch(url).then(r => r.json()).finally(() => pending.delete(url));\n  pending.set(url, promise);\n  return promise;\n}\n// Multiple calls to same URL reuse the same request\n```" }
-      ]
+        {
+          type: "conceptual",
+          q: "Why doesn't `fetch` reject on 404 or 500 errors?",
+          a: "`fetch` considers the request successful if a response is received from the server, regardless of status code. A 404/500 IS a valid HTTP response. `fetch` only rejects on network failures (DNS error, offline, CORS blocked). You must check `response.ok` (true for 200-299) manually.",
+        },
+        {
+          type: "coding",
+          q: "Write a `fetchWithTimeout` function that rejects after a specified time.",
+          a: "```js\nasync function fetchWithTimeout(url, options = {}, timeout = 5000) {\n  const controller = new AbortController();\n  const id = setTimeout(() => controller.abort(), timeout);\n  try {\n    const response = await fetch(url, {\n      ...options,\n      signal: controller.signal\n    });\n    clearTimeout(id);\n    return response;\n  } catch (err) {\n    clearTimeout(id);\n    throw err;\n  }\n}\n```",
+        },
+        {
+          type: "conceptual",
+          q: "What is the difference between `fetch` and `XMLHttpRequest`?",
+          a: "`fetch`: Promise-based, cleaner API, no callback hell, supports streaming, built-in AbortController, doesn't reject on HTTP errors. `XMLHttpRequest`: Event-based, supports progress events natively, can be synchronous (bad practice), works in older browsers. `fetch` is the modern standard.",
+        },
+        {
+          type: "tricky",
+          q: "What happens if you call `response.json()` twice?",
+          a: "The second call throws: `TypeError: body stream already read`. Response bodies are streams that can only be consumed once. To read multiple times, clone first: `const clone = response.clone(); await response.json(); await clone.text();`",
+        },
+        {
+          type: "scenario",
+          q: "How would you implement request deduplication for the same URL?",
+          a: "```js\nconst pending = new Map();\nasync function dedupedFetch(url) {\n  if (pending.has(url)) return pending.get(url);\n  const promise = fetch(url).then(r => r.json()).finally(() => pending.delete(url));\n  pending.set(url, promise);\n  return promise;\n}\n// Multiple calls to same URL reuse the same request\n```",
+        },
+      ],
     },
     {
       id: "error-handling-async",
@@ -643,15 +764,35 @@ window.addEventListener("unhandledrejection", (event) => {
         "Using try/catch around a function that returns a Promise without await — the catch won't work!",
         "Not distinguishing network errors from HTTP errors — `fetch` only throws on network failures",
         "Catching and silently swallowing errors with an empty catch block — always log or re-throw",
-        "Not cleaning up resources (event listeners, intervals) on error — use `finally` for cleanup"
+        "Not cleaning up resources (event listeners, intervals) on error — use `finally` for cleanup",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "How do you handle errors differently in Promises vs async/await?", a: "**Promises**: `.catch()` at the end of chains, or second argument of `.then()`. **async/await**: `try/catch` blocks wrapping `await` calls. Both: global `unhandledrejection` event for uncaught errors. `async/await` is generally more readable for complex error handling." },
-        { type: "tricky", q: "What's wrong with this code?\n```js\ntry {\n  someAsyncFunction();\n} catch(e) {\n  console.log('caught');\n}\n```", a: "Missing `await`! Without `await`, the Promise rejection won't be caught by `try/catch`. The catch block only catches synchronous errors. Fix: `try { await someAsyncFunction(); } catch(e) { ... }`. Or the function itself needs error handling." },
-        { type: "coding", q: "Implement a circuit breaker for API calls.", a: "```js\nclass CircuitBreaker {\n  constructor(fn, threshold = 3, cooldown = 30000) {\n    this.fn = fn;\n    this.failures = 0;\n    this.threshold = threshold;\n    this.cooldown = cooldown;\n    this.state = 'CLOSED';\n  }\n  async call(...args) {\n    if (this.state === 'OPEN') throw new Error('Circuit open');\n    try {\n      const result = await this.fn(...args);\n      this.failures = 0;\n      return result;\n    } catch (err) {\n      this.failures++;\n      if (this.failures >= this.threshold) {\n        this.state = 'OPEN';\n        setTimeout(() => (this.state = 'CLOSED', this.failures = 0), this.cooldown);\n      }\n      throw err;\n    }\n  }\n}\n```" },
-        { type: "conceptual", q: "What is an unhandled Promise rejection and how do you handle it?", a: "It occurs when a Promise rejects but has no `.catch()` or `try/catch`. In Node.js, it crashes the process (in newer versions). In browsers, it logs a warning. Handle globally: `window.addEventListener('unhandledrejection', handler)` (browser) or `process.on('unhandledRejection', handler)` (Node.js)." },
-        { type: "scenario", q: "How would you implement graceful degradation in a dashboard that loads data from 5 different APIs?", a: "Use `Promise.allSettled` to fetch all 5 independently. For each result: if fulfilled, show the data. If rejected, show cached data from localStorage, or a placeholder UI with a retry button. Log failures to monitoring. Never let one widget's failure crash the whole dashboard." }
-      ]
+        {
+          type: "conceptual",
+          q: "How do you handle errors differently in Promises vs async/await?",
+          a: "**Promises**: `.catch()` at the end of chains, or second argument of `.then()`. **async/await**: `try/catch` blocks wrapping `await` calls. Both: global `unhandledrejection` event for uncaught errors. `async/await` is generally more readable for complex error handling.",
+        },
+        {
+          type: "tricky",
+          q: "What's wrong with this code?\n```js\ntry {\n  someAsyncFunction();\n} catch(e) {\n  console.log('caught');\n}\n```",
+          a: "Missing `await`! Without `await`, the Promise rejection won't be caught by `try/catch`. The catch block only catches synchronous errors. Fix: `try { await someAsyncFunction(); } catch(e) { ... }`. Or the function itself needs error handling.",
+        },
+        {
+          type: "coding",
+          q: "Implement a circuit breaker for API calls.",
+          a: "```js\nclass CircuitBreaker {\n  constructor(fn, threshold = 3, cooldown = 30000) {\n    this.fn = fn;\n    this.failures = 0;\n    this.threshold = threshold;\n    this.cooldown = cooldown;\n    this.state = 'CLOSED';\n  }\n  async call(...args) {\n    if (this.state === 'OPEN') throw new Error('Circuit open');\n    try {\n      const result = await this.fn(...args);\n      this.failures = 0;\n      return result;\n    } catch (err) {\n      this.failures++;\n      if (this.failures >= this.threshold) {\n        this.state = 'OPEN';\n        setTimeout(() => (this.state = 'CLOSED', this.failures = 0), this.cooldown);\n      }\n      throw err;\n    }\n  }\n}\n```",
+        },
+        {
+          type: "conceptual",
+          q: "What is an unhandled Promise rejection and how do you handle it?",
+          a: "It occurs when a Promise rejects but has no `.catch()` or `try/catch`. In Node.js, it crashes the process (in newer versions). In browsers, it logs a warning. Handle globally: `window.addEventListener('unhandledrejection', handler)` (browser) or `process.on('unhandledRejection', handler)` (Node.js).",
+        },
+        {
+          type: "scenario",
+          q: "How would you implement graceful degradation in a dashboard that loads data from 5 different APIs?",
+          a: "Use `Promise.allSettled` to fetch all 5 independently. For each result: if fulfilled, show the data. If rejected, show cached data from localStorage, or a placeholder UI with a retry button. Log failures to monitoring. Never let one widget's failure crash the whole dashboard.",
+        },
+      ],
     },
     {
       id: "web-apis",
@@ -734,17 +875,37 @@ channel.onmessage = (e) => {
         "Forgetting Notifications require HTTPS and user permission — handle denied permissions gracefully",
         "Not disconnecting/unobserving Intersection Observers — can cause memory leaks",
         "Blocking the UI while waiting for geolocation — always use async patterns",
-        "Not handling all error cases for Geolocation (permission denied, unavailable, timeout)"
+        "Not handling all error cases for Geolocation (permission denied, unavailable, timeout)",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is the Intersection Observer API and what are its use cases?", a: "Intersection Observer asynchronously observes changes in the intersection of elements with an ancestor or viewport. Use cases: lazy loading images, infinite scrolling, tracking ad viewability, triggering animations on scroll, sticky headers, and performance-optimized scroll handlers." },
-        { type: "coding", q: "Write a lazy loading implementation using Intersection Observer.", a: "```js\nconst observer = new IntersectionObserver((entries) => {\n  entries.forEach(entry => {\n    if (entry.isIntersecting) {\n      const img = entry.target;\n      img.src = img.dataset.src;\n      img.classList.add('loaded');\n      observer.unobserve(img);\n    }\n  });\n}, { rootMargin: '200px' });\ndocument.querySelectorAll('img.lazy').forEach(img => observer.observe(img));\n```" },
-        { type: "conceptual", q: "How does the Notifications API work and what permissions are needed?", a: "1) Request permission: `Notification.requestPermission()` returns 'granted', 'denied', or 'default'. 2) If granted, create: `new Notification('Title', { body, icon })`. Requirements: HTTPS (except localhost), user interaction to request permission, and user must explicitly grant." },
-        { type: "tricky", q: "Why should you use Intersection Observer instead of scroll event listeners?", a: "Scroll events fire on the MAIN THREAD for every scroll pixel — causing jank and poor performance. Intersection Observer runs on a SEPARATE thread, batches callbacks, and only fires when visibility changes. It's much more performant for monitoring element visibility." },
-        { type: "scenario", q: "How would you implement an infinite scroll feed efficiently?", a: "1) Use Intersection Observer on a sentinel element at the bottom. 2) When sentinel is visible, fetch next page. 3) Append new items and move sentinel down. 4) Implement virtualization — only render visible items (remove items scrolled far above). 5) Show loading skeleton during fetch. 6) Clean up observer on component unmount." }
-      ]
-    }
-  ]
+        {
+          type: "conceptual",
+          q: "What is the Intersection Observer API and what are its use cases?",
+          a: "Intersection Observer asynchronously observes changes in the intersection of elements with an ancestor or viewport. Use cases: lazy loading images, infinite scrolling, tracking ad viewability, triggering animations on scroll, sticky headers, and performance-optimized scroll handlers.",
+        },
+        {
+          type: "coding",
+          q: "Write a lazy loading implementation using Intersection Observer.",
+          a: "```js\nconst observer = new IntersectionObserver((entries) => {\n  entries.forEach(entry => {\n    if (entry.isIntersecting) {\n      const img = entry.target;\n      img.src = img.dataset.src;\n      img.classList.add('loaded');\n      observer.unobserve(img);\n    }\n  });\n}, { rootMargin: '200px' });\ndocument.querySelectorAll('img.lazy').forEach(img => observer.observe(img));\n```",
+        },
+        {
+          type: "conceptual",
+          q: "How does the Notifications API work and what permissions are needed?",
+          a: "1) Request permission: `Notification.requestPermission()` returns 'granted', 'denied', or 'default'. 2) If granted, create: `new Notification('Title', { body, icon })`. Requirements: HTTPS (except localhost), user interaction to request permission, and user must explicitly grant.",
+        },
+        {
+          type: "tricky",
+          q: "Why should you use Intersection Observer instead of scroll event listeners?",
+          a: "Scroll events fire on the MAIN THREAD for every scroll pixel — causing jank and poor performance. Intersection Observer runs on a SEPARATE thread, batches callbacks, and only fires when visibility changes. It's much more performant for monitoring element visibility.",
+        },
+        {
+          type: "scenario",
+          q: "How would you implement an infinite scroll feed efficiently?",
+          a: "1) Use Intersection Observer on a sentinel element at the bottom. 2) When sentinel is visible, fetch next page. 3) Append new items and move sentinel down. 4) Implement virtualization — only render visible items (remove items scrolled far above). 5) Show loading skeleton during fetch. 6) Clean up observer on component unmount.",
+        },
+      ],
+    },
+  ],
 };
 
 export default phase3;

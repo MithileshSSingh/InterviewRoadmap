@@ -54,7 +54,7 @@ export const CareerRoadmapSchema = z.object({
           type: z.string(),
           duration: z.string().default("45-60 minutes"),
           focus: z.string().default(""),
-        })
+        }),
       )
       .default([]),
     sources: z.array(z.string()).default([]),
@@ -70,7 +70,7 @@ export const CareerRoadmapSchema = z.object({
           totalComp: z.string(),
           equity4yr: z.string().default("N/A"),
           bonus: z.string().default("N/A"),
-        })
+        }),
       )
       .default([]),
     sources: z.array(z.string()).default([]),
@@ -84,7 +84,7 @@ export const CareerRoadmapSchema = z.object({
           label: z.string(),
           url: z.string(),
           description: z.string().default(""),
-        })
+        }),
       )
       .default([]),
     tips: z.array(z.string()).default([]),

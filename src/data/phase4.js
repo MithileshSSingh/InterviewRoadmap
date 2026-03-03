@@ -2,7 +2,8 @@ const phase4 = {
   id: "phase-4",
   title: "Phase 4: Advanced",
   emoji: "🔴",
-  description: "Master advanced patterns, performance optimization, design patterns, security, and TypeScript fundamentals.",
+  description:
+    "Master advanced patterns, performance optimization, design patterns, security, and TypeScript fundamentals.",
   topics: [
     {
       id: "advanced-closures-currying",
@@ -65,15 +66,35 @@ console.log(processPrice(100)); // "$120.00"`,
         "Over-currying simple functions makes code harder to read — use it when it provides clear benefits",
         "Confusing currying (one arg at a time) with partial application (fixing some args upfront)",
         "Memory overhead — each curried call creates a new closure in memory",
-        "Not understanding that arrow functions with defaults have `.length` of 0 for defaulted params"
+        "Not understanding that arrow functions with defaults have `.length` of 0 for defaulted params",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is currying and how is it different from partial application?", a: "**Currying** transforms `f(a, b, c)` into `f(a)(b)(c)` — each call takes exactly one argument. **Partial application** fixes some arguments: `partial(f, 1)` returns a function expecting the remaining args. Currying ALWAYS produces unary functions; partial application can fix any number of args." },
-        { type: "coding", q: "Implement a `curry` function that works for any function.", a: "```js\nfunction curry(fn) {\n  return function curried(...args) {\n    if (args.length >= fn.length) return fn(...args);\n    return (...more) => curried(...args, ...more);\n  };\n}\n```" },
-        { type: "tricky", q: "What will `curry(Math.max)(1)(2)(3)` return?", a: "It won't work as expected. `Math.max.length` is `0` (it uses rest params), so `curry` would immediately call `Math.max(1)` = `1`. Currying relies on `fn.length`, which doesn't count rest params. You'd need `curry(Math.max, 3)` with an explicit arity." },
-        { type: "scenario", q: "Give a real-world use case where currying improves code quality.", a: "Event handlers with config: `const handleClick = curry((analytics, router, event) => { analytics.track('click'); router.push(event.target.href); })`. Pre-configure: `const onClick = handleClick(analyticsInstance)(routerInstance)`. Now `onClick` is a clean handler that already knows its dependencies." },
-        { type: "coding", q: "Write a curried `filter` function usable as: `filterBy('active')(users)`.", a: "```js\nconst filterBy = curry((key, arr) => arr.filter(item => item[key]));\nconst getActive = filterBy('active');\nconst activeUsers = getActive([{name:'A',active:true},{name:'B',active:false}]);\n// [{name:'A',active:true}]\n```" }
-      ]
+        {
+          type: "conceptual",
+          q: "What is currying and how is it different from partial application?",
+          a: "**Currying** transforms `f(a, b, c)` into `f(a)(b)(c)` — each call takes exactly one argument. **Partial application** fixes some arguments: `partial(f, 1)` returns a function expecting the remaining args. Currying ALWAYS produces unary functions; partial application can fix any number of args.",
+        },
+        {
+          type: "coding",
+          q: "Implement a `curry` function that works for any function.",
+          a: "```js\nfunction curry(fn) {\n  return function curried(...args) {\n    if (args.length >= fn.length) return fn(...args);\n    return (...more) => curried(...args, ...more);\n  };\n}\n```",
+        },
+        {
+          type: "tricky",
+          q: "What will `curry(Math.max)(1)(2)(3)` return?",
+          a: "It won't work as expected. `Math.max.length` is `0` (it uses rest params), so `curry` would immediately call `Math.max(1)` = `1`. Currying relies on `fn.length`, which doesn't count rest params. You'd need `curry(Math.max, 3)` with an explicit arity.",
+        },
+        {
+          type: "scenario",
+          q: "Give a real-world use case where currying improves code quality.",
+          a: "Event handlers with config: `const handleClick = curry((analytics, router, event) => { analytics.track('click'); router.push(event.target.href); })`. Pre-configure: `const onClick = handleClick(analyticsInstance)(routerInstance)`. Now `onClick` is a clean handler that already knows its dependencies.",
+        },
+        {
+          type: "coding",
+          q: "Write a curried `filter` function usable as: `filterBy('active')(users)`.",
+          a: "```js\nconst filterBy = curry((key, arr) => arr.filter(item => item[key]));\nconst getActive = filterBy('active');\nconst activeUsers = getActive([{name:'A',active:true},{name:'B',active:false}]);\n// [{name:'A',active:true}]\n```",
+        },
+      ],
     },
     {
       id: "memoization",
@@ -162,15 +183,35 @@ console.log(\`Took \${(t1 - t0).toFixed(2)}ms\`);`,
         "Using unbounded caches — memory grows indefinitely! Use LRU or TTL-based eviction",
         "Using `JSON.stringify` as cache key for objects with circular references — it throws",
         "Memoizing functions with many unique inputs — cache rarely hits, just wastes memory",
-        "Not considering that memoization adds overhead — for cheap functions, the overhead exceeds savings"
+        "Not considering that memoization adds overhead — for cheap functions, the overhead exceeds savings",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is memoization and when should you use it?", a: "Memoization caches function results for repeated calls with the same inputs. Use when: 1) Function is pure (same inputs → same output), 2) Function is called repeatedly with same args, 3) Computation is expensive, 4) Input domain is limited. Don't use for: impure functions, functions with many unique inputs, or cheap computations." },
-        { type: "coding", q: "Implement a `memoize` function with a configurable cache size limit.", a: "```js\nfunction memoize(fn, maxSize = 100) {\n  const cache = new Map();\n  return function(...args) {\n    const key = JSON.stringify(args);\n    if (cache.has(key)) return cache.get(key);\n    const result = fn(...args);\n    if (cache.size >= maxSize) {\n      cache.delete(cache.keys().next().value);\n    }\n    cache.set(key, result);\n    return result;\n  };\n}\n```" },
-        { type: "tricky", q: "Can you memoize async functions? What are the caveats?", a: "Yes, but cache the Promise, not the result: ```js\nconst memoAsync = (fn) => {\n  const cache = new Map();\n  return (...args) => {\n    const key = JSON.stringify(args);\n    if (!cache.has(key)) cache.set(key, fn(...args).catch(e => { cache.delete(key); throw e; }));\n    return cache.get(key);\n  };\n};\n``` Caveat: if the Promise rejects, delete from cache so it retries." },
-        { type: "conceptual", q: "What is the time-space tradeoff in memoization?", a: "Memoization trades memory (storing cached results) for time (avoiding recomputation). It's beneficial when: computation time >> memory cost, and cache hit rate is high. It's wasteful when: inputs are rarely repeated, or the cache grows too large. An LRU cache bounds memory usage." },
-        { type: "scenario", q: "How would you optimize a recursive tree traversal that's called millions of times?", a: "1) Memoize with a Map keyed by node identity. 2) Convert recursion to iteration with an explicit stack (avoid stack overflow). 3) Use dynamic programming (bottom-up) instead of top-down recursion. 4) Prune unnecessary branches early. 5) Consider Web Workers for parallel traversal of independent subtrees." }
-      ]
+        {
+          type: "conceptual",
+          q: "What is memoization and when should you use it?",
+          a: "Memoization caches function results for repeated calls with the same inputs. Use when: 1) Function is pure (same inputs → same output), 2) Function is called repeatedly with same args, 3) Computation is expensive, 4) Input domain is limited. Don't use for: impure functions, functions with many unique inputs, or cheap computations.",
+        },
+        {
+          type: "coding",
+          q: "Implement a `memoize` function with a configurable cache size limit.",
+          a: "```js\nfunction memoize(fn, maxSize = 100) {\n  const cache = new Map();\n  return function(...args) {\n    const key = JSON.stringify(args);\n    if (cache.has(key)) return cache.get(key);\n    const result = fn(...args);\n    if (cache.size >= maxSize) {\n      cache.delete(cache.keys().next().value);\n    }\n    cache.set(key, result);\n    return result;\n  };\n}\n```",
+        },
+        {
+          type: "tricky",
+          q: "Can you memoize async functions? What are the caveats?",
+          a: "Yes, but cache the Promise, not the result: ```js\nconst memoAsync = (fn) => {\n  const cache = new Map();\n  return (...args) => {\n    const key = JSON.stringify(args);\n    if (!cache.has(key)) cache.set(key, fn(...args).catch(e => { cache.delete(key); throw e; }));\n    return cache.get(key);\n  };\n};\n``` Caveat: if the Promise rejects, delete from cache so it retries.",
+        },
+        {
+          type: "conceptual",
+          q: "What is the time-space tradeoff in memoization?",
+          a: "Memoization trades memory (storing cached results) for time (avoiding recomputation). It's beneficial when: computation time >> memory cost, and cache hit rate is high. It's wasteful when: inputs are rarely repeated, or the cache grows too large. An LRU cache bounds memory usage.",
+        },
+        {
+          type: "scenario",
+          q: "How would you optimize a recursive tree traversal that's called millions of times?",
+          a: "1) Memoize with a Map keyed by node identity. 2) Convert recursion to iteration with an explicit stack (avoid stack overflow). 3) Use dynamic programming (bottom-up) instead of top-down recursion. 4) Prune unnecessary branches early. 5) Consider Web Workers for parallel traversal of independent subtrees.",
+        },
+      ],
     },
     {
       id: "debouncing-throttling",
@@ -260,15 +301,35 @@ function rafThrottle(fn) {
         "Creating new debounced/throttled functions on every render — memoize or define outside the render",
         "Not preserving `this` context — use `.apply(this, args)` inside the wrapper",
         "Forgetting to cancel debounce/throttle on component unmount — leads to memory leaks or errors",
-        "Setting delay too long (missed updates) or too short (not effective) — benchmark for your use case"
+        "Setting delay too long (missed updates) or too short (not effective) — benchmark for your use case",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is the difference between debouncing and throttling?", a: "**Debounce**: Delays execution until N ms after the LAST trigger. If triggered again during the wait, the timer resets. Perfect for 'after user stops typing'. **Throttle**: Executes at most once every N ms, regardless of trigger frequency. Perfect for 'while user is scrolling'." },
-        { type: "coding", q: "Implement a debounce function with cancel support.", a: "```js\nfunction debounce(fn, delay) {\n  let timer;\n  function debounced(...args) {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn.apply(this, args), delay);\n  }\n  debounced.cancel = () => clearTimeout(timer);\n  return debounced;\n}\n```" },
-        { type: "tricky", q: "What is a 'leading edge' debounce?", a: "Normally (trailing), debounce fires AFTER the delay. A leading-edge debounce fires IMMEDIATELY on the first trigger, then ignores further triggers for the delay period. Useful when you want instant feedback but prevent rapid re-triggers (e.g., submit button)." },
-        { type: "coding", q: "Implement a throttle using `requestAnimationFrame`.", a: "```js\nfunction rafThrottle(fn) {\n  let ticking = false;\n  return function(...args) {\n    if (!ticking) {\n      requestAnimationFrame(() => {\n        fn.apply(this, args);\n        ticking = false;\n      });\n      ticking = true;\n    }\n  };\n}\n```" },
-        { type: "scenario", q: "You have a search input that calls an API. Users complain about too many requests and results flickering. How do you fix it?", a: "1) Debounce the input handler (300-500ms). 2) Cancel pending requests when a new one starts (AbortController). 3) Only show results from the latest request (race condition prevention). 4) Add a loading state to prevent flicker. 5) Optionally, cache recent results." }
-      ]
+        {
+          type: "conceptual",
+          q: "What is the difference between debouncing and throttling?",
+          a: "**Debounce**: Delays execution until N ms after the LAST trigger. If triggered again during the wait, the timer resets. Perfect for 'after user stops typing'. **Throttle**: Executes at most once every N ms, regardless of trigger frequency. Perfect for 'while user is scrolling'.",
+        },
+        {
+          type: "coding",
+          q: "Implement a debounce function with cancel support.",
+          a: "```js\nfunction debounce(fn, delay) {\n  let timer;\n  function debounced(...args) {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn.apply(this, args), delay);\n  }\n  debounced.cancel = () => clearTimeout(timer);\n  return debounced;\n}\n```",
+        },
+        {
+          type: "tricky",
+          q: "What is a 'leading edge' debounce?",
+          a: "Normally (trailing), debounce fires AFTER the delay. A leading-edge debounce fires IMMEDIATELY on the first trigger, then ignores further triggers for the delay period. Useful when you want instant feedback but prevent rapid re-triggers (e.g., submit button).",
+        },
+        {
+          type: "coding",
+          q: "Implement a throttle using `requestAnimationFrame`.",
+          a: "```js\nfunction rafThrottle(fn) {\n  let ticking = false;\n  return function(...args) {\n    if (!ticking) {\n      requestAnimationFrame(() => {\n        fn.apply(this, args);\n        ticking = false;\n      });\n      ticking = true;\n    }\n  };\n}\n```",
+        },
+        {
+          type: "scenario",
+          q: "You have a search input that calls an API. Users complain about too many requests and results flickering. How do you fix it?",
+          a: "1) Debounce the input handler (300-500ms). 2) Cancel pending requests when a new one starts (AbortController). 3) Only show results from the latest request (race condition prevention). 4) Add a loading state to prevent flicker. 5) Optionally, cache recent results.",
+        },
+      ],
     },
     {
       id: "proxy-reflect",
@@ -358,15 +419,35 @@ console.log(arr[-1]); // 5`,
         "Forgetting to use Reflect methods inside traps — they handle edge cases you might miss",
         "Creating Proxies for performance-critical code — Proxies add overhead to every operation",
         "Infinite loops — a `get` trap that reads from the proxy instead of the target",
-        "Not knowing that `===` comparison between proxy and target returns `false` — they are different objects"
+        "Not knowing that `===` comparison between proxy and target returns `false` — they are different objects",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is a Proxy and what are its common use cases?", a: "A Proxy wraps an object and intercepts fundamental operations. Use cases: validation, logging/debugging, data binding/reactivity (Vue 3), computed properties, access control, auto-population, negative indices, and API request mocking." },
-        { type: "coding", q: "Create a Proxy that logs all property accesses.", a: "```js\nfunction createLogger(obj) {\n  return new Proxy(obj, {\n    get(target, prop) {\n      console.log(`Accessed: ${prop}`);\n      return Reflect.get(target, prop);\n    },\n    set(target, prop, value) {\n      console.log(`Modified: ${prop} = ${value}`);\n      return Reflect.set(target, prop, value);\n    }\n  });\n}\n```" },
-        { type: "conceptual", q: "What is the Reflect API and why is it used with Proxy?", a: "Reflect provides the default behavior for each Proxy trap as a function. Using `Reflect.get/set/etc.` inside traps ensures correct default behavior, proper prototype chain handling, and correct receiver forwarding. Without Reflect, you might miss edge cases like inherited getters/setters." },
-        { type: "tricky", q: "Can you proxy a function? What traps apply?", a: "Yes. Functions are objects. You can trap `apply` (when called) and `construct` (when used with `new`): ```js\nnew Proxy(fn, { apply(target, thisArg, args) { ... }, construct(target, args) { ... } });\n``` This enables function decorating, logging, profiling, and access control." },
-        { type: "scenario", q: "How does Vue 3 use Proxy for reactivity?", a: "Vue 3 wraps reactive data in a Proxy. The `get` trap tracks which component properties are accessed (dependency tracking). The `set` trap triggers re-rendering when dependencies change. This replaces Vue 2's `Object.defineProperty` approach, which couldn't detect new property additions or array mutations." }
-      ]
+        {
+          type: "conceptual",
+          q: "What is a Proxy and what are its common use cases?",
+          a: "A Proxy wraps an object and intercepts fundamental operations. Use cases: validation, logging/debugging, data binding/reactivity (Vue 3), computed properties, access control, auto-population, negative indices, and API request mocking.",
+        },
+        {
+          type: "coding",
+          q: "Create a Proxy that logs all property accesses.",
+          a: "```js\nfunction createLogger(obj) {\n  return new Proxy(obj, {\n    get(target, prop) {\n      console.log(`Accessed: ${prop}`);\n      return Reflect.get(target, prop);\n    },\n    set(target, prop, value) {\n      console.log(`Modified: ${prop} = ${value}`);\n      return Reflect.set(target, prop, value);\n    }\n  });\n}\n```",
+        },
+        {
+          type: "conceptual",
+          q: "What is the Reflect API and why is it used with Proxy?",
+          a: "Reflect provides the default behavior for each Proxy trap as a function. Using `Reflect.get/set/etc.` inside traps ensures correct default behavior, proper prototype chain handling, and correct receiver forwarding. Without Reflect, you might miss edge cases like inherited getters/setters.",
+        },
+        {
+          type: "tricky",
+          q: "Can you proxy a function? What traps apply?",
+          a: "Yes. Functions are objects. You can trap `apply` (when called) and `construct` (when used with `new`): ```js\nnew Proxy(fn, { apply(target, thisArg, args) { ... }, construct(target, args) { ... } });\n``` This enables function decorating, logging, profiling, and access control.",
+        },
+        {
+          type: "scenario",
+          q: "How does Vue 3 use Proxy for reactivity?",
+          a: "Vue 3 wraps reactive data in a Proxy. The `get` trap tracks which component properties are accessed (dependency tracking). The `set` trap triggers re-rendering when dependencies change. This replaces Vue 2's `Object.defineProperty` approach, which couldn't detect new property additions or array mutations.",
+        },
+      ],
     },
     {
       id: "symbols",
@@ -451,15 +532,35 @@ console.log([...new Range(1, 5)]); // [1, 2, 3, 4, 5]`,
         "Symbols are invisible to `for...in`, `Object.keys()`, and `JSON.stringify` — use `Object.getOwnPropertySymbols()`",
         "`Symbol()` vs `Symbol.for()` — `Symbol()` always creates a new one; `Symbol.for()` uses a global registry",
         "Can't convert Symbol to a string implicitly — `'' + symbol` throws TypeError; use `symbol.toString()` explicitly",
-        "Symbols are not truly private — they're just non-enumerable. `Object.getOwnPropertySymbols()` exposes them"
+        "Symbols are not truly private — they're just non-enumerable. `Object.getOwnPropertySymbols()` exposes them",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is a Symbol and what problem does it solve?", a: "Symbol creates guaranteed unique identifiers, solving property name collision. If two libraries both want to add a property called `id` to an object, they'll conflict. With `Symbol('id')`, each library gets a unique key. Also used for metadata, protocols (iteration), and hiding implementation details." },
-        { type: "tricky", q: "What does `Symbol('foo') === Symbol('foo')` return?", a: "`false`. Every `Symbol()` call creates a NEW unique symbol. The string argument is just a description for debugging, not an identifier. To share symbols, use `Symbol.for('foo')` which uses a global registry." },
-        { type: "coding", q: "Make a custom object iterable using `Symbol.iterator`.", a: "```js\nconst range = {\n  start: 1, end: 5,\n  [Symbol.iterator]() {\n    let i = this.start;\n    return {\n      next: () => i <= this.end\n        ? { value: i++, done: false }\n        : { done: true }\n    };\n  }\n};\nconsole.log([...range]); // [1,2,3,4,5]\n```" },
-        { type: "conceptual", q: "What are Well-Known Symbols? Give examples.", a: "`Symbol.iterator` — makes objects iterable. `Symbol.toPrimitive` — custom type conversion. `Symbol.toStringTag` — custom `[object X]` tag. `Symbol.hasInstance` — custom `instanceof`. `Symbol.species` — constructor for derived objects. They let you hook into language-level operations." },
-        { type: "scenario", q: "How would you use Symbols to create a plugin system?", a: "Each plugin registers under a unique Symbol key: ```js\nconst PLUGIN_INIT = Symbol.for('plugin.init');\nconst PLUGIN_DESTROY = Symbol.for('plugin.destroy');\nclass App {\n  use(plugin) {\n    if (plugin[PLUGIN_INIT]) plugin[PLUGIN_INIT](this);\n    this.plugins.push(plugin);\n  }\n}\n``` Symbol.for ensures plugins and app agree on keys without importing constants." }
-      ]
+        {
+          type: "conceptual",
+          q: "What is a Symbol and what problem does it solve?",
+          a: "Symbol creates guaranteed unique identifiers, solving property name collision. If two libraries both want to add a property called `id` to an object, they'll conflict. With `Symbol('id')`, each library gets a unique key. Also used for metadata, protocols (iteration), and hiding implementation details.",
+        },
+        {
+          type: "tricky",
+          q: "What does `Symbol('foo') === Symbol('foo')` return?",
+          a: "`false`. Every `Symbol()` call creates a NEW unique symbol. The string argument is just a description for debugging, not an identifier. To share symbols, use `Symbol.for('foo')` which uses a global registry.",
+        },
+        {
+          type: "coding",
+          q: "Make a custom object iterable using `Symbol.iterator`.",
+          a: "```js\nconst range = {\n  start: 1, end: 5,\n  [Symbol.iterator]() {\n    let i = this.start;\n    return {\n      next: () => i <= this.end\n        ? { value: i++, done: false }\n        : { done: true }\n    };\n  }\n};\nconsole.log([...range]); // [1,2,3,4,5]\n```",
+        },
+        {
+          type: "conceptual",
+          q: "What are Well-Known Symbols? Give examples.",
+          a: "`Symbol.iterator` — makes objects iterable. `Symbol.toPrimitive` — custom type conversion. `Symbol.toStringTag` — custom `[object X]` tag. `Symbol.hasInstance` — custom `instanceof`. `Symbol.species` — constructor for derived objects. They let you hook into language-level operations.",
+        },
+        {
+          type: "scenario",
+          q: "How would you use Symbols to create a plugin system?",
+          a: "Each plugin registers under a unique Symbol key: ```js\nconst PLUGIN_INIT = Symbol.for('plugin.init');\nconst PLUGIN_DESTROY = Symbol.for('plugin.destroy');\nclass App {\n  use(plugin) {\n    if (plugin[PLUGIN_INIT]) plugin[PLUGIN_INIT](this);\n    this.plugins.push(plugin);\n  }\n}\n``` Symbol.for ensures plugins and app agree on keys without importing constants.",
+        },
+      ],
     },
     {
       id: "weakmap-weakset",
@@ -533,15 +634,35 @@ function track(element) {
         "WeakMaps are NOT iterable — you can't use `forEach`, `keys()`, `values()`, or `entries()`",
         "WeakMap has no `.size` property — you can't know how many entries it has",
         "You can't clear a WeakMap — there's no `.clear()` method (or it's non-standard)",
-        "Thinking WeakMap entries are deleted immediately — GC timing is unpredictable"
+        "Thinking WeakMap entries are deleted immediately — GC timing is unpredictable",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is the difference between Map and WeakMap?", a: "**Map**: Any key type, prevents GC of keys, iterable, has `.size`. **WeakMap**: Object keys only, allows GC of keys (weak references), NOT iterable, no `.size`. Use WeakMap for object-associated metadata that should be garbage-collected with the object." },
-        { type: "scenario", q: "When would you use a WeakMap over a regular Map?", a: "1) Caching data for DOM elements (auto-cleanup on removal). 2) Storing private data for class instances. 3) Metadata about objects you don't own. 4) Memoization keyed by objects. 5) Any time you associate data with objects and don't want to prevent garbage collection." },
-        { type: "coding", q: "Use WeakMap to implement truly private class fields (pre-ES2022).", a: "```js\nconst _private = new WeakMap();\nclass BankAccount {\n  constructor(balance) {\n    _private.set(this, { balance });\n  }\n  deposit(amount) {\n    const data = _private.get(this);\n    data.balance += amount;\n  }\n  get balance() {\n    return _private.get(this).balance;\n  }\n}\n```" },
-        { type: "tricky", q: "Why can't you iterate over a WeakMap?", a: "WeakMap entries can be garbage-collected at any time (non-deterministic). If you could iterate, the GC would need to track all references to prevent collection during iteration, defeating the purpose of weak references. The entries are 'invisible' to prevent preventing GC." },
-        { type: "conceptual", q: "How do WeakRefs differ from WeakMap/WeakSet?", a: "`WeakRef` creates a weak reference to a single object that you can `deref()` to get the original (or `undefined` if GC'd). `FinalizationRegistry` runs a callback when an object is GC'd. WeakMap/WeakSet are higher-level constructs that use weak references internally for key storage." }
-      ]
+        {
+          type: "conceptual",
+          q: "What is the difference between Map and WeakMap?",
+          a: "**Map**: Any key type, prevents GC of keys, iterable, has `.size`. **WeakMap**: Object keys only, allows GC of keys (weak references), NOT iterable, no `.size`. Use WeakMap for object-associated metadata that should be garbage-collected with the object.",
+        },
+        {
+          type: "scenario",
+          q: "When would you use a WeakMap over a regular Map?",
+          a: "1) Caching data for DOM elements (auto-cleanup on removal). 2) Storing private data for class instances. 3) Metadata about objects you don't own. 4) Memoization keyed by objects. 5) Any time you associate data with objects and don't want to prevent garbage collection.",
+        },
+        {
+          type: "coding",
+          q: "Use WeakMap to implement truly private class fields (pre-ES2022).",
+          a: "```js\nconst _private = new WeakMap();\nclass BankAccount {\n  constructor(balance) {\n    _private.set(this, { balance });\n  }\n  deposit(amount) {\n    const data = _private.get(this);\n    data.balance += amount;\n  }\n  get balance() {\n    return _private.get(this).balance;\n  }\n}\n```",
+        },
+        {
+          type: "tricky",
+          q: "Why can't you iterate over a WeakMap?",
+          a: "WeakMap entries can be garbage-collected at any time (non-deterministic). If you could iterate, the GC would need to track all references to prevent collection during iteration, defeating the purpose of weak references. The entries are 'invisible' to prevent preventing GC.",
+        },
+        {
+          type: "conceptual",
+          q: "How do WeakRefs differ from WeakMap/WeakSet?",
+          a: "`WeakRef` creates a weak reference to a single object that you can `deref()` to get the original (or `undefined` if GC'd). `FinalizationRegistry` runs a callback when an object is GC'd. WeakMap/WeakSet are higher-level constructs that use weak references internally for key storage.",
+        },
+      ],
     },
     {
       id: "design-patterns",
@@ -636,15 +757,35 @@ class PubSub {
         "Observer pattern without cleanup — forgetting to unsubscribe causes memory leaks",
         "Factory pattern overkill — don't use a factory when a simple constructor suffices",
         "Forcing patterns where they don't fit — patterns solve specific problems; don't use them just because",
-        "Not considering JavaScript-specific patterns — many OOP patterns from Java/C++ have simpler JS alternatives"
+        "Not considering JavaScript-specific patterns — many OOP patterns from Java/C++ have simpler JS alternatives",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "Explain the Observer pattern and where it's used in JavaScript.", a: "Observer establishes a one-to-many relationship: when an object (subject) changes state, all dependents (observers) are notified. Used in: DOM event listeners, RxJS, Redux store subscriptions, Node.js EventEmitter, Vue/React reactivity, WebSocket message handling." },
-        { type: "coding", q: "Implement a simple EventEmitter class.", a: "```js\nclass EventEmitter {\n  #events = {};\n  on(event, fn) {\n    (this.#events[event] ||= []).push(fn);\n  }\n  off(event, fn) {\n    this.#events[event] = this.#events[event]?.filter(f => f !== fn);\n  }\n  emit(event, ...args) {\n    this.#events[event]?.forEach(fn => fn(...args));\n  }\n  once(event, fn) {\n    const wrapper = (...args) => { fn(...args); this.off(event, wrapper); };\n    this.on(event, wrapper);\n  }\n}\n```" },
-        { type: "conceptual", q: "What is the Module pattern and why is it useful?", a: "The Module pattern uses closures (IIFE or ES modules) to create private scope, exposing only a public API. Benefits: encapsulation, namespace pollution prevention, clear public API, and testability. In modern JS, ES modules serve the same purpose with `import`/`export`." },
-        { type: "scenario", q: "When would you use the Strategy pattern?", a: "When you have multiple algorithms/approaches for a task and want to swap them easily. Examples: sorting algorithms, payment processing (credit card, PayPal, crypto), authentication methods (OAuth, JWT, session), form validation rules, shipping cost calculators. It facilitates Open/Closed principle." },
-        { type: "conceptual", q: "What is the Pub/Sub pattern and how does it differ from Observer?", a: "**Observer**: Direct relationship — subject knows its observers. **Pub/Sub**: Decoupled — publishers and subscribers communicate through a message broker/channel. Pub/Sub allows: multiple topics, cross-component communication, and looser coupling. Events in DOM use Observer; Redux/messaging queues use Pub/Sub." }
-      ]
+        {
+          type: "conceptual",
+          q: "Explain the Observer pattern and where it's used in JavaScript.",
+          a: "Observer establishes a one-to-many relationship: when an object (subject) changes state, all dependents (observers) are notified. Used in: DOM event listeners, RxJS, Redux store subscriptions, Node.js EventEmitter, Vue/React reactivity, WebSocket message handling.",
+        },
+        {
+          type: "coding",
+          q: "Implement a simple EventEmitter class.",
+          a: "```js\nclass EventEmitter {\n  #events = {};\n  on(event, fn) {\n    (this.#events[event] ||= []).push(fn);\n  }\n  off(event, fn) {\n    this.#events[event] = this.#events[event]?.filter(f => f !== fn);\n  }\n  emit(event, ...args) {\n    this.#events[event]?.forEach(fn => fn(...args));\n  }\n  once(event, fn) {\n    const wrapper = (...args) => { fn(...args); this.off(event, wrapper); };\n    this.on(event, wrapper);\n  }\n}\n```",
+        },
+        {
+          type: "conceptual",
+          q: "What is the Module pattern and why is it useful?",
+          a: "The Module pattern uses closures (IIFE or ES modules) to create private scope, exposing only a public API. Benefits: encapsulation, namespace pollution prevention, clear public API, and testability. In modern JS, ES modules serve the same purpose with `import`/`export`.",
+        },
+        {
+          type: "scenario",
+          q: "When would you use the Strategy pattern?",
+          a: "When you have multiple algorithms/approaches for a task and want to swap them easily. Examples: sorting algorithms, payment processing (credit card, PayPal, crypto), authentication methods (OAuth, JWT, session), form validation rules, shipping cost calculators. It facilitates Open/Closed principle.",
+        },
+        {
+          type: "conceptual",
+          q: "What is the Pub/Sub pattern and how does it differ from Observer?",
+          a: "**Observer**: Direct relationship — subject knows its observers. **Pub/Sub**: Decoupled — publishers and subscribers communicate through a message broker/channel. Pub/Sub allows: multiple topics, cross-component communication, and looser coupling. Events in DOM use Observer; Redux/messaging queues use Pub/Sub.",
+        },
+      ],
     },
     {
       id: "functional-programming",
@@ -715,15 +856,35 @@ const updateItem = (list, index, fn) =>
         "Excessive immutability with deep nesting — use `structuredClone` or libraries like Immer for deeply nested updates",
         "Over-composing simple operations — sometimes a loop is more readable than 5 composed functions",
         "Confusing FP concepts from Haskell/ML with JavaScript's pragmatic FP — JS is multi-paradigm",
-        "Not understanding that `.map`, `.filter`, `.reduce` ARE functional programming — you're likely already using FP"
+        "Not understanding that `.map`, `.filter`, `.reduce` ARE functional programming — you're likely already using FP",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is a pure function? Why are they important?", a: "A pure function: 1) Always returns the same output for the same inputs. 2) Has no side effects (no mutation, no I/O, no external state). Important because: predictable, testable, cacheable (memoization), parallelizable, and easier to reason about. Example: `const add = (a, b) => a + b` is pure." },
-        { type: "coding", q: "Implement a `pipe` function for left-to-right function composition.", a: "```js\nconst pipe = (...fns) => (x) => fns.reduce((v, f) => f(v), x);\n// Usage:\nconst process = pipe(\n  x => x * 2,\n  x => x + 1,\n  x => x.toString()\n);\nconsole.log(process(5)); // '11'\n```" },
-        { type: "conceptual", q: "What is immutability and how do you achieve it in JavaScript?", a: "Immutability means never modifying data after creation. Achieve with: 1) Spread operator `{...obj, key: newVal}`. 2) Array methods that return new arrays (`map`, `filter`, `concat`). 3) `Object.freeze()`. 4) Libraries like Immer or Immutable.js. 5) `structuredClone()` for deep copies." },
-        { type: "tricky", q: "Is `Array.forEach` a pure functional construct?", a: "No. `forEach` returns `undefined` — it's designed for side effects. In FP, use `map` (transform), `filter` (subset), or `reduce` (accumulate) which return new values. `forEach` breaks the FP principle of expressions over statements." },
-        { type: "scenario", q: "How would you structure a data processing pipeline functionally?", a: "```js\nconst processOrders = pipe(\n  filterBy('status', 'completed'),\n  mapTo(order => ({ ...order, total: calcTotal(order) })),\n  sortBy('total', 'desc'),\n  take(10),\n  mapTo(formatForDisplay)\n);\nconst result = processOrders(orders);\n``` Each step is a pure function, testable independently, and the pipeline reads like a description." }
-      ]
+        {
+          type: "conceptual",
+          q: "What is a pure function? Why are they important?",
+          a: "A pure function: 1) Always returns the same output for the same inputs. 2) Has no side effects (no mutation, no I/O, no external state). Important because: predictable, testable, cacheable (memoization), parallelizable, and easier to reason about. Example: `const add = (a, b) => a + b` is pure.",
+        },
+        {
+          type: "coding",
+          q: "Implement a `pipe` function for left-to-right function composition.",
+          a: "```js\nconst pipe = (...fns) => (x) => fns.reduce((v, f) => f(v), x);\n// Usage:\nconst process = pipe(\n  x => x * 2,\n  x => x + 1,\n  x => x.toString()\n);\nconsole.log(process(5)); // '11'\n```",
+        },
+        {
+          type: "conceptual",
+          q: "What is immutability and how do you achieve it in JavaScript?",
+          a: "Immutability means never modifying data after creation. Achieve with: 1) Spread operator `{...obj, key: newVal}`. 2) Array methods that return new arrays (`map`, `filter`, `concat`). 3) `Object.freeze()`. 4) Libraries like Immer or Immutable.js. 5) `structuredClone()` for deep copies.",
+        },
+        {
+          type: "tricky",
+          q: "Is `Array.forEach` a pure functional construct?",
+          a: "No. `forEach` returns `undefined` — it's designed for side effects. In FP, use `map` (transform), `filter` (subset), or `reduce` (accumulate) which return new values. `forEach` breaks the FP principle of expressions over statements.",
+        },
+        {
+          type: "scenario",
+          q: "How would you structure a data processing pipeline functionally?",
+          a: "```js\nconst processOrders = pipe(\n  filterBy('status', 'completed'),\n  mapTo(order => ({ ...order, total: calcTotal(order) })),\n  sortBy('total', 'desc'),\n  take(10),\n  mapTo(formatForDisplay)\n);\nconst result = processOrders(orders);\n``` Each step is a pure function, testable independently, and the pipeline reads like a description.",
+        },
+      ],
     },
     {
       id: "memory-management",
@@ -802,15 +963,35 @@ function getCached() {
         "Storing large data in closures unnecessarily — capture only what you need",
         "Forgotten setInterval/setTimeout without cleanup — always store and clear IDs",
         "Accumulating data in global arrays/objects without bounds — caches grow indefinitely",
-        "Circular references between closures can prevent GC in older engines (IE) — modern engines handle this"
+        "Circular references between closures can prevent GC in older engines (IE) — modern engines handle this",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "How does garbage collection work in JavaScript?", a: "Modern JS engines use **Mark-and-Sweep**: 1) Start from 'roots' (global scope, active function scopes). 2) Mark all objects reachable from roots. 3) Sweep (free) all unmarked objects. Most engines also use **generational GC** — new objects (short-lived) are checked more frequently than old ones." },
-        { type: "conceptual", q: "What are common causes of memory leaks in JavaScript?", a: "1) Forgotten event listeners. 2) Uncleaned timers (setInterval). 3) Closures retaining large outer scopes. 4) Detached DOM nodes (removed from DOM but referenced in JS). 5) Global variables. 6) Unbounded caches/arrays. 7) Circular references in certain contexts." },
-        { type: "coding", q: "Write a component class that properly cleans up all resources.", a: "```js\nclass Widget {\n  constructor(el) {\n    this.el = el;\n    this.data = [];\n    this._onClick = this.handleClick.bind(this);\n    this._interval = setInterval(() => this.update(), 5000);\n    this.el.addEventListener('click', this._onClick);\n  }\n  destroy() {\n    clearInterval(this._interval);\n    this.el.removeEventListener('click', this._onClick);\n    this.data = null;\n    this.el = null;\n  }\n}\n```" },
-        { type: "tricky", q: "Can circular references cause memory leaks in modern JavaScript?", a: "In modern engines: No. Mark-and-Sweep handles circular references — if neither object is reachable from a root, both are collected. In older IE (reference counting GC): Yes — circular references between JS objects and DOM elements caused leaks. This is no longer an issue." },
-        { type: "scenario", q: "How would you debug a memory leak in a web application?", a: "1) Chrome DevTools → Performance tab → record and look for increasing memory. 2) Memory tab → take Heap Snapshots, compare over time. 3) Look for 'Detached DOM tree' in heap. 4) Use Allocation Timeline to see what's being allocated. 5) Check for common patterns: event listeners, timers, closures, global state." }
-      ]
+        {
+          type: "conceptual",
+          q: "How does garbage collection work in JavaScript?",
+          a: "Modern JS engines use **Mark-and-Sweep**: 1) Start from 'roots' (global scope, active function scopes). 2) Mark all objects reachable from roots. 3) Sweep (free) all unmarked objects. Most engines also use **generational GC** — new objects (short-lived) are checked more frequently than old ones.",
+        },
+        {
+          type: "conceptual",
+          q: "What are common causes of memory leaks in JavaScript?",
+          a: "1) Forgotten event listeners. 2) Uncleaned timers (setInterval). 3) Closures retaining large outer scopes. 4) Detached DOM nodes (removed from DOM but referenced in JS). 5) Global variables. 6) Unbounded caches/arrays. 7) Circular references in certain contexts.",
+        },
+        {
+          type: "coding",
+          q: "Write a component class that properly cleans up all resources.",
+          a: "```js\nclass Widget {\n  constructor(el) {\n    this.el = el;\n    this.data = [];\n    this._onClick = this.handleClick.bind(this);\n    this._interval = setInterval(() => this.update(), 5000);\n    this.el.addEventListener('click', this._onClick);\n  }\n  destroy() {\n    clearInterval(this._interval);\n    this.el.removeEventListener('click', this._onClick);\n    this.data = null;\n    this.el = null;\n  }\n}\n```",
+        },
+        {
+          type: "tricky",
+          q: "Can circular references cause memory leaks in modern JavaScript?",
+          a: "In modern engines: No. Mark-and-Sweep handles circular references — if neither object is reachable from a root, both are collected. In older IE (reference counting GC): Yes — circular references between JS objects and DOM elements caused leaks. This is no longer an issue.",
+        },
+        {
+          type: "scenario",
+          q: "How would you debug a memory leak in a web application?",
+          a: "1) Chrome DevTools → Performance tab → record and look for increasing memory. 2) Memory tab → take Heap Snapshots, compare over time. 3) Look for 'Detached DOM tree' in heap. 4) Use Allocation Timeline to see what's being allocated. 5) Check for common patterns: event listeners, timers, closures, global state.",
+        },
+      ],
     },
     {
       id: "security",
@@ -878,17 +1059,37 @@ function validateInput(input) {
         "Storing auth tokens in localStorage — XSS can steal them. Use HttpOnly cookies instead",
         "Not using SameSite on cookies — leaves you vulnerable to CSRF",
         "Trusting client-side validation only — always validate on the server too",
-        "Using `eval()`, `new Function()`, or `innerHTML` with untrusted data"
+        "Using `eval()`, `new Function()`, or `innerHTML` with untrusted data",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is XSS and how do you prevent it?", a: "XSS injects malicious scripts into web pages. Types: **Stored** (saved in DB), **Reflected** (in URL params), **DOM-based** (client-side manipulation). Prevent with: 1) Escape/sanitize all user input. 2) Use `textContent` instead of `innerHTML`. 3) CSP headers. 4) HttpOnly cookies. 5) DOMPurify library for HTML." },
-        { type: "conceptual", q: "What is CSRF and how do you prevent it?", a: "CSRF tricks authenticated users into making unwanted requests. Attacker creates a form/request that auto-submits to your site using the user's cookies. Prevent with: 1) CSRF tokens (unique per session/request). 2) `SameSite` cookie attribute. 3) Check `Origin`/`Referer` headers. 4) Re-authenticate for sensitive actions." },
-        { type: "coding", q: "Write a function to escape HTML characters to prevent XSS.", a: "```js\nfunction escapeHTML(str) {\n  const map = {\n    '&': '&amp;', '<': '&lt;', '>': '&gt;',\n    '\"': '&quot;', \"'\": '&#39;'\n  };\n  return str.replace(/[&<>\"']/g, c => map[c]);\n}\n```" },
-        { type: "conceptual", q: "What is Content Security Policy (CSP)?", a: "CSP is an HTTP header that tells the browser which resources are allowed to load/execute. Example: `script-src 'self'` only allows scripts from the same origin, blocking injected inline scripts. Directives: `default-src`, `script-src`, `style-src`, `img-src`, `connect-src`, `frame-src`. Effective XSS mitigation." },
-        { type: "scenario", q: "An audit reveals your app is vulnerable to XSS. What steps do you take to fix it?", a: "1) Audit all uses of `innerHTML`, `document.write`, `eval()`. 2) Replace with `textContent` or sanitized output (DOMPurify). 3) Add CSP header blocking inline scripts. 4) Move auth tokens to HttpOnly cookies. 5) Add input validation/sanitization on both client and server. 6) Enable Subresource Integrity for CDN scripts. 7) Add automated XSS scanning to CI/CD." }
-      ]
-    }
-  ]
+        {
+          type: "conceptual",
+          q: "What is XSS and how do you prevent it?",
+          a: "XSS injects malicious scripts into web pages. Types: **Stored** (saved in DB), **Reflected** (in URL params), **DOM-based** (client-side manipulation). Prevent with: 1) Escape/sanitize all user input. 2) Use `textContent` instead of `innerHTML`. 3) CSP headers. 4) HttpOnly cookies. 5) DOMPurify library for HTML.",
+        },
+        {
+          type: "conceptual",
+          q: "What is CSRF and how do you prevent it?",
+          a: "CSRF tricks authenticated users into making unwanted requests. Attacker creates a form/request that auto-submits to your site using the user's cookies. Prevent with: 1) CSRF tokens (unique per session/request). 2) `SameSite` cookie attribute. 3) Check `Origin`/`Referer` headers. 4) Re-authenticate for sensitive actions.",
+        },
+        {
+          type: "coding",
+          q: "Write a function to escape HTML characters to prevent XSS.",
+          a: "```js\nfunction escapeHTML(str) {\n  const map = {\n    '&': '&amp;', '<': '&lt;', '>': '&gt;',\n    '\"': '&quot;', \"'\": '&#39;'\n  };\n  return str.replace(/[&<>\"']/g, c => map[c]);\n}\n```",
+        },
+        {
+          type: "conceptual",
+          q: "What is Content Security Policy (CSP)?",
+          a: "CSP is an HTTP header that tells the browser which resources are allowed to load/execute. Example: `script-src 'self'` only allows scripts from the same origin, blocking injected inline scripts. Directives: `default-src`, `script-src`, `style-src`, `img-src`, `connect-src`, `frame-src`. Effective XSS mitigation.",
+        },
+        {
+          type: "scenario",
+          q: "An audit reveals your app is vulnerable to XSS. What steps do you take to fix it?",
+          a: "1) Audit all uses of `innerHTML`, `document.write`, `eval()`. 2) Replace with `textContent` or sanitized output (DOMPurify). 3) Add CSP header blocking inline scripts. 4) Move auth tokens to HttpOnly cookies. 5) Add input validation/sanitization on both client and server. 6) Enable Subresource Integrity for CDN scripts. 7) Add automated XSS scanning to CI/CD.",
+        },
+      ],
+    },
+  ],
 };
 
 export default phase4;

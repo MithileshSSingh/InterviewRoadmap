@@ -39,7 +39,9 @@ export async function streamCareerForge({
   onEvent,
 }: StreamOptions): Promise<"complete" | "error" | "aborted"> {
   try {
-    const response = await fetch(`/api/careerforge/${roadmapId}/stream`, { signal });
+    const response = await fetch(`/api/careerforge/${roadmapId}/stream`, {
+      signal,
+    });
 
     if (!response.ok || !response.body) return "error";
 

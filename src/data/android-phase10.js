@@ -2,7 +2,8 @@ const androidPhase10 = {
   id: "phase-10",
   title: "Phase 10: Behavioral & Leadership",
   emoji: "👔",
-  description: "Master Google's behavioral interviews — Googleyness, leadership without authority, conflict resolution, and STAR method.",
+  description:
+    "Master Google's behavioral interviews — Googleyness, leadership without authority, conflict resolution, and STAR method.",
   topics: [
     {
       id: "googleyness-leadership",
@@ -109,12 +110,12 @@ Covers: Failure story, process improvement, impact
         {
           type: "behavioral",
           q: "Tell me about a time you influenced a technical decision at the organizational level.",
-          a: "**STAR Framework:** S: 'Our 3 mobile teams each used different networking/caching patterns, causing bugs and duplicate effort.' T: 'I proposed creating a shared networking module.' A: '(1) Documented 15 networking-related bugs across teams in the past quarter. (2) Created an RFC with a design for a shared module. (3) Presented to all 3 tech leads in a cross-team meeting. (4) Volunteered to build the MVP alongside my regular work. (5) Created migration guides for each team. (6) Held office hours to support migration.' R: 'All 3 teams adopted the shared module within 2 months. Networking bugs reduced by 80%. I was recognized in the quarterly engineering all-hands. This became the template for creating shared modules across the org.'"
+          a: "**STAR Framework:** S: 'Our 3 mobile teams each used different networking/caching patterns, causing bugs and duplicate effort.' T: 'I proposed creating a shared networking module.' A: '(1) Documented 15 networking-related bugs across teams in the past quarter. (2) Created an RFC with a design for a shared module. (3) Presented to all 3 tech leads in a cross-team meeting. (4) Volunteered to build the MVP alongside my regular work. (5) Created migration guides for each team. (6) Held office hours to support migration.' R: 'All 3 teams adopted the shared module within 2 months. Networking bugs reduced by 80%. I was recognized in the quarterly engineering all-hands. This became the template for creating shared modules across the org.'",
         },
         {
           type: "behavioral",
           q: "Tell me about a time you had to push back on a product manager or stakeholder.",
-          a: "**STAR Framework:** S: 'PM wanted to ship a major feature in 2 weeks, but the codebase needed refactoring first — tech debt was causing 2-3 bugs per sprint.' T: 'Convince PM that investing 1 sprint in refactoring would pay off.' A: '(1) Collected data: bug rate, time spent on workarounds, projected velocity with/without refactoring. (2) Created a visual showing: ship now = 6 sprints total (including bug fixes) vs refactor first = 5 sprints total. (3) Proposed compromise: refactor the most critical components (1 week) then ship MVP (2 weeks). (4) Committed to tracking velocity improvement.' R: 'PM agreed to the compromise. After refactoring, velocity improved 30%. Feature shipped in 3 weeks total with zero P0 bugs (previous similar feature had 4). PM started consulting me on timeline estimates proactively.'"
+          a: "**STAR Framework:** S: 'PM wanted to ship a major feature in 2 weeks, but the codebase needed refactoring first — tech debt was causing 2-3 bugs per sprint.' T: 'Convince PM that investing 1 sprint in refactoring would pay off.' A: '(1) Collected data: bug rate, time spent on workarounds, projected velocity with/without refactoring. (2) Created a visual showing: ship now = 6 sprints total (including bug fixes) vs refactor first = 5 sprints total. (3) Proposed compromise: refactor the most critical components (1 week) then ship MVP (2 weeks). (4) Committed to tracking velocity improvement.' R: 'PM agreed to the compromise. After refactoring, velocity improved 30%. Feature shipped in 3 weeks total with zero P0 bugs (previous similar feature had 4). PM started consulting me on timeline estimates proactively.'",
         },
       ],
     },
@@ -243,7 +244,7 @@ TRADE-OFFS DISCUSSED:
         {
           type: "scenario",
           q: "Walk me through how you'd design the Android client for a ride-sharing app like Uber.",
-          a: "**Requirements:** Real-time driver location, ride booking, ETA, payment. Offline: limited (show last known state). **Architecture:** MVVM + Clean Architecture. **Key screens:** Map (active ride), Ride Request, Driver Status. **Real-time:** WebSocket for driver location updates (every 2s). FCM for ride status changes (accepted, arrived, completed). **Data:** Room for ride history + cached POIs. **Location:** FusedLocationProvider with PRIORITY_HIGH_ACCURACY during active ride, BALANCED_POWER_ACCURACY otherwise. **Map:** Google Maps SDK with custom markers. Driver position smoothly animated between updates. **Payment:** Tokenized payment via server (never store card details locally). **Error handling:** Network loss during ride → show last known state, queue actions (cancel/rate). Reconnect and sync. **Key trade-off:** Location update frequency: 2s gives smooth tracking but higher battery drain. Use adaptive: 2s during active ride, 30s otherwise."
+          a: "**Requirements:** Real-time driver location, ride booking, ETA, payment. Offline: limited (show last known state). **Architecture:** MVVM + Clean Architecture. **Key screens:** Map (active ride), Ride Request, Driver Status. **Real-time:** WebSocket for driver location updates (every 2s). FCM for ride status changes (accepted, arrived, completed). **Data:** Room for ride history + cached POIs. **Location:** FusedLocationProvider with PRIORITY_HIGH_ACCURACY during active ride, BALANCED_POWER_ACCURACY otherwise. **Map:** Google Maps SDK with custom markers. Driver position smoothly animated between updates. **Payment:** Tokenized payment via server (never store card details locally). **Error handling:** Network loss during ride → show last known state, queue actions (cancel/rate). Reconnect and sync. **Key trade-off:** Location update frequency: 2s gives smooth tracking but higher battery drain. Use adaptive: 2s during active ride, 30s otherwise.",
         },
       ],
     },

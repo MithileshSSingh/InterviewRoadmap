@@ -2,7 +2,8 @@ const rnPhase2 = {
   id: "phase-2",
   title: "Phase 2: JavaScript & TypeScript Mastery",
   emoji: "⚡",
-  description: "Deep internals of JavaScript execution — closures, event loop, memory management, prototype chain, async patterns — plus advanced TypeScript for architect-level type safety.",
+  description:
+    "Deep internals of JavaScript execution — closures, event loop, memory management, prototype chain, async patterns — plus advanced TypeScript for architect-level type safety.",
   topics: [
     {
       id: "execution-context-closures",

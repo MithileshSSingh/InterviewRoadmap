@@ -2,7 +2,8 @@ const sfPhase11 = {
   id: "phase-11",
   title: "Phase 11: Declarative Development & Flows",
   emoji: "🔄",
-  description: "Master Salesforce Flows — Screen Flows, Record-Triggered Flows, Scheduled Flows, Auto-Launched Flows, subflows, Flow best practices, and the declarative-first development philosophy.",
+  description:
+    "Master Salesforce Flows — Screen Flows, Record-Triggered Flows, Scheduled Flows, Auto-Launched Flows, subflows, Flow best practices, and the declarative-first development philosophy.",
   topics: [
     {
       id: "sf-flows-mastery",
@@ -233,22 +234,22 @@ public class FlowCalculations {
         "Not bulkifying Flows — Flows that process records individually (no collection variables) fail or hit limits with bulk data operations",
         "Creating multiple Record-Triggered Flows on the same object — combine them into one Flow with Decision elements. Salesforce evaluates order but it can be unpredictable",
         "Not testing Flows with bulk data — use Data Loader to insert 200 records and verify the Flow handles them without errors",
-        "Building complex algorithms in Flow — if the logic requires nested loops, complex math, or map lookups, use Invocable Apex instead"
+        "Building complex algorithms in Flow — if the logic requires nested loops, complex math, or map lookups, use Invocable Apex instead",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "When should you use Flow vs Apex? Give specific examples.",
-          a: "**Flow:** (1) Simple field updates on save (before-save Flow — zero DML cost). (2) Screen-based wizards for data entry. (3) Scheduled reminders and notifications. (4) Business logic that admins need to modify without deployments. **Apex:** (1) Complex calculations with collections and algorithms. (2) External API callouts with error handling and retry. (3) Processing >10,000 records efficiently (Batch Apex). (4) Code that needs comprehensive unit testing. (5) Complex trigger logic with multiple objects and cascading updates. **Bridge:** Use Invocable Apex to combine Flow's declarative UI with Apex's processing power."
+          a: "**Flow:** (1) Simple field updates on save (before-save Flow — zero DML cost). (2) Screen-based wizards for data entry. (3) Scheduled reminders and notifications. (4) Business logic that admins need to modify without deployments. **Apex:** (1) Complex calculations with collections and algorithms. (2) External API callouts with error handling and retry. (3) Processing >10,000 records efficiently (Batch Apex). (4) Code that needs comprehensive unit testing. (5) Complex trigger logic with multiple objects and cascading updates. **Bridge:** Use Invocable Apex to combine Flow's declarative UI with Apex's processing power.",
         },
         {
           type: "tricky",
           q: "What is the difference between before-save and after-save Record-Triggered Flows?",
-          a: "**Before-save:** Runs BEFORE the record is committed to the database. The record does NOT have an Id (on create). You can modify the triggering record's fields directly — changes are saved automatically without DML (free!). Cannot create/update other records. **After-save:** Runs AFTER the record is committed. Record has an Id. Can create/update/delete related records (uses DML). Can call Apex actions, send emails, publish events. **Performance:** Before-save is much faster (no DML). Use it for: default values, field calculations, simple validation. Use after-save for: creating related records, sending notifications, external updates."
-        }
-      ]
-    }
-  ]
+          a: "**Before-save:** Runs BEFORE the record is committed to the database. The record does NOT have an Id (on create). You can modify the triggering record's fields directly — changes are saved automatically without DML (free!). Cannot create/update other records. **After-save:** Runs AFTER the record is committed. Record has an Id. Can create/update/delete related records (uses DML). Can call Apex actions, send emails, publish events. **Performance:** Before-save is much faster (no DML). Use it for: default values, field calculations, simple validation. Use after-save for: creating related records, sending notifications, external updates.",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase11;

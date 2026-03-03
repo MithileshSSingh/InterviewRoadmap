@@ -2,7 +2,8 @@ const androidPhase8 = {
   id: "phase-8",
   title: "Phase 8: Testing & Quality",
   emoji: "🧪",
-  description: "Master testing strategies for production Android apps — unit testing, UI testing, TDD, CI/CD, and code quality enforcement.",
+  description:
+    "Master testing strategies for production Android apps — unit testing, UI testing, TDD, CI/CD, and code quality enforcement.",
   topics: [
     {
       id: "unit-testing-android",
@@ -136,7 +137,7 @@ class MainDispatcherRule(
         {
           type: "conceptual",
           q: "Why does Google prefer fakes over mocks for testing?",
-          a: "Fakes test **behavior** — they're real implementations with simplified internals. Mocks test **implementation** — they verify which methods were called with which arguments. Problems with mocks: (1) Tests break when you refactor internal details (even if behavior is unchanged). (2) Mocks can't catch bugs in interactions between components. (3) Mock setups are verbose and hard to maintain. Fakes are: (1) Reusable across many tests. (2) Implementation-agnostic. (3) Self-validating. Example: FakeRepository uses an in-memory list instead of Room — tests real data flow without a database."
+          a: "Fakes test **behavior** — they're real implementations with simplified internals. Mocks test **implementation** — they verify which methods were called with which arguments. Problems with mocks: (1) Tests break when you refactor internal details (even if behavior is unchanged). (2) Mocks can't catch bugs in interactions between components. (3) Mock setups are verbose and hard to maintain. Fakes are: (1) Reusable across many tests. (2) Implementation-agnostic. (3) Self-validating. Example: FakeRepository uses an in-memory list instead of Room — tests real data flow without a database.",
         },
       ],
     },
@@ -275,7 +276,7 @@ class TaskFeatureTest {
         {
           type: "conceptual",
           q: "Describe your ideal testing strategy for a production Android app.",
-          a: "**Testing pyramid:** (1) **70% Unit tests** — ViewModels, Repositories, Use Cases, Mappers. Fast, run on JVM. Use fakes for dependencies. (2) **20% Integration tests** — Feature-level tests with Hilt test modules and fake data sources. Verify components work together. Run on Robolectric or emulator. (3) **10% E2E tests** — Critical user journeys (onboarding, payment). Run on emulator in CI. Slow but high confidence. **Plus:** Screenshot tests for UI regressions (Paparazzi). **CI:** Unit tests on every PR. Integration + screenshot on merge. E2E nightly."
+          a: "**Testing pyramid:** (1) **70% Unit tests** — ViewModels, Repositories, Use Cases, Mappers. Fast, run on JVM. Use fakes for dependencies. (2) **20% Integration tests** — Feature-level tests with Hilt test modules and fake data sources. Verify components work together. Run on Robolectric or emulator. (3) **10% E2E tests** — Critical user journeys (onboarding, payment). Run on emulator in CI. Slow but high confidence. **Plus:** Screenshot tests for UI regressions (Paparazzi). **CI:** Unit tests on every PR. Integration + screenshot on merge. E2E nightly.",
         },
       ],
     },
@@ -402,7 +403,7 @@ style:
         {
           type: "scenario",
           q: "Design a CI/CD pipeline for an Android team of 10 engineers.",
-          a: "**PR checks (fast, < 5 min):** Lint (ktlint + Detekt), unit tests, build check. Run on every PR. **Merge to main (< 15 min):** Full unit tests, integration tests, screenshot tests, debug build. **Nightly (< 60 min):** Instrumented tests on emulator, E2E tests, performance benchmarks, release build. **Release:** Weekly canary to internal testers (Firebase App Dist), bi-weekly staged rollout (1% → 10% → 50% → 100%) via Play Console API. **Monitoring:** Crash rate alerts via Crashlytics, ANR rate via Play Console, performance dashboards. **Key infrastructure:** GitHub Actions with macOS runners for instrumented tests, Gradle remote build cache for speed."
+          a: "**PR checks (fast, < 5 min):** Lint (ktlint + Detekt), unit tests, build check. Run on every PR. **Merge to main (< 15 min):** Full unit tests, integration tests, screenshot tests, debug build. **Nightly (< 60 min):** Instrumented tests on emulator, E2E tests, performance benchmarks, release build. **Release:** Weekly canary to internal testers (Firebase App Dist), bi-weekly staged rollout (1% → 10% → 50% → 100%) via Play Console API. **Monitoring:** Crash rate alerts via Crashlytics, ANR rate via Play Console, performance dashboards. **Key infrastructure:** GitHub Actions with macOS runners for instrumented tests, Gradle remote build cache for speed.",
         },
       ],
     },

@@ -2,7 +2,8 @@ const sfPhase9 = {
   id: "phase-9",
   title: "Phase 9: Design Patterns & Architecture",
   emoji: "🏛️",
-  description: "Enterprise design patterns for Salesforce: Trigger frameworks, Service Layer, Domain Layer, Selector Layer, Unit of Work, Strategy pattern, and SOLID principles applied to Apex.",
+  description:
+    "Enterprise design patterns for Salesforce: Trigger frameworks, Service Layer, Domain Layer, Selector Layer, Unit of Work, Strategy pattern, and SOLID principles applied to Apex.",
   topics: [
     {
       id: "sf-enterprise-design-patterns",
@@ -238,20 +239,20 @@ public class TriggerHandlerFactory {
         "Mixing query logic into service/domain classes — all SOQL should be in Selectors for reusability and security enforcement",
         "Not using interfaces for dependency injection — concrete class dependencies make testing difficult. Always depend on abstractions",
         "Ignoring Apex's limitations when applying Java patterns — Apex lacks generics, has limited reflection, and has governor limits. Adapt patterns accordingly",
-        "Creating too many small classes — the Apex class limit per org is ~6,000. Balance class count with maintainability"
+        "Creating too many small classes — the Apex class limit per org is ~6,000. Balance class count with maintainability",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Describe the Apex Enterprise Patterns (Service, Domain, Selector) and why they matter.",
-          a: "**Service Layer:** Public entry point for business operations. Called by triggers, LWC, APIs, Batch. Contains orchestration logic, NOT field-level rules. Example: `OrderService.placeOrder(items)`. **Domain Layer:** Object-specific business rules — validation, defaults, calculations. Encapsulates what an Opportunity 'knows about itself'. **Selector Layer:** All SOQL for an object in one class. Enforces FLS/CRUD, provides consistent field lists, enables caching. **Why they matter:** (1) Testability — mock Selectors in tests. (2) Reusability — Service methods called from anywhere. (3) Maintainability — changes isolated to relevant layer. (4) Security — Selectors enforce access. (5) Scalability — clear boundaries prevent spaghetti code."
+          a: "**Service Layer:** Public entry point for business operations. Called by triggers, LWC, APIs, Batch. Contains orchestration logic, NOT field-level rules. Example: `OrderService.placeOrder(items)`. **Domain Layer:** Object-specific business rules — validation, defaults, calculations. Encapsulates what an Opportunity 'knows about itself'. **Selector Layer:** All SOQL for an object in one class. Enforces FLS/CRUD, provides consistent field lists, enables caching. **Why they matter:** (1) Testability — mock Selectors in tests. (2) Reusability — Service methods called from anywhere. (3) Maintainability — changes isolated to relevant layer. (4) Security — Selectors enforce access. (5) Scalability — clear boundaries prevent spaghetti code.",
         },
         {
           type: "scenario",
           q: "You inherit a 2,000-line trigger handler. How do you refactor it?",
-          a: "**Step-by-step refactoring:** (1) **Analyze:** Read the entire handler. Map responsibilities: validation, queries, calculations, DML, callouts. (2) **Extract Selectors:** Move all SOQL into `ObjectSelector` classes. Each method returns records for a specific use case. (3) **Extract Domain:** Move validation and field-level logic into a Domain class. (4) **Extract Services:** Move multi-object orchestration into Service classes. (5) **Introduce patterns:** Strategy for conditional logic, Factory for dynamic handlers. (6) **Write tests FIRST:** Before refactoring, write tests that verify current behavior. (7) **Refactor incrementally:** Extract one method at a time, verify tests pass. (8) **Result:** Handler becomes ~50 lines delegating to Service methods."
-        }
-      ]
+          a: "**Step-by-step refactoring:** (1) **Analyze:** Read the entire handler. Map responsibilities: validation, queries, calculations, DML, callouts. (2) **Extract Selectors:** Move all SOQL into `ObjectSelector` classes. Each method returns records for a specific use case. (3) **Extract Domain:** Move validation and field-level logic into a Domain class. (4) **Extract Services:** Move multi-object orchestration into Service classes. (5) **Introduce patterns:** Strategy for conditional logic, Factory for dynamic handlers. (6) **Write tests FIRST:** Before refactoring, write tests that verify current behavior. (7) **Refactor incrementally:** Extract one method at a time, verify tests pass. (8) **Result:** Handler becomes ~50 lines delegating to Service methods.",
+        },
+      ],
     },
     {
       id: "sf-architecture-scalability",
@@ -415,17 +416,17 @@ public class CrossOrgDataService {
         "Not considering governor limits in architecture decisions — every architectural component shares the same transaction limits when triggered synchronously",
         "Over-customizing when configuration works — Custom Metadata Types, Flow, and declarative tools are often more maintainable than Apex",
         "Not planning for scale from the start — retroactively fixing performance for LDV is much harder than designing for it",
-        "Ignoring the 3 releases per year — Salesforce pushes updates 3 times/year. Your architecture must survive automatic platform upgrades"
+        "Ignoring the 3 releases per year — Salesforce pushes updates 3 times/year. Your architecture must survive automatic platform upgrades",
       ],
       interviewQuestions: [
         {
           type: "scenario",
           q: "Your company is acquiring another company that also uses Salesforce. How do you approach the architecture?",
-          a: "**Phase 1 — Assessment:** (1) Inventory both orgs: objects, customizations, integrations, data volumes. (2) Identify overlapping data (shared customers, products). (3) Assess compliance requirements (do both need separate data residency?). **Phase 2 — Decision:** (a) **Merge into one org** if: same business model, shared customers, no compliance barriers. (b) **Keep separate** if: different industries, regulatory requirements, temporary until integration. (c) **Hybrid** if: shared customer view needed but independent operations. **Phase 3 — Implementation:** For single org: data migration plan, field mapping, permission realignment. For multi-org: Salesforce Connect for cross-org visibility, shared Master Data Management, unified reporting via CRM Analytics."
-        }
-      ]
-    }
-  ]
+          a: "**Phase 1 — Assessment:** (1) Inventory both orgs: objects, customizations, integrations, data volumes. (2) Identify overlapping data (shared customers, products). (3) Assess compliance requirements (do both need separate data residency?). **Phase 2 — Decision:** (a) **Merge into one org** if: same business model, shared customers, no compliance barriers. (b) **Keep separate** if: different industries, regulatory requirements, temporary until integration. (c) **Hybrid** if: shared customer view needed but independent operations. **Phase 3 — Implementation:** For single org: data migration plan, field mapping, permission realignment. For multi-org: Salesforce Connect for cross-org visibility, shared Master Data Management, unified reporting via CRM Analytics.",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase9;

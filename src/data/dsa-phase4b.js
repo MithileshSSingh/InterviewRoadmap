@@ -109,20 +109,20 @@ class MinSegTree {
       "Incorrect tree size — always allocate 4*n, not 2*n (the tree can be deeper than expected)",
       "Off-by-one in range endpoints — be consistent with inclusive [l, r] boundaries",
       "Not implementing lazy propagation for range updates — without it, range updates are O(n)",
-      "Confusing 0-indexed array with 1-indexed tree — the tree typically starts at index 1"
+      "Confusing 0-indexed array with 1-indexed tree — the tree typically starts at index 1",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "When would you use a segment tree over a prefix sum array?",
-        a: "Prefix sum: O(1) query, O(n) update — best when data is static. Segment tree: O(log n) for both query AND update — best when data changes frequently. Use segment tree when you need: 1) Both range queries AND point/range updates. 2) Dynamic data that changes between queries. 3) More complex queries (min, max, GCD over a range)."
+        a: "Prefix sum: O(1) query, O(n) update — best when data is static. Segment tree: O(log n) for both query AND update — best when data changes frequently. Use segment tree when you need: 1) Both range queries AND point/range updates. 2) Dynamic data that changes between queries. 3) More complex queries (min, max, GCD over a range).",
       },
       {
         type: "coding",
         q: "Implement a range sum segment tree with point update.",
-        a: "See the SegmentTree class above. Key: build O(n), query O(log n), update O(log n). Each internal node stores the sum of its range. Query splits into at most O(log n) segments. Update propagates up O(log n) levels to update ancestor sums."
-      }
-    ]
+        a: "See the SegmentTree class above. Key: build O(n), query O(log n), update O(log n). Each internal node stores the sum of its range. Query splits into at most O(log n) segments. Update propagates up O(log n) levels to update ancestor sums.",
+      },
+    ],
   },
   {
     id: "binary-indexed-tree",
@@ -249,20 +249,20 @@ class BIT2D {
       "BIT only supports prefix operations efficiently — range operations need subtraction trick",
       "BIT cannot do range min/max — only additive operations (sum, count); use segment tree for min/max",
       "Forgetting to coordinate-compress before using BIT for inversion counting — values may be too large",
-      "Not understanding lowbit(x) = x & (-x) — this is the fundamental building block"
+      "Not understanding lowbit(x) = x & (-x) — this is the fundamental building block",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "When would you use a BIT over a segment tree?",
-        a: "Use BIT when: 1) You only need **prefix queries** (sum, count) — not min/max. 2) You want **simpler code** — BIT is ~10 lines vs 50+ for segment tree. 3) You want better **constant factor** (BIT is faster in practice). Use segment tree when: you need range min/max, lazy propagation for range updates, or more complex queries."
+        a: "Use BIT when: 1) You only need **prefix queries** (sum, count) — not min/max. 2) You want **simpler code** — BIT is ~10 lines vs 50+ for segment tree. 3) You want better **constant factor** (BIT is faster in practice). Use segment tree when: you need range min/max, lazy propagation for range updates, or more complex queries.",
       },
       {
         type: "coding",
         q: "Count the number of inversions in an array efficiently.",
-        a: "Use BIT: iterate right-to-left, for each element query how many smaller elements are to its right (already processed). Time: O(n log n). Requires coordinate compression if values are large."
-      }
-    ]
+        a: "Use BIT: iterate right-to-left, for each element query how many smaller elements are to its right (already processed). Time: O(n log n). Requires coordinate compression if values are large.",
+      },
+    ],
   },
   {
     id: "balanced-bst",
@@ -383,20 +383,20 @@ class AVLTree {
       "Not knowing that JavaScript has no built-in ordered set/map — this affects DS selection in interviews",
       "Confusing BST balance with heap property — they're completely different invariants",
       "Using a balanced BST when a hash map suffices — only use BST when you need ordering",
-      "Not mentioning balanced BSTs when appropriate — 'I'd use a sorted structure for O(log n) operations'"
+      "Not mentioning balanced BSTs when appropriate — 'I'd use a sorted structure for O(log n) operations'",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "Why do we need self-balancing BSTs? When would you use one?",
-        a: "Regular BST degrades to O(n) with sorted input (becomes a linked list). Self-balancing BSTs guarantee O(log n) by rebalancing after operations. Use when you need: 1) **Ordered** data with fast insert/delete/search. 2) **Range queries** (elements between X and Y). 3) **Kth smallest/largest** in dynamic data. Hash maps are faster (O(1)) but don't support ordering."
+        a: "Regular BST degrades to O(n) with sorted input (becomes a linked list). Self-balancing BSTs guarantee O(log n) by rebalancing after operations. Use when you need: 1) **Ordered** data with fast insert/delete/search. 2) **Range queries** (elements between X and Y). 3) **Kth smallest/largest** in dynamic data. Hash maps are faster (O(1)) but don't support ordering.",
       },
       {
         type: "conceptual",
         q: "What are the 4 rotation cases in AVL trees?",
-        a: "1) **Left-Left (LL)**: left-heavy, left child is left-heavy → right rotate. 2) **Right-Right (RR)**: right-heavy, right child is right-heavy → left rotate. 3) **Left-Right (LR)**: left-heavy, left child is right-heavy → left rotate child, then right rotate. 4) **Right-Left (RL)**: right-heavy, right child is left-heavy → right rotate child, then left rotate."
-      }
-    ]
+        a: "1) **Left-Left (LL)**: left-heavy, left child is left-heavy → right rotate. 2) **Right-Right (RR)**: right-heavy, right child is right-heavy → left rotate. 3) **Left-Right (LR)**: left-heavy, left child is right-heavy → left rotate child, then right rotate. 4) **Right-Left (RL)**: right-heavy, right child is left-heavy → right rotate child, then left rotate.",
+      },
+    ],
   },
   {
     id: "bloom-filters",
@@ -529,20 +529,20 @@ class CountingBloomFilter {
       "Using too few hash functions — increases false positive rate",
       "Using too many hash functions — fills the bit array too quickly, also increases false positives",
       "Trying to delete from a standard Bloom filter — use counting Bloom filter for deletion",
-      "Using Bloom filters when exact results are needed — they're probabilistic by design"
+      "Using Bloom filters when exact results are needed — they're probabilistic by design",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "How does a Bloom filter work and what are its trade-offs?",
-        a: "A bit array with k hash functions. Insert: set k bit positions. Query: check k positions — all 1 = 'maybe yes', any 0 = 'definitely no'. Trade-offs: **Space-efficient** (bits vs objects), **fast** (O(k) operations), but has **false positives** (can say 'yes' when answer is 'no'). No false negatives. Cannot delete (standard version). False positive rate decreases with more bits, increases with more elements."
+        a: "A bit array with k hash functions. Insert: set k bit positions. Query: check k positions — all 1 = 'maybe yes', any 0 = 'definitely no'. Trade-offs: **Space-efficient** (bits vs objects), **fast** (O(k) operations), but has **false positives** (can say 'yes' when answer is 'no'). No false negatives. Cannot delete (standard version). False positive rate decreases with more bits, increases with more elements.",
       },
       {
         type: "scenario",
         q: "When would you use a Bloom filter in a real system?",
-        a: "1) **Database queries**: check if a row exists before expensive disk read. 2) **Web crawlers**: avoid re-crawling URLs. 3) **CDN**: quickly check if content is cached. 4) **Recommendation systems**: filter out already-seen items. 5) **Security**: check if password is in breach list without storing passwords. Best when: set is large, memory is limited, false positives are acceptable."
-      }
-    ]
+        a: "1) **Database queries**: check if a row exists before expensive disk read. 2) **Web crawlers**: avoid re-crawling URLs. 3) **CDN**: quickly check if content is cached. 4) **Recommendation systems**: filter out already-seen items. 5) **Security**: check if password is in breach list without storing passwords. Best when: set is large, memory is limited, false positives are acceptable.",
+      },
+    ],
   },
   {
     id: "skip-lists",
@@ -689,20 +689,20 @@ console.log(sl.search(19)); // null`,
       "Using too many levels — maxLevel = log₂(n) is sufficient; more wastes space",
       "Not handling the update array correctly during insertion — must track predecessors at all levels",
       "Comparing skip lists only to arrays — compare to balanced BSTs for a fair assessment",
-      "Forgetting that skip lists excel at concurrent access — this is a major real-world advantage"
+      "Forgetting that skip lists excel at concurrent access — this is a major real-world advantage",
     ],
     interviewQuestions: [
       {
         type: "conceptual",
         q: "What is a skip list and why would you use it over a balanced BST?",
-        a: "A skip list is a multi-level sorted linked list where higher levels act as 'express lanes'. Advantages over balanced BSTs: 1) **Simpler implementation** — no rotations. 2) **Easier concurrency** — lock-free versions are practical. 3) **Range queries** — follow forward pointers. 4) **Memory locality** — linked list nodes can be adjacent. Used in Redis (sorted sets) and LevelDB (memtable)."
+        a: "A skip list is a multi-level sorted linked list where higher levels act as 'express lanes'. Advantages over balanced BSTs: 1) **Simpler implementation** — no rotations. 2) **Easier concurrency** — lock-free versions are practical. 3) **Range queries** — follow forward pointers. 4) **Memory locality** — linked list nodes can be adjacent. Used in Redis (sorted sets) and LevelDB (memtable).",
       },
       {
         type: "conceptual",
         q: "How does a skip list achieve O(log n) expected time?",
-        a: "Each element is promoted to the next level with probability p (usually 0.5). This creates log(n) levels on average. Search starts from the top: each level roughly halves the remaining elements to scan, similar to binary search. Expected comparisons: O(log n). The key insight: randomization replaces the complex rebalancing of AVL/Red-Black trees."
-      }
-    ]
+        a: "Each element is promoted to the next level with probability p (usually 0.5). This creates log(n) levels on average. Search starts from the top: each level roughly halves the remaining elements to scan, similar to binary search. Expected comparisons: O(log n). The key insight: randomization replaces the complex rebalancing of AVL/Red-Black trees.",
+      },
+    ],
   },
   {
     id: "monotonic-stack-queue",
@@ -807,21 +807,21 @@ function maxSlidingWindow(nums, k) {
       "Storing values in stack instead of indices — indices are needed to compute distances and window bounds",
       "Forgetting sentinel values — adding 0 at the end of histogram heights ensures all bars are processed",
       "Confusing increasing vs decreasing stack — for 'next greater', use decreasing (pop when element is greater)",
-      "Not understanding amortized O(n) — each element enters/exits the stack at most once → total O(n)"
+      "Not understanding amortized O(n) — each element enters/exits the stack at most once → total O(n)",
     ],
     interviewQuestions: [
       {
         type: "coding",
         q: "Find the largest rectangle in a histogram.",
-        a: "```js\nfunction largestRect(h) {\n  const s = [];\n  let max = 0;\n  h.push(0);\n  for (let i = 0; i < h.length; i++) {\n    while (s.length && h[i] < h[s[s.length-1]]) {\n      const height = h[s.pop()];\n      const width = s.length ? i - s[s.length-1] - 1 : i;\n      max = Math.max(max, height * width);\n    }\n    s.push(i);\n  }\n  h.pop();\n  return max;\n}\n// O(n) — each bar pushed/popped once\n```"
-        },
+        a: "```js\nfunction largestRect(h) {\n  const s = [];\n  let max = 0;\n  h.push(0);\n  for (let i = 0; i < h.length; i++) {\n    while (s.length && h[i] < h[s[s.length-1]]) {\n      const height = h[s.pop()];\n      const width = s.length ? i - s[s.length-1] - 1 : i;\n      max = Math.max(max, height * width);\n    }\n    s.push(i);\n  }\n  h.pop();\n  return max;\n}\n// O(n) — each bar pushed/popped once\n```",
+      },
       {
         type: "conceptual",
         q: "How does a monotonic deque solve sliding window maximum in O(n)?",
-        a: "The deque stores indices in decreasing order of values. For each new element: 1) Remove indices outside the window from the front. 2) Remove indices of smaller elements from the back (they'll never be the max). 3) Push current index. The front of the deque is always the maximum of the current window. Each element enters and leaves the deque at most once → O(n) total."
-      }
-    ]
-  }
+        a: "The deque stores indices in decreasing order of values. For each new element: 1) Remove indices outside the window from the front. 2) Remove indices of smaller elements from the back (they'll never be the max). 3) Push current index. The front of the deque is always the maximum of the current window. Each element enters and leaves the deque at most once → O(n) total.",
+      },
+    ],
+  },
 ];
 
 export default dsaPhase4b;

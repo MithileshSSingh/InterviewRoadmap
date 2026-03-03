@@ -19,7 +19,8 @@ export default function TopicCard({ topic, roadmapId, onToggle }) {
   const [expanded, setExpanded] = useState(false);
   const [completing, setCompleting] = useState(false);
 
-  const diffColor = DIFFICULTY_COLORS[topic.difficulty?.toLowerCase()] ?? "#6366f1";
+  const diffColor =
+    DIFFICULTY_COLORS[topic.difficulty?.toLowerCase()] ?? "#6366f1";
   const catLabel = CATEGORY_LABELS[topic.category] ?? topic.category;
 
   async function handleCheck(e) {
@@ -52,7 +53,9 @@ export default function TopicCard({ topic, roadmapId, onToggle }) {
         transition: "opacity 0.2s, border-color 0.2s",
       }}
     >
-      <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+      <div
+        style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}
+      >
         {/* Completion checkbox */}
         <input
           type="checkbox"
@@ -71,27 +74,46 @@ export default function TopicCard({ topic, roadmapId, onToggle }) {
 
         <div style={{ flex: 1 }}>
           {/* Topic name + badges */}
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.4rem", marginBottom: "0.4rem" }}>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: "0.4rem",
+              marginBottom: "0.4rem",
+            }}
+          >
             <span
               style={{
                 fontWeight: 600,
                 fontSize: "0.95rem",
                 textDecoration: topic.completed ? "line-through" : "none",
-                color: topic.completed ? "var(--text-secondary)" : "var(--text-primary)",
+                color: topic.completed
+                  ? "var(--text-secondary)"
+                  : "var(--text-primary)",
               }}
             >
               {topic.name}
             </span>
             <span style={badgeStyle(diffColor)}>{topic.difficulty}</span>
             <span style={badgeStyle("var(--text-secondary)")}>{catLabel}</span>
-            <span style={{ fontSize: "0.72rem", color: "var(--text-secondary)" }}>
+            <span
+              style={{ fontSize: "0.72rem", color: "var(--text-secondary)" }}
+            >
               ~{topic.estimatedHours}h
             </span>
           </div>
 
           {/* Subtopics */}
           {topic.subtopics?.length > 0 && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginBottom: "0.5rem" }}>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "0.3rem",
+                marginBottom: "0.5rem",
+              }}
+            >
               {topic.subtopics.map((s) => (
                 <span
                   key={s}
@@ -125,7 +147,8 @@ export default function TopicCard({ topic, roadmapId, onToggle }) {
                   padding: 0,
                 }}
               >
-                {expanded ? "▾ Hide" : "▸ Show"} {topic.resources.length} resource{topic.resources.length !== 1 ? "s" : ""}
+                {expanded ? "▾ Hide" : "▸ Show"} {topic.resources.length}{" "}
+                resource{topic.resources.length !== 1 ? "s" : ""}
               </button>
               {expanded && (
                 <div style={{ marginTop: "0.5rem" }}>

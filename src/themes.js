@@ -20,17 +20,19 @@ const themes = {
       "--accent-red": "#f87171",
       "--accent-purple": "#a78bfa",
       "--accent-pink": "#f472b6",
-      "--gradient-hero": "linear-gradient(135deg, #6366f1 0%, #8b5cf6 30%, #a855f7 60%, #d946ef 100%)",
-      "--gradient-card": "linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.05))",
+      "--gradient-hero":
+        "linear-gradient(135deg, #6366f1 0%, #8b5cf6 30%, #a855f7 60%, #d946ef 100%)",
+      "--gradient-card":
+        "linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.05))",
       "--glass": "rgba(22,22,58,0.7)",
       "--glass-border": "rgba(99,102,241,0.2)",
       "--code-header-bg": "#1a1a3e",
       "--line-number-color": "#4a4a7a",
       "--code-bg": "#0d1117",
       "--accent-bg": "rgba(99,102,241,0.12)",
-      "--hover-shadow": "rgba(99,102,241,0.15)"
+      "--hover-shadow": "rgba(99,102,241,0.15)",
     },
-    preview: ["#0a0a1a", "#6366f1", "#22d3ee", "#a78bfa"]
+    preview: ["#0a0a1a", "#6366f1", "#22d3ee", "#a78bfa"],
   },
   "emerald-forest": {
     name: "Emerald Forest",
@@ -53,17 +55,19 @@ const themes = {
       "--accent-red": "#f87171",
       "--accent-purple": "#6ee7b7",
       "--accent-pink": "#a7f3d0",
-      "--gradient-hero": "linear-gradient(135deg, #10b981 0%, #34d399 30%, #6ee7b7 60%, #a7f3d0 100%)",
-      "--gradient-card": "linear-gradient(135deg, rgba(16,185,129,0.08), rgba(52,211,153,0.03))",
+      "--gradient-hero":
+        "linear-gradient(135deg, #10b981 0%, #34d399 30%, #6ee7b7 60%, #a7f3d0 100%)",
+      "--gradient-card":
+        "linear-gradient(135deg, rgba(16,185,129,0.08), rgba(52,211,153,0.03))",
       "--glass": "rgba(14,33,25,0.7)",
       "--glass-border": "rgba(16,185,129,0.18)",
       "--code-header-bg": "#0b1a12",
       "--line-number-color": "#3a6b50",
       "--code-bg": "#070f0b",
       "--accent-bg": "rgba(16,185,129,0.12)",
-      "--hover-shadow": "rgba(16,185,129,0.15)"
+      "--hover-shadow": "rgba(16,185,129,0.15)",
     },
-    preview: ["#0a1a14", "#10b981", "#a3e635", "#6ee7b7"]
+    preview: ["#0a1a14", "#10b981", "#a3e635", "#6ee7b7"],
   },
   "sunset-amber": {
     name: "Sunset Amber",
@@ -86,17 +90,19 @@ const themes = {
       "--accent-red": "#f87171",
       "--accent-purple": "#fbbf24",
       "--accent-pink": "#fcd34d",
-      "--gradient-hero": "linear-gradient(135deg, #f59e0b 0%, #fbbf24 30%, #fcd34d 60%, #fef3c7 100%)",
-      "--gradient-card": "linear-gradient(135deg, rgba(245,158,11,0.08), rgba(251,191,36,0.03))",
+      "--gradient-hero":
+        "linear-gradient(135deg, #f59e0b 0%, #fbbf24 30%, #fcd34d 60%, #fef3c7 100%)",
+      "--gradient-card":
+        "linear-gradient(135deg, rgba(245,158,11,0.08), rgba(251,191,36,0.03))",
       "--glass": "rgba(33,22,14,0.7)",
       "--glass-border": "rgba(245,158,11,0.18)",
       "--code-header-bg": "#1a1208",
       "--line-number-color": "#6b5530",
       "--code-bg": "#0f0b07",
       "--accent-bg": "rgba(245,158,11,0.12)",
-      "--hover-shadow": "rgba(245,158,11,0.15)"
+      "--hover-shadow": "rgba(245,158,11,0.15)",
     },
-    preview: ["#1a110a", "#f59e0b", "#fde68a", "#fbbf24"]
+    preview: ["#1a110a", "#f59e0b", "#fde68a", "#fbbf24"],
   },
   "rose-quartz": {
     name: "Rose Quartz",
@@ -119,17 +125,19 @@ const themes = {
       "--accent-red": "#f87171",
       "--accent-purple": "#d946ef",
       "--accent-pink": "#f472b6",
-      "--gradient-hero": "linear-gradient(135deg, #ec4899 0%, #d946ef 30%, #f472b6 60%, #f9a8d4 100%)",
-      "--gradient-card": "linear-gradient(135deg, rgba(236,72,153,0.08), rgba(217,70,239,0.03))",
+      "--gradient-hero":
+        "linear-gradient(135deg, #ec4899 0%, #d946ef 30%, #f472b6 60%, #f9a8d4 100%)",
+      "--gradient-card":
+        "linear-gradient(135deg, rgba(236,72,153,0.08), rgba(217,70,239,0.03))",
       "--glass": "rgba(33,16,42,0.7)",
       "--glass-border": "rgba(236,72,153,0.18)",
       "--code-header-bg": "#1a0e22",
       "--line-number-color": "#6b3580",
       "--code-bg": "#0f070f",
       "--accent-bg": "rgba(236,72,153,0.12)",
-      "--hover-shadow": "rgba(236,72,153,0.15)"
+      "--hover-shadow": "rgba(236,72,153,0.15)",
     },
-    preview: ["#1a0a1a", "#ec4899", "#f9a8d4", "#d946ef"]
+    preview: ["#1a0a1a", "#ec4899", "#f9a8d4", "#d946ef"],
   },
   "arctic-blue": {
     name: "Arctic Blue",
@@ -152,19 +160,21 @@ const themes = {
       "--accent-red": "#f87171",
       "--accent-purple": "#7dd3fc",
       "--accent-pink": "#f0abfc",
-      "--gradient-hero": "linear-gradient(135deg, #38bdf8 0%, #7dd3fc 30%, #a5f3fc 60%, #e0f2fe 100%)",
-      "--gradient-card": "linear-gradient(135deg, rgba(56,189,248,0.08), rgba(125,211,252,0.03))",
+      "--gradient-hero":
+        "linear-gradient(135deg, #38bdf8 0%, #7dd3fc 30%, #a5f3fc 60%, #e0f2fe 100%)",
+      "--gradient-card":
+        "linear-gradient(135deg, rgba(56,189,248,0.08), rgba(125,211,252,0.03))",
       "--glass": "rgba(14,26,43,0.7)",
       "--glass-border": "rgba(56,189,248,0.18)",
       "--code-header-bg": "#0c1929",
       "--line-number-color": "#3a5570",
       "--code-bg": "#070e18",
       "--accent-bg": "rgba(56,189,248,0.12)",
-      "--hover-shadow": "rgba(56,189,248,0.15)"
+      "--hover-shadow": "rgba(56,189,248,0.15)",
     },
-    preview: ["#0a1420", "#38bdf8", "#67e8f9", "#7dd3fc"]
+    preview: ["#0a1420", "#38bdf8", "#67e8f9", "#7dd3fc"],
   },
-  "monochrome": {
+  monochrome: {
     name: "Monochrome",
     emoji: "🖤",
     description: "Pure black and white, no distractions",
@@ -185,18 +195,20 @@ const themes = {
       "--accent-red": "#ff6b6b",
       "--accent-purple": "#d0d0d0",
       "--accent-pink": "#c8c8c8",
-      "--gradient-hero": "linear-gradient(135deg, #ffffff 0%, #d4d4d4 30%, #a0a0a0 60%, #666666 100%)",
-      "--gradient-card": "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(200,200,200,0.02))",
+      "--gradient-hero":
+        "linear-gradient(135deg, #ffffff 0%, #d4d4d4 30%, #a0a0a0 60%, #666666 100%)",
+      "--gradient-card":
+        "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(200,200,200,0.02))",
       "--glass": "rgba(17,17,17,0.7)",
       "--glass-border": "rgba(255,255,255,0.12)",
       "--code-header-bg": "#141414",
       "--line-number-color": "#444444",
       "--code-bg": "#0d0d0d",
       "--accent-bg": "rgba(255,255,255,0.08)",
-      "--hover-shadow": "rgba(255,255,255,0.1)"
+      "--hover-shadow": "rgba(255,255,255,0.1)",
     },
-    preview: ["#0a0a0a", "#ffffff", "#a0a0a0", "#444444"]
-  }
+    preview: ["#0a0a0a", "#ffffff", "#a0a0a0", "#444444"],
+  },
 };
 
 export default themes;

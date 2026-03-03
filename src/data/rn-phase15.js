@@ -2,7 +2,8 @@ const rnPhase15 = {
   id: "phase-15",
   title: "Phase 15: 90-Day Action Plan",
   emoji: "📅",
-  description: "A concrete 90-day plan to execute this roadmap — daily study schedule, weekly milestones, mock interview cadence, portfolio deliverables, and tracking system.",
+  description:
+    "A concrete 90-day plan to execute this roadmap — daily study schedule, weekly milestones, mock interview cadence, portfolio deliverables, and tracking system.",
   topics: [
     {
       id: "ninety-day-plan",

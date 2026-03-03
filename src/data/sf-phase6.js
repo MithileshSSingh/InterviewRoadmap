@@ -2,7 +2,8 @@ const sfPhase6 = {
   id: "phase-6",
   title: "Phase 6: Data Management & Advanced Security",
   emoji: "🔐",
-  description: "Master large data volume management, data migration strategies, field-level security, encryption, Shield Platform Encryption, compliance (GDPR/HIPAA), and data archival.",
+  description:
+    "Master large data volume management, data migration strategies, field-level security, encryption, Shield Platform Encryption, compliance (GDPR/HIPAA), and data archival.",
   topics: [
     {
       id: "sf-large-data-volumes",
@@ -171,20 +172,20 @@ public class LargeAccountBatch implements Database.Batchable<SObject> {
         "Not requesting custom indexes on frequently queried fields — without indexes, queries on 1M+ record objects will time out or fail",
         "Creating lookup relationships to widely-shared records (data skew) — one Account with 10M Contacts causes lock contention on every Contact update",
         "Not planning for data growth — an object that's fine at 100K records may fail at 1M. Design for 10x your current volume",
-        "Using SOQL for text search on LDV — SOQL LIKE queries don't use indexes with leading wildcards. Use SOSL (search index) instead"
+        "Using SOQL for text search on LDV — SOQL LIKE queries don't use indexes with leading wildcards. Use SOSL (search index) instead",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What strategies do you use for managing large data volumes in Salesforce?",
-          a: "**Performance:** (1) Custom indexes on filtered fields. (2) Skinny tables for wide objects. (3) Selective SOQL queries. (4) SOSL for text search. **Processing:** (5) Batch Apex for bulk operations (50M records via QueryLocator). (6) Chunked processing (200 records per execute). **Archival:** (7) Big Objects for structured archival. (8) External Objects for accessing archived data. **Skew prevention:** (9) Distribute ownership across users/queues. (10) Avoid single-parent records with millions of children. **Monitoring:** Query Plan tool, debug logs, Salesforce Optimizer."
+          a: "**Performance:** (1) Custom indexes on filtered fields. (2) Skinny tables for wide objects. (3) Selective SOQL queries. (4) SOSL for text search. **Processing:** (5) Batch Apex for bulk operations (50M records via QueryLocator). (6) Chunked processing (200 records per execute). **Archival:** (7) Big Objects for structured archival. (8) External Objects for accessing archived data. **Skew prevention:** (9) Distribute ownership across users/queues. (10) Avoid single-parent records with millions of children. **Monitoring:** Query Plan tool, debug logs, Salesforce Optimizer.",
         },
         {
           type: "tricky",
           q: "What is data skew and how does it affect Salesforce performance?",
-          a: "Data skew occurs when data distribution is heavily unbalanced. **Three types:** (1) **Account skew** — one Account has millions of child records (Contacts, Opportunities). Causes: sharing recalculation on every child update, record locking. (2) **Ownership skew** — one User owns millions of records. Causes: role hierarchy-based sharing recalculation cascades. (3) **Lookup skew** — many records point to the same parent via lookup. Causes: lock contention when multiple updates target the same parent. **Fix:** Distribute data across multiple parent records, use queues for ownership, avoid single-point-of-reference patterns."
-        }
-      ]
+          a: "Data skew occurs when data distribution is heavily unbalanced. **Three types:** (1) **Account skew** — one Account has millions of child records (Contacts, Opportunities). Causes: sharing recalculation on every child update, record locking. (2) **Ownership skew** — one User owns millions of records. Causes: role hierarchy-based sharing recalculation cascades. (3) **Lookup skew** — many records point to the same parent via lookup. Causes: lock contention when multiple updates target the same parent. **Fix:** Distribute data across multiple parent records, use queues for ownership, avoid single-point-of-reference patterns.",
+        },
+      ],
     },
     {
       id: "sf-shield-security-compliance",
@@ -371,22 +372,22 @@ public with sharing class ComplianceService {
         "Trying to filter SOQL on encrypted fields — Shield encryption prevents WHERE clause filtering. Query by non-encrypted fields and filter in Apex",
         "Logging PII in debug logs — debug logs may be accessible to admins. Never log SSN, credit cards, passwords, or health data",
         "Hard-deleting GDPR-protected data without audit trail — always log what was deleted, when, and why for compliance audits",
-        "Assuming 'with sharing' enforces FLS — 'with sharing' only enforces record-level security (OWD/sharing rules). FLS requires explicit checks with Security.stripInaccessible()"
+        "Assuming 'with sharing' enforces FLS — 'with sharing' only enforces record-level security (OWD/sharing rules). FLS requires explicit checks with Security.stripInaccessible()",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is Salesforce Shield and when would you use it?",
-          a: "Shield is a security add-on for regulated industries. **3 components:** (1) **Platform Encryption** — AES-256 encryption at rest for sensitive fields. Customer-managed keys (BYOK) available. Use for: SSN, credit cards, health data. (2) **Event Monitoring** — Detailed logs of user activity (logins, API calls, exports). Transaction Security policies for real-time alerts. Use for: security monitoring, compliance audits. (3) **Field Audit Trail** — Track field changes for 10 years (vs 18 months standard). Use for: regulatory compliance (SOX, HIPAA). **When to use:** HIPAA (healthcare), PCI-DSS (financial), GDPR (EU), SOX (public companies), any industry with strict data protection requirements."
+          a: "Shield is a security add-on for regulated industries. **3 components:** (1) **Platform Encryption** — AES-256 encryption at rest for sensitive fields. Customer-managed keys (BYOK) available. Use for: SSN, credit cards, health data. (2) **Event Monitoring** — Detailed logs of user activity (logins, API calls, exports). Transaction Security policies for real-time alerts. Use for: security monitoring, compliance audits. (3) **Field Audit Trail** — Track field changes for 10 years (vs 18 months standard). Use for: regulatory compliance (SOX, HIPAA). **When to use:** HIPAA (healthcare), PCI-DSS (financial), GDPR (EU), SOX (public companies), any industry with strict data protection requirements.",
         },
         {
           type: "scenario",
           q: "A European customer requests their data be deleted under GDPR. How do you handle this in Salesforce?",
-          a: "**GDPR Erasure Process:** (1) **Identify:** Query all objects containing the individual's PII (Contact, Lead, Case, ActivityHistory, custom objects) using email/name. (2) **Assess:** Determine if any data must be retained for legal reasons (financial records, regulatory holds). (3) **Anonymize:** For records that can't be deleted (e.g., Opportunities needed for revenue reporting), replace PII with 'REDACTED'. (4) **Delete:** Delete records that can be fully removed (Lead, Activities). (5) **Audit:** Log the erasure request, what was deleted/anonymized, processing date. (6) **Confirm:** Notify the requester within 30 days. (7) **Technical:** Use Apex batch to process across all objects. Check data in reports, list views, recycle bin. Verify data is removed from backups (Salesforce retains backups for limited time)."
-        }
-      ]
-    }
-  ]
+          a: "**GDPR Erasure Process:** (1) **Identify:** Query all objects containing the individual's PII (Contact, Lead, Case, ActivityHistory, custom objects) using email/name. (2) **Assess:** Determine if any data must be retained for legal reasons (financial records, regulatory holds). (3) **Anonymize:** For records that can't be deleted (e.g., Opportunities needed for revenue reporting), replace PII with 'REDACTED'. (4) **Delete:** Delete records that can be fully removed (Lead, Activities). (5) **Audit:** Log the erasure request, what was deleted/anonymized, processing date. (6) **Confirm:** Notify the requester within 30 days. (7) **Technical:** Use Apex batch to process across all objects. Check data in reports, list views, recycle bin. Verify data is removed from backups (Salesforce retains backups for limited time).",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase6;

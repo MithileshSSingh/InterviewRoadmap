@@ -2,7 +2,8 @@ const dsaPhase4 = {
   id: "phase-4",
   title: "Phase 4: Advanced Data Structures",
   emoji: "🟠",
-  description: "Master trees, BSTs, heaps, graphs, tries, union-find, segment trees, and advanced graph algorithms for top-tier interviews.",
+  description:
+    "Master trees, BSTs, heaps, graphs, tries, union-find, segment trees, and advanced graph algorithms for top-tier interviews.",
   topics: [
     {
       id: "binary-trees",
@@ -141,20 +142,20 @@ function diameterOfBinaryTree(root) {
         "Not handling the null case — every tree recursion must check if root is null",
         "Using BFS when DFS is more natural (or vice versa) — depth questions → DFS, level questions → BFS",
         "Forgetting that inorder of BST gives sorted order — many BST problems reduce to inorder traversal",
-        "Modifying tree during traversal without intention — clone first if the original must be preserved"
+        "Modifying tree during traversal without intention — clone first if the original must be preserved",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Find the lowest common ancestor of two nodes in a binary tree.",
-          a: "```js\nfunction lca(root, p, q) {\n  if (!root || root === p || root === q) return root;\n  const left = lca(root.left, p, q);\n  const right = lca(root.right, p, q);\n  if (left && right) return root; // p and q in different subtrees\n  return left || right;\n}\n// O(n) time, O(h) space\n```"
+          a: "```js\nfunction lca(root, p, q) {\n  if (!root || root === p || root === q) return root;\n  const left = lca(root.left, p, q);\n  const right = lca(root.right, p, q);\n  if (left && right) return root; // p and q in different subtrees\n  return left || right;\n}\n// O(n) time, O(h) space\n```",
         },
         {
           type: "conceptual",
           q: "What are the differences between preorder, inorder, and postorder traversal?",
-          a: "**Preorder** (Root→L→R): process root first, good for copying/serializing. **Inorder** (L→Root→R): gives sorted order in BST, good for validation. **Postorder** (L→R→Root): process children first, good for deletion and bottom-up calculations. All are DFS with O(n) time and O(h) space."
-        }
-      ]
+          a: "**Preorder** (Root→L→R): process root first, good for copying/serializing. **Inorder** (L→Root→R): gives sorted order in BST, good for validation. **Postorder** (L→R→Root): process children first, good for deletion and bottom-up calculations. All are DFS with O(n) time and O(h) space.",
+        },
+      ],
     },
     {
       id: "binary-search-trees",
@@ -281,20 +282,20 @@ function sortedArrayToBST(nums) {
         "Not handling deletion of nodes with two children — must find inorder successor/predecessor",
         "Inserting duplicates without a clear policy — decide: left, right, or don't allow",
         "Not recognizing that a skewed BST is essentially a linked list — all operations become O(n)",
-        "Confusing BST with heap — BST: left < root < right, Heap: parent >= children (max) or parent <= children (min)"
+        "Confusing BST with heap — BST: left < root < right, Heap: parent >= children (max) or parent <= children (min)",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Validate if a binary tree is a valid BST.",
-          a: "```js\nfunction isValidBST(root, min = -Infinity, max = Infinity) {\n  if (!root) return true;\n  if (root.val <= min || root.val >= max) return false;\n  return isValidBST(root.left, min, root.val) &&\n         isValidBST(root.right, root.val, max);\n}\n// Pass range [min, max] down — each node must be within range\n// O(n) time, O(h) space\n```"
+          a: "```js\nfunction isValidBST(root, min = -Infinity, max = Infinity) {\n  if (!root) return true;\n  if (root.val <= min || root.val >= max) return false;\n  return isValidBST(root.left, min, root.val) &&\n         isValidBST(root.right, root.val, max);\n}\n// Pass range [min, max] down — each node must be within range\n// O(n) time, O(h) space\n```",
         },
         {
           type: "conceptual",
           q: "What is the time complexity of BST operations and when do they degrade?",
-          a: "Average: O(log n) for search, insert, delete. Worst: O(n) when the tree is **skewed** (all nodes go left or right, like a linked list). This happens when inserting sorted data. Solution: use **self-balancing BSTs** (AVL, Red-Black) which guarantee O(log n) by rebalancing after each operation."
-        }
-      ]
+          a: "Average: O(log n) for search, insert, delete. Worst: O(n) when the tree is **skewed** (all nodes go left or right, like a linked list). This happens when inserting sorted data. Solution: use **self-balancing BSTs** (AVL, Red-Black) which guarantee O(log n) by rebalancing after each operation.",
+        },
+      ],
     },
     {
       id: "heaps-priority-queues",
@@ -430,20 +431,20 @@ function mergeKLists(lists) {
         "Not using the array formula correctly — parent = (i-1)/2, children = 2i+1, 2i+2",
         "Building heap by inserting one-by-one O(n log n) vs heapify O(n) — heapify is faster",
         "JavaScript has no built-in heap — you must implement one or use a library",
-        "Confusing heap with BST — heap is NOT sorted, only parent-child ordering is guaranteed"
+        "Confusing heap with BST — heap is NOT sorted, only parent-child ordering is guaranteed",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Find the median from a data stream.",
-          a: "```js\nclass MedianFinder {\n  constructor() { this.lo = new MaxHeap(); this.hi = new MinHeap(); }\n  addNum(num) {\n    this.lo.push(num);\n    this.hi.push(this.lo.pop());\n    if (this.hi.size() > this.lo.size()) this.lo.push(this.hi.pop());\n  }\n  findMedian() {\n    return this.lo.size() > this.hi.size()\n      ? this.lo.peek()\n      : (this.lo.peek() + this.hi.peek()) / 2;\n  }\n}\n// lo (max-heap): lower half, hi (min-heap): upper half\n// O(log n) add, O(1) median\n```"
+          a: "```js\nclass MedianFinder {\n  constructor() { this.lo = new MaxHeap(); this.hi = new MinHeap(); }\n  addNum(num) {\n    this.lo.push(num);\n    this.hi.push(this.lo.pop());\n    if (this.hi.size() > this.lo.size()) this.lo.push(this.hi.pop());\n  }\n  findMedian() {\n    return this.lo.size() > this.hi.size()\n      ? this.lo.peek()\n      : (this.lo.peek() + this.hi.peek()) / 2;\n  }\n}\n// lo (max-heap): lower half, hi (min-heap): upper half\n// O(log n) add, O(1) median\n```",
         },
         {
           type: "conceptual",
           q: "Why use a min-heap of size k to find the kth largest element?",
-          a: "The min-heap of size k acts as a **filter**: it keeps the k largest elements seen so far. The root (minimum of these k elements) is the kth largest overall. When a new element > root: pop root, push new element → maintains k largest. Final peek = kth largest. Time: O(n log k), Space: O(k)."
-        }
-      ]
+          a: "The min-heap of size k acts as a **filter**: it keeps the k largest elements seen so far. The root (minimum of these k elements) is the kth largest overall. When a new element > root: pop root, push new element → maintains k largest. Final peek = kth largest. Time: O(n log k), Space: O(k).",
+        },
+      ],
     },
     {
       id: "graphs-fundamentals",
@@ -585,24 +586,25 @@ function bfsVisit(graph, start, visited) {
         "Using BFS for weighted shortest path — BFS only works for unweighted; use Dijkstra for weighted",
         "Not handling disconnected graphs — BFS/DFS from one node may not reach all nodes",
         "Confusing directed and undirected edge addition — undirected adds both directions",
-        "Using adjacency matrix for sparse graphs — wastes O(V²) space when O(V+E) suffices"
+        "Using adjacency matrix for sparse graphs — wastes O(V²) space when O(V+E) suffices",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "When do you use BFS vs DFS in graphs?",
-          a: "**BFS**: shortest path (unweighted), level-order, closest node. Uses queue, visits by distance. **DFS**: cycle detection, topological sort, finding all paths, connected components. Uses stack/recursion, goes deep first. Both are O(V+E). BFS uses more memory (stores entire level), DFS uses less but can stack overflow on deep graphs."
+          a: "**BFS**: shortest path (unweighted), level-order, closest node. Uses queue, visits by distance. **DFS**: cycle detection, topological sort, finding all paths, connected components. Uses stack/recursion, goes deep first. Both are O(V+E). BFS uses more memory (stores entire level), DFS uses less but can stack overflow on deep graphs.",
         },
         {
           type: "coding",
           q: "Check if an undirected graph contains a cycle.",
-          a: "```js\nfunction hasCycle(n, edges) {\n  const g = buildAdjList(n, edges);\n  const visited = new Set();\n  function dfs(node, parent) {\n    visited.add(node);\n    for (const nb of g.get(node)) {\n      if (!visited.has(nb)) { if (dfs(nb, node)) return true; }\n      else if (nb !== parent) return true; // Cycle!\n    }\n    return false;\n  }\n  for (let i = 0; i < n; i++)\n    if (!visited.has(i) && dfs(i, -1)) return true;\n  return false;\n}\n```"
-        }
-      ]
+          a: "```js\nfunction hasCycle(n, edges) {\n  const g = buildAdjList(n, edges);\n  const visited = new Set();\n  function dfs(node, parent) {\n    visited.add(node);\n    for (const nb of g.get(node)) {\n      if (!visited.has(nb)) { if (dfs(nb, node)) return true; }\n      else if (nb !== parent) return true; // Cycle!\n    }\n    return false;\n  }\n  for (let i = 0; i < n; i++)\n    if (!visited.has(i) && dfs(i, -1)) return true;\n  return false;\n}\n```",
+        },
+      ],
     },
     {
       id: "graph-algorithms-advanced",
-      title: "Advanced Graph Algorithms (Dijkstra, Topological Sort, Union-Find)",
+      title:
+        "Advanced Graph Algorithms (Dijkstra, Topological Sort, Union-Find)",
       explanation: `Advanced graph algorithms solve complex real-world problems: navigation, task scheduling, network design, and more.
 
 **Dijkstra's Algorithm — Shortest path (weighted, non-negative):**
@@ -737,20 +739,20 @@ function networkDelayTime(times, n, k) {
         "Not using path compression in Union-Find — without it, find is O(n) worst case",
         "Topological sort on a cyclic graph — result is incomplete; check if order.length === n",
         "BFS for weighted shortest path — BFS assumes all edges have weight 1; use Dijkstra for weights",
-        "Not using a priority queue for Dijkstra — using simple array makes it O(V²) instead of O((V+E)logV)"
+        "Not using a priority queue for Dijkstra — using simple array makes it O(V²) instead of O((V+E)logV)",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Can you finish all courses given prerequisites? [0,1] means course 0 requires course 1.",
-          a: "```js\nfunction canFinish(n, prereqs) {\n  const g = new Map();\n  const deg = new Array(n).fill(0);\n  for (let i = 0; i < n; i++) g.set(i, []);\n  for (const [a, b] of prereqs) { g.get(b).push(a); deg[a]++; }\n  const q = [];\n  for (let i = 0; i < n; i++) if (deg[i] === 0) q.push(i);\n  let count = 0;\n  while (q.length) {\n    const node = q.shift(); count++;\n    for (const nb of g.get(node)) { deg[nb]--; if (deg[nb]===0) q.push(nb); }\n  }\n  return count === n;\n}\n// Topological sort — if all nodes processed, no cycle\n```"
+          a: "```js\nfunction canFinish(n, prereqs) {\n  const g = new Map();\n  const deg = new Array(n).fill(0);\n  for (let i = 0; i < n; i++) g.set(i, []);\n  for (const [a, b] of prereqs) { g.get(b).push(a); deg[a]++; }\n  const q = [];\n  for (let i = 0; i < n; i++) if (deg[i] === 0) q.push(i);\n  let count = 0;\n  while (q.length) {\n    const node = q.shift(); count++;\n    for (const nb of g.get(node)) { deg[nb]--; if (deg[nb]===0) q.push(nb); }\n  }\n  return count === n;\n}\n// Topological sort — if all nodes processed, no cycle\n```",
         },
         {
           type: "conceptual",
           q: "Explain Union-Find and its optimizations.",
-          a: "Union-Find tracks elements in disjoint sets. Two ops: **find(x)** returns the root of x's set, **union(x,y)** merges two sets. Optimizations: 1) **Path compression**: during find, make every node point directly to root → flattens tree. 2) **Union by rank**: attach shorter tree under taller → keeps tree balanced. Together: nearly O(1) per operation (inverse Ackermann)."
-        }
-      ]
+          a: "Union-Find tracks elements in disjoint sets. Two ops: **find(x)** returns the root of x's set, **union(x,y)** merges two sets. Optimizations: 1) **Path compression**: during find, make every node point directly to root → flattens tree. 2) **Union by rank**: attach shorter tree under taller → keeps tree balanced. Together: nearly O(1) per operation (inverse Ackermann).",
+        },
+      ],
     },
     {
       id: "tries",
@@ -920,22 +922,22 @@ function findWords(board, words) {
         "Using array[26] when characters aren't just lowercase letters — use Map for general character sets",
         "Confusing search (exact match) with startsWith (prefix match) — different return conditions",
         "Not implementing delete properly — must check if node has other children before removing",
-        "High memory usage with sparse tries — consider compressed tries (radix trees) for memory optimization"
+        "High memory usage with sparse tries — consider compressed tries (radix trees) for memory optimization",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Implement a trie with insert, search, and startsWith methods.",
-          a: "```js\nclass Trie {\n  constructor() { this.root = {}; }\n  insert(word) {\n    let node = this.root;\n    for (const c of word) { node[c] = node[c] || {}; node = node[c]; }\n    node.isEnd = true;\n  }\n  search(word) {\n    let node = this.root;\n    for (const c of word) { if (!node[c]) return false; node = node[c]; }\n    return !!node.isEnd;\n  }\n  startsWith(prefix) {\n    let node = this.root;\n    for (const c of prefix) { if (!node[c]) return false; node = node[c]; }\n    return true;\n  }\n}\n```"
+          a: "```js\nclass Trie {\n  constructor() { this.root = {}; }\n  insert(word) {\n    let node = this.root;\n    for (const c of word) { node[c] = node[c] || {}; node = node[c]; }\n    node.isEnd = true;\n  }\n  search(word) {\n    let node = this.root;\n    for (const c of word) { if (!node[c]) return false; node = node[c]; }\n    return !!node.isEnd;\n  }\n  startsWith(prefix) {\n    let node = this.root;\n    for (const c of prefix) { if (!node[c]) return false; node = node[c]; }\n    return true;\n  }\n}\n```",
         },
         {
           type: "conceptual",
           q: "How does a trie achieve O(L) search time regardless of dictionary size?",
-          a: "A trie follows the word character by character through the tree, taking O(1) per character (hash map lookup at each node). Total: O(L) where L is the word length. This is independent of how many words are stored (could be millions). In contrast, a hash set gives O(L) average for hashing but O(L × n) worst case for collision resolution. Tries also support prefix matching, which hash sets cannot."
-        }
-      ]
-    }
-  ]
+          a: "A trie follows the word character by character through the tree, taking O(1) per character (hash map lookup at each node). Total: O(L) where L is the word length. This is independent of how many words are stored (could be millions). In contrast, a hash set gives O(L) average for hashing but O(L × n) worst case for collision resolution. Tries also support prefix matching, which hash sets cannot.",
+        },
+      ],
+    },
+  ],
 };
 
 export default dsaPhase4;

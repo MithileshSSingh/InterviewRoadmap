@@ -2,7 +2,8 @@ const androidPhase3 = {
   id: "phase-3",
   title: "Phase 3: Modern Android Architecture",
   emoji: "🏗️",
-  description: "Master production-grade architecture patterns — MVVM, MVI, Clean Architecture, modularization, dependency injection, and offline-first design.",
+  description:
+    "Master production-grade architecture patterns — MVVM, MVI, Clean Architecture, modularization, dependency injection, and offline-first design.",
   topics: [
     {
       id: "mvvm-mvi-clean-architecture",
@@ -144,12 +145,12 @@ class GetFilteredTasksUseCase @Inject constructor(
         {
           type: "conceptual",
           q: "Why does Google recommend unidirectional data flow (UDF)?",
-          a: "UDF means state flows DOWN (ViewModel → UI) and events flow UP (UI → ViewModel). Benefits: (1) **Single source of truth** — state is in one place (ViewModel), not scattered across Views. (2) **Predictable** — given the same state, the UI always looks the same. (3) **Testable** — test the ViewModel without the UI. (4) **Debuggable** — you can log every state change and reproduce bugs. (5) **Thread-safe** — StateFlow handles concurrency. Without UDF, state can become inconsistent when multiple components modify the UI independently."
+          a: "UDF means state flows DOWN (ViewModel → UI) and events flow UP (UI → ViewModel). Benefits: (1) **Single source of truth** — state is in one place (ViewModel), not scattered across Views. (2) **Predictable** — given the same state, the UI always looks the same. (3) **Testable** — test the ViewModel without the UI. (4) **Debuggable** — you can log every state change and reproduce bugs. (5) **Thread-safe** — StateFlow handles concurrency. Without UDF, state can become inconsistent when multiple components modify the UI independently.",
         },
         {
           type: "tricky",
           q: "When would you NOT use Clean Architecture?",
-          a: "Clean Architecture adds significant boilerplate (interfaces, mappers, use cases). Skip it when: (1) **Small app with 1-2 developers** — MVVM with Repository is sufficient. (2) **Prototype/MVP** — speed matters more than structure. (3) **Simple CRUD** — if use cases just delegate to repository, they add no value. (4) **Short-lived project** — migration and maintenance won't be a concern. Use Clean Architecture when: large team (>5 devs), long-lived product (3+ years), complex business logic, need to swap data sources. The key is pragmatism over dogma."
+          a: "Clean Architecture adds significant boilerplate (interfaces, mappers, use cases). Skip it when: (1) **Small app with 1-2 developers** — MVVM with Repository is sufficient. (2) **Prototype/MVP** — speed matters more than structure. (3) **Simple CRUD** — if use cases just delegate to repository, they add no value. (4) **Short-lived project** — migration and maintenance won't be a concern. Use Clean Architecture when: large team (>5 devs), long-lived product (3+ years), complex business logic, need to swap data sources. The key is pragmatism over dogma.",
         },
       ],
     },
@@ -277,12 +278,12 @@ class AndroidFeaturePlugin : Plugin<Project> {
         {
           type: "scenario",
           q: "You're architecting a new Android app that will have 10+ engineers. How do you structure the modules?",
-          a: "I'd use a layered + feature-based approach: **Layer modules:** :core:domain (pure Kotlin models + use cases), :core:data (repositories), :core:network (Retrofit + interceptors), :core:database (Room), :core:ui (design system). **Feature modules:** one per feature area (:feature:auth, :feature:home, :feature:settings, etc.). **App module:** thin shell that wires features. **Key decisions:** (1) Convention plugins for consistent config. (2) API modules for feature-to-feature contracts. (3) Navigation module with typed routes. (4) CI checks for dependency graph violations. **Build time:** projects with 20+ modules see 40-60% faster incremental builds."
+          a: "I'd use a layered + feature-based approach: **Layer modules:** :core:domain (pure Kotlin models + use cases), :core:data (repositories), :core:network (Retrofit + interceptors), :core:database (Room), :core:ui (design system). **Feature modules:** one per feature area (:feature:auth, :feature:home, :feature:settings, etc.). **App module:** thin shell that wires features. **Key decisions:** (1) Convention plugins for consistent config. (2) API modules for feature-to-feature contracts. (3) Navigation module with typed routes. (4) CI checks for dependency graph violations. **Build time:** projects with 20+ modules see 40-60% faster incremental builds.",
         },
         {
           type: "conceptual",
           q: "How do features communicate without depending on each other?",
-          a: "Several patterns: (1) **Deep link navigation** — features navigate via URI routes, not class references. (2) **Shared API modules** — :feature:profile-api defines interfaces and data classes, :feature:home depends on :feature:profile-api (not :feature:profile). (3) **Event bus / shared Flow** — publish events to a shared module. (4) **Dependency injection** — Hilt multibindings to register feature-specific implementations of shared interfaces. The key principle: depend on abstractions (interfaces in shared modules), not concrete implementations."
+          a: "Several patterns: (1) **Deep link navigation** — features navigate via URI routes, not class references. (2) **Shared API modules** — :feature:profile-api defines interfaces and data classes, :feature:home depends on :feature:profile-api (not :feature:profile). (3) **Event bus / shared Flow** — publish events to a shared module. (4) **Dependency injection** — Hilt multibindings to register feature-specific implementations of shared interfaces. The key principle: depend on abstractions (interfaces in shared modules), not concrete implementations.",
         },
       ],
     },
@@ -418,12 +419,12 @@ object DispatcherModule {
         {
           type: "conceptual",
           q: "How does Hilt/Dagger DI work under the hood?",
-          a: "Dagger uses **compile-time code generation** (annotation processing via KSP/KAPT). For each @Inject constructor, Dagger generates a Factory class that knows how to create instances. For each @Module, it generates provider methods. The @Component interface is implemented by a generated class that wires all factories and providers together. At runtime, there's zero reflection — just plain method calls. This makes Dagger fast but increases compile time. Hilt adds Android-specific conventions on top: auto-generated components per Android class (Activity, Fragment, ViewModel), lifecycle-aware scoping, and test support."
+          a: "Dagger uses **compile-time code generation** (annotation processing via KSP/KAPT). For each @Inject constructor, Dagger generates a Factory class that knows how to create instances. For each @Module, it generates provider methods. The @Component interface is implemented by a generated class that wires all factories and providers together. At runtime, there's zero reflection — just plain method calls. This makes Dagger fast but increases compile time. Hilt adds Android-specific conventions on top: auto-generated components per Android class (Activity, Fragment, ViewModel), lifecycle-aware scoping, and test support.",
         },
         {
           type: "tricky",
           q: "Explain the difference between @Singleton, @ActivityScoped, and @ViewModelScoped.",
-          a: "@Singleton: one instance for the entire app lifetime, in SingletonComponent. @ActivityScoped: one instance per Activity, destroyed when Activity is destroyed (including config change). @ViewModelScoped: one instance per ViewModel, survives config changes but destroyed when ViewModel is cleared. **Gotcha:** @ActivityScoped creates a NEW instance on rotation (Activity is recreated). @ViewModelScoped does NOT. For data that must survive rotation (cached data, form state), use @ViewModelScoped. For things tied to the Activity window (dialog managers), use @ActivityScoped."
+          a: "@Singleton: one instance for the entire app lifetime, in SingletonComponent. @ActivityScoped: one instance per Activity, destroyed when Activity is destroyed (including config change). @ViewModelScoped: one instance per ViewModel, survives config changes but destroyed when ViewModel is cleared. **Gotcha:** @ActivityScoped creates a NEW instance on rotation (Activity is recreated). @ViewModelScoped does NOT. For data that must survive rotation (cached data, form state), use @ViewModelScoped. For things tied to the Activity window (dialog managers), use @ActivityScoped.",
         },
       ],
     },
@@ -548,12 +549,12 @@ class ArticleRepositoryImpl @Inject constructor(
         {
           type: "conceptual",
           q: "Why does Google recommend Room as the single source of truth instead of the network?",
-          a: "1) **Offline support** — Room data is always available, network is not. 2) **Performance** — local queries are instant, network calls take 100-500ms+. 3) **Consistency** — Room provides reactive queries (Flow), so all observers see the same data. 4) **Simplicity** — no need to manually notify UI of updates; Room + Flow handles it automatically. The pattern: fetch from network → save to Room → UI observes Room. Even when online, the UI reads from Room, ensuring consistent behavior."
+          a: "1) **Offline support** — Room data is always available, network is not. 2) **Performance** — local queries are instant, network calls take 100-500ms+. 3) **Consistency** — Room provides reactive queries (Flow), so all observers see the same data. 4) **Simplicity** — no need to manually notify UI of updates; Room + Flow handles it automatically. The pattern: fetch from network → save to Room → UI observes Room. Even when online, the UI reads from Room, ensuring consistent behavior.",
         },
         {
           type: "scenario",
           q: "How do you handle cache invalidation in the Repository?",
-          a: "Several strategies: (1) **Time-based:** Store lastFetchedAt timestamp with each entity. If older than threshold (e.g., 15 min), trigger network refresh. (2) **Event-based:** Server pushes invalidation events via WebSocket/FCM. (3) **Version-based:** Store data version, compare with server version on each request. (4) **User-triggered:** Pull-to-refresh / manual sync button. For most apps, I use time-based as default with event-based for critical data. Implementation: in the Flow's onStart, check lastFetchedAt and conditionally refresh."
+          a: "Several strategies: (1) **Time-based:** Store lastFetchedAt timestamp with each entity. If older than threshold (e.g., 15 min), trigger network refresh. (2) **Event-based:** Server pushes invalidation events via WebSocket/FCM. (3) **Version-based:** Store data version, compare with server version on each request. (4) **User-triggered:** Pull-to-refresh / manual sync button. For most apps, I use time-based as default with event-based for critical data. Implementation: in the Flow's onStart, check lastFetchedAt and conditionally refresh.",
         },
       ],
     },
@@ -690,12 +691,12 @@ class SyncWorker @AssistedInject constructor(
         {
           type: "scenario",
           q: "Design an offline-first messaging app. How do you handle message ordering when the user comes back online?",
-          a: "Use **vector clocks** or **Lamport timestamps** for ordering: (1) Each message gets a local sequence number + device ID + timestamp. (2) When online, send pending messages to server. (3) Server assigns global ordering and returns canonical timestamps. (4) Client reconciles: keep local messages in sent order, insert incoming messages by server timestamp. (5) For conflicts (simultaneous messages), use deterministic tiebreaker (lower device ID wins). Key trade-off: eventual consistency is acceptable for messaging — users expect slight reordering."
+          a: "Use **vector clocks** or **Lamport timestamps** for ordering: (1) Each message gets a local sequence number + device ID + timestamp. (2) When online, send pending messages to server. (3) Server assigns global ordering and returns canonical timestamps. (4) Client reconciles: keep local messages in sent order, insert incoming messages by server timestamp. (5) For conflicts (simultaneous messages), use deterministic tiebreaker (lower device ID wins). Key trade-off: eventual consistency is acceptable for messaging — users expect slight reordering.",
         },
         {
           type: "conceptual",
           q: "What are CRDTs and when would you use them in an Android app?",
-          a: "CRDTs (Conflict-free Replicated Data Types) are data structures that can be merged without conflicts by mathematical properties. Types: **G-Counter** (grow-only counter), **PN-Counter** (positive-negative counter), **LWW-Register** (last-write-wins for values), **OR-Set** (observed-remove set). Use in Android for: collaborative editing (Google Docs-style), shopping lists (add/remove items across devices), counters (likes, views). Pros: no conflict resolution logic needed, works fully offline. Cons: increased memory (store metadata), eventual consistency only, not suitable for all data types."
+          a: "CRDTs (Conflict-free Replicated Data Types) are data structures that can be merged without conflicts by mathematical properties. Types: **G-Counter** (grow-only counter), **PN-Counter** (positive-negative counter), **LWW-Register** (last-write-wins for values), **OR-Set** (observed-remove set). Use in Android for: collaborative editing (Google Docs-style), shopping lists (add/remove items across devices), counters (likes, views). Pros: no conflict resolution logic needed, works fully offline. Cons: increased memory (store metadata), eventual consistency only, not suitable for all data types.",
         },
       ],
     },
@@ -813,12 +814,12 @@ class ArchitectureTest {
         {
           type: "scenario",
           q: "You're leading the Android architecture for a team of 15 engineers. How do you ensure code quality and architectural consistency?",
-          a: "Multi-layered approach: (1) **Convention plugins** — standardize module config, dependencies, and build settings. (2) **Custom lint rules** — enforce patterns (e.g., no direct API calls from ViewModel, no View imports in domain). (3) **Architectural fitness functions** — CI tests that validate dependency graph (no circular deps, no feature-to-feature deps). (4) **Code review standards** — documented patterns in an Architecture Decision Record (ADR). (5) **CODEOWNERS** — enforce module-level code review by owning team. (6) **Architecture Council** — bi-weekly meeting to discuss cross-cutting concerns. (7) **Living documentation** — architecture diagrams auto-generated from module structure."
+          a: "Multi-layered approach: (1) **Convention plugins** — standardize module config, dependencies, and build settings. (2) **Custom lint rules** — enforce patterns (e.g., no direct API calls from ViewModel, no View imports in domain). (3) **Architectural fitness functions** — CI tests that validate dependency graph (no circular deps, no feature-to-feature deps). (4) **Code review standards** — documented patterns in an Architecture Decision Record (ADR). (5) **CODEOWNERS** — enforce module-level code review by owning team. (6) **Architecture Council** — bi-weekly meeting to discuss cross-cutting concerns. (7) **Living documentation** — architecture diagrams auto-generated from module structure.",
         },
         {
           type: "conceptual",
           q: "How do you migrate a monolithic Android app to a modular architecture?",
-          a: "Incremental migration: (1) **Create :core modules first** — extract networking, database, common utilities. These are easiest and highest impact. (2) **Identify feature boundaries** — find natural seams in the codebase (distinct screens, isolated data). (3) ** Extract one feature** — start with the most isolated feature. Convert it to a module with clear APIs. (4) **Establish conventions** — before extracting more, standardize module structure and document it. (5) **Extract remaining features** — parallelize extraction across teams. (6) **Clean up :app** — reduce to a thin wiring module. Key: do NOT try to modularize everything at once. Extract, validate, iterate."
+          a: "Incremental migration: (1) **Create :core modules first** — extract networking, database, common utilities. These are easiest and highest impact. (2) **Identify feature boundaries** — find natural seams in the codebase (distinct screens, isolated data). (3) ** Extract one feature** — start with the most isolated feature. Convert it to a module with clear APIs. (4) **Establish conventions** — before extracting more, standardize module structure and document it. (5) **Extract remaining features** — parallelize extraction across teams. (6) **Clean up :app** — reduce to a thin wiring module. Key: do NOT try to modularize everything at once. Extract, validate, iterate.",
         },
       ],
     },

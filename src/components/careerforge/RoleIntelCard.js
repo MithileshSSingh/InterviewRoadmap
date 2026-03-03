@@ -8,11 +8,25 @@ export default function RoleIntelCard({ roleIntel }) {
   return (
     <section style={cardStyle}>
       <h2 style={headingStyle}>📋 Role Overview</h2>
-      <p style={{ color: "var(--text-secondary)", marginBottom: "1.25rem", lineHeight: 1.65 }}>
-        {roleIntel.description || `${roleIntel.title} — ${roleIntel.experienceRequired} experience required.`}
+      <p
+        style={{
+          color: "var(--text-secondary)",
+          marginBottom: "1.25rem",
+          lineHeight: 1.65,
+        }}
+      >
+        {roleIntel.description ||
+          `${roleIntel.title} — ${roleIntel.experienceRequired} experience required.`}
       </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem", marginBottom: "1rem" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "1.25rem",
+          marginBottom: "1rem",
+        }}
+      >
         <div>
           <div style={subHeadingStyle}>Required Skills</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
@@ -49,10 +63,18 @@ export default function RoleIntelCard({ roleIntel }) {
               padding: 0,
             }}
           >
-            {expanded ? "▾ Hide" : "▸ Show"} Key Responsibilities ({roleIntel.keyResponsibilities.length})
+            {expanded ? "▾ Hide" : "▸ Show"} Key Responsibilities (
+            {roleIntel.keyResponsibilities.length})
           </button>
           {expanded && (
-            <ul style={{ marginTop: "0.75rem", paddingLeft: "1.25rem", color: "var(--text-secondary)", lineHeight: 1.7 }}>
+            <ul
+              style={{
+                marginTop: "0.75rem",
+                paddingLeft: "1.25rem",
+                color: "var(--text-secondary)",
+                lineHeight: 1.7,
+              }}
+            >
               {roleIntel.keyResponsibilities.map((r, i) => (
                 <li key={i}>{r}</li>
               ))}

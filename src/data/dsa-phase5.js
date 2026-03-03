@@ -2,7 +2,8 @@ const dsaPhase5 = {
   id: "phase-5",
   title: "Phase 5: Interview & Real-World Applications",
   emoji: "🔴",
-  description: "Bridge theory to practice — real-world system design with DSA, interview strategies, coding challenges, system thinking, and capstone projects.",
+  description:
+    "Bridge theory to practice — real-world system design with DSA, interview strategies, coding challenges, system thinking, and capstone projects.",
   topics: [
     {
       id: "real-world-caching",
@@ -151,20 +152,20 @@ class TTLCache {
         "Not handling put() for existing keys — must update AND move to most recent",
         "Forgetting cache stampede — multiple threads see cache miss and all hit the database",
         "Not considering cache invalidation strategy — stale data can cause serious bugs",
-        "Over-caching — caching rarely accessed data wastes memory; monitor hit ratios"
+        "Over-caching — caching rarely accessed data wastes memory; monitor hit ratios",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Design an LRU Cache with O(1) get and put operations.",
-          a: "Use **HashMap + Doubly Linked List**. Map stores key → DLL node. DLL maintains access order (head = most recent, tail = oldest). On get: move node to head. On put: add to head, if over capacity remove tail. JavaScript shortcut: Map preserves insertion order, so delete + set simulates LRU."
+          a: "Use **HashMap + Doubly Linked List**. Map stores key → DLL node. DLL maintains access order (head = most recent, tail = oldest). On get: move node to head. On put: add to head, if over capacity remove tail. JavaScript shortcut: Map preserves insertion order, so delete + set simulates LRU.",
         },
         {
           type: "scenario",
           q: "How would you design a caching layer for a social media feed?",
-          a: "1) **L1**: In-memory LRU per server (last 100 posts per user). 2) **L2**: Distributed cache (Redis) with TTL (5 min). 3) **L3**: Database. Strategy: read-through (check cache, miss → DB → cache). Invalidation: write-through on new posts. Cache popular users more aggressively. Monitor hit ratio (~95% target)."
-        }
-      ]
+          a: "1) **L1**: In-memory LRU per server (last 100 posts per user). 2) **L2**: Distributed cache (Redis) with TTL (5 min). 3) **L3**: Database. Strategy: read-through (check cache, miss → DB → cache). Invalidation: write-through on new posts. Cache popular users more aggressively. Monitor hit ratio (~95% target).",
+        },
+      ],
     },
     {
       id: "real-world-rate-limiting",
@@ -307,20 +308,20 @@ class RoundRobinScheduler {
         "Not considering distributed scenarios — rate limiting per server doesn't limit total load",
         "Not handling race conditions — concurrent requests may bypass the limit",
         "Using in-memory rate limiting in load-balanced systems — use Redis for shared state",
-        "Not implementing graceful degradation — return 429 Too Many Requests, not 500"
+        "Not implementing graceful degradation — return 429 Too Many Requests, not 500",
       ],
       interviewQuestions: [
         {
           type: "scenario",
           q: "Design a rate limiter for an API that allows 100 requests per minute per user.",
-          a: "Use **sliding window counter** stored in Redis (shared across servers). Key: `rate:{userId}:{minuteWindow}`. On each request: 1) Check current + interpolated count. 2) If under limit, increment and allow. 3) If over, return 429 with Retry-After header. Add a token bucket for burst handling. Use Redis TTL for auto-cleanup."
+          a: "Use **sliding window counter** stored in Redis (shared across servers). Key: `rate:{userId}:{minuteWindow}`. On each request: 1) Check current + interpolated count. 2) If under limit, increment and allow. 3) If over, return 429 with Retry-After header. Add a token bucket for burst handling. Use Redis TTL for auto-cleanup.",
         },
         {
           type: "conceptual",
           q: "Compare token bucket and leaky bucket algorithms.",
-          a: "**Token bucket**: allows bursts up to capacity, replenishes at constant rate. Good for APIs that can handle short bursts. **Leaky bucket**: outputs at constant rate, excess queued or dropped. Good for smoothing traffic. Token bucket is more flexible (adjustable burst size). Leaky bucket provides more predictable output rate."
-        }
-      ]
+          a: "**Token bucket**: allows bursts up to capacity, replenishes at constant rate. Good for APIs that can handle short bursts. **Leaky bucket**: outputs at constant rate, excess queued or dropped. Good for smoothing traffic. Token bucket is more flexible (adjustable burst size). Leaky bucket provides more predictable output rate.",
+        },
+      ],
     },
     {
       id: "real-world-search-engines",
@@ -463,20 +464,20 @@ function cosineSimilarity(vecA, vecB) {
         "Not considering relevance ranking — returning results without TF-IDF or similar scoring",
         "Autocomplete without frequency weighting — popular queries should rank higher",
         "Not handling stop words — 'the', 'a', 'is' add noise to search results",
-        "Ignoring scalability — inverted index must be sharded for large-scale systems"
+        "Ignoring scalability — inverted index must be sharded for large-scale systems",
       ],
       interviewQuestions: [
         {
           type: "scenario",
           q: "Design an autocomplete system for a search bar.",
-          a: "Use a **Trie** with frequency-weighted nodes. On each keystroke: 1) Traverse trie with prefix. 2) DFS to find all completions. 3) Return top-K by frequency. Optimizations: pre-compute top-K at each trie node, use caching for popular prefixes, serve from edge (CDN). For personalized suggestions: blend global frequency with user history."
+          a: "Use a **Trie** with frequency-weighted nodes. On each keystroke: 1) Traverse trie with prefix. 2) DFS to find all completions. 3) Return top-K by frequency. Optimizations: pre-compute top-K at each trie node, use caching for popular prefixes, serve from edge (CDN). For personalized suggestions: blend global frequency with user history.",
         },
         {
           type: "conceptual",
           q: "How does an inverted index enable fast full-text search?",
-          a: "An inverted index maps each word to the list of documents containing it (like a book's index). To search 'apple pie': lookup 'apple' → [1,5,42], lookup 'pie' → [5,33,42], intersect → [5,42]. This avoids scanning every document. Time: O(sum of posting list lengths). With sorted lists, intersection can use merge or skip pointers."
-        }
-      ]
+          a: "An inverted index maps each word to the list of documents containing it (like a book's index). To search 'apple pie': lookup 'apple' → [1,5,42], lookup 'pie' → [5,33,42], intersect → [5,42]. This avoids scanning every document. Time: O(sum of posting list lengths). With sorted lists, intersection can use merge or skip pointers.",
+        },
+      ],
     },
     {
       id: "interview-patterns-mastery",
@@ -606,20 +607,20 @@ function choosePattern(problem) {
         "Not starting with brute force — always discuss brute force first, then optimize",
         "Jumping to code without discussing approach — interviewers want to see your thinking process",
         "Not considering multiple patterns — some problems can be solved with different approaches",
-        "Ignoring time/space complexity trade-offs — always discuss both"
+        "Ignoring time/space complexity trade-offs — always discuss both",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "How do you identify which pattern to use for an unknown problem?",
-          a: "1) Read constraints — they tell you expected complexity. 2) Identify keywords: 'sorted' → binary search/two pointers, 'substring' → sliding window, 'shortest' → BFS, 'optimal/count' → DP. 3) Consider the data structure: array → two pointers/sliding window, tree → DFS, graph → BFS/DFS. 4) Start with brute force, identify repeated work, optimize with patterns."
+          a: "1) Read constraints — they tell you expected complexity. 2) Identify keywords: 'sorted' → binary search/two pointers, 'substring' → sliding window, 'shortest' → BFS, 'optimal/count' → DP. 3) Consider the data structure: array → two pointers/sliding window, tree → DFS, graph → BFS/DFS. 4) Start with brute force, identify repeated work, optimize with patterns.",
         },
         {
           type: "scenario",
           q: "You have 2 weeks to prepare for coding interviews. What's your plan?",
-          a: "**Week 1**: Master the top 8 patterns — solve 5 problems per pattern (40 total). Focus on medium difficulty. Patterns: Two Pointers, Sliding Window, Binary Search, DFS/BFS, Backtracking, DP, Hash Map, Stack. **Week 2**: 2 mock interviews, revisit weak patterns, solve 10 hard problems, practice explaining solutions aloud. Daily: review mistake journal, re-solve 2 past problems."
-        }
-      ]
+          a: "**Week 1**: Master the top 8 patterns — solve 5 problems per pattern (40 total). Focus on medium difficulty. Patterns: Two Pointers, Sliding Window, Binary Search, DFS/BFS, Backtracking, DP, Hash Map, Stack. **Week 2**: 2 mock interviews, revisit weak patterns, solve 10 hard problems, practice explaining solutions aloud. Daily: review mistake journal, re-solve 2 past problems.",
+        },
+      ],
     },
     {
       id: "coding-challenges",
@@ -756,20 +757,20 @@ Week 4: Solve problems 26-30 (Hard, 60 min each) + review all
         "Spending 3+ hours on one problem — time-box and learn from the editorial",
         "Not tracking which patterns are weak — keep a pattern strength log",
         "Only coding solutions without explaining them — practice thinking out loud",
-        "Skipping easy problems — they build the foundation for harder patterns"
+        "Skipping easy problems — they build the foundation for harder patterns",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "If you could only study 5 patterns for interviews, which would you pick?",
-          a: "1) **Hash Map** — appears in 40%+ of problems (two sum, frequency count, grouping). 2) **DFS/BFS** — trees, graphs, grids. 3) **Two Pointers/Sliding Window** — array/string optimization. 4) **Dynamic Programming** — optimization/counting. 5) **Binary Search** — sorted data + search on answer. These cover ~80% of interview problems."
+          a: "1) **Hash Map** — appears in 40%+ of problems (two sum, frequency count, grouping). 2) **DFS/BFS** — trees, graphs, grids. 3) **Two Pointers/Sliding Window** — array/string optimization. 4) **Dynamic Programming** — optimization/counting. 5) **Binary Search** — sorted data + search on answer. These cover ~80% of interview problems.",
         },
         {
           type: "scenario",
           q: "You've solved 200 LeetCode problems but still struggle in interviews. Why?",
-          a: "Common reasons: 1) Solved problems but didn't learn patterns. 2) Never practiced explaining approach out loud. 3) Didn't time-box (interview is 45 min, not unlimited). 4) Skipped the 'understand problem' step. 5) Never did mock interviews. Fix: focus on 15 patterns, do 2 mocks/week, practice UMPIRE method, maintain a mistake journal."
-        }
-      ]
+          a: "Common reasons: 1) Solved problems but didn't learn patterns. 2) Never practiced explaining approach out loud. 3) Didn't time-box (interview is 45 min, not unlimited). 4) Skipped the 'understand problem' step. 5) Never did mock interviews. Fix: focus on 15 patterns, do 2 mocks/week, practice UMPIRE method, maintain a mistake journal.",
+        },
+      ],
     },
     {
       id: "system-thinking-problems",
@@ -934,20 +935,20 @@ class UndoRedo {
         "Not considering scalability — solutions that work for 100 users may fail at 1M users",
         "Over-engineering — start simple, then iterate with optimizations",
         "Ignoring space complexity — in system design, memory is a real constraint",
-        "Not discussing trade-offs — every design has pros and cons; mention them"
+        "Not discussing trade-offs — every design has pros and cons; mention them",
       ],
       interviewQuestions: [
         {
           type: "scenario",
           q: "Design a real-time leaderboard for an online game with millions of players.",
-          a: "Use a **sorted data structure** (Redis sorted set = skip list). Insert/update score: O(log n). Get rank: O(log n). Get top K: O(K). Shard by score range for horizontal scaling. Cache top 100 in memory. Update asynchronously for non-critical ranks. Data structures involved: skip list (Redis ZSET), hash map (user → score), heap (top K cache)."
+          a: "Use a **sorted data structure** (Redis sorted set = skip list). Insert/update score: O(log n). Get rank: O(log n). Get top K: O(K). Shard by score range for horizontal scaling. Cache top 100 in memory. Update asynchronously for non-critical ranks. Data structures involved: skip list (Redis ZSET), hash map (user → score), heap (top K cache).",
         },
         {
           type: "scenario",
           q: "How would you design a spell checker with 'did you mean?' suggestions?",
-          a: "1) Store dictionary in a **Trie** for prefix matching. 2) For spell checking: search trie — O(L). 3) For suggestions: compute **edit distance** ≤ 2 from the input word. Use BFS on the trie exploring character substitutions/insertions/deletions. 4) Rank suggestions by: edit distance, then word frequency. 5) Cache common misspellings → correct mappings in a hash map."
-        }
-      ]
+          a: "1) Store dictionary in a **Trie** for prefix matching. 2) For spell checking: search trie — O(L). 3) For suggestions: compute **edit distance** ≤ 2 from the input word. Use BFS on the trie exploring character substitutions/insertions/deletions. 4) Rank suggestions by: edit distance, then word frequency. 5) Cache common misspellings → correct mappings in a hash map.",
+        },
+      ],
     },
     {
       id: "capstone-debugging-projects",
@@ -1129,22 +1130,22 @@ function binarySearchBuggy(arr, target) {
         "Not testing each component individually before integration",
         "Skipping the debugging exercises — finding bugs is a crucial interview skill",
         "Not measuring performance — understanding real-world speed is important",
-        "Over-engineering the capstone — start simple, add features incrementally"
+        "Over-engineering the capstone — start simple, add features incrementally",
       ],
       interviewQuestions: [
         {
           type: "scenario",
           q: "Walk me through how you would design a search engine from scratch.",
-          a: "1) **Ingest**: tokenize documents, build inverted index (word → doc list). 2) **Search**: tokenize query, look up each word in index, intersect results. 3) **Rank**: compute TF-IDF score, return top-K by relevance. 4) **Autocomplete**: build trie from query logs, return top suggestions. 5) **Cache**: LRU cache for frequent queries. 6) **Scale**: shard inverted index by word, replicate for read throughput."
+          a: "1) **Ingest**: tokenize documents, build inverted index (word → doc list). 2) **Search**: tokenize query, look up each word in index, intersect results. 3) **Rank**: compute TF-IDF score, return top-K by relevance. 4) **Autocomplete**: build trie from query logs, return top suggestions. 5) **Cache**: LRU cache for frequent queries. 6) **Scale**: shard inverted index by word, replicate for read throughput.",
         },
         {
           type: "conceptual",
           q: "What data structures and algorithms does this search engine use?",
-          a: "Hash Map (inverted index), Trie (autocomplete), LRU Cache (HashMap + ordered keys), Array (document storage), Set (deduplication, intersection), TF-IDF (ranking algorithm). This demonstrates how real systems compose multiple DSA together — no single data structure solves everything."
-        }
-      ]
-    }
-  ]
+          a: "Hash Map (inverted index), Trie (autocomplete), LRU Cache (HashMap + ordered keys), Array (document storage), Set (deduplication, intersection), TF-IDF (ranking algorithm). This demonstrates how real systems compose multiple DSA together — no single data structure solves everything.",
+        },
+      ],
+    },
+  ],
 };
 
 export default dsaPhase5;

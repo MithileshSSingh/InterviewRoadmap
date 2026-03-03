@@ -1,5 +1,11 @@
 "use client";
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import themes from "@/themes";
 
 const ThemeContext = createContext();
@@ -49,7 +55,9 @@ export function ThemeProvider({ children }) {
   };
 
   return (
-    <ThemeContext.Provider value={{ themeId, changeTheme, themes, mode, toggleMode }}>
+    <ThemeContext.Provider
+      value={{ themeId, changeTheme, themes, mode, toggleMode }}
+    >
       {children}
     </ThemeContext.Provider>
   );

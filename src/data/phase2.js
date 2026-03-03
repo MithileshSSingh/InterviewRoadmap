@@ -2,7 +2,8 @@ const phase2 = {
   id: "phase-2",
   title: "Phase 2: Intermediate",
   emoji: "🟡",
-  description: "Level up with DOM manipulation, events, closures, prototypes, classes, error handling, and modern JavaScript patterns.",
+  description:
+    "Level up with DOM manipulation, events, closures, prototypes, classes, error handling, and modern JavaScript patterns.",
   topics: [
     {
       id: "dom-manipulation",
@@ -66,15 +67,35 @@ document.querySelector("ul").appendChild(fragment); // Single reflow!`,
         "Querying the DOM inside a loop — cache the element reference outside the loop for performance",
         "`querySelectorAll` returns a NodeList, not an Array — use `Array.from()` or spread `[...]` to use array methods",
         "Modifying DOM in a loop causes reflow for each operation — use `DocumentFragment` for batch inserts",
-        "`getElementsByClassName` returns a live HTMLCollection that updates automatically — this can cause unexpected behavior in loops"
+        "`getElementsByClassName` returns a live HTMLCollection that updates automatically — this can cause unexpected behavior in loops",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is the difference between `textContent` and `innerHTML`?", a: "`textContent` gets/sets the text content without parsing HTML — it's safe from XSS. `innerHTML` parses and renders HTML tags, making it vulnerable to injection attacks. `textContent` is also faster as it doesn't trigger HTML parsing." },
-        { type: "tricky", q: "What is the difference between a NodeList and an HTMLCollection?", a: "**NodeList** (from `querySelectorAll`) is static (snapshot) and has `forEach`. **HTMLCollection** (from `getElementsByClassName`) is live (auto-updates when DOM changes) and doesn't have `forEach`. Neither is a true Array — convert with `Array.from()` for full array methods." },
-        { type: "coding", q: "Write a function that creates a nested list from a tree-like data structure.", a: "```js\nfunction createList(data) {\n  const ul = document.createElement('ul');\n  data.forEach(item => {\n    const li = document.createElement('li');\n    li.textContent = item.name;\n    if (item.children) li.appendChild(createList(item.children));\n    ul.appendChild(li);\n  });\n  return ul;\n}\n```" },
-        { type: "conceptual", q: "Why is `DocumentFragment` useful for performance?", a: "`DocumentFragment` is a lightweight DOM node that isn't part of the active DOM. You can append many elements to it without triggering reflows. When you append the fragment to the DOM, it's done in a single operation, causing only one reflow instead of one per element." },
-        { type: "scenario", q: "How would you efficiently update a list of 10,000 items in the DOM?", a: "Use: 1) `DocumentFragment` for batch inserts, 2) Virtual scrolling (only render visible items), 3) `requestAnimationFrame` for visual updates, 4) Batch DOM reads and writes separately (avoid layout thrashing), 5) Consider a virtual DOM library for complex UIs." }
-      ]
+        {
+          type: "conceptual",
+          q: "What is the difference between `textContent` and `innerHTML`?",
+          a: "`textContent` gets/sets the text content without parsing HTML — it's safe from XSS. `innerHTML` parses and renders HTML tags, making it vulnerable to injection attacks. `textContent` is also faster as it doesn't trigger HTML parsing.",
+        },
+        {
+          type: "tricky",
+          q: "What is the difference between a NodeList and an HTMLCollection?",
+          a: "**NodeList** (from `querySelectorAll`) is static (snapshot) and has `forEach`. **HTMLCollection** (from `getElementsByClassName`) is live (auto-updates when DOM changes) and doesn't have `forEach`. Neither is a true Array — convert with `Array.from()` for full array methods.",
+        },
+        {
+          type: "coding",
+          q: "Write a function that creates a nested list from a tree-like data structure.",
+          a: "```js\nfunction createList(data) {\n  const ul = document.createElement('ul');\n  data.forEach(item => {\n    const li = document.createElement('li');\n    li.textContent = item.name;\n    if (item.children) li.appendChild(createList(item.children));\n    ul.appendChild(li);\n  });\n  return ul;\n}\n```",
+        },
+        {
+          type: "conceptual",
+          q: "Why is `DocumentFragment` useful for performance?",
+          a: "`DocumentFragment` is a lightweight DOM node that isn't part of the active DOM. You can append many elements to it without triggering reflows. When you append the fragment to the DOM, it's done in a single operation, causing only one reflow instead of one per element.",
+        },
+        {
+          type: "scenario",
+          q: "How would you efficiently update a list of 10,000 items in the DOM?",
+          a: "Use: 1) `DocumentFragment` for batch inserts, 2) Virtual scrolling (only render visible items), 3) `requestAnimationFrame` for visual updates, 4) Batch DOM reads and writes separately (avoid layout thrashing), 5) Consider a virtual DOM library for complex UIs.",
+        },
+      ],
     },
     {
       id: "event-handling",
@@ -160,15 +181,35 @@ document.addEventListener("userLoggedIn", (e) => {
         "Forgetting `preventDefault()` on form submit — the page will reload!",
         "Attaching listeners inside loops without delegation — creates many listeners instead of one",
         "Confusing `event.target` (actual clicked element) with `event.currentTarget` (element the listener is on)",
-        "Not understanding that `stopPropagation()` stops bubbling but `preventDefault()` stops the default action — they are different!"
+        "Not understanding that `stopPropagation()` stops bubbling but `preventDefault()` stops the default action — they are different!",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "Explain event bubbling and capturing with an example.", a: "**Capturing** (top-down): `window → document → body → div → button`. **Bubbling** (bottom-up): `button → div → body → document → window`. By default, listeners use bubbling. Add `{ capture: true }` for capturing phase. The event always goes through all 3 phases: capture → target → bubble." },
-        { type: "conceptual", q: "What is event delegation and why is it useful?", a: "Event delegation attaches a single event listener to a parent element to handle events from its children. Benefits: 1) Works for dynamically added elements, 2) Uses less memory (one listener vs many), 3) Less setup code. Uses `event.target` to identify which child triggered the event." },
-        { type: "tricky", q: "What is the difference between `event.target` and `event.currentTarget`?", a: "`event.target` is the element that TRIGGERED the event (the actual click target). `event.currentTarget` is the element the LISTENER is attached to. With delegation, `target` is the child clicked, `currentTarget` is the parent with the listener. In the handler, `this === event.currentTarget` (not for arrow functions)." },
-        { type: "coding", q: "Implement a debounce function for a search input.", a: "```js\nfunction debounce(fn, delay) {\n  let timer;\n  return function(...args) {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn.apply(this, args), delay);\n  };\n}\nconst search = debounce((query) => {\n  console.log('Searching:', query);\n}, 300);\ninput.addEventListener('input', (e) => search(e.target.value));\n```" },
-        { type: "scenario", q: "You have a table with 10,000 rows. Each row has a delete button. What's the best approach for handling clicks?", a: "Event delegation! Attach ONE listener to the `<table>` or `<tbody>`, not 10,000 listeners. Check `event.target.closest('.delete-btn')` to identify which button was clicked, then remove its parent `<tr>`. This uses minimal memory and automatically works for rows added later." }
-      ]
+        {
+          type: "conceptual",
+          q: "Explain event bubbling and capturing with an example.",
+          a: "**Capturing** (top-down): `window → document → body → div → button`. **Bubbling** (bottom-up): `button → div → body → document → window`. By default, listeners use bubbling. Add `{ capture: true }` for capturing phase. The event always goes through all 3 phases: capture → target → bubble.",
+        },
+        {
+          type: "conceptual",
+          q: "What is event delegation and why is it useful?",
+          a: "Event delegation attaches a single event listener to a parent element to handle events from its children. Benefits: 1) Works for dynamically added elements, 2) Uses less memory (one listener vs many), 3) Less setup code. Uses `event.target` to identify which child triggered the event.",
+        },
+        {
+          type: "tricky",
+          q: "What is the difference between `event.target` and `event.currentTarget`?",
+          a: "`event.target` is the element that TRIGGERED the event (the actual click target). `event.currentTarget` is the element the LISTENER is attached to. With delegation, `target` is the child clicked, `currentTarget` is the parent with the listener. In the handler, `this === event.currentTarget` (not for arrow functions).",
+        },
+        {
+          type: "coding",
+          q: "Implement a debounce function for a search input.",
+          a: "```js\nfunction debounce(fn, delay) {\n  let timer;\n  return function(...args) {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn.apply(this, args), delay);\n  };\n}\nconst search = debounce((query) => {\n  console.log('Searching:', query);\n}, 300);\ninput.addEventListener('input', (e) => search(e.target.value));\n```",
+        },
+        {
+          type: "scenario",
+          q: "You have a table with 10,000 rows. Each row has a delete button. What's the best approach for handling clicks?",
+          a: "Event delegation! Attach ONE listener to the `<table>` or `<tbody>`, not 10,000 listeners. Check `event.target.closest('.delete-btn')` to identify which button was clicked, then remove its parent `<tr>`. This uses minimal memory and automatically works for rows added later.",
+        },
+      ],
     },
     {
       id: "higher-order-functions-callbacks",
@@ -243,15 +284,35 @@ fetchData("/api",
         "Not handling errors in callbacks — always have an error-first callback pattern or error handler",
         "Creating deeply nested callbacks (callback hell) — use Promises or async/await instead",
         "Losing `this` context when passing methods as callbacks — use `.bind()` or arrow functions",
-        "Not understanding that callbacks can be synchronous too — `array.map(fn)` calls `fn` synchronously"
+        "Not understanding that callbacks can be synchronous too — `array.map(fn)` calls `fn` synchronously",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is a higher-order function? Give examples from JavaScript.", a: "A function that takes a function as an argument or returns a function. Built-in examples: `Array.map()`, `Array.filter()`, `Array.reduce()`, `setTimeout()`, `addEventListener()`, `Promise.then()`. Custom example: `function withLogging(fn) { return (...args) => { console.log('calling'); return fn(...args); }; }`" },
-        { type: "conceptual", q: "What is callback hell and how do you avoid it?", a: "Callback hell is deeply nested callbacks making code hard to read (pyramid of doom). Avoid it with: 1) Named functions instead of anonymous, 2) Promises (`.then` chaining), 3) `async/await`, 4) Breaking code into smaller functions, 5) Libraries like `async.js`." },
-        { type: "coding", q: "Implement a `compose` function that takes multiple functions and returns their composition.", a: "```js\nfunction compose(...fns) {\n  return (x) => fns.reduceRight((acc, fn) => fn(acc), x);\n}\n// Usage:\nconst transform = compose(Math.abs, x => x * 2, x => x - 10);\ntransform(3); // Math.abs((3-10)*2) = 14\n```" },
-        { type: "tricky", q: "What will this output?\n```js\n[1,2,3].map(parseInt);\n```", a: "`[1, NaN, NaN]`. `map` passes `(value, index, array)` to the callback. `parseInt` takes `(string, radix)`. So: `parseInt(1, 0)` → use default radix → `1`, `parseInt(2, 1)` → radix 1 invalid → `NaN`, `parseInt(3, 2)` → 3 isn't valid binary → `NaN`." },
-        { type: "scenario", q: "How would you implement a middleware system using higher-order functions?", a: "```js\nfunction pipeline(...middlewares) {\n  return (input) => {\n    return middlewares.reduce(\n      (result, middleware) => middleware(result),\n      input\n    );\n  };\n}\nconst process = pipeline(\n  (req) => ({ ...req, timestamp: Date.now() }),\n  (req) => ({ ...req, validated: true }),\n  (req) => ({ ...req, logged: true })\n);\n```" }
-      ]
+        {
+          type: "conceptual",
+          q: "What is a higher-order function? Give examples from JavaScript.",
+          a: "A function that takes a function as an argument or returns a function. Built-in examples: `Array.map()`, `Array.filter()`, `Array.reduce()`, `setTimeout()`, `addEventListener()`, `Promise.then()`. Custom example: `function withLogging(fn) { return (...args) => { console.log('calling'); return fn(...args); }; }`",
+        },
+        {
+          type: "conceptual",
+          q: "What is callback hell and how do you avoid it?",
+          a: "Callback hell is deeply nested callbacks making code hard to read (pyramid of doom). Avoid it with: 1) Named functions instead of anonymous, 2) Promises (`.then` chaining), 3) `async/await`, 4) Breaking code into smaller functions, 5) Libraries like `async.js`.",
+        },
+        {
+          type: "coding",
+          q: "Implement a `compose` function that takes multiple functions and returns their composition.",
+          a: "```js\nfunction compose(...fns) {\n  return (x) => fns.reduceRight((acc, fn) => fn(acc), x);\n}\n// Usage:\nconst transform = compose(Math.abs, x => x * 2, x => x - 10);\ntransform(3); // Math.abs((3-10)*2) = 14\n```",
+        },
+        {
+          type: "tricky",
+          q: "What will this output?\n```js\n[1,2,3].map(parseInt);\n```",
+          a: "`[1, NaN, NaN]`. `map` passes `(value, index, array)` to the callback. `parseInt` takes `(string, radix)`. So: `parseInt(1, 0)` → use default radix → `1`, `parseInt(2, 1)` → radix 1 invalid → `NaN`, `parseInt(3, 2)` → 3 isn't valid binary → `NaN`.",
+        },
+        {
+          type: "scenario",
+          q: "How would you implement a middleware system using higher-order functions?",
+          a: "```js\nfunction pipeline(...middlewares) {\n  return (input) => {\n    return middlewares.reduce(\n      (result, middleware) => middleware(result),\n      input\n    );\n  };\n}\nconst process = pipeline(\n  (req) => ({ ...req, timestamp: Date.now() }),\n  (req) => ({ ...req, validated: true }),\n  (req) => ({ ...req, logged: true })\n);\n```",
+        },
+      ],
     },
     {
       id: "closures-lexical-scope",
@@ -338,15 +399,35 @@ const factorial = memoize(function f(n) {
         "Memory leaks — closures keep references to outer scope alive, preventing garbage collection",
         "The classic `var` in loop problem — use `let` or IIFE to create a new closure per iteration",
         "Thinking closures are a special syntax — they're just a side effect of lexical scoping and functions",
-        "Over-using closures when a class or simple object would be clearer"
+        "Over-using closures when a class or simple object would be clearer",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is a closure and how does it work?", a: "A closure is a function bundled with its lexical environment (the variables available at definition time). When a function is returned from another function, it retains access to the outer function's variables even after the outer function completes. This happens because functions maintain a reference to their scope chain." },
-        { type: "tricky", q: "What will this output?\n```js\nfunction createFns() {\n  var fns = [];\n  for (var i = 0; i < 3; i++) {\n    fns.push(function() { return i; });\n  }\n  return fns;\n}\nconst [a, b, c] = createFns();\nconsole.log(a(), b(), c());\n```", a: "`3, 3, 3`. All three functions close over the SAME `var i`. By the time they execute, the loop has finished and `i` is `3`. Fix: use `let` instead of `var`, or wrap in an IIFE: `(function(j) { fns.push(() => j); })(i)`." },
-        { type: "coding", q: "Write a `createMultiplier(x)` function that returns a function multiplying its argument by x.", a: "```js\nfunction createMultiplier(x) {\n  return function(y) {\n    return x * y;\n  };\n}\nconst triple = createMultiplier(3);\nconsole.log(triple(10)); // 30\n```" },
-        { type: "conceptual", q: "How can closures cause memory leaks?", a: "A closure keeps its entire outer scope alive in memory. If a closure references a large data structure or DOM element that's no longer needed, it prevents garbage collection. Common case: event listeners inside closures that capture large variables. Fix: null out references when done, remove event listeners, or restructure code." },
-        { type: "scenario", q: "How would you implement data privacy (encapsulation) in JavaScript without classes?", a: "Use closures (Module Pattern): ```js\nfunction createUser(name) {\n  let _password = ''; // private\n  return {\n    getName: () => name,\n    setPassword: (p) => { _password = p; },\n    checkPassword: (p) => p === _password\n  };\n}\n// _password is completely inaccessible from outside```" }
-      ]
+        {
+          type: "conceptual",
+          q: "What is a closure and how does it work?",
+          a: "A closure is a function bundled with its lexical environment (the variables available at definition time). When a function is returned from another function, it retains access to the outer function's variables even after the outer function completes. This happens because functions maintain a reference to their scope chain.",
+        },
+        {
+          type: "tricky",
+          q: "What will this output?\n```js\nfunction createFns() {\n  var fns = [];\n  for (var i = 0; i < 3; i++) {\n    fns.push(function() { return i; });\n  }\n  return fns;\n}\nconst [a, b, c] = createFns();\nconsole.log(a(), b(), c());\n```",
+          a: "`3, 3, 3`. All three functions close over the SAME `var i`. By the time they execute, the loop has finished and `i` is `3`. Fix: use `let` instead of `var`, or wrap in an IIFE: `(function(j) { fns.push(() => j); })(i)`.",
+        },
+        {
+          type: "coding",
+          q: "Write a `createMultiplier(x)` function that returns a function multiplying its argument by x.",
+          a: "```js\nfunction createMultiplier(x) {\n  return function(y) {\n    return x * y;\n  };\n}\nconst triple = createMultiplier(3);\nconsole.log(triple(10)); // 30\n```",
+        },
+        {
+          type: "conceptual",
+          q: "How can closures cause memory leaks?",
+          a: "A closure keeps its entire outer scope alive in memory. If a closure references a large data structure or DOM element that's no longer needed, it prevents garbage collection. Common case: event listeners inside closures that capture large variables. Fix: null out references when done, remove event listeners, or restructure code.",
+        },
+        {
+          type: "scenario",
+          q: "How would you implement data privacy (encapsulation) in JavaScript without classes?",
+          a: "Use closures (Module Pattern): ```js\nfunction createUser(name) {\n  let _password = ''; // private\n  return {\n    getName: () => name,\n    setPassword: (p) => { _password = p; },\n    checkPassword: (p) => p === _password\n  };\n}\n// _password is completely inaccessible from outside```",
+        },
+      ],
     },
     {
       id: "this-keyword",
@@ -429,15 +510,35 @@ console.log(alice.name); // "Alice"
         "Using regular functions in `forEach`/`map` inside methods — `this` won't refer to the object; use arrow functions",
         "Arrow functions DON'T have their own `this` — don't use them as object methods",
         "Forgetting that `bind` returns a NEW function — it doesn't modify the original",
-        "In event handlers, `this` = the element in regular functions, NOT in arrow functions"
+        "In event handlers, `this` = the element in regular functions, NOT in arrow functions",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "Explain the four rules of `this` binding in JavaScript.", a: "1) **`new`**: `this` = new object. 2) **Explicit** (`call`/`apply`/`bind`): `this` = specified object. 3) **Implicit** (`obj.fn()`): `this` = object before the dot. 4) **Default**: `this` = `globalThis` (or `undefined` in strict mode). Arrow functions have NO `this` — they use lexical `this` from their enclosing scope." },
-        { type: "tricky", q: "What will this output?\n```js\nconst obj = {\n  name: 'Alice',\n  getName: () => this.name,\n  getNameRegular() { return this.name; }\n};\nconsole.log(obj.getName());\nconsole.log(obj.getNameRegular());\n```", a: "`undefined` (or globalThis.name), then `'Alice'`. The arrow function `getName` doesn't have its own `this` — it uses the `this` from the enclosing scope (global/module scope), NOT `obj`. The regular function `getNameRegular` uses implicit binding, so `this` = `obj`." },
-        { type: "conceptual", q: "What is the difference between `call`, `apply`, and `bind`?", a: "`call(thisArg, arg1, arg2)` — invokes immediately with individual args. `apply(thisArg, [args])` — invokes immediately with args as array. `bind(thisArg, arg1)` — returns a NEW function with `this` permanently bound (doesn't invoke). Mnemonic: **C**all = **C**ommas, **A**pply = **A**rray, **B**ind = **B**ound later." },
-        { type: "coding", q: "Implement your own `bind` function.", a: "```js\nFunction.prototype.myBind = function(context, ...boundArgs) {\n  const fn = this;\n  return function(...args) {\n    return fn.apply(context, [...boundArgs, ...args]);\n  };\n};\n```" },
-        { type: "scenario", q: "You have a class method that's passed as a callback and loses `this`. How do you fix it?", a: "Three approaches: 1) `bind` in constructor: `this.method = this.method.bind(this)`. 2) Arrow function in class field: `method = () => { ... }`. 3) Arrow wrapper at call site: `onClick={() => this.method()}`. Option 2 is most common in modern code. Note: option 3 creates a new function each render." }
-      ]
+        {
+          type: "conceptual",
+          q: "Explain the four rules of `this` binding in JavaScript.",
+          a: "1) **`new`**: `this` = new object. 2) **Explicit** (`call`/`apply`/`bind`): `this` = specified object. 3) **Implicit** (`obj.fn()`): `this` = object before the dot. 4) **Default**: `this` = `globalThis` (or `undefined` in strict mode). Arrow functions have NO `this` — they use lexical `this` from their enclosing scope.",
+        },
+        {
+          type: "tricky",
+          q: "What will this output?\n```js\nconst obj = {\n  name: 'Alice',\n  getName: () => this.name,\n  getNameRegular() { return this.name; }\n};\nconsole.log(obj.getName());\nconsole.log(obj.getNameRegular());\n```",
+          a: "`undefined` (or globalThis.name), then `'Alice'`. The arrow function `getName` doesn't have its own `this` — it uses the `this` from the enclosing scope (global/module scope), NOT `obj`. The regular function `getNameRegular` uses implicit binding, so `this` = `obj`.",
+        },
+        {
+          type: "conceptual",
+          q: "What is the difference between `call`, `apply`, and `bind`?",
+          a: "`call(thisArg, arg1, arg2)` — invokes immediately with individual args. `apply(thisArg, [args])` — invokes immediately with args as array. `bind(thisArg, arg1)` — returns a NEW function with `this` permanently bound (doesn't invoke). Mnemonic: **C**all = **C**ommas, **A**pply = **A**rray, **B**ind = **B**ound later.",
+        },
+        {
+          type: "coding",
+          q: "Implement your own `bind` function.",
+          a: "```js\nFunction.prototype.myBind = function(context, ...boundArgs) {\n  const fn = this;\n  return function(...args) {\n    return fn.apply(context, [...boundArgs, ...args]);\n  };\n};\n```",
+        },
+        {
+          type: "scenario",
+          q: "You have a class method that's passed as a callback and loses `this`. How do you fix it?",
+          a: "Three approaches: 1) `bind` in constructor: `this.method = this.method.bind(this)`. 2) Arrow function in class field: `method = () => { ... }`. 3) Arrow wrapper at call site: `onClick={() => this.method()}`. Option 2 is most common in modern code. Note: option 3 creates a new function each render.",
+        },
+      ],
     },
     {
       id: "prototypes-prototypal-inheritance",
@@ -506,15 +607,35 @@ console.log(rex instanceof Object); // true`,
         "Modifying `Object.prototype` or `Array.prototype` — affects ALL objects/arrays globally!",
         "Forgetting to set `constructor` after `Dog.prototype = Object.create(Animal.prototype)`",
         "Confusing `__proto__` (instance's link to its prototype) with `.prototype` (constructor's blueprint for instances)",
-        "Using `for...in` iterates over inherited properties — always check `hasOwnProperty()` or use `Object.hasOwn()`"
+        "Using `for...in` iterates over inherited properties — always check `hasOwnProperty()` or use `Object.hasOwn()`",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "Explain the prototype chain in JavaScript.", a: "Every object has a `[[Prototype]]` link to another object. When accessing a property, JS first checks the object itself, then its prototype, then the prototype's prototype, and so on until it reaches `Object.prototype` (whose prototype is `null`). This chain of lookups is the prototype chain. It's how JavaScript implements inheritance." },
-        { type: "conceptual", q: "What is the difference between `__proto__` and `.prototype`?", a: "`__proto__` is on every INSTANCE — it's the link to the object's prototype (what it inherits from). `.prototype` is on CONSTRUCTOR FUNCTIONS — it's the object that will become the `__proto__` of instances created with `new`. `dog.__proto__ === Dog.prototype` is `true`." },
-        { type: "coding", q: "Implement inheritance between `Shape` and `Circle` using prototypes.", a: "```js\nfunction Shape(color) { this.color = color; }\nShape.prototype.describe = function() {\n  return `A ${this.color} shape`;\n};\nfunction Circle(color, radius) {\n  Shape.call(this, color);\n  this.radius = radius;\n}\nCircle.prototype = Object.create(Shape.prototype);\nCircle.prototype.constructor = Circle;\nCircle.prototype.area = function() {\n  return Math.PI * this.radius ** 2;\n};\n```" },
-        { type: "tricky", q: "What does `Object.create(null)` return?", a: "An object with NO prototype — `null` prototype. It doesn't inherit ANYTHING from `Object.prototype`, so it has no `toString`, `hasOwnProperty`, etc. Useful for creating pure dictionary/hash-map objects without inherited properties. `Object.create(null).__proto__` is `undefined`." },
-        { type: "scenario", q: "Why should you put methods on the prototype instead of inside the constructor?", a: "Methods on the prototype are SHARED across all instances (one copy in memory). Methods inside the constructor are DUPLICATED per instance. For 1000 objects, prototype methods use memory for 1 function; constructor methods use memory for 1000 functions. Prototype methods also allow dynamic updates — changing the prototype method affects all existing instances." }
-      ]
+        {
+          type: "conceptual",
+          q: "Explain the prototype chain in JavaScript.",
+          a: "Every object has a `[[Prototype]]` link to another object. When accessing a property, JS first checks the object itself, then its prototype, then the prototype's prototype, and so on until it reaches `Object.prototype` (whose prototype is `null`). This chain of lookups is the prototype chain. It's how JavaScript implements inheritance.",
+        },
+        {
+          type: "conceptual",
+          q: "What is the difference between `__proto__` and `.prototype`?",
+          a: "`__proto__` is on every INSTANCE — it's the link to the object's prototype (what it inherits from). `.prototype` is on CONSTRUCTOR FUNCTIONS — it's the object that will become the `__proto__` of instances created with `new`. `dog.__proto__ === Dog.prototype` is `true`.",
+        },
+        {
+          type: "coding",
+          q: "Implement inheritance between `Shape` and `Circle` using prototypes.",
+          a: "```js\nfunction Shape(color) { this.color = color; }\nShape.prototype.describe = function() {\n  return `A ${this.color} shape`;\n};\nfunction Circle(color, radius) {\n  Shape.call(this, color);\n  this.radius = radius;\n}\nCircle.prototype = Object.create(Shape.prototype);\nCircle.prototype.constructor = Circle;\nCircle.prototype.area = function() {\n  return Math.PI * this.radius ** 2;\n};\n```",
+        },
+        {
+          type: "tricky",
+          q: "What does `Object.create(null)` return?",
+          a: "An object with NO prototype — `null` prototype. It doesn't inherit ANYTHING from `Object.prototype`, so it has no `toString`, `hasOwnProperty`, etc. Useful for creating pure dictionary/hash-map objects without inherited properties. `Object.create(null).__proto__` is `undefined`.",
+        },
+        {
+          type: "scenario",
+          q: "Why should you put methods on the prototype instead of inside the constructor?",
+          a: "Methods on the prototype are SHARED across all instances (one copy in memory). Methods inside the constructor are DUPLICATED per instance. For 1000 objects, prototype methods use memory for 1 function; constructor methods use memory for 1000 functions. Prototype methods also allow dynamic updates — changing the prototype method affects all existing instances.",
+        },
+      ],
     },
     {
       id: "es6-classes",
@@ -601,15 +722,35 @@ console.log(Dog.create);        // undefined — static methods aren't inherited
         "Thinking classes are hoisted like function declarations — they are NOT (similar to `let`/`const` TDZ)",
         "Confusing static methods with instance methods — `static` methods are on the class, not on instances",
         "Using arrow functions as class methods — they work as class fields but are NOT on the prototype (memory duplication)",
-        "Forgetting that `#private` fields are truly private — not accessible via `this['#field']` or outside the class"
+        "Forgetting that `#private` fields are truly private — not accessible via `this['#field']` or outside the class",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "Are JavaScript classes \"real\" classes like Java/C++?", a: "No. JavaScript classes are **syntactic sugar** over prototypal inheritance. Under the hood, `class Dog extends Animal` still creates prototype chains: `Dog.prototype.__proto__ === Animal.prototype`. There's no true class-based instantiation — it's still objects linking to objects via prototypes." },
-        { type: "tricky", q: "What will this output?\n```js\nclass Foo {\n  static bar = 'hello';\n  baz = 'world';\n}\nconsole.log(Foo.bar, Foo.baz);\nconst f = new Foo();\nconsole.log(f.bar, f.baz);\n```", a: "`'hello', undefined` and `undefined, 'world'`. `static bar` is on the class `Foo` itself. `baz` is an instance field, only on instances created with `new`. Static ≠ accessible on instances, and instance fields ≠ accessible on the class." },
-        { type: "coding", q: "Implement a `Stack` class with `push`, `pop`, `peek`, `isEmpty`, and `size` using private fields.", a: "```js\nclass Stack {\n  #items = [];\n  push(item) { this.#items.push(item); }\n  pop() { return this.#items.pop(); }\n  peek() { return this.#items.at(-1); }\n  isEmpty() { return this.#items.length === 0; }\n  get size() { return this.#items.length; }\n}\n```" },
-        { type: "conceptual", q: "What is the difference between public, private (`#`), and static class fields?", a: "**Public fields**: Accessible on instances (`this.name`). **Private fields (`#name`)**: Only accessible inside the class — truly private, throws SyntaxError if accessed outside. **Static fields**: On the class itself, not instances (`ClassName.field`). Static can also be private: `static #count`." },
-        { type: "scenario", q: "When would you use composition over inheritance in JavaScript?", a: "When objects need behaviors from multiple sources (JS has no multiple inheritance). Instead of: `class FlyingSwimmingAnimal extends ??`, compose behaviors: `const flyBehavior = { fly() {...} }; Object.assign(duck, flyBehavior, swimBehavior)`. Prefer composition when: relationships are 'has-a' not 'is-a', behaviors are shared across unrelated classes, or the inheritance hierarchy would be deep/complex." }
-      ]
+        {
+          type: "conceptual",
+          q: 'Are JavaScript classes "real" classes like Java/C++?',
+          a: "No. JavaScript classes are **syntactic sugar** over prototypal inheritance. Under the hood, `class Dog extends Animal` still creates prototype chains: `Dog.prototype.__proto__ === Animal.prototype`. There's no true class-based instantiation — it's still objects linking to objects via prototypes.",
+        },
+        {
+          type: "tricky",
+          q: "What will this output?\n```js\nclass Foo {\n  static bar = 'hello';\n  baz = 'world';\n}\nconsole.log(Foo.bar, Foo.baz);\nconst f = new Foo();\nconsole.log(f.bar, f.baz);\n```",
+          a: "`'hello', undefined` and `undefined, 'world'`. `static bar` is on the class `Foo` itself. `baz` is an instance field, only on instances created with `new`. Static ≠ accessible on instances, and instance fields ≠ accessible on the class.",
+        },
+        {
+          type: "coding",
+          q: "Implement a `Stack` class with `push`, `pop`, `peek`, `isEmpty`, and `size` using private fields.",
+          a: "```js\nclass Stack {\n  #items = [];\n  push(item) { this.#items.push(item); }\n  pop() { return this.#items.pop(); }\n  peek() { return this.#items.at(-1); }\n  isEmpty() { return this.#items.length === 0; }\n  get size() { return this.#items.length; }\n}\n```",
+        },
+        {
+          type: "conceptual",
+          q: "What is the difference between public, private (`#`), and static class fields?",
+          a: "**Public fields**: Accessible on instances (`this.name`). **Private fields (`#name`)**: Only accessible inside the class — truly private, throws SyntaxError if accessed outside. **Static fields**: On the class itself, not instances (`ClassName.field`). Static can also be private: `static #count`.",
+        },
+        {
+          type: "scenario",
+          q: "When would you use composition over inheritance in JavaScript?",
+          a: "When objects need behaviors from multiple sources (JS has no multiple inheritance). Instead of: `class FlyingSwimmingAnimal extends ??`, compose behaviors: `const flyBehavior = { fly() {...} }; Object.assign(duck, flyBehavior, swimBehavior)`. Prefer composition when: relationships are 'has-a' not 'is-a', behaviors are shared across unrelated classes, or the inheritance hierarchy would be deep/complex.",
+        },
+      ],
     },
     {
       id: "error-handling",
@@ -686,17 +827,37 @@ try {
         "Catching ALL errors with a generic catch — only catch errors you can handle; re-throw the rest",
         "Forgetting that `finally` ALWAYS runs, even if there's a `return` in try or catch",
         "Throwing strings instead of Error objects — `throw 'error'` loses the stack trace; use `throw new Error('error')`",
-        "Not extending Error properly in custom errors — must call `super(message)` first"
+        "Not extending Error properly in custom errors — must call `super(message)` first",
       ],
       interviewQuestions: [
-        { type: "conceptual", q: "What is the purpose of `finally` in try/catch/finally?", a: "`finally` ALWAYS executes, regardless of whether an error was thrown or caught. It runs even if `try` or `catch` has a `return` statement. Use it for cleanup: closing connections, releasing resources, hiding loading spinners." },
-        { type: "tricky", q: "What will this return?\n```js\nfunction test() {\n  try {\n    return 1;\n  } catch(e) {\n    return 2;\n  } finally {\n    return 3;\n  }\n}\nconsole.log(test());\n```", a: "`3`. The `finally` block's `return` overrides the `try` block's `return`. This is why you should NEVER put `return` in `finally` — it's a well-known JavaScript gotcha." },
-        { type: "coding", q: "Create a custom `HttpError` class with status code and message.", a: "```js\nclass HttpError extends Error {\n  constructor(statusCode, message) {\n    super(message);\n    this.name = 'HttpError';\n    this.statusCode = statusCode;\n  }\n  static badRequest(msg) { return new HttpError(400, msg); }\n  static notFound(msg) { return new HttpError(404, msg); }\n  static serverError(msg) { return new HttpError(500, msg); }\n}\n```" },
-        { type: "conceptual", q: "What are the built-in error types in JavaScript?", a: "`Error` (base), `TypeError` (wrong type), `ReferenceError` (undeclared variable), `SyntaxError` (invalid syntax), `RangeError` (value out of range), `URIError` (malformed URI), `EvalError` (eval error). Most common in practice: `TypeError` and `ReferenceError`." },
-        { type: "scenario", q: "How would you implement a global error handler for uncaught errors in JavaScript?", a: "Browser: `window.addEventListener('error', handler)` for sync, `window.addEventListener('unhandledrejection', handler)` for async. Node.js: `process.on('uncaughtException', handler)` and `process.on('unhandledRejection', handler)`. Always: log the error, notify monitoring (Sentry, etc.), and in Node, exit gracefully after uncaught exceptions." }
-      ]
-    }
-  ]
+        {
+          type: "conceptual",
+          q: "What is the purpose of `finally` in try/catch/finally?",
+          a: "`finally` ALWAYS executes, regardless of whether an error was thrown or caught. It runs even if `try` or `catch` has a `return` statement. Use it for cleanup: closing connections, releasing resources, hiding loading spinners.",
+        },
+        {
+          type: "tricky",
+          q: "What will this return?\n```js\nfunction test() {\n  try {\n    return 1;\n  } catch(e) {\n    return 2;\n  } finally {\n    return 3;\n  }\n}\nconsole.log(test());\n```",
+          a: "`3`. The `finally` block's `return` overrides the `try` block's `return`. This is why you should NEVER put `return` in `finally` — it's a well-known JavaScript gotcha.",
+        },
+        {
+          type: "coding",
+          q: "Create a custom `HttpError` class with status code and message.",
+          a: "```js\nclass HttpError extends Error {\n  constructor(statusCode, message) {\n    super(message);\n    this.name = 'HttpError';\n    this.statusCode = statusCode;\n  }\n  static badRequest(msg) { return new HttpError(400, msg); }\n  static notFound(msg) { return new HttpError(404, msg); }\n  static serverError(msg) { return new HttpError(500, msg); }\n}\n```",
+        },
+        {
+          type: "conceptual",
+          q: "What are the built-in error types in JavaScript?",
+          a: "`Error` (base), `TypeError` (wrong type), `ReferenceError` (undeclared variable), `SyntaxError` (invalid syntax), `RangeError` (value out of range), `URIError` (malformed URI), `EvalError` (eval error). Most common in practice: `TypeError` and `ReferenceError`.",
+        },
+        {
+          type: "scenario",
+          q: "How would you implement a global error handler for uncaught errors in JavaScript?",
+          a: "Browser: `window.addEventListener('error', handler)` for sync, `window.addEventListener('unhandledrejection', handler)` for async. Node.js: `process.on('uncaughtException', handler)` and `process.on('unhandledRejection', handler)`. Always: log the error, notify monitoring (Sentry, etc.), and in Node, exit gracefully after uncaught exceptions.",
+        },
+      ],
+    },
+  ],
 };
 
 export default phase2;

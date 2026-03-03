@@ -2,7 +2,8 @@ const sfPhase8 = {
   id: "phase-8",
   title: "Phase 8: Governor Limits & Performance Optimization",
   emoji: "⚙️",
-  description: "Deep mastery of all governor limits, performance profiling, query optimization, Apex optimization patterns, caching strategies, and enterprise-scale performance architecture.",
+  description:
+    "Deep mastery of all governor limits, performance profiling, query optimization, Apex optimization patterns, caching strategies, and enterprise-scale performance architecture.",
   topics: [
     {
       id: "sf-governor-limits-complete",
@@ -224,20 +225,20 @@ public class PerformanceOptimization {
         "Not accounting for other automation sharing the transaction — your trigger shares limits with Flows, Process Builders, and other triggers on the same object",
         "Optimizing prematurely — profile first, optimize second. The bottleneck might not be where you think",
         "Caching too aggressively — static variable caches persist for the entire transaction but consume heap. Clear caches when no longer needed",
-        "Not using SOQL for-loop for large datasets — regular SOQL loads all results into heap. For-loop processes in 200-record chunks"
+        "Not using SOQL for-loop for large datasets — regular SOQL loads all results into heap. For-loop processes in 200-record chunks",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "You have a complex transaction with 3 triggers, 2 Flows, and 1 Process Builder all firing on the same Account save. How do you manage governor limits?",
-          a: "**Understanding:** All automations share the SAME transaction — one pool of 100 SOQL, 150 DML, etc. **Strategy:** (1) **Audit** — Document what each automation does (SOQL count, DML count). Create a 'limits budget' spreadsheet. (2) **Consolidate triggers** — One trigger per object with handler framework. Eliminate redundant queries. (3) **Migrate flows** — Convert Process Builders (legacy) to Flows. Consider converting simple Flows to before triggers (no DML cost). (4) **Bulkify everything** — Ensure all automations handle 200 records. (5) **Offload** — Move non-critical logic to @future/Queueable (separate transaction). (6) **Monitor** — Add limits logging to identify the biggest consumers."
+          a: "**Understanding:** All automations share the SAME transaction — one pool of 100 SOQL, 150 DML, etc. **Strategy:** (1) **Audit** — Document what each automation does (SOQL count, DML count). Create a 'limits budget' spreadsheet. (2) **Consolidate triggers** — One trigger per object with handler framework. Eliminate redundant queries. (3) **Migrate flows** — Convert Process Builders (legacy) to Flows. Consider converting simple Flows to before triggers (no DML cost). (4) **Bulkify everything** — Ensure all automations handle 200 records. (5) **Offload** — Move non-critical logic to @future/Queueable (separate transaction). (6) **Monitor** — Add limits logging to identify the biggest consumers.",
         },
         {
           type: "tricky",
           q: "What's the difference between synchronous and asynchronous governor limits?",
-          a: "Async methods (@future, Queueable, Batch execute()) get **higher limits:** 200 SOQL (vs 100), 12MB heap (vs 6MB), 60s CPU (vs 10s). **Why:** Async runs in the background without blocking users, so Salesforce allows more resources. **Key implication:** When your synchronous trigger is near limits, offload work to a Queueable job. But be careful — Queueable has its own limits: only 1 chained Queueable in production (vs 50 from synchronous), and batch jobs are limited to 5 concurrent. **Batch Apex start()** has a special limit: QueryLocator can return up to 50 MILLION records."
-        }
-      ]
+          a: "Async methods (@future, Queueable, Batch execute()) get **higher limits:** 200 SOQL (vs 100), 12MB heap (vs 6MB), 60s CPU (vs 10s). **Why:** Async runs in the background without blocking users, so Salesforce allows more resources. **Key implication:** When your synchronous trigger is near limits, offload work to a Queueable job. But be careful — Queueable has its own limits: only 1 chained Queueable in production (vs 50 from synchronous), and batch jobs are limited to 5 concurrent. **Batch Apex start()** has a special limit: QueryLocator can return up to 50 MILLION records.",
+        },
+      ],
     },
     {
       id: "sf-performance-profiling",
@@ -431,22 +432,22 @@ public class PerformanceProfiling {
         "Profiling in development with small data — performance issues only appear with production-scale data. Always test with realistic volumes",
         "Not using the Query Plan tool — guessing at query performance instead of using the tool that tells you exactly what's happening",
         "Ignoring the 'CUMULATIVE_LIMIT_USAGE' section in debug logs — this section shows total limit consumption across the entire transaction, including all triggers and automations",
-        "Optimizing without measuring — always profile first. The actual bottleneck is often not what you expect"
+        "Optimizing without measuring — always profile first. The actual bottleneck is often not what you expect",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "How do you profile and optimize a slow Salesforce transaction?",
-          a: "**Step-by-step:** (1) **Enable debug logs** for the affected user with Database:FINE, Apex:DEBUG. (2) **Reproduce** the slow operation. (3) **Analyze the log:** Look for repeated SOQL_EXECUTE (queries in loops), high CPU_TIME, large DML operations. Check CUMULATIVE_LIMIT_USAGE at the end. (4) **Use Query Plan** for slow SOQL — check index usage and selectivity. (5) **Identify bottleneck:** Usually SOQL count > CPU time > heap size. (6) **Optimize:** Bulkify queries, add custom indexes, move logic to async, consolidate triggers. (7) **Verify:** Re-profile and compare before/after metrics. (8) **Monitor:** Set up ongoing performance logging."
+          a: "**Step-by-step:** (1) **Enable debug logs** for the affected user with Database:FINE, Apex:DEBUG. (2) **Reproduce** the slow operation. (3) **Analyze the log:** Look for repeated SOQL_EXECUTE (queries in loops), high CPU_TIME, large DML operations. Check CUMULATIVE_LIMIT_USAGE at the end. (4) **Use Query Plan** for slow SOQL — check index usage and selectivity. (5) **Identify bottleneck:** Usually SOQL count > CPU time > heap size. (6) **Optimize:** Bulkify queries, add custom indexes, move logic to async, consolidate triggers. (7) **Verify:** Re-profile and compare before/after metrics. (8) **Monitor:** Set up ongoing performance logging.",
         },
         {
           type: "scenario",
           q: "A user reports that saving an Account takes 15 seconds. How do you diagnose this?",
-          a: "**Diagnosis:** (1) Enable debug log for the user (Apex:FINE, Database:FINE). (2) Have user save the account. (3) Analyze the log for time-consuming operations. **Common causes:** (a) Multiple triggers with SOQL in loops — look for repeated SOQL_EXECUTE. (b) Complex Flow/Process Builder automations — check Workflow section. (c) Sharing recalculation — large role hierarchies or sharing rules. (d) Roll-up summary recalculation on parent — if Account has MD children. (e) Validation rules with cross-object queries. (f) External callouts blocking save. **Fix:** Based on the cause: bulkify triggers, simplify automations, move callouts to @future, optimize sharing model."
-        }
-      ]
-    }
-  ]
+          a: "**Diagnosis:** (1) Enable debug log for the user (Apex:FINE, Database:FINE). (2) Have user save the account. (3) Analyze the log for time-consuming operations. **Common causes:** (a) Multiple triggers with SOQL in loops — look for repeated SOQL_EXECUTE. (b) Complex Flow/Process Builder automations — check Workflow section. (c) Sharing recalculation — large role hierarchies or sharing rules. (d) Roll-up summary recalculation on parent — if Account has MD children. (e) Validation rules with cross-object queries. (f) External callouts blocking save. **Fix:** Based on the cause: bulkify triggers, simplify automations, move callouts to @future, optimize sharing model.",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase8;

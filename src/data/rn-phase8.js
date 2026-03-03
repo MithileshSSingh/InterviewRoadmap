@@ -2,7 +2,8 @@ const rnPhase8 = {
   id: "phase-8",
   title: "Phase 8: Native Integration & Platform Expertise",
   emoji: "🔧",
-  description: "Write native modules for Android & iOS, handle permissions, push notifications architecture, deep linking, background tasks, app state management, and platform-specific optimization.",
+  description:
+    "Write native modules for Android & iOS, handle permissions, push notifications architecture, deep linking, background tasks, app state management, and platform-specific optimization.",
   topics: [
     {
       id: "native-modules",

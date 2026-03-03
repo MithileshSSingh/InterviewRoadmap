@@ -2,7 +2,8 @@ const sfPhase12 = {
   id: "phase-12",
   title: "Phase 12: Salesforce Clouds & Products",
   emoji: "☁️",
-  description: "Overview of Salesforce's major clouds and products — Sales Cloud, Service Cloud, Experience Cloud, Marketing Cloud, Analytics, and industry-specific solutions for enterprise architecture.",
+  description:
+    "Overview of Salesforce's major clouds and products — Sales Cloud, Service Cloud, Experience Cloud, Marketing Cloud, Analytics, and industry-specific solutions for enterprise architecture.",
   topics: [
     {
       id: "sf-sales-service-cloud",
@@ -208,20 +209,20 @@ public class ForecastService {
         "Ignoring Lead conversion mapping — custom fields on Lead must be mapped to Account, Contact, and Opportunity during conversion. Unmapped fields are lost",
         "Over-architecting case routing — start with standard assignment rules and queues before building complex custom routing",
         "Not considering Omni-Channel capacity — routing work to agents without checking their capacity leads to uneven workloads",
-        "Building custom forecasting when standard Forecasting works — Salesforce's built-in forecasting handles most use cases with configuration"
+        "Building custom forecasting when standard Forecasting works — Salesforce's built-in forecasting handles most use cases with configuration",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Describe the Lead Conversion process in Salesforce. What happens technically when a Lead is converted?",
-          a: "When a Lead is converted, Salesforce: (1) Creates an **Account** (or merges into existing). (2) Creates a **Contact** (or merges into existing). (3) Optionally creates an **Opportunity**. (4) Maps Lead fields to Account, Contact, and Opportunity fields based on Lead Field Mapping. (5) Sets Lead Status to converted value. (6) The Lead record is marked as converted (IsConverted = true) and becomes read-only. (7) All Activities (Tasks/Events) are transferred to the Contact. (8) Campaign Member associations are preserved. (9) **Triggers fire:** Lead before/after update triggers AND Account/Contact/Opportunity insert triggers all fire. (10) Custom field values not mapped are LOST — always verify mappings."
+          a: "When a Lead is converted, Salesforce: (1) Creates an **Account** (or merges into existing). (2) Creates a **Contact** (or merges into existing). (3) Optionally creates an **Opportunity**. (4) Maps Lead fields to Account, Contact, and Opportunity fields based on Lead Field Mapping. (5) Sets Lead Status to converted value. (6) The Lead record is marked as converted (IsConverted = true) and becomes read-only. (7) All Activities (Tasks/Events) are transferred to the Contact. (8) Campaign Member associations are preserved. (9) **Triggers fire:** Lead before/after update triggers AND Account/Contact/Opportunity insert triggers all fire. (10) Custom field values not mapped are LOST — always verify mappings.",
         },
         {
           type: "scenario",
           q: "A company needs to handle 5,000 support cases per day with different SLAs based on customer tier. How do you architect this?",
-          a: "**Architecture:** (1) **Entitlements:** Create Entitlement Processes for each tier (Platinum: 2hr response, Gold: 4hr, Silver: 8hr). Link to Account via Service Contract. (2) **Case assignment:** Omni-Channel routing based on Priority + Product skills. Queues for each skill group. (3) **Escalation:** Flow monitors SLA milestones. Auto-escalate to Tier 2 queue when response time breached. (4) **Knowledge:** Surface relevant articles during case creation to enable self-service. (5) **Portal:** Experience Cloud for customer self-service (reduces case volume). (6) **Automation:** Before-save Flow for default values. After-save Flow for notifications. Scheduled Flow for daily SLA breach reports. (7) **Scale:** 5,000 cases/day = ~35K/week. Design indexes on Status, Priority, OwnerId for query performance."
-        }
-      ]
+          a: "**Architecture:** (1) **Entitlements:** Create Entitlement Processes for each tier (Platinum: 2hr response, Gold: 4hr, Silver: 8hr). Link to Account via Service Contract. (2) **Case assignment:** Omni-Channel routing based on Priority + Product skills. Queues for each skill group. (3) **Escalation:** Flow monitors SLA milestones. Auto-escalate to Tier 2 queue when response time breached. (4) **Knowledge:** Surface relevant articles during case creation to enable self-service. (5) **Portal:** Experience Cloud for customer self-service (reduces case volume). (6) **Automation:** Before-save Flow for default values. After-save Flow for notifications. Scheduled Flow for daily SLA breach reports. (7) **Scale:** 5,000 cases/day = ~35K/week. Design indexes on Status, Priority, OwnerId for query performance.",
+        },
+      ],
     },
     {
       id: "sf-experience-cloud-analytics",
@@ -392,22 +393,22 @@ public class EinsteinPredictionService {
         "Over-customizing when standard cloud features exist — check if Einstein, Flow, or standard features solve the problem before writing Apex",
         "Not considering license costs — each cloud has licensing implications. Architecture decisions must consider license models",
         "Building custom AI when Einstein features exist — Einstein Prediction Builder, Lead Scoring, and Next Best Action cover many ML use cases without custom code",
-        "Ignoring mobile in Experience Cloud — portals must be responsive. Test on mobile devices early"
+        "Ignoring mobile in Experience Cloud — portals must be responsive. Test on mobile devices early",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is Experience Cloud and how does it differ from a standard Salesforce org?",
-          a: "Experience Cloud (formerly Communities) allows you to build external-facing portals and sites for customers, partners, and employees. **Key differences:** (1) **External users** — People outside your company access it with Community licenses (cheaper than full CRM licenses). (2) **Guest access** — Unauthenticated users can view public content. (3) **Sharing is critical** — External users should only see their own data. Sharing sets and sharing rules control access. (4) **Custom branding** — Full control over look and feel. (5) **Same platform** — Uses the same objects (Case, Account, etc.) but with restricted access. (6) **Use cases:** Customer support portal, partner deal registration, knowledge base, self-service."
+          a: "Experience Cloud (formerly Communities) allows you to build external-facing portals and sites for customers, partners, and employees. **Key differences:** (1) **External users** — People outside your company access it with Community licenses (cheaper than full CRM licenses). (2) **Guest access** — Unauthenticated users can view public content. (3) **Sharing is critical** — External users should only see their own data. Sharing sets and sharing rules control access. (4) **Custom branding** — Full control over look and feel. (5) **Same platform** — Uses the same objects (Case, Account, etc.) but with restricted access. (6) **Use cases:** Customer support portal, partner deal registration, knowledge base, self-service.",
         },
         {
           type: "scenario",
           q: "A retail company wants AI-powered product recommendations for their sales team. How do you implement this?",
-          a: "**Approach:** (1) **Einstein Next Best Action** — Configure recommendation strategies declaratively. Define recommendations based on: product affinity, purchase history, account segment. (2) **Einstein Discovery** — Analyze historical Opportunity data to find patterns (which products sell together, which customer segments buy what). (3) **LWC Component** — Build a custom component that displays recommendations on the Account/Opportunity page using the NBA API. (4) **Data enrichment** — Ensure Account and Opportunity records have complete product and industry data for better predictions. (5) **Feedback loop** — Track which recommendations sales reps accept/reject to improve the model. **No custom ML needed** — Einstein's declarative tools handle most recommendation use cases."
-        }
-      ]
-    }
-  ]
+          a: "**Approach:** (1) **Einstein Next Best Action** — Configure recommendation strategies declaratively. Define recommendations based on: product affinity, purchase history, account segment. (2) **Einstein Discovery** — Analyze historical Opportunity data to find patterns (which products sell together, which customer segments buy what). (3) **LWC Component** — Build a custom component that displays recommendations on the Account/Opportunity page using the NBA API. (4) **Data enrichment** — Ensure Account and Opportunity records have complete product and industry data for better predictions. (5) **Feedback loop** — Track which recommendations sales reps accept/reject to improve the model. **No custom ML needed** — Einstein's declarative tools handle most recommendation use cases.",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase12;

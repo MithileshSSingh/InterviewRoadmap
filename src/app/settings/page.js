@@ -12,9 +12,18 @@ export default function SettingsPage() {
       </div>
 
       <section className="section">
-        <h2 className="section-title"><span className="icon">🎨</span> Theme</h2>
-        <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", marginBottom: "1.25rem" }}>
-          Choose a color theme that suits your style. Your preference is saved automatically.
+        <h2 className="section-title">
+          <span className="icon">🎨</span> Theme
+        </h2>
+        <p
+          style={{
+            color: "var(--text-secondary)",
+            fontSize: "0.9rem",
+            marginBottom: "1.25rem",
+          }}
+        >
+          Choose a color theme that suits your style. Your preference is saved
+          automatically.
         </p>
         <div className="themes-grid">
           {Object.entries(themes).map(([id, theme]) => (
@@ -23,7 +32,9 @@ export default function SettingsPage() {
               className={`theme-card ${themeId === id ? "active" : ""}`}
               onClick={() => changeTheme(id)}
             >
-              {themeId === id && <span className="theme-active-badge">✓ Active</span>}
+              {themeId === id && (
+                <span className="theme-active-badge">✓ Active</span>
+              )}
               <div className="theme-preview">
                 {theme.preview.map((color, i) => (
                   <div

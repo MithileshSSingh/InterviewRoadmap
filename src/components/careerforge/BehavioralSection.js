@@ -10,8 +10,18 @@ export default function BehavioralSection({ behavioral }) {
       <h2 style={headingStyle}>🎭 Behavioral Prep</h2>
 
       {behavioral.framework && (
-        <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem", marginBottom: "1.25rem" }}>
-          Framework: <strong style={{ color: "var(--text-primary)" }}>{behavioral.framework}</strong> — Structure every answer with Situation, Task, Action, and Result.
+        <p
+          style={{
+            color: "var(--text-secondary)",
+            fontSize: "0.875rem",
+            marginBottom: "1.25rem",
+          }}
+        >
+          Framework:{" "}
+          <strong style={{ color: "var(--text-primary)" }}>
+            {behavioral.framework}
+          </strong>{" "}
+          — Structure every answer with Situation, Task, Action, and Result.
         </p>
       )}
 
@@ -31,8 +41,17 @@ export default function BehavioralSection({ behavioral }) {
       {behavioral.keyThemes?.length > 0 && (
         <div style={{ marginBottom: "1.25rem" }}>
           <div style={subLabel}>Key Themes to Prepare</div>
-          <ul style={{ paddingLeft: "1.25rem", color: "var(--text-secondary)", lineHeight: 1.8, margin: 0 }}>
-            {behavioral.keyThemes.map((t, i) => <li key={i}>{t}</li>)}
+          <ul
+            style={{
+              paddingLeft: "1.25rem",
+              color: "var(--text-secondary)",
+              lineHeight: 1.8,
+              margin: 0,
+            }}
+          >
+            {behavioral.keyThemes.map((t, i) => (
+              <li key={i}>{t}</li>
+            ))}
           </ul>
         </div>
       )}
@@ -40,7 +59,9 @@ export default function BehavioralSection({ behavioral }) {
       {behavioral.sampleQuestions?.length > 0 && (
         <div>
           <div style={subLabel}>Sample Questions</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}
+          >
             {behavioral.sampleQuestions.map((q, i) => (
               <div
                 key={i}
@@ -69,13 +90,26 @@ export default function BehavioralSection({ behavioral }) {
                   }}
                 >
                   <span>{q}</span>
-                  <span style={{ color: "var(--text-secondary)", flexShrink: 0 }}>
+                  <span
+                    style={{ color: "var(--text-secondary)", flexShrink: 0 }}
+                  >
                     {openQ === i ? "▾" : "▸"}
                   </span>
                 </button>
                 {openQ === i && (
-                  <div style={{ padding: "0.75rem 1rem", borderTop: "1px solid var(--border)", color: "var(--text-secondary)", fontSize: "0.85rem" }}>
-                    <strong style={{ color: "var(--text-primary)" }}>Tips:</strong> Use the STAR framework. Focus on your specific contribution, measurable outcome, and what you learned.
+                  <div
+                    style={{
+                      padding: "0.75rem 1rem",
+                      borderTop: "1px solid var(--border)",
+                      color: "var(--text-secondary)",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    <strong style={{ color: "var(--text-primary)" }}>
+                      Tips:
+                    </strong>{" "}
+                    Use the STAR framework. Focus on your specific contribution,
+                    measurable outcome, and what you learned.
                   </div>
                 )}
               </div>
@@ -95,7 +129,11 @@ const cardStyle = {
   marginBottom: "1.25rem",
 };
 
-const headingStyle = { fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.75rem" };
+const headingStyle = {
+  fontSize: "1.1rem",
+  fontWeight: 700,
+  marginBottom: "0.75rem",
+};
 
 const subLabel = {
   fontSize: "0.78rem",

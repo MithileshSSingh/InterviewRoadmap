@@ -2,7 +2,8 @@ const rnPhase14 = {
   id: "phase-14",
   title: "Phase 14: Portfolio & Project Showcase",
   emoji: "🎯",
-  description: "Build portfolio projects that demonstrate staff-level skills — full-stack mobile app, open-source contribution, architecture case study, performance optimization report, and system design documentation.",
+  description:
+    "Build portfolio projects that demonstrate staff-level skills — full-stack mobile app, open-source contribution, architecture case study, performance optimization report, and system design documentation.",
   topics: [
     {
       id: "portfolio-projects",

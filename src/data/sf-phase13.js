@@ -2,7 +2,8 @@ const sfPhase13 = {
   id: "phase-13",
   title: "Phase 13: Real-World Projects & Case Studies",
   emoji: "🏢",
-  description: "Enterprise Salesforce project scenarios — complete system design exercises, data migration projects, performance optimization case studies, and end-to-end implementation.",
+  description:
+    "Enterprise Salesforce project scenarios — complete system design exercises, data migration projects, performance optimization case studies, and end-to-end implementation.",
   topics: [
     {
       id: "sf-enterprise-case-studies",
@@ -210,17 +211,17 @@ public class OrderManagementService {
         "Not involving stakeholders in architecture decisions — technical architecture must align with business priorities",
         "Skipping the data model design phase — jumping into code without a complete ERD leads to rework and data quality issues",
         "Not planning for errors in integration — every integration fails eventually. Design retry queues, dead letter processing, and monitoring from day one",
-        "Not documenting architecture decisions — the reason WHY you chose a pattern is as important as the pattern itself"
+        "Not documenting architecture decisions — the reason WHY you chose a pattern is as important as the pattern itself",
       ],
       interviewQuestions: [
         {
           type: "scenario",
           q: "Design a Salesforce solution for a company with 500 sales reps, 50,000 accounts, and integration with SAP for order processing.",
-          a: "**Architecture:** **Data Model:** Standard Account, Contact, Opportunity + custom Order__c with Order_Line_Item__c (MD). External_Id__c on Account for SAP mapping. **Security:** OWD Private for Accounts/Opportunities. Role Hierarchy by region. Territory Management for account assignment. **Integration:** Named Credentials for SAP auth. Queueable Apex for real-time order sync. Batch Apex for nightly reconciliation. Platform Events for order status updates from SAP. **Performance:** Custom indexes on Account.External_Id__c, Opportunity.CloseDate. Skinny table request for Opportunity if >1M records. **Automation:** Before-save Flow for Opportunity defaults. After-save trigger for order creation. Scheduled Flow for stale pipeline notifications. **Monitoring:** Error_Log__c for integration failures. Dashboard for sync health. Circuit breaker for SAP downtime."
-        }
-      ]
-    }
-  ]
+          a: "**Architecture:** **Data Model:** Standard Account, Contact, Opportunity + custom Order__c with Order_Line_Item__c (MD). External_Id__c on Account for SAP mapping. **Security:** OWD Private for Accounts/Opportunities. Role Hierarchy by region. Territory Management for account assignment. **Integration:** Named Credentials for SAP auth. Queueable Apex for real-time order sync. Batch Apex for nightly reconciliation. Platform Events for order status updates from SAP. **Performance:** Custom indexes on Account.External_Id__c, Opportunity.CloseDate. Skinny table request for Opportunity if >1M records. **Automation:** Before-save Flow for Opportunity defaults. After-save trigger for order creation. Scheduled Flow for stale pipeline notifications. **Monitoring:** Error_Log__c for integration failures. Dashboard for sync health. Circuit breaker for SAP downtime.",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase13;

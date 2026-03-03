@@ -2,7 +2,8 @@ const androidPhase2 = {
   id: "phase-2",
   title: "Phase 2: Android Fundamentals Deep Dive",
   emoji: "📱",
-  description: "Master Android internals — architecture evolution, lifecycle, View system vs Compose, services, content providers, and OS-level memory management.",
+  description:
+    "Master Android internals — architecture evolution, lifecycle, View system vs Compose, services, content providers, and OS-level memory management.",
   topics: [
     {
       id: "android-architecture-evolution",
@@ -110,12 +111,12 @@ class NoteRepository @Inject constructor(
         {
           type: "conceptual",
           q: "Walk me through what happens internally when a user taps your app icon.",
-          a: "1) Launcher sends an Intent via Binder IPC to ActivityManagerService (AMS). 2) AMS checks if the app process exists. If not, it tells Zygote to fork a new process. 3) Zygote forks, creating a new process with pre-loaded classes. 4) The new process creates an ActivityThread (the main thread). 5) AMS tells the process to create the Application object and call onCreate(). 6) AMS instructs the process to launch the target Activity. 7) Activity.onCreate() runs, the View hierarchy (or Compose tree) is built. 8) The first frame is rendered by the RenderThread and sent to SurfaceFlinger. Total cold start should be under 500ms for a well-optimized app."
+          a: "1) Launcher sends an Intent via Binder IPC to ActivityManagerService (AMS). 2) AMS checks if the app process exists. If not, it tells Zygote to fork a new process. 3) Zygote forks, creating a new process with pre-loaded classes. 4) The new process creates an ActivityThread (the main thread). 5) AMS tells the process to create the Application object and call onCreate(). 6) AMS instructs the process to launch the target Activity. 7) Activity.onCreate() runs, the View hierarchy (or Compose tree) is built. 8) The first frame is rendered by the RenderThread and sent to SurfaceFlinger. Total cold start should be under 500ms for a well-optimized app.",
         },
         {
           type: "tricky",
           q: "Why does Android use Binder IPC instead of standard Linux IPC (pipes, sockets)?",
-          a: "Binder is specifically designed for Android's needs: (1) **Security** — Binder includes the caller's UID/PID, enabling permission checks. Standard IPC doesn't identify callers. (2) **Performance** — Binder uses shared memory for data transfer, requiring only one copy (vs two for pipes). (3) **Object references** — Binder supports remote object references (like RPC), not just byte streams. (4) **Thread management** — Binder has a built-in thread pool for handling concurrent requests. (5) **Death notifications** — Binder can notify when a remote process dies (linkToDeath)."
+          a: "Binder is specifically designed for Android's needs: (1) **Security** — Binder includes the caller's UID/PID, enabling permission checks. Standard IPC doesn't identify callers. (2) **Performance** — Binder uses shared memory for data transfer, requiring only one copy (vs two for pipes). (3) **Object references** — Binder supports remote object references (like RPC), not just byte streams. (4) **Thread management** — Binder has a built-in thread pool for handling concurrent requests. (5) **Death notifications** — Binder can notify when a remote process dies (linkToDeath).",
         },
       ],
     },
@@ -231,12 +232,12 @@ class MyFragment : Fragment(R.layout.my_fragment) {
         {
           type: "tricky",
           q: "What's the difference between Fragment's lifecycle and view lifecycle?",
-          a: "Fragment instances can outlive their views. When a Fragment is added to the back stack and replaced, onDestroyView() is called (view destroyed) but onDestroy() is NOT (fragment lives). When the user presses back, onCreateView() is called again on the same Fragment instance. This is why: (1) You must null out view binding in onDestroyView(). (2) You must use viewLifecycleOwner (not 'this') when observing UI data. Using 'this' as lifecycle owner means the observer isn't removed when the view is destroyed, leading to duplicate observers when the fragment's view is recreated."
+          a: "Fragment instances can outlive their views. When a Fragment is added to the back stack and replaced, onDestroyView() is called (view destroyed) but onDestroy() is NOT (fragment lives). When the user presses back, onCreateView() is called again on the same Fragment instance. This is why: (1) You must null out view binding in onDestroyView(). (2) You must use viewLifecycleOwner (not 'this') when observing UI data. Using 'this' as lifecycle owner means the observer isn't removed when the view is destroyed, leading to duplicate observers when the fragment's view is recreated.",
         },
         {
           type: "scenario",
           q: "Your app crashes with 'Can not perform this action after onSaveInstanceState'. How do you debug and fix this?",
-          a: "This means a FragmentTransaction.commit() was called after the Activity saved its state. The framework prevents this because the transaction would be lost on process death. **Debug:** Check stack traces for where commit() is called — usually in an async callback (network response, coroutine) that returns after the Activity is stopped. **Fix:** (1) Use commitAllowingStateLoss() if the transaction is non-critical. (2) Better: check lifecycle state before committing: `if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))`. (3) Best: use Navigation Component which handles this internally. (4) For coroutines: use `repeatOnLifecycle(STARTED)` to auto-cancel when stopped."
+          a: "This means a FragmentTransaction.commit() was called after the Activity saved its state. The framework prevents this because the transaction would be lost on process death. **Debug:** Check stack traces for where commit() is called — usually in an async callback (network response, coroutine) that returns after the Activity is stopped. **Fix:** (1) Use commitAllowingStateLoss() if the transaction is non-critical. (2) Better: check lifecycle state before committing: `if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))`. (3) Best: use Navigation Component which handles this internally. (4) For coroutines: use `repeatOnLifecycle(STARTED)` to auto-cancel when stopped.",
         },
       ],
     },
@@ -353,12 +354,12 @@ fun Counter() {
         {
           type: "conceptual",
           q: "How does Compose's recomposition work internally?",
-          a: "Compose uses a **snapshot state system**. When you read a State object during composition, Compose records that this composable scope depends on that state. When the state value changes, Compose marks all dependent scopes as 'invalid' and schedules recomposition. During recomposition, Compose re-executes only invalid scopes, comparing new outputs with the Slot Table. If a composable's inputs haven't changed and it's 'skippable' (all params are stable/immutable), Compose skips it entirely. The Slot Table is a gap buffer that stores the composition tree efficiently — similar to how text editors handle insertions."
+          a: "Compose uses a **snapshot state system**. When you read a State object during composition, Compose records that this composable scope depends on that state. When the state value changes, Compose marks all dependent scopes as 'invalid' and schedules recomposition. During recomposition, Compose re-executes only invalid scopes, comparing new outputs with the Slot Table. If a composable's inputs haven't changed and it's 'skippable' (all params are stable/immutable), Compose skips it entirely. The Slot Table is a gap buffer that stores the composition tree efficiently — similar to how text editors handle insertions.",
         },
         {
           type: "tricky",
           q: "When would you NOT use Jetpack Compose in a production app?",
-          a: "Situations where Compose might not be ideal: (1) Existing large app with 500K+ lines of XML — migration cost may outweigh benefits. (2) Heavy custom Canvas rendering (games, drawing apps) — View's onDraw is still very performant. (3) Wear OS and TV apps where Compose support is still maturing. (4) Team skill gap — if the team isn't trained on Compose, shipping quality may drop. (5) Libraries that only support View system (MapView, some ad SDKs). In practice, even for existing apps, Google recommends incremental Compose adoption for new screens via ComposeView."
+          a: "Situations where Compose might not be ideal: (1) Existing large app with 500K+ lines of XML — migration cost may outweigh benefits. (2) Heavy custom Canvas rendering (games, drawing apps) — View's onDraw is still very performant. (3) Wear OS and TV apps where Compose support is still maturing. (4) Team skill gap — if the team isn't trained on Compose, shipping quality may drop. (5) Libraries that only support View system (MapView, some ad SDKs). In practice, even for existing apps, Google recommends incremental Compose adoption for new screens via ComposeView.",
         },
       ],
     },
@@ -462,12 +463,12 @@ class DeepLinkActivity : AppCompatActivity() {
         {
           type: "conceptual",
           q: "What's the Binder transaction limit and how does it affect Intents?",
-          a: "Binder has a per-process transaction buffer of ~1MB (shared across all concurrent transactions). Each Intent goes through Binder, so the Bundle data must fit within this limit. In practice, the effective limit per Intent is ~500KB. Exceeding it throws TransactionTooLargeException. This is why you should never pass large bitmaps or data arrays through Intents. Instead, use: (1) Content URIs for files. (2) ViewModel/shared repository for in-app data. (3) Persistent storage (Room, DataStore) for cross-component data."
+          a: "Binder has a per-process transaction buffer of ~1MB (shared across all concurrent transactions). Each Intent goes through Binder, so the Bundle data must fit within this limit. In practice, the effective limit per Intent is ~500KB. Exceeding it throws TransactionTooLargeException. This is why you should never pass large bitmaps or data arrays through Intents. Instead, use: (1) Content URIs for files. (2) ViewModel/shared repository for in-app data. (3) Persistent storage (Room, DataStore) for cross-component data.",
         },
         {
           type: "tricky",
           q: "Explain the difference between App Links and Deep Links. Why do App Links require web server verification?",
-          a: "**Deep Links** use custom schemes (myapp://...) — any app can register the same scheme, so the user sees a disambiguation dialog. **App Links** use HTTPS URLs verified via a Digital Asset Links JSON file hosted at your domain (/.well-known/assetlinks.json). Since you own the domain, only your app can claim those URLs — no dialog, instant opening. The verification happens at install time: Android downloads the assetlinks.json and checks your app's signing certificate matches. This prevents malicious apps from intercepting your links."
+          a: "**Deep Links** use custom schemes (myapp://...) — any app can register the same scheme, so the user sees a disambiguation dialog. **App Links** use HTTPS URLs verified via a Digital Asset Links JSON file hosted at your domain (/.well-known/assetlinks.json). Since you own the domain, only your app can claim those URLs — no dialog, instant opening. The verification happens at install time: Android downloads the assetlinks.json and checks your app's signing certificate matches. This prevents malicious apps from intercepting your links.",
         },
       ],
     },
@@ -575,12 +576,12 @@ WorkManager.getInstance(context)
         {
           type: "conceptual",
           q: "When should you use a Foreground Service vs WorkManager vs AlarmManager?",
-          a: "**Foreground Service:** User-initiated, ongoing tasks that need continuous execution and user awareness — music playback, navigation, active file download. **WorkManager:** Deferrable, guaranteed background work — syncing data, uploading logs, periodic cleanup. Survives process death, respects battery constraints. **AlarmManager:** Exact-time triggers — reminders, scheduled notifications. Don't use for background work (WorkManager is better). Rule of thumb: if the user expects to see it happening NOW → Foreground Service. If it can happen later → WorkManager. If it must happen at an exact time → AlarmManager."
+          a: "**Foreground Service:** User-initiated, ongoing tasks that need continuous execution and user awareness — music playback, navigation, active file download. **WorkManager:** Deferrable, guaranteed background work — syncing data, uploading logs, periodic cleanup. Survives process death, respects battery constraints. **AlarmManager:** Exact-time triggers — reminders, scheduled notifications. Don't use for background work (WorkManager is better). Rule of thumb: if the user expects to see it happening NOW → Foreground Service. If it can happen later → WorkManager. If it must happen at an exact time → AlarmManager.",
         },
         {
           type: "tricky",
           q: "Your foreground service is being killed on some OEM devices (Xiaomi, Samsung). How do you debug and fix?",
-          a: "OEM-specific battery optimization is unique to Android. These manufacturers add aggressive battery killers that ignore standard Android service priorities. Debugging: (1) Check device-specific settings (Battery Optimization, Auto-start permissions). (2) Use 'adb shell dumpsys activity services' to see service state. **Fixes:** (1) Guide users to whitelist your app from battery optimization (RequestIgnoreBatteryOptimizations). (2) Use WorkManager with setExpedited() for critical work — it uses FGS internally. (3) Implement a heartbeat mechanism to detect and recover from kills. (4) Use dontkillmyapp.com for device-specific documentation. (5) Consider using Firebase Cloud Messaging for push-triggered work instead of long-running services."
+          a: "OEM-specific battery optimization is unique to Android. These manufacturers add aggressive battery killers that ignore standard Android service priorities. Debugging: (1) Check device-specific settings (Battery Optimization, Auto-start permissions). (2) Use 'adb shell dumpsys activity services' to see service state. **Fixes:** (1) Guide users to whitelist your app from battery optimization (RequestIgnoreBatteryOptimizations). (2) Use WorkManager with setExpedited() for critical work — it uses FGS internally. (3) Implement a heartbeat mechanism to detect and recover from kills. (4) Use dontkillmyapp.com for device-specific documentation. (5) Consider using Firebase Cloud Messaging for push-triggered work instead of long-running services.",
         },
       ],
     },

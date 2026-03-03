@@ -3,12 +3,13 @@ import Sidebar from "@/components/Sidebar";
 import ModeToggle from "@/components/ModeToggle";
 import ThemeDropdown from "@/components/ThemeDropdown";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata = {
   title: "Interview Roadmap",
-  description: "A complete interactive roadmap for interviews with code examples, exercises, and interview questions. From variables to design patterns.",
+  description:
+    "A complete interactive roadmap for interviews with code examples, exercises, and interview questions. From variables to design patterns.",
 };
 
 export default function RootLayout({ children }) {

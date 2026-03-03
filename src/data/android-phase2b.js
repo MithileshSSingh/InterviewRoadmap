@@ -90,12 +90,12 @@ class EventBus {
       {
         type: "conceptual",
         q: "Why did Android restrict implicit broadcasts in Android 8.0?",
-        a: "Performance and battery. Before Android 8.0, every app could register for ANY implicit broadcast in their manifest. When CONNECTIVITY_ACTION fired, Android had to wake up potentially hundreds of apps — each creating a new process, running onReceive(), consuming CPU and memory. This caused visible battery drain and system slowdowns. The restriction forces apps to use dynamic registration (only active while app is running) or WorkManager for background work, significantly reducing the number of processes woken for each broadcast."
+        a: "Performance and battery. Before Android 8.0, every app could register for ANY implicit broadcast in their manifest. When CONNECTIVITY_ACTION fired, Android had to wake up potentially hundreds of apps — each creating a new process, running onReceive(), consuming CPU and memory. This caused visible battery drain and system slowdowns. The restriction forces apps to use dynamic registration (only active while app is running) or WorkManager for background work, significantly reducing the number of processes woken for each broadcast.",
       },
       {
         type: "tricky",
         q: "How would you implement a reliable event bus in a modern Android app without BroadcastReceivers?",
-        a: "Use Kotlin SharedFlow: (1) Create a singleton EventBus with MutableSharedFlow. (2) Producers call emit(event). (3) Consumers collect in repeatOnLifecycle(STARTED). Advantages over BroadcastReceiver: type-safe, no serialization overhead, lifecycle-aware, supports backpressure. For cross-process events, use ContentProvider + ContentObserver or Binder-based AIDL. For truly persistent events that must survive process death, use WorkManager + Room."
+        a: "Use Kotlin SharedFlow: (1) Create a singleton EventBus with MutableSharedFlow. (2) Producers call emit(event). (3) Consumers collect in repeatOnLifecycle(STARTED). Advantages over BroadcastReceiver: type-safe, no serialization overhead, lifecycle-aware, supports backpressure. For cross-process events, use ContentProvider + ContentObserver or Binder-based AIDL. For truly persistent events that must survive process death, use WorkManager + Room.",
       },
     ],
   },
@@ -195,7 +195,7 @@ suspend fun getImages(context: Context): List<MediaItem> {
       {
         type: "conceptual",
         q: "Explain Scoped Storage and why Google introduced it.",
-        a: "Before Android 10, any app with storage permission could read ALL files on the device — a massive privacy issue. Scoped Storage restricts each app to: (1) Its own private directory (no permission needed). (2) MediaStore for shared media (images, videos, audio) — requires permissions. (3) Storage Access Framework for user-selected files. (4) No access to other apps' files. This improved user privacy but required apps to migrate from File-based APIs to ContentResolver/MediaStore. Apps targeting Android 11+ must use Scoped Storage (MANAGE_EXTERNAL_STORAGE is only for file managers)."
+        a: "Before Android 10, any app with storage permission could read ALL files on the device — a massive privacy issue. Scoped Storage restricts each app to: (1) Its own private directory (no permission needed). (2) MediaStore for shared media (images, videos, audio) — requires permissions. (3) Storage Access Framework for user-selected files. (4) No access to other apps' files. This improved user privacy but required apps to migrate from File-based APIs to ContentResolver/MediaStore. Apps targeting Android 11+ must use Scoped Storage (MANAGE_EXTERNAL_STORAGE is only for file managers).",
       },
     ],
   },
@@ -309,12 +309,12 @@ class BaselineProfileGenerator {
       {
         type: "scenario",
         q: "Your app's cold start takes 2.5 seconds. How do you diagnose and fix it?",
-        a: "1) **Measure:** Run `adb shell am start -S -W com.myapp/.MainActivity` to get exact TTID. 2) **Profile:** Use Android Studio's CPU profiler during startup to see which methods take longest. 3) **Common fixes:** (a) Move SDK inits to background thread or lazy init. (b) Reduce layout complexity — use ConstraintLayout or Compose. (c) Generate Baseline Profiles for 30-40% improvement. (d) Use R8 full mode for smaller DEX. (e) Defer image loading with placeholders. 4) **Verify:** Use Macrobenchmark to get statistical startup measurements. Target: < 500ms cold start."
+        a: "1) **Measure:** Run `adb shell am start -S -W com.myapp/.MainActivity` to get exact TTID. 2) **Profile:** Use Android Studio's CPU profiler during startup to see which methods take longest. 3) **Common fixes:** (a) Move SDK inits to background thread or lazy init. (b) Reduce layout complexity — use ConstraintLayout or Compose. (c) Generate Baseline Profiles for 30-40% improvement. (d) Use R8 full mode for smaller DEX. (e) Defer image loading with placeholders. 4) **Verify:** Use Macrobenchmark to get statistical startup measurements. Target: < 500ms cold start.",
       },
       {
         type: "conceptual",
         q: "What are Baseline Profiles and why are they significant for startup?",
-        a: "Baseline Profiles are lists of critical code paths that ART should AOT-compile at install time (via cloud profiles on Play Store or locally). Without them, ART uses JIT compilation on first run — methods are interpreted until they're compiled, causing jank. With Baseline Profiles, the critical startup path is pre-compiled to native code. Impact: 30-40% faster startup, smoother first-run experience. Google apps like Maps and Play Store use them extensively. They're generated via Macrobenchmark tests that exercise key user journeys."
+        a: "Baseline Profiles are lists of critical code paths that ART should AOT-compile at install time (via cloud profiles on Play Store or locally). Without them, ART uses JIT compilation on first run — methods are interpreted until they're compiled, causing jank. With Baseline Profiles, the critical startup path is pre-compiled to native code. Impact: 30-40% faster startup, smoother first-run experience. Google apps like Maps and Play Store use them extensively. They're generated via Macrobenchmark tests that exercise key user journeys.",
       },
     ],
   },
@@ -423,12 +423,12 @@ suspend fun loadBitmap(context: Context, uri: Uri, reqWidth: Int, reqHeight: Int
       {
         type: "scenario",
         q: "Users report your app is crashing with OOM on lower-end devices. How do you investigate?",
-        a: "1) **Reproduce:** Test on a device/emulator with limited heap (e.g., 128MB). 2) **Profile:** Use Memory Profiler to track heap growth during typical usage. Look for steadily increasing heap = leak. 3) **Heap dump:** Capture and analyze retained objects. Look for multiple Activity instances, large Bitmap arrays. 4) **LeakCanary:** Run debug build to auto-detect leaks with reference chains. 5) **Common culprits:** (a) Un-recycled bitmaps — use Coil/Glide with lifecycle-aware loading. (b) Fragment back stack holding views. (c) Static references to Context. (d) EventBus/RxJava subscriptions not disposed. 6) **Fix and verify:** Patch leaks, add memory regression test with Macrobenchmark."
+        a: "1) **Reproduce:** Test on a device/emulator with limited heap (e.g., 128MB). 2) **Profile:** Use Memory Profiler to track heap growth during typical usage. Look for steadily increasing heap = leak. 3) **Heap dump:** Capture and analyze retained objects. Look for multiple Activity instances, large Bitmap arrays. 4) **LeakCanary:** Run debug build to auto-detect leaks with reference chains. 5) **Common culprits:** (a) Un-recycled bitmaps — use Coil/Glide with lifecycle-aware loading. (b) Fragment back stack holding views. (c) Static references to Context. (d) EventBus/RxJava subscriptions not disposed. 6) **Fix and verify:** Patch leaks, add memory regression test with Macrobenchmark.",
       },
       {
         type: "conceptual",
         q: "How does Android's Low Memory Killer (LMK) work?",
-        a: "LMK is a kernel-level daemon that monitors available RAM. When free memory drops below configurable thresholds (minfree levels), LMK kills processes in priority order: (1) Empty/cached processes first (no components running). (2) Service processes next. (3) Visible processes. (4) Foreground process (last resort). Each threshold maps to an oom_adj score assigned by ActivityManagerService based on the process's component state. Developers can influence this by: ensuring critical work runs in foreground services (higher priority), calling Activity.finish() when done (allows process caching), and minimizing memory footprint to stay below device limits."
+        a: "LMK is a kernel-level daemon that monitors available RAM. When free memory drops below configurable thresholds (minfree levels), LMK kills processes in priority order: (1) Empty/cached processes first (no components running). (2) Service processes next. (3) Visible processes. (4) Foreground process (last resort). Each threshold maps to an oom_adj score assigned by ActivityManagerService based on the process's component state. Developers can influence this by: ensuring critical work runs in foreground services (higher priority), calling Activity.finish() when done (allows process caching), and minimizing memory footprint to stay below device limits.",
       },
     ],
   },
@@ -553,12 +553,12 @@ class MyApplication : Application() {
       {
         type: "conceptual",
         q: "Explain what happens at the OS level when an ANR occurs.",
-        a: "1) The Input Dispatcher in system_server sends a touch/key event to your app via input channel. 2) It starts a 5-second timer. 3) If the app doesn't acknowledge the event within 5 seconds (because the main thread is blocked), InputDispatcher notifies AMS. 4) AMS checks if the app is in the foreground. 5) If yes, AMS dumps the main thread's stack trace to /data/anr/traces.txt. 6) AMS shows the ANR dialog to the user. **Common causes:** disk I/O on main thread, heavy computation, deadlocked threads, slow Binder calls. **Debug:** Check traces.txt for the blocked thread's stack trace."
+        a: "1) The Input Dispatcher in system_server sends a touch/key event to your app via input channel. 2) It starts a 5-second timer. 3) If the app doesn't acknowledge the event within 5 seconds (because the main thread is blocked), InputDispatcher notifies AMS. 4) AMS checks if the app is in the foreground. 5) If yes, AMS dumps the main thread's stack trace to /data/anr/traces.txt. 6) AMS shows the ANR dialog to the user. **Common causes:** disk I/O on main thread, heavy computation, deadlocked threads, slow Binder calls. **Debug:** Check traces.txt for the blocked thread's stack trace.",
       },
       {
         type: "tricky",
         q: "Why does Android use a single-threaded UI model?",
-        a: "Thread safety. The View toolkit is not thread-safe — Views can be modified only from the thread that created them (the main thread). This is by design: (1) Making the toolkit thread-safe would add locking overhead to EVERY View operation (measure, layout, draw), degrading performance. (2) Concurrent modification of the View tree would create race conditions and visual artifacts. (3) A single-threaded model is simpler to reason about and debug. The trade-off: heavy work must be moved off the main thread (coroutines, executors). This is why CalledFromWrongThreadException exists."
+        a: "Thread safety. The View toolkit is not thread-safe — Views can be modified only from the thread that created them (the main thread). This is by design: (1) Making the toolkit thread-safe would add locking overhead to EVERY View operation (measure, layout, draw), degrading performance. (2) Concurrent modification of the View tree would create race conditions and visual artifacts. (3) A single-threaded model is simpler to reason about and debug. The trade-off: heavy work must be moved off the main thread (coroutines, executors). This is why CalledFromWrongThreadException exists.",
       },
     ],
   },

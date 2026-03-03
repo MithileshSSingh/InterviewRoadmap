@@ -2,7 +2,8 @@ const phase1 = {
   id: "phase-1",
   title: "Phase 1: Foundations",
   emoji: "🟢",
-  description: "Master the building blocks of JavaScript — variables, operators, control flow, functions, arrays, and objects.",
+  description:
+    "Master the building blocks of JavaScript — variables, operators, control flow, functions, arrays, and objects.",
   topics: [
     {
       id: "variables-data-types",
@@ -50,37 +51,37 @@ user.name = "Bob";  // ✅ This works! We changed the content, not the box
       commonMistakes: [
         "Using `var` instead of `let`/`const` — `var` is function-scoped and hoisted, leading to bugs",
         "Thinking `const` makes objects immutable — it only prevents reassignment of the variable, not mutation of the object",
-        "Not knowing `typeof null` returns `\"object\"` — this is a legacy JavaScript bug",
+        'Not knowing `typeof null` returns `"object"` — this is a legacy JavaScript bug',
         "Forgetting that `let` and `const` have a Temporal Dead Zone (TDZ) — accessing them before declaration throws a ReferenceError",
-        "Confusing `undefined` (not yet assigned) with `null` (intentionally empty)"
+        "Confusing `undefined` (not yet assigned) with `null` (intentionally empty)",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the difference between `var`, `let`, and `const`?",
-          a: "`var` is function-scoped and hoisted (initialized as `undefined`). `let` and `const` are block-scoped and hoisted but NOT initialized (Temporal Dead Zone). `let` allows reassignment; `const` does not allow reassignment but allows mutation of objects/arrays."
+          a: "`var` is function-scoped and hoisted (initialized as `undefined`). `let` and `const` are block-scoped and hoisted but NOT initialized (Temporal Dead Zone). `let` allows reassignment; `const` does not allow reassignment but allows mutation of objects/arrays.",
         },
         {
           type: "tricky",
           q: "What will this code output?\n```js\nconsole.log(typeof null);\nconsole.log(typeof undefined);\nconsole.log(null == undefined);\nconsole.log(null === undefined);\n```",
-          a: "`\"object\"`, `\"undefined\"`, `true`, `false`. `typeof null` returning `\"object\"` is a well-known JavaScript bug from its first implementation. `null == undefined` is `true` because of type coercion, but `null === undefined` is `false` because they are different types."
+          a: '`"object"`, `"undefined"`, `true`, `false`. `typeof null` returning `"object"` is a well-known JavaScript bug from its first implementation. `null == undefined` is `true` because of type coercion, but `null === undefined` is `false` because they are different types.',
         },
         {
           type: "conceptual",
           q: "What is the Temporal Dead Zone (TDZ)?",
-          a: "The TDZ is the period between entering a scope and the variable's declaration being processed. During TDZ, accessing a `let` or `const` variable throws a `ReferenceError`. This prevents using variables before they are declared, unlike `var` which returns `undefined`."
+          a: "The TDZ is the period between entering a scope and the variable's declaration being processed. During TDZ, accessing a `let` or `const` variable throws a `ReferenceError`. This prevents using variables before they are declared, unlike `var` which returns `undefined`.",
         },
         {
           type: "coding",
           q: "Write a function that checks if a value is `null` or `undefined` without using `==` (loose equality).",
-          a: "```js\nfunction isNullOrUndefined(val) {\n  return val === null || val === undefined;\n}\n```"
+          a: "```js\nfunction isNullOrUndefined(val) {\n  return val === null || val === undefined;\n}\n```",
         },
         {
           type: "scenario",
           q: "In a real-world app, when would you use `let` instead of `const`?",
-          a: "Use `let` for loop counters (`for (let i = 0; ...)`), accumulators that change value, status flags that toggle, or any variable whose value needs to be reassigned. Default to `const` for everything else — function references, config values, imported modules, and destructured values."
-        }
-      ]
+          a: "Use `let` for loop counters (`for (let i = 0; ...)`), accumulators that change value, status flags that toggle, or any variable whose value needs to be reassigned. Default to `const` for everything else — function references, config values, imported modules, and destructured values.",
+        },
+      ],
     },
     {
       id: "operators",
@@ -130,38 +131,38 @@ console.log(obj?.x?.y?.z);    // undefined (no error!)`,
 4. Use optional chaining to safely access a deeply nested property`,
       commonMistakes: [
         "Using `==` instead of `===` — loose equality causes unexpected type coercion bugs",
-        "Confusing `||` with `??` — `||` treats `0`, `\"\"`, and `false` as falsy; `??` only checks for `null`/`undefined`",
+        'Confusing `||` with `??` — `||` treats `0`, `""`, and `false` as falsy; `??` only checks for `null`/`undefined`',
         "Forgetting that `&&` returns the first falsy value (or last value if all truthy), not always `true`/`false`",
         "Not knowing operator precedence — use parentheses to make intent clear",
-        "Using `typeof` to check for `null` — it returns `\"object\"`, not `\"null\"`"
+        'Using `typeof` to check for `null` — it returns `"object"`, not `"null"`',
       ],
       interviewQuestions: [
         {
           type: "tricky",
           q: "What will this output?\n```js\nconsole.log(1 + '2' + 3);\nconsole.log(1 + 2 + '3');\n```",
-          a: "`\"123\"` and `\"33\"`. In the first: `1 + '2'` = `'12'` (number coerced to string), then `'12' + 3` = `'123'`. In the second: `1 + 2` = `3` (both numbers), then `3 + '3'` = `'33'`."
+          a: "`\"123\"` and `\"33\"`. In the first: `1 + '2'` = `'12'` (number coerced to string), then `'12' + 3` = `'123'`. In the second: `1 + 2` = `3` (both numbers), then `3 + '3'` = `'33'`.",
         },
         {
           type: "conceptual",
           q: "Explain the difference between `||` and `??` operators.",
-          a: "`||` returns the right operand if the left is ANY falsy value (`false`, `0`, `\"\"`, `null`, `undefined`, `NaN`). `??` (nullish coalescing) returns the right operand ONLY if the left is `null` or `undefined`. Use `??` when `0` or `\"\"` are valid values."
+          a: '`||` returns the right operand if the left is ANY falsy value (`false`, `0`, `""`, `null`, `undefined`, `NaN`). `??` (nullish coalescing) returns the right operand ONLY if the left is `null` or `undefined`. Use `??` when `0` or `""` are valid values.',
         },
         {
           type: "tricky",
           q: "What will this output?\n```js\nconsole.log([] == false);\nconsole.log([] == ![]);\n```",
-          a: "Both are `true`. `[] == false`: `[]` converts to `\"\"` → `0`, `false` → `0`, so `0 == 0`. `[] == ![]`: `![]` is `false` (arrays are truthy), then `[] == false` same as above."
+          a: 'Both are `true`. `[] == false`: `[]` converts to `""` → `0`, `false` → `0`, so `0 == 0`. `[] == ![]`: `![]` is `false` (arrays are truthy), then `[] == false` same as above.',
         },
         {
           type: "coding",
           q: "Write a one-liner using `??` and `?.` to safely get a user's city, defaulting to 'Unknown'.",
-          a: "```js\nconst city = user?.address?.city ?? 'Unknown';\n```"
+          a: "```js\nconst city = user?.address?.city ?? 'Unknown';\n```",
         },
         {
           type: "conceptual",
           q: "What is short-circuit evaluation? Give an example.",
-          a: "Short-circuit evaluation means the second operand is only evaluated if necessary. `&&` stops at the first falsy value; `||` stops at the first truthy value. Example: `user && user.name` — if `user` is falsy, `user.name` is never accessed, preventing errors."
-        }
-      ]
+          a: "Short-circuit evaluation means the second operand is only evaluated if necessary. `&&` stops at the first falsy value; `||` stops at the first truthy value. Example: `user && user.name` — if `user` is falsy, `user.name` is never accessed, preventing errors.",
+        },
+      ],
     },
     {
       id: "strings-string-methods",
@@ -214,35 +215,35 @@ const greeting = \`Hello, \${name}! You have \${2 + 3} messages.\`;`,
         "Confusing `slice()` with `splice()` — `slice` is for strings/arrays (non-destructive), `splice` is array-only (destructive)",
         "Using `indexOf` and checking `if(str.indexOf('x'))` — returns 0 for index 0, which is falsy! Use `!== -1` or `includes()`",
         "Not knowing that `+` operator with strings causes concatenation instead of addition",
-        "Forgetting that `split('')` splits into individual characters, while `split()` returns array with entire string"
+        "Forgetting that `split('')` splits into individual characters, while `split()` returns array with entire string",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "Write a function to reverse a string without using built-in reverse methods.",
-          a: "```js\nfunction reverseString(str) {\n  let result = '';\n  for (let i = str.length - 1; i >= 0; i--) {\n    result += str[i];\n  }\n  return result;\n}\n// Or: str.split('').reverse().join('')\n```"
+          a: "```js\nfunction reverseString(str) {\n  let result = '';\n  for (let i = str.length - 1; i >= 0; i--) {\n    result += str[i];\n  }\n  return result;\n}\n// Or: str.split('').reverse().join('')\n```",
         },
         {
           type: "tricky",
           q: "What will this output?\n```js\nconsole.log('b' + 'a' + + 'a' + 'a');\n```",
-          a: "`\"baNaNa\"`. The `+ 'a'` is a unary plus trying to convert `'a'` to a number, which gives `NaN`. Then string concatenation: `'b' + 'a'` = `'ba'`, `'ba' + NaN` = `'baNaN'`, `'baNaN' + 'a'` = `'baNaNa'`."
+          a: "`\"baNaNa\"`. The `+ 'a'` is a unary plus trying to convert `'a'` to a number, which gives `NaN`. Then string concatenation: `'b' + 'a'` = `'ba'`, `'ba' + NaN` = `'baNaN'`, `'baNaN' + 'a'` = `'baNaNa'`.",
         },
         {
           type: "conceptual",
           q: "Are strings mutable or immutable in JavaScript? What does that mean?",
-          a: "Strings are **immutable**. Once created, a string's content cannot be changed. All string methods return new strings. `str[0] = 'X'` silently fails (or throws in strict mode). You must create a new string: `str = 'X' + str.slice(1)`."
+          a: "Strings are **immutable**. Once created, a string's content cannot be changed. All string methods return new strings. `str[0] = 'X'` silently fails (or throws in strict mode). You must create a new string: `str = 'X' + str.slice(1)`.",
         },
         {
           type: "coding",
           q: "Write a function to count the occurrences of a character in a string.",
-          a: "```js\nfunction countChar(str, char) {\n  return str.split(char).length - 1;\n  // Or: [...str].filter(c => c === char).length\n}\n```"
+          a: "```js\nfunction countChar(str, char) {\n  return str.split(char).length - 1;\n  // Or: [...str].filter(c => c === char).length\n}\n```",
         },
         {
           type: "scenario",
           q: "How would you truncate a long text to 100 characters and add '...' for a UI preview?",
-          a: "```js\nfunction truncate(text, maxLen = 100) {\n  return text.length > maxLen\n    ? text.slice(0, maxLen).trimEnd() + '...'\n    : text;\n}\n```"
-        }
-      ]
+          a: "```js\nfunction truncate(text, maxLen = 100) {\n  return text.length > maxLen\n    ? text.slice(0, maxLen).trimEnd() + '...'\n    : text;\n}\n```",
+        },
+      ],
     },
     {
       id: "numbers-math",
@@ -295,35 +296,35 @@ console.log(randomInt(1, 10)); // e.g., 7`,
         "Using `isNaN()` instead of `Number.isNaN()` — global `isNaN('hello')` returns `true` because it coerces first",
         "Forgetting that `parseInt('08')` works in base 10 now, but always pass the radix: `parseInt('08', 10)`",
         "Using `Math.round()` for currency — it rounds 2.5 to 3 but -2.5 to -2; use specific rounding logic for money",
-        "Not knowing `NaN === NaN` is `false` — use `Number.isNaN()` to check for NaN"
+        "Not knowing `NaN === NaN` is `false` — use `Number.isNaN()` to check for NaN",
       ],
       interviewQuestions: [
         {
           type: "tricky",
           q: "What will this output?\n```js\nconsole.log(typeof NaN);\nconsole.log(NaN === NaN);\nconsole.log(Number.isNaN('hello'));\nconsole.log(isNaN('hello'));\n```",
-          a: "`\"number\"`, `false`, `false`, `true`. `NaN` is of type `\"number\"`. `NaN` is not equal to itself. `Number.isNaN()` checks if the value IS `NaN` without coercion. Global `isNaN()` coerces `'hello'` to `NaN` first, then returns `true`."
+          a: '`"number"`, `false`, `false`, `true`. `NaN` is of type `"number"`. `NaN` is not equal to itself. `Number.isNaN()` checks if the value IS `NaN` without coercion. Global `isNaN()` coerces `\'hello\'` to `NaN` first, then returns `true`.',
         },
         {
           type: "conceptual",
           q: "Why does `0.1 + 0.2 !== 0.3` in JavaScript?",
-          a: "JavaScript uses IEEE 754 double-precision floating-point representation. `0.1` and `0.2` cannot be represented exactly in binary, so their sum has a tiny rounding error (~`0.30000000000000004`). Use `Math.abs(a - b) < Number.EPSILON` for safe comparison."
+          a: "JavaScript uses IEEE 754 double-precision floating-point representation. `0.1` and `0.2` cannot be represented exactly in binary, so their sum has a tiny rounding error (~`0.30000000000000004`). Use `Math.abs(a - b) < Number.EPSILON` for safe comparison.",
         },
         {
           type: "coding",
           q: "Write a function to generate a random integer between two numbers (inclusive).",
-          a: "```js\nfunction randomInt(min, max) {\n  return Math.floor(Math.random() * (max - min + 1)) + min;\n}\n```"
+          a: "```js\nfunction randomInt(min, max) {\n  return Math.floor(Math.random() * (max - min + 1)) + min;\n}\n```",
         },
         {
           type: "tricky",
           q: "What does `parseInt('0xF')` return? What about `parseInt('111', 2)`?",
-          a: "`15` and `7`. `parseInt` detects the `0x` prefix for hexadecimal. With radix `2`, it parses `'111'` as binary (1×4 + 1×2 + 1×1 = 7)."
+          a: "`15` and `7`. `parseInt` detects the `0x` prefix for hexadecimal. With radix `2`, it parses `'111'` as binary (1×4 + 1×2 + 1×1 = 7).",
         },
         {
           type: "scenario",
           q: "How would you safely handle currency calculations in JavaScript?",
-          a: "Work in the smallest unit (cents instead of dollars). Store `$9.99` as `999` cents, do all math with integers, and only convert to dollars for display: `(999 / 100).toFixed(2)`. Alternatively, use a library like `decimal.js` for precision."
-        }
-      ]
+          a: "Work in the smallest unit (cents instead of dollars). Store `$9.99` as `999` cents, do all math with integers, and only convert to dollars for display: `(999 / 100).toFixed(2)`. Alternatively, use a library like `decimal.js` for precision.",
+        },
+      ],
     },
     {
       id: "type-conversion-coercion",
@@ -382,35 +383,35 @@ console.log(!!{});         // true`,
         "Using `+` for addition when one operand might be a string — it concatenates instead",
         "Confusing `Number('')` (returns `0`) with `Number(' ')` (also returns `0`) — whitespace is trimmed",
         "Thinking `'3' > '12'` compares numerically — string comparison is lexicographic, so `'3' > '1'` → `true`",
-        "Not knowing that `==` triggers complex coercion rules — always use `===` to avoid surprises"
+        "Not knowing that `==` triggers complex coercion rules — always use `===` to avoid surprises",
       ],
       interviewQuestions: [
         {
           type: "tricky",
           q: "What will each of these output?\n```js\nconsole.log([] + []);\nconsole.log([] + {});\nconsole.log({} + []);\n```",
-          a: "`\"\"`, `\"[object Object]\"`, `\"[object Object]\"` (or `0` in some consoles). `[]` converts to `\"\"`. `[] + []` = `\"\" + \"\"` = `\"\"`. `[] + {}` = `\"\" + \"[object Object]\"`. `{} + []` depends on context — as expression it's `\"[object Object]\"`, as statement `{}` is a block and `+[]` = `0`."
+          a: '`""`, `"[object Object]"`, `"[object Object]"` (or `0` in some consoles). `[]` converts to `""`. `[] + []` = `"" + ""` = `""`. `[] + {}` = `"" + "[object Object]"`. `{} + []` depends on context — as expression it\'s `"[object Object]"`, as statement `{}` is a block and `+[]` = `0`.',
         },
         {
           type: "conceptual",
           q: "What are all the falsy values in JavaScript?",
-          a: "There are exactly 8: `false`, `0`, `-0`, `0n` (BigInt zero), `\"\"` (empty string), `null`, `undefined`, `NaN`. Everything else is truthy, including `[]`, `{}`, `\"0\"`, `\"false\"`, and `new Boolean(false)`."
+          a: 'There are exactly 8: `false`, `0`, `-0`, `0n` (BigInt zero), `""` (empty string), `null`, `undefined`, `NaN`. Everything else is truthy, including `[]`, `{}`, `"0"`, `"false"`, and `new Boolean(false)`.',
         },
         {
           type: "tricky",
           q: "What does `'3' > '12'` return and why?",
-          a: "`true`. When comparing two strings, JavaScript uses lexicographic (dictionary) comparison, comparing character by character using Unicode values. `'3'` (code 51) > `'1'` (code 49), so it returns `true` without ever looking at the `'2'`."
+          a: "`true`. When comparing two strings, JavaScript uses lexicographic (dictionary) comparison, comparing character by character using Unicode values. `'3'` (code 51) > `'1'` (code 49), so it returns `true` without ever looking at the `'2'`.",
         },
         {
           type: "coding",
           q: "Write a function that safely converts a value to a number, returning 0 for any non-numeric input.",
-          a: "```js\nfunction safeNumber(val) {\n  const num = Number(val);\n  return Number.isNaN(num) ? 0 : num;\n}\n```"
+          a: "```js\nfunction safeNumber(val) {\n  const num = Number(val);\n  return Number.isNaN(num) ? 0 : num;\n}\n```",
         },
         {
           type: "conceptual",
           q: "Explain the difference between explicit and implicit type conversion with examples.",
-          a: "**Explicit** (you do it): `Number('42')` → `42`, `String(true)` → `'true'`. **Implicit** (JS does it): `'5' * 2` → `10` (string → number), `5 + '3'` → `'53'` (number → string). Implicit coercion follows rules: `+` prefers strings, arithmetic operators (`-`, `*`, `/`) prefer numbers."
-        }
-      ]
+          a: "**Explicit** (you do it): `Number('42')` → `42`, `String(true)` → `'true'`. **Implicit** (JS does it): `'5' * 2` → `10` (string → number), `5 + '3'` → `'53'` (number → string). Implicit coercion follows rules: `+` prefers strings, arithmetic operators (`-`, `*`, `/`) prefer numbers.",
+        },
+      ],
     },
     {
       id: "conditional-statements",
@@ -480,35 +481,35 @@ function processUser(user) {
         "Using `=` instead of `===` in conditions — assignment vs comparison",
         "Deeply nesting if/else instead of using guard clauses (early returns)",
         "Overusing nested ternaries — makes code unreadable; use if/else for complex logic",
-        "Not considering all edge cases — e.g., what if the input is `null`, `undefined`, or wrong type?"
+        "Not considering all edge cases — e.g., what if the input is `null`, `undefined`, or wrong type?",
       ],
       interviewQuestions: [
         {
           type: "tricky",
           q: "What will this output?\n```js\nconst a = 0;\nif (a) {\n  console.log('truthy');\n} else {\n  console.log('falsy');\n}\n```",
-          a: "`'falsy'`. `0` is a falsy value in JavaScript. The `if` condition coerces `0` to `false`."
+          a: "`'falsy'`. `0` is a falsy value in JavaScript. The `if` condition coerces `0` to `false`.",
         },
         {
           type: "conceptual",
           q: "What happens if you forget `break` in a switch statement?",
-          a: "**Fall-through** occurs — execution continues into the next case regardless of whether it matches. This is sometimes used intentionally (grouping cases), but is usually a bug. Example: matching `'A'` without break will also execute `'B'`'s code."
+          a: "**Fall-through** occurs — execution continues into the next case regardless of whether it matches. This is sometimes used intentionally (grouping cases), but is usually a bug. Example: matching `'A'` without break will also execute `'B'`'s code.",
         },
         {
           type: "coding",
           q: "Write a function that returns 'Fizz' for multiples of 3, 'Buzz' for 5, 'FizzBuzz' for both, or the number itself.",
-          a: "```js\nfunction fizzBuzz(n) {\n  if (n % 15 === 0) return 'FizzBuzz';\n  if (n % 3 === 0) return 'Fizz';\n  if (n % 5 === 0) return 'Buzz';\n  return n;\n}\n```"
+          a: "```js\nfunction fizzBuzz(n) {\n  if (n % 15 === 0) return 'FizzBuzz';\n  if (n % 3 === 0) return 'Fizz';\n  if (n % 5 === 0) return 'Buzz';\n  return n;\n}\n```",
         },
         {
           type: "conceptual",
           q: "What is the guard clause pattern and why is it preferred?",
-          a: "Guard clauses handle edge cases at the top of a function with early returns, avoiding deep nesting. Instead of: `if (valid) { if (hasData) { ... } }`, write: `if (!valid) return; if (!hasData) return; ...`. This improves readability and reduces cognitive complexity."
+          a: "Guard clauses handle edge cases at the top of a function with early returns, avoiding deep nesting. Instead of: `if (valid) { if (hasData) { ... } }`, write: `if (!valid) return; if (!hasData) return; ...`. This improves readability and reduces cognitive complexity.",
         },
         {
           type: "scenario",
           q: "When would you use `switch` over `if/else`?",
-          a: "Use `switch` when comparing a single variable against many specific values (e.g., action types in a reducer, routes, menu options). Use `if/else` for range comparisons, complex conditions, or when conditions involve different variables. Note: `switch` uses `===` (strict equality)."
-        }
-      ]
+          a: "Use `switch` when comparing a single variable against many specific values (e.g., action types in a reducer, routes, menu options). Use `if/else` for range comparisons, complex conditions, or when conditions involve different variables. Note: `switch` uses `===` (strict equality).",
+        },
+      ],
     },
     {
       id: "loops",
@@ -583,37 +584,37 @@ outer: for (let i = 0; i < 3; i++) {
         "Infinite loops — forgetting to update the loop variable (`while(true)` without a `break`)",
         "Off-by-one errors — using `<=` vs `<` or starting from 1 instead of 0",
         "Modifying an array while iterating over it — can skip elements or cause infinite loops",
-        "Not knowing that `for...of` works on any iterable (strings, Maps, Sets) but NOT plain objects"
+        "Not knowing that `for...of` works on any iterable (strings, Maps, Sets) but NOT plain objects",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the difference between `for...in` and `for...of`?",
-          a: "`for...in` iterates over enumerable **property keys** (strings) of an object, including inherited ones. `for...of` iterates over **values** of an iterable (arrays, strings, Maps, Sets, generators). Use `for...of` for arrays, `for...in` for objects (with `hasOwnProperty` guard)."
+          a: "`for...in` iterates over enumerable **property keys** (strings) of an object, including inherited ones. `for...of` iterates over **values** of an iterable (arrays, strings, Maps, Sets, generators). Use `for...of` for arrays, `for...in` for objects (with `hasOwnProperty` guard).",
         },
         {
           type: "tricky",
           q: "What will this output?\n```js\nfor (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 100);\n}\n```",
-          a: "`3, 3, 3`. Because `var` is function-scoped, there's one shared `i`. By the time the timeouts fire, the loop has finished and `i` is `3`. Fix: use `let` (block-scoped) instead of `var`, or use an IIFE."
+          a: "`3, 3, 3`. Because `var` is function-scoped, there's one shared `i`. By the time the timeouts fire, the loop has finished and `i` is `3`. Fix: use `let` (block-scoped) instead of `var`, or use an IIFE.",
         },
         {
           type: "coding",
           q: "Write a function to flatten a nested array using loops (no recursion, no `.flat()`).",
-          a: "```js\nfunction flatten(arr) {\n  const stack = [...arr];\n  const result = [];\n  while (stack.length) {\n    const item = stack.pop();\n    if (Array.isArray(item)) {\n      stack.push(...item);\n    } else {\n      result.unshift(item);\n    }\n  }\n  return result;\n}\n```"
+          a: "```js\nfunction flatten(arr) {\n  const stack = [...arr];\n  const result = [];\n  while (stack.length) {\n    const item = stack.pop();\n    if (Array.isArray(item)) {\n      stack.push(...item);\n    } else {\n      result.unshift(item);\n    }\n  }\n  return result;\n}\n```",
         },
         {
           type: "conceptual",
           q: "What are `break` and `continue`? Can they be used with labels?",
-          a: "`break` exits the loop entirely. `continue` skips to the next iteration. Both work with labels for nested loops: `break outer` exits the outer loop, `continue outer` skips to the next iteration of the outer loop."
+          a: "`break` exits the loop entirely. `continue` skips to the next iteration. Both work with labels for nested loops: `break outer` exits the outer loop, `continue outer` skips to the next iteration of the outer loop.",
         },
         {
           type: "scenario",
           q: "When would you use a `do...while` loop instead of a `while` loop?",
-          a: "When you need the code to execute **at least once** before checking the condition. Common use cases: input validation (prompt user until valid), menu systems (show menu before checking choice), game loops (run one frame before checking exit)."
-        }
-      ]
-    }
-  ]
+          a: "When you need the code to execute **at least once** before checking the condition. Common use cases: input validation (prompt user until valid), menu systems (show menu before checking choice), game loops (run one frame before checking exit).",
+        },
+      ],
+    },
+  ],
 };
 
 export default phase1;

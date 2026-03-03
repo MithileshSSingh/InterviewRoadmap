@@ -2,7 +2,8 @@ const rnPhase9 = {
   id: "phase-9",
   title: "Phase 9: System Design for Mobile (Staff Level)",
   emoji: "🏛️",
-  description: "Staff-level mobile system design — real-time chat, offline-first sync, notification systems, large-scale e-commerce, feature flagging, and analytics pipelines with full trade-off analysis.",
+  description:
+    "Staff-level mobile system design — real-time chat, offline-first sync, notification systems, large-scale e-commerce, feature flagging, and analytics pipelines with full trade-off analysis.",
   topics: [
     {
       id: "realtime-chat-design",

@@ -2,7 +2,8 @@ const sfPhase2 = {
   id: "phase-2",
   title: "Phase 2: Salesforce Platform Fundamentals",
   emoji: "🏗️",
-  description: "Deep dive into Salesforce's multi-tenant architecture, metadata-driven platform, data modeling, relationships, security model, and enterprise configuration best practices.",
+  description:
+    "Deep dive into Salesforce's multi-tenant architecture, metadata-driven platform, data modeling, relationships, security model, and enterprise configuration best practices.",
   topics: [
     {
       id: "sf-multi-tenant-architecture",
@@ -135,25 +136,25 @@ public class GovernorLimitDemo {
         "Ignoring governor limits during development because your dev org has small data — production might have millions of records being processed in bulk",
         "Not understanding why SOQL is limited — it's not a limitation of Apex, it's protecting the shared infrastructure from expensive queries",
         "Assuming your org runs in isolation — other orgs on the same instance compete for the same resources",
-        "Not monitoring instance health — production issues can be caused by Salesforce infrastructure, not just your code"
+        "Not monitoring instance health — production issues can be caused by Salesforce infrastructure, not just your code",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Explain Salesforce's multi-tenant architecture and why governor limits exist.",
-          a: "Salesforce uses a **shared-infrastructure multi-tenant model**: thousands of orgs run on the same servers and database. Data is logically separated by OrgId. Custom objects are stored as metadata rows, not separate database tables. **Governor limits exist because resources are shared** — if one org runs a SOQL query that locks a table for 10 seconds, it affects every org on that instance. Limits ensure fair resource allocation: 100 SOQL queries, 150 DML statements, 10-second CPU time, etc. per transaction. This architecture enables Salesforce to deliver 3 automatic upgrades per year to all customers simultaneously."
+          a: "Salesforce uses a **shared-infrastructure multi-tenant model**: thousands of orgs run on the same servers and database. Data is logically separated by OrgId. Custom objects are stored as metadata rows, not separate database tables. **Governor limits exist because resources are shared** — if one org runs a SOQL query that locks a table for 10 seconds, it affects every org on that instance. Limits ensure fair resource allocation: 100 SOQL queries, 150 DML statements, 10-second CPU time, etc. per transaction. This architecture enables Salesforce to deliver 3 automatic upgrades per year to all customers simultaneously.",
         },
         {
           type: "tricky",
           q: "How does Salesforce store custom fields in its multi-tenant database?",
-          a: "Custom fields are NOT stored as actual database columns. Salesforce uses a **polymorphic column approach**: the physical database has generic columns (Value0, Value1, ... up to ~800). When you create a custom field, Salesforce creates a metadata entry mapping your field name to one of these columns. When you query the field, the platform dynamically maps it. This means: (1) Adding a field doesn't require ALTER TABLE (instant, no downtime). (2) Different orgs use different columns in the same table. (3) Indexing is handled via separate index tables, not database indexes. (4) There's a limit on custom fields per object (~500 for most objects)."
+          a: "Custom fields are NOT stored as actual database columns. Salesforce uses a **polymorphic column approach**: the physical database has generic columns (Value0, Value1, ... up to ~800). When you create a custom field, Salesforce creates a metadata entry mapping your field name to one of these columns. When you query the field, the platform dynamically maps it. This means: (1) Adding a field doesn't require ALTER TABLE (instant, no downtime). (2) Different orgs use different columns in the same table. (3) Indexing is handled via separate index tables, not database indexes. (4) There's a limit on custom fields per object (~500 for most objects).",
         },
         {
           type: "scenario",
           q: "Your Salesforce org is experiencing slow performance. How do you diagnose whether it's your code or the platform?",
-          a: "**Systematic diagnosis:** (1) Check **trust.salesforce.com** for your instance — is there a reported incident? (2) Review **Apex Execution Logs** — check if transactions are hitting near-limit SOQL counts or CPU time. (3) Use **Debug Logs** with FINER level to identify slow SOQL queries. (4) Check the **API Usage** page — are you near daily API limits? (5) Review **Setup Audit Trail** — did someone deploy new automation? (6) Use **Query Plan** tool in Developer Console to check query selectivity. (7) Monitor **event monitoring** logs for long-running transactions. If instance health is fine, the issue is likely: unselective queries, trigger recursion, or excessive automation on the same object."
-        }
-      ]
+          a: "**Systematic diagnosis:** (1) Check **trust.salesforce.com** for your instance — is there a reported incident? (2) Review **Apex Execution Logs** — check if transactions are hitting near-limit SOQL counts or CPU time. (3) Use **Debug Logs** with FINER level to identify slow SOQL queries. (4) Check the **API Usage** page — are you near daily API limits? (5) Review **Setup Audit Trail** — did someone deploy new automation? (6) Use **Query Plan** tool in Developer Console to check query selectivity. (7) Monitor **event monitoring** logs for long-running transactions. If instance health is fine, the issue is likely: unselective queries, trigger recursion, or excessive automation on the same object.",
+        },
+      ],
     },
     {
       id: "sf-objects-relationships",
@@ -339,30 +340,30 @@ public class DataModelExamples {
         "Creating too many master-detail relationships — each object can have at most 2 master-detail relationships",
         "Not understanding cascade delete implications — deleting a parent in master-detail deletes ALL children permanently",
         "Forgetting that junction objects inherit sharing from the PRIMARY master — the first master-detail relationship created determines the sharing context",
-        "Querying too many relationship levels — SOQL supports up to 5 levels of parent traversal and 1 level of child subquery"
+        "Querying too many relationship levels — SOQL supports up to 5 levels of parent traversal and 1 level of child subquery",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the difference between Lookup and Master-Detail relationships in Salesforce?",
-          a: "**Lookup:** (1) Loose coupling — child can exist without parent. (2) No cascade delete by default. (3) Independent sharing/security. (4) No roll-up summary fields. (5) Up to 40 per object. **Master-Detail:** (1) Tight coupling — child cannot exist without parent. (2) Cascade delete — deleting parent deletes all children. (3) Child inherits parent's sharing/security settings. (4) Roll-up summary fields available (COUNT, SUM, MIN, MAX). (5) Maximum 2 per object. **When to use:** Master-Detail when records are meaningless without the parent (e.g., Order Line Items). Lookup when records have independent lifecycle (e.g., Contact can exist without Account)."
+          a: "**Lookup:** (1) Loose coupling — child can exist without parent. (2) No cascade delete by default. (3) Independent sharing/security. (4) No roll-up summary fields. (5) Up to 40 per object. **Master-Detail:** (1) Tight coupling — child cannot exist without parent. (2) Cascade delete — deleting parent deletes all children. (3) Child inherits parent's sharing/security settings. (4) Roll-up summary fields available (COUNT, SUM, MIN, MAX). (5) Maximum 2 per object. **When to use:** Master-Detail when records are meaningless without the parent (e.g., Order Line Items). Lookup when records have independent lifecycle (e.g., Contact can exist without Account).",
         },
         {
           type: "scenario",
           q: "How would you implement a many-to-many relationship between Projects and Employees?",
-          a: "Salesforce doesn't support native many-to-many relationships. Use a **Junction Object pattern**: Create a custom object `Project_Assignment__c` with two master-detail relationships: one to `Project__c` and one to `Employee__c`. This junction object can also store relationship-specific data like Role, Start_Date, Hours_Allocated. The primary master (first MD created) controls sharing. SOQL query: `SELECT Project__r.Name, Employee__r.Name FROM Project_Assignment__c`. This is the standard Salesforce pattern for M:M relationships."
+          a: "Salesforce doesn't support native many-to-many relationships. Use a **Junction Object pattern**: Create a custom object `Project_Assignment__c` with two master-detail relationships: one to `Project__c` and one to `Employee__c`. This junction object can also store relationship-specific data like Role, Start_Date, Hours_Allocated. The primary master (first MD created) controls sharing. SOQL query: `SELECT Project__r.Name, Employee__r.Name FROM Project_Assignment__c`. This is the standard Salesforce pattern for M:M relationships.",
         },
         {
           type: "tricky",
           q: "Can you convert a Lookup relationship to Master-Detail? What are the requirements?",
-          a: "Yes, but with conditions: (1) **All existing child records must have a value in the lookup field** — no null/blank values allowed. (2) The org must not already have 2 master-detail relationships on that object. (3) You cannot convert if the child object already has a roll-up summary field defined. (4) **You cannot convert Master-Detail to Lookup if roll-up summary fields exist** on the parent referencing that relationship — delete them first. To convert in production with null values: run a batch job to populate the lookup field for all records first, then convert."
+          a: "Yes, but with conditions: (1) **All existing child records must have a value in the lookup field** — no null/blank values allowed. (2) The org must not already have 2 master-detail relationships on that object. (3) You cannot convert if the child object already has a roll-up summary field defined. (4) **You cannot convert Master-Detail to Lookup if roll-up summary fields exist** on the parent referencing that relationship — delete them first. To convert in production with null values: run a batch job to populate the lookup field for all records first, then convert.",
         },
         {
           type: "conceptual",
           q: "What are External Lookup relationships and when would you use them?",
-          a: "External Lookups link a standard or custom object to an **External Object** (data from an external system accessed via Salesforce Connect / OData). Use cases: (1) Your CRM accounts need to reference inventory data stored in SAP without importing it into Salesforce. (2) Order records need to link to shipping data in an external warehouse system. (3) Contacts need to see HR data stored in Workday. External Objects appear like native objects in the UI but query data in real-time from external systems. The relationship uses an External ID field as the key instead of a Salesforce Id."
-        }
-      ]
+          a: "External Lookups link a standard or custom object to an **External Object** (data from an external system accessed via Salesforce Connect / OData). Use cases: (1) Your CRM accounts need to reference inventory data stored in SAP without importing it into Salesforce. (2) Order records need to link to shipping data in an external warehouse system. (3) Contacts need to see HR data stored in Workday. External Objects appear like native objects in the UI but query data in real-time from external systems. The relationship uses an External ID field as the key instead of a Salesforce Id.",
+        },
+      ],
     },
     {
       id: "sf-record-types-page-layouts",
@@ -529,20 +530,20 @@ public class RecordTypeUtils {
         "Confusing Page Layout field visibility with Field-Level Security — Page Layouts only affect UI display; FLS controls actual read/write access to the field at the API level",
         "Creating too many Record Types — each one requires its own Page Layout, picklist value set, and testing. Start with 2-3 max per object",
         "Not considering Record Type impact on data migration — when importing data, you must specify RecordTypeId or the default is used, which may not be correct",
-        "Forgetting that Record Types are assigned to Profiles — if you add a new Record Type, users won't see it until you assign it to their Profile"
+        "Forgetting that Record Types are assigned to Profiles — if you add a new Record Type, users won't see it until you assign it to their Profile",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are Record Types and when would you use them?",
-          a: "Record Types allow you to offer different business processes, picklist values, and page layouts for the same object. **Use cases:** (1) Different Case types need different fields (Support vs Bug vs Feature). (2) Different countries need different Account fields for compliance. (3) Different sales teams sell different products using Opportunity. **How they work:** Each Record Type maps to a Page Layout and can restrict picklist values. They're assigned to Profiles, so different user groups see different record creation experiences. Records store RecordTypeId, which you can filter on in SOQL, reports, and triggers."
+          a: "Record Types allow you to offer different business processes, picklist values, and page layouts for the same object. **Use cases:** (1) Different Case types need different fields (Support vs Bug vs Feature). (2) Different countries need different Account fields for compliance. (3) Different sales teams sell different products using Opportunity. **How they work:** Each Record Type maps to a Page Layout and can restrict picklist values. They're assigned to Profiles, so different user groups see different record creation experiences. Records store RecordTypeId, which you can filter on in SOQL, reports, and triggers.",
         },
         {
           type: "tricky",
           q: "What's the difference between Page Layout field visibility and Field-Level Security (FLS)?",
-          a: "**Page Layouts** control what fields appear in the **UI** — visibility, ordering, read-only display. They do NOT control data access. **Field-Level Security (FLS)** controls whether a user can **read or write** a field's data at the API/system level. FLS is the actual security layer. Example: If FLS grants read access but the Page Layout hides the field, the user can still access the field via API, reports, or SOQL. **Best practice:** Use FLS for security (who CAN access), Page Layouts for UX (what they SEE). Always set FLS first, then arrange Page Layouts."
-        }
-      ]
+          a: "**Page Layouts** control what fields appear in the **UI** — visibility, ordering, read-only display. They do NOT control data access. **Field-Level Security (FLS)** controls whether a user can **read or write** a field's data at the API/system level. FLS is the actual security layer. Example: If FLS grants read access but the Page Layout hides the field, the user can still access the field via API, reports, or SOQL. **Best practice:** Use FLS for security (who CAN access), Page Layouts for UX (what they SEE). Always set FLS first, then arrange Page Layouts.",
+        },
+      ],
     },
     {
       id: "sf-profiles-permissions-security",
@@ -743,27 +744,27 @@ public class SecurityModelExamples {
         "Confusing Profile permissions (CRUD) with record-level security (OWD + Sharing) — a user can have Read permission on Account but still not see specific records if OWD is Private",
         "Not testing security with System.runAs() — your code works as an admin but fails for standard users because of FLS or sharing restrictions",
         "Using 'without sharing' when not necessary — this bypasses ALL record-level security and should only be used for system-level operations",
-        "Forgetting that Apex runs in system context by default — without 'with sharing' keyword, Apex ignores record-level security, which is a security vulnerability"
+        "Forgetting that Apex runs in system context by default — without 'with sharing' keyword, Apex ignores record-level security, which is a security vulnerability",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Explain the Salesforce security model layers from most restrictive to most permissive.",
-          a: "**Layer stack:** (1) **OWD (Organization-Wide Defaults)** — sets the baseline. Private = most restrictive. (2) **Role Hierarchy** — opens access upward. Managers see their reports' records. (3) **Sharing Rules** — opens access laterally. Criteria-based or owner-based. (4) **Manual Sharing** — one-off sharing by record owners. (5) **Apex Managed Sharing** — programmatic sharing for complex rules. (6) **Teams** — Account/Opportunity team members get access. (7) **Territory Management** — geographic or account-based access. **Key principle:** You can only OPEN access from the OWD baseline, never restrict below it (except with Restriction Rules in newer releases)."
+          a: "**Layer stack:** (1) **OWD (Organization-Wide Defaults)** — sets the baseline. Private = most restrictive. (2) **Role Hierarchy** — opens access upward. Managers see their reports' records. (3) **Sharing Rules** — opens access laterally. Criteria-based or owner-based. (4) **Manual Sharing** — one-off sharing by record owners. (5) **Apex Managed Sharing** — programmatic sharing for complex rules. (6) **Teams** — Account/Opportunity team members get access. (7) **Territory Management** — geographic or account-based access. **Key principle:** You can only OPEN access from the OWD baseline, never restrict below it (except with Restriction Rules in newer releases).",
         },
         {
           type: "scenario",
           q: "A sales rep can see Accounts but not Opportunities owned by reps in other territories. How do you configure this?",
-          a: "**Configuration:** (1) Set Account OWD to **Public Read Only** (all reps can see all accounts). (2) Set Opportunity OWD to **Private** (reps only see their own opportunities). (3) Create a **Role Hierarchy** mirroring the sales org (VP → Regional Manager → Rep). VPs see all their region's opportunities via hierarchy. (4) Create **Criteria-Based Sharing Rules** if cross-region visibility is needed (e.g., share all Enterprise opportunities with the Enterprise team). (5) Use **Territory Management** if geographic assignment is complex. (6) Assign **Permission Sets** for users who need broader access (e.g., sales operations team)."
+          a: "**Configuration:** (1) Set Account OWD to **Public Read Only** (all reps can see all accounts). (2) Set Opportunity OWD to **Private** (reps only see their own opportunities). (3) Create a **Role Hierarchy** mirroring the sales org (VP → Regional Manager → Rep). VPs see all their region's opportunities via hierarchy. (4) Create **Criteria-Based Sharing Rules** if cross-region visibility is needed (e.g., share all Enterprise opportunities with the Enterprise team). (5) Use **Territory Management** if geographic assignment is complex. (6) Assign **Permission Sets** for users who need broader access (e.g., sales operations team).",
         },
         {
           type: "tricky",
           q: "What is the difference between 'with sharing', 'without sharing', and 'inherited sharing' in Apex?",
-          a: "**'with sharing'** — Enforces the running user's record-level security (OWD + sharing rules + role hierarchy). **'without sharing'** — Runs in system context, ignoring ALL record-level security. Use sparingly for system-level operations. **'inherited sharing'** (new) — Inherits the sharing context of the calling class. If called from 'with sharing', it runs with sharing. If called from 'without sharing', it runs without. **Default behavior:** Classes without any sharing keyword default to 'without sharing' (system context). **Best practice:** Always explicitly declare 'with sharing' unless you have a specific reason for system context. In triggers, code runs as the triggering user but in system context by default."
-        }
-      ]
-    }
-  ]
+          a: "**'with sharing'** — Enforces the running user's record-level security (OWD + sharing rules + role hierarchy). **'without sharing'** — Runs in system context, ignoring ALL record-level security. Use sparingly for system-level operations. **'inherited sharing'** (new) — Inherits the sharing context of the calling class. If called from 'with sharing', it runs with sharing. If called from 'without sharing', it runs without. **Default behavior:** Classes without any sharing keyword default to 'without sharing' (system context). **Best practice:** Always explicitly declare 'with sharing' unless you have a specific reason for system context. In triggers, code runs as the triggering user but in system context by default.",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase2;

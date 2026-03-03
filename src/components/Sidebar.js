@@ -25,11 +25,18 @@ export default function Sidebar() {
 
   return (
     <>
-      <button className="mobile-menu-btn" onClick={() => setMobileOpen(!mobileOpen)}>
+      <button
+        className="mobile-menu-btn"
+        onClick={() => setMobileOpen(!mobileOpen)}
+      >
         {mobileOpen ? "✕" : "☰"}
       </button>
       <aside className={`sidebar ${mobileOpen ? "open" : ""}`}>
-        <Link href="/" className="sidebar-logo" onClick={() => setMobileOpen(false)}>
+        <Link
+          href="/"
+          className="sidebar-logo"
+          onClick={() => setMobileOpen(false)}
+        >
           <span className="logo-icon">📚</span>
           <span className="logo-text">Interview Roadmaps</span>
         </Link>
@@ -62,8 +69,12 @@ export default function Sidebar() {
                     className={`nav-phase-btn ${expandedPhase === phase.id ? "expanded" : ""}`}
                     onClick={() => togglePhase(phase.id)}
                   >
-                    <span>{phase.emoji} {phase.title}</span>
-                    <span className="expand-icon">{expandedPhase === phase.id ? "▾" : "▸"}</span>
+                    <span>
+                      {phase.emoji} {phase.title}
+                    </span>
+                    <span className="expand-icon">
+                      {expandedPhase === phase.id ? "▾" : "▸"}
+                    </span>
                   </button>
                   {expandedPhase === phase.id && (
                     <ul className="nav-topics">
@@ -97,14 +108,20 @@ export default function Sidebar() {
               >
                 ← Roadmap AI
               </Link>
-              <div className="sidebar-roadmap-title">
-                🤖 Roadmap AI
-              </div>
-              <p style={{ padding: "0 0.75rem", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
-                AI-powered career roadmaps with interview intel, salary data, and a phased study plan.
+              <div className="sidebar-roadmap-title">🤖 Roadmap AI</div>
+              <p
+                style={{
+                  padding: "0 0.75rem",
+                  fontSize: "0.8rem",
+                  color: "var(--text-secondary)",
+                  lineHeight: 1.5,
+                }}
+              >
+                AI-powered career roadmaps with interview intel, salary data,
+                and a phased study plan.
               </p>
             </>
-        ) : (
+          ) : (
             /* Roadmap list on landing page */
             <div className="sidebar-roadmap-list">
               <div className="sidebar-section-label">AI Tools</div>
@@ -114,9 +131,22 @@ export default function Sidebar() {
                 onClick={() => setMobileOpen(false)}
               >
                 <span>🤖 Roadmap AI</span>
-                <span className="sidebar-soon" style={{ background: "var(--accent-blue)", color: "var(--bg-primary)" }}>Beta</span>
+                <span
+                  className="sidebar-soon"
+                  style={{
+                    background: "var(--accent-blue)",
+                    color: "var(--bg-primary)",
+                  }}
+                >
+                  Beta
+                </span>
               </Link>
-              <div className="sidebar-section-label" style={{ marginTop: "0.75rem" }}>Roadmaps</div>
+              <div
+                className="sidebar-section-label"
+                style={{ marginTop: "0.75rem" }}
+              >
+                Roadmaps
+              </div>
               {allRoadmaps.map((rm) => (
                 <Link
                   key={rm.slug}
@@ -127,7 +157,9 @@ export default function Sidebar() {
                     else setMobileOpen(false);
                   }}
                 >
-                  <span>{rm.emoji} {rm.title}</span>
+                  <span>
+                    {rm.emoji} {rm.title}
+                  </span>
                   {rm.comingSoon && <span className="sidebar-soon">Soon</span>}
                 </Link>
               ))}
@@ -143,7 +175,9 @@ export default function Sidebar() {
           ⚙️ Settings
         </Link>
       </aside>
-      {mobileOpen && <div className="sidebar-overlay" onClick={() => setMobileOpen(false)} />}
+      {mobileOpen && (
+        <div className="sidebar-overlay" onClick={() => setMobileOpen(false)} />
+      )}
     </>
   );
 }

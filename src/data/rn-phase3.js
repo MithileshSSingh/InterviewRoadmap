@@ -2,7 +2,8 @@ const rnPhase3 = {
   id: "phase-3",
   title: "Phase 3: React Internals (Senior Level)",
   emoji: "⚛️",
-  description: "Deep dive into React's internal mechanisms — Virtual DOM, Fiber architecture, reconciliation, hooks internals, concurrent rendering, and memoization strategies for production optimization.",
+  description:
+    "Deep dive into React's internal mechanisms — Virtual DOM, Fiber architecture, reconciliation, hooks internals, concurrent rendering, and memoization strategies for production optimization.",
   topics: [
     {
       id: "virtual-dom-reconciliation",

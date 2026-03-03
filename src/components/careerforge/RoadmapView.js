@@ -37,9 +37,9 @@ export default function RoadmapView({ roadmap, roadmapId }) {
       prev.map((phase) => ({
         ...phase,
         topics: phase.topics.map((t) =>
-          t.id === topicId ? { ...t, completed } : t
+          t.id === topicId ? { ...t, completed } : t,
         ),
-      }))
+      })),
     );
   }
 
@@ -53,7 +53,14 @@ export default function RoadmapView({ roadmap, roadmapId }) {
       <RoadmapHeader meta={roadmap.meta} />
 
       {/* Export button + tab row */}
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1.5rem" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          marginBottom: "1.5rem",
+        }}
+      >
         {/* Tabs */}
         <div
           style={{
@@ -69,7 +76,10 @@ export default function RoadmapView({ roadmap, roadmapId }) {
           {TABS.map((tab) => (
             <button
               key={tab.key}
-              onClick={() => { setActiveTab(tab.key); setExportOpen(false); }}
+              onClick={() => {
+                setActiveTab(tab.key);
+                setExportOpen(false);
+              }}
               style={{
                 flex: "1 0 auto",
                 padding: "0.5rem 1rem",
@@ -78,8 +88,12 @@ export default function RoadmapView({ roadmap, roadmapId }) {
                 cursor: "pointer",
                 fontWeight: 600,
                 fontSize: "0.875rem",
-                background: activeTab === tab.key ? "var(--bg-card)" : "transparent",
-                color: activeTab === tab.key ? "var(--text-primary)" : "var(--text-secondary)",
+                background:
+                  activeTab === tab.key ? "var(--bg-card)" : "transparent",
+                color:
+                  activeTab === tab.key
+                    ? "var(--text-primary)"
+                    : "var(--text-secondary)",
                 transition: "all 0.15s",
               }}
             >
@@ -110,8 +124,14 @@ export default function RoadmapView({ roadmap, roadmapId }) {
 
           {exportOpen && (
             <>
-              <div onClick={() => setExportOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 9 }} />
-              <ExportDropdown options={EXPORT_OPTIONS} onSelect={handleExport} />
+              <div
+                onClick={() => setExportOpen(false)}
+                style={{ position: "fixed", inset: 0, zIndex: 9 }}
+              />
+              <ExportDropdown
+                options={EXPORT_OPTIONS}
+                onSelect={handleExport}
+              />
             </>
           )}
         </div>
@@ -121,7 +141,10 @@ export default function RoadmapView({ roadmap, roadmapId }) {
       {activeTab === "overview" && (
         <div>
           <RoleIntelCard roleIntel={roadmap.roleIntel} />
-          <SalaryIntelCard salaryIntel={roadmap.salaryIntel} userLevel={roadmap.meta?.experienceLevel} />
+          <SalaryIntelCard
+            salaryIntel={roadmap.salaryIntel}
+            userLevel={roadmap.meta?.experienceLevel}
+          />
           <CompanyIntelSection companyIntel={roadmap.companyIntel} />
         </div>
       )}
@@ -188,8 +211,12 @@ export function ExportDropdown({ options, onSelect }) {
             fontWeight: 500,
             transition: "background 0.1s",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "var(--bg-secondary)")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.background = "var(--bg-secondary)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.background = "transparent")
+          }
         >
           {label}
         </button>

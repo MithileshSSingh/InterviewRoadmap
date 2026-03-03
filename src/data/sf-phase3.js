@@ -2,7 +2,8 @@ const sfPhase3 = {
   id: "phase-3",
   title: "Phase 3: Apex Programming Mastery",
   emoji: "⚡",
-  description: "Deep dive into Apex programming — syntax, data types, SOQL/SOSL, DML operations, collections, bulkification, governor limits, exception handling, triggers, and async processing.",
+  description:
+    "Deep dive into Apex programming — syntax, data types, SOQL/SOSL, DML operations, collections, bulkification, governor limits, exception handling, triggers, and async processing.",
   topics: [
     {
       id: "sf-apex-fundamentals",
@@ -216,25 +217,25 @@ public class ApexFundamentals {
         "Not initializing collections before use — 'List<Account> accounts;' is null, not empty. Always use 'new List<Account>()'",
         "Forgetting that Map.get() returns null for missing keys — always check containsKey() or handle null returns",
         "Using List.contains() for large lookups — O(n) per call. Use a Set for O(1) lookups when checking membership",
-        "Not understanding that Apex Strings are compared case-sensitively by default — use .equalsIgnoreCase() or .toLowerCase() for case-insensitive comparison"
+        "Not understanding that Apex Strings are compared case-sensitively by default — use .equalsIgnoreCase() or .toLowerCase() for case-insensitive comparison",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are the three collection types in Apex and when do you use each?",
-          a: "**List** — Ordered, allows duplicates. Use for: processing SOQL results, iterating records in order, DML operations (insert/update lists). **Set** — Unordered, unique values only. Use for: collecting IDs for WHERE IN clauses, deduplication, fast O(1) membership checks. **Map** — Key-value pairs with unique keys. Use for: O(1) record lookup by Id, grouping records by a field, building parent-child relationships without additional queries. **Most important:** Map<Id, SObject> initialized from SOQL is the cornerstone of bulkified code."
+          a: "**List** — Ordered, allows duplicates. Use for: processing SOQL results, iterating records in order, DML operations (insert/update lists). **Set** — Unordered, unique values only. Use for: collecting IDs for WHERE IN clauses, deduplication, fast O(1) membership checks. **Map** — Key-value pairs with unique keys. Use for: O(1) record lookup by Id, grouping records by a field, building parent-child relationships without additional queries. **Most important:** Map<Id, SObject> initialized from SOQL is the cornerstone of bulkified code.",
         },
         {
           type: "coding",
           q: "Write a method that groups a list of Contacts by their MailingState and returns a Map.",
-          a: "```apex\npublic static Map<String, List<Contact>> groupByState(List<Contact> contacts) {\n    Map<String, List<Contact>> result = new Map<String, List<Contact>>();\n    for (Contact c : contacts) {\n        String state = c.MailingState != null ? c.MailingState : 'Unknown';\n        if (!result.containsKey(state)) {\n            result.put(state, new List<Contact>());\n        }\n        result.get(state).add(c);\n    }\n    return result;\n}\n```"
+          a: "```apex\npublic static Map<String, List<Contact>> groupByState(List<Contact> contacts) {\n    Map<String, List<Contact>> result = new Map<String, List<Contact>>();\n    for (Contact c : contacts) {\n        String state = c.MailingState != null ? c.MailingState : 'Unknown';\n        if (!result.containsKey(state)) {\n            result.put(state, new List<Contact>());\n        }\n        result.get(state).add(c);\n    }\n    return result;\n}\n```",
         },
         {
           type: "tricky",
           q: "What's the difference between == and .equals() for Strings in Apex?",
-          a: "In Apex, **== is case-insensitive** for Strings (unlike Java where == checks reference equality). So 'ABC' == 'abc' is TRUE. **.equals() does not exist** as a method on String in Apex. Use == for case-insensitive comparison and use .equalsIgnoreCase() explicitly when you want to be clear about intent. For case-sensitive comparison, use String.equals() or compareTo(). This is a common gotcha for Java developers transitioning to Apex."
-        }
-      ]
+          a: "In Apex, **== is case-insensitive** for Strings (unlike Java where == checks reference equality). So 'ABC' == 'abc' is TRUE. **.equals() does not exist** as a method on String in Apex. Use == for case-insensitive comparison and use .equalsIgnoreCase() explicitly when you want to be clear about intent. For case-sensitive comparison, use String.equals() or compareTo(). This is a common gotcha for Java developers transitioning to Apex.",
+        },
+      ],
     },
     {
       id: "sf-soql-sosl",
@@ -459,25 +460,25 @@ public class QueryExamples {
         "Not using bind variables in dynamic SOQL — String.escapeSingleQuotes helps but bind variables are the proper protection against SOQL injection",
         "Selecting all fields (SELECT *) — Apex doesn't support *, but developers query too many fields, wasting heap. Query only what you need",
         "Using LIKE with leading wildcards on large objects — '%searchterm%' prevents index usage and causes non-selective query errors",
-        "Not understanding SOQL vs SOSL — SOQL is for structured queries on known objects; SOSL is for text search across multiple objects"
+        "Not understanding SOQL vs SOSL — SOQL is for structured queries on known objects; SOSL is for text search across multiple objects",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What's the difference between SOQL and SOSL? When would you use each?",
-          a: "**SOQL:** Queries a single object with relationships. Exact matches. 100 queries/transaction. 50,000 rows max. Use when: you know which object and fields to query, need exact filtering, need relationship traversal. **SOSL:** Searches across multiple objects simultaneously using a search index. Approximate matches. 20 searches/transaction. 2,000 rows max. Use when: searching user input across multiple objects (like a global search), need fuzzy matching, don't know which object contains the data. **Key difference:** SOQL is SQL-like structured querying; SOSL is text-based searching."
+          a: "**SOQL:** Queries a single object with relationships. Exact matches. 100 queries/transaction. 50,000 rows max. Use when: you know which object and fields to query, need exact filtering, need relationship traversal. **SOSL:** Searches across multiple objects simultaneously using a search index. Approximate matches. 20 searches/transaction. 2,000 rows max. Use when: searching user input across multiple objects (like a global search), need fuzzy matching, don't know which object contains the data. **Key difference:** SOQL is SQL-like structured querying; SOSL is text-based searching.",
         },
         {
           type: "tricky",
           q: "What makes a SOQL query 'selective' and why does it matter?",
-          a: "A query is 'selective' when its WHERE clause uses an **indexed field** that filters out enough records (>90% filtered for standard indexes, >80% for custom indexes). **Indexed fields:** Id, Name, RecordTypeId, OwnerId, CreatedDate, lookup/master-detail fields, External ID fields, and custom indexed fields. **Why it matters:** Non-selective queries on objects with >100K records will throw a 'non-selective query' exception. The Salesforce query optimizer checks selectivity before executing. **The fix:** Add indexed fields to your WHERE clause, request custom indexes from Salesforce support for frequently queried fields."
+          a: "A query is 'selective' when its WHERE clause uses an **indexed field** that filters out enough records (>90% filtered for standard indexes, >80% for custom indexes). **Indexed fields:** Id, Name, RecordTypeId, OwnerId, CreatedDate, lookup/master-detail fields, External ID fields, and custom indexed fields. **Why it matters:** Non-selective queries on objects with >100K records will throw a 'non-selective query' exception. The Salesforce query optimizer checks selectivity before executing. **The fix:** Add indexed fields to your WHERE clause, request custom indexes from Salesforce support for frequently queried fields.",
         },
         {
           type: "coding",
           q: "Write a SOQL query to find Accounts that have at least 3 Closed Won Opportunities worth more than $100K total.",
-          a: "```apex\nList<AggregateResult> results = [\n    SELECT AccountId, COUNT(Id) oppCount, SUM(Amount) totalAmount\n    FROM Opportunity\n    WHERE StageName = 'Closed Won'\n    GROUP BY AccountId\n    HAVING COUNT(Id) >= 3 AND SUM(Amount) > 100000\n];\n\nSet<Id> accountIds = new Set<Id>();\nfor (AggregateResult ar : results) {\n    accountIds.add((Id) ar.get('AccountId'));\n}\n\nList<Account> accounts = [\n    SELECT Id, Name, Industry\n    FROM Account\n    WHERE Id IN :accountIds\n];\n```"
-        }
-      ]
+          a: "```apex\nList<AggregateResult> results = [\n    SELECT AccountId, COUNT(Id) oppCount, SUM(Amount) totalAmount\n    FROM Opportunity\n    WHERE StageName = 'Closed Won'\n    GROUP BY AccountId\n    HAVING COUNT(Id) >= 3 AND SUM(Amount) > 100000\n];\n\nSet<Id> accountIds = new Set<Id>();\nfor (AggregateResult ar : results) {\n    accountIds.add((Id) ar.get('AccountId'));\n}\n\nList<Account> accounts = [\n    SELECT Id, Name, Industry\n    FROM Account\n    WHERE Id IN :accountIds\n];\n```",
+        },
+      ],
     },
     {
       id: "sf-dml-operations",
@@ -699,25 +700,25 @@ public class DMLExamples {
         "Not handling DML exceptions — a single bad record in 'insert records;' rolls back ALL records. Use Database.insert(records, false) for partial success",
         "Mixing setup and non-setup DML — inserting a User and an Account in the same transaction throws MIXED_DML_OPERATION. Separate them with @future or System.runAs()",
         "Not checking Database.SaveResult — always iterate results to log errors, especially with allOrNone = false",
-        "Exceeding the 10,000 DML rows limit — if you need to update more than 10,000 records, use Batch Apex"
+        "Exceeding the 10,000 DML rows limit — if you need to update more than 10,000 records, use Batch Apex",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What's the difference between DML statements and Database methods in Apex?",
-          a: "**DML statements** (insert, update, etc.) are **all-or-nothing** — if any record fails, the entire operation rolls back and throws a DmlException. **Database methods** (Database.insert, etc.) accept an `allOrNone` parameter. With `allOrNone = false`, successful records are committed and failed records return error details in SaveResult. **When to use:** Use DML statements when all records must succeed together (transactional integrity). Use Database methods when partial success is acceptable (bulk data loads, integration syncs)."
+          a: "**DML statements** (insert, update, etc.) are **all-or-nothing** — if any record fails, the entire operation rolls back and throws a DmlException. **Database methods** (Database.insert, etc.) accept an `allOrNone` parameter. With `allOrNone = false`, successful records are committed and failed records return error details in SaveResult. **When to use:** Use DML statements when all records must succeed together (transactional integrity). Use Database methods when partial success is acceptable (bulk data loads, integration syncs).",
         },
         {
           type: "tricky",
           q: "What is the 'Mixed DML Operation' error and how do you resolve it?",
-          a: "This error occurs when you perform DML on **setup objects** (User, Group, GroupMember, PermissionSet) and **non-setup objects** (Account, Contact, custom objects) in the same transaction. Salesforce prevents this because setup object changes affect security, which could invalidate sharing calculations mid-transaction. **Solutions:** (1) Use `@future` method to perform one DML type asynchronously. (2) In tests, use `System.runAs()` to create a new transaction context. (3) Use Platform Events to decouple the operations. (4) Use Queueable Apex to chain the operations."
+          a: "This error occurs when you perform DML on **setup objects** (User, Group, GroupMember, PermissionSet) and **non-setup objects** (Account, Contact, custom objects) in the same transaction. Salesforce prevents this because setup object changes affect security, which could invalidate sharing calculations mid-transaction. **Solutions:** (1) Use `@future` method to perform one DML type asynchronously. (2) In tests, use `System.runAs()` to create a new transaction context. (3) Use Platform Events to decouple the operations. (4) Use Queueable Apex to chain the operations.",
         },
         {
           type: "scenario",
           q: "You need to update 50,000 records. How do you handle this within governor limits?",
-          a: "The 10,000 DML rows limit prevents updating 50,000 records in one transaction. **Solution: Batch Apex.** Implement the `Database.Batchable` interface with a scope size of 200 (default). The batch framework automatically processes records in chunks, each in its own transaction. Each chunk gets its own governor limits. Code: `Database.executeBatch(new MyBatchClass(), 200);` This processes 250 batches of 200 records. For simpler cases, you can also use Queueable chaining (process 10,000, then enqueue the next batch)."
-        }
-      ]
+          a: "The 10,000 DML rows limit prevents updating 50,000 records in one transaction. **Solution: Batch Apex.** Implement the `Database.Batchable` interface with a scope size of 200 (default). The batch framework automatically processes records in chunks, each in its own transaction. Each chunk gets its own governor limits. Code: `Database.executeBatch(new MyBatchClass(), 200);` This processes 250 batches of 200 records. For simpler cases, you can also use Queueable chaining (process 10,000, then enqueue the next batch).",
+        },
+      ],
     },
     {
       id: "sf-bulkification-governor-limits",
@@ -903,25 +904,25 @@ public class BulkificationMastery {
         "Not recognizing cascading triggers — a trigger on Account that updates Contacts fires the Contact trigger, sharing the same limits",
         "Using Limits class for flow control — checking limits to decide whether to query is an anti-pattern; it means your code isn't properly bulkified",
         "Not accounting for existing automation — your trigger shares limits with Flows, Process Builders, and other triggers on the same object",
-        "Ignoring CPU time limits — even with perfect SOQL/DML optimization, complex logic in large loops can exceed the 10-second CPU limit"
+        "Ignoring CPU time limits — even with perfect SOQL/DML optimization, complex logic in large loops can exceed the 10-second CPU limit",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What does bulkification mean in Salesforce and why is it important?",
-          a: "Bulkification means writing code that efficiently handles 1 to 200+ records with constant resource consumption. **Why it's important:** When records are saved via API, Data Loader, or trigger cascades, up to 200 records are processed in a single transaction. The pattern: (1) Collect needed data from all records. (2) Query once with WHERE IN. (3) Build Maps for O(1) lookups. (4) Process in a loop using Maps. (5) DML once. Without bulkification, processing 200 records = 200 SOQL queries + 200 DML statements → governor limit exception in production."
+          a: "Bulkification means writing code that efficiently handles 1 to 200+ records with constant resource consumption. **Why it's important:** When records are saved via API, Data Loader, or trigger cascades, up to 200 records are processed in a single transaction. The pattern: (1) Collect needed data from all records. (2) Query once with WHERE IN. (3) Build Maps for O(1) lookups. (4) Process in a loop using Maps. (5) DML once. Without bulkification, processing 200 records = 200 SOQL queries + 200 DML statements → governor limit exception in production.",
         },
         {
           type: "coding",
           q: "Refactor this code to be bulkified: for each Contact in Trigger.new, query the Account and update the Contact's description with the Account name.",
-          a: "```apex\n// Bulkified solution\ntrigger ContactTrigger on Contact (before insert, before update) {\n    // 1. Collect Account IDs\n    Set<Id> accIds = new Set<Id>();\n    for (Contact c : Trigger.new) {\n        if (c.AccountId != null) accIds.add(c.AccountId);\n    }\n    \n    // 2. Query once + build Map\n    Map<Id, Account> accMap = new Map<Id, Account>(\n        [SELECT Id, Name FROM Account WHERE Id IN :accIds]\n    );\n    \n    // 3. Process using Map (before trigger — no DML needed)\n    for (Contact c : Trigger.new) {\n        Account acc = accMap.get(c.AccountId);\n        if (acc != null) {\n            c.Description = 'Account: ' + acc.Name;\n        }\n    }\n}\n// Total: 1 SOQL, 0 DML (before trigger modifies in place)\n```"
+          a: "```apex\n// Bulkified solution\ntrigger ContactTrigger on Contact (before insert, before update) {\n    // 1. Collect Account IDs\n    Set<Id> accIds = new Set<Id>();\n    for (Contact c : Trigger.new) {\n        if (c.AccountId != null) accIds.add(c.AccountId);\n    }\n    \n    // 2. Query once + build Map\n    Map<Id, Account> accMap = new Map<Id, Account>(\n        [SELECT Id, Name FROM Account WHERE Id IN :accIds]\n    );\n    \n    // 3. Process using Map (before trigger — no DML needed)\n    for (Contact c : Trigger.new) {\n        Account acc = accMap.get(c.AccountId);\n        if (acc != null) {\n            c.Description = 'Account: ' + acc.Name;\n        }\n    }\n}\n// Total: 1 SOQL, 0 DML (before trigger modifies in place)\n```",
         },
         {
           type: "scenario",
           q: "Your org has triggers on Account, Contact, Opportunity, and Task. A user updates an Account and it cascades through all triggers. You're getting governor limit errors. How do you diagnose and fix?",
-          a: "**Diagnosis:** (1) Enable debug logging for the user. (2) Set Apex log level to FINEST. (3) Reproduce the error. (4) Analyze the debug log for: total SOQL queries (which trigger uses the most), total DML, CPU time, and identify which trigger in the cascade consumes limits. **Common fixes:** (1) Implement a trigger framework with bypass switches — disable unnecessary triggers during cascades. (2) Add recursion guards to prevent re-processing. (3) Move non-critical logic to @future or Queueable (gets its own limits). (4) Replace trigger logic with before-trigger field updates (no DML needed). (5) Consider combining triggers using a handler framework."
-        }
-      ]
+          a: "**Diagnosis:** (1) Enable debug logging for the user. (2) Set Apex log level to FINEST. (3) Reproduce the error. (4) Analyze the debug log for: total SOQL queries (which trigger uses the most), total DML, CPU time, and identify which trigger in the cascade consumes limits. **Common fixes:** (1) Implement a trigger framework with bypass switches — disable unnecessary triggers during cascades. (2) Add recursion guards to prevent re-processing. (3) Move non-critical logic to @future or Queueable (gets its own limits). (4) Replace trigger logic with before-trigger field updates (no DML needed). (5) Consider combining triggers using a handler framework.",
+        },
+      ],
     },
     {
       id: "sf-exception-handling",
@@ -1137,22 +1138,22 @@ public class ExceptionHandlingExamples {
         "Empty catch blocks (swallowing exceptions) — 'catch (Exception e) {}' hides errors and makes debugging impossible. Always log or rethrow",
         "Using generic Exception catch for everything — catch specific exceptions first (DmlException, CalloutException) so you can handle each appropriately",
         "Not using addError() in triggers — throwing exceptions in after-triggers causes ALL records to fail. Use addError() to fail individual records",
-        "Not logging the stack trace — e.getMessage() alone is often insufficient for debugging. Always log e.getStackTraceString() and e.getLineNumber()"
+        "Not logging the stack trace — e.getMessage() alone is often insufficient for debugging. Always log e.getStackTraceString() and e.getLineNumber()",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Can you catch a LimitException in Apex? Why or why not?",
-          a: "**No.** LimitException CANNOT be caught in a try-catch block. When a governor limit is exceeded (e.g., 101st SOQL query), the entire transaction is immediately rolled back with no opportunity to catch or handle the exception. **Why:** By design, Salesforce ensures that no tenant can consume more than their fair share of shared resources. If you could catch LimitException, code could potentially continue consuming resources beyond limits. The only way to handle governor limits is to **prevent them** through bulkification, efficient architecture, and monitoring via the Limits class."
+          a: "**No.** LimitException CANNOT be caught in a try-catch block. When a governor limit is exceeded (e.g., 101st SOQL query), the entire transaction is immediately rolled back with no opportunity to catch or handle the exception. **Why:** By design, Salesforce ensures that no tenant can consume more than their fair share of shared resources. If you could catch LimitException, code could potentially continue consuming resources beyond limits. The only way to handle governor limits is to **prevent them** through bulkification, efficient architecture, and monitoring via the Limits class.",
         },
         {
           type: "tricky",
           q: "What's the difference between throwing an exception vs using addError() in a trigger?",
-          a: "**throw new Exception()** in a trigger causes the ENTIRE operation to fail — all 200 records in the batch are rolled back, and the user sees a generic error. **addError()** marks individual records as failed while allowing other records in the batch to succeed. Example: In a 200-record batch, if record #150 fails validation, `addError()` only fails record #150, and the other 199 records are saved. This is much more user-friendly and is the correct pattern for validation in triggers."
-        }
-      ]
-    }
-  ]
+          a: "**throw new Exception()** in a trigger causes the ENTIRE operation to fail — all 200 records in the batch are rolled back, and the user sees a generic error. **addError()** marks individual records as failed while allowing other records in the batch to succeed. Example: In a 200-record batch, if record #150 fails validation, `addError()` only fails record #150, and the other 199 records are saved. This is much more user-friendly and is the correct pattern for validation in triggers.",
+        },
+      ],
+    },
+  ],
 };
 
 export default sfPhase3;

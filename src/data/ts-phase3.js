@@ -2,7 +2,8 @@ const tsPhase3 = {
   id: "phase-3",
   title: "Phase 3: Advanced Type System",
   emoji: "🟠",
-  description: "Go deep into TypeScript's type-level programming — conditional types, mapped types, infer, template literals, variance, and recursive types.",
+  description:
+    "Go deep into TypeScript's type-level programming — conditional types, mapped types, infer, template literals, variance, and recursive types.",
   topics: [
     {
       id: "conditional-types-infer",
@@ -85,35 +86,35 @@ type FS = FirstString<["hello", 42]>; // "hello"
         "Forgetting to wrap in tuple `[T]` to prevent distribution — `[T] extends [U]` prevents the union from being split",
         "Using `infer` outside of conditional types — `infer` ONLY works in the `extends` clause of a conditional type",
         "Making conditional types too deeply nested — if you need 5+ levels, consider breaking into smaller named types",
-        "Not realizing that `never` distributes to `never` — `Conditional<never>` often returns `never` unexpectedly because `never` is the empty union"
+        "Not realizing that `never` distributes to `never` — `Conditional<never>` often returns `never` unexpectedly because `never` is the empty union",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are conditional types and how do they work?",
-          a: "Conditional types follow the pattern `T extends U ? X : Y`. If `T` is assignable to `U`, the type resolves to `X`, otherwise `Y`. They're TypeScript's type-level ternary operator. When applied to union types, they distribute — each union member is checked independently. They're the basis for utility types like `Exclude`, `Extract`, and `ReturnType`."
+          a: "Conditional types follow the pattern `T extends U ? X : Y`. If `T` is assignable to `U`, the type resolves to `X`, otherwise `Y`. They're TypeScript's type-level ternary operator. When applied to union types, they distribute — each union member is checked independently. They're the basis for utility types like `Exclude`, `Extract`, and `ReturnType`.",
         },
         {
           type: "tricky",
           q: "What is the `infer` keyword and where can it be used?",
-          a: "`infer` declares a type variable that TypeScript infers from a pattern. It can ONLY be used inside the `extends` clause of a conditional type. Example: `T extends Promise<infer R> ? R : T` — if T is a Promise, `R` captures what's inside. Think of it as pattern matching: you describe the shape, and `infer` captures the unknown parts."
+          a: "`infer` declares a type variable that TypeScript infers from a pattern. It can ONLY be used inside the `extends` clause of a conditional type. Example: `T extends Promise<infer R> ? R : T` — if T is a Promise, `R` captures what's inside. Think of it as pattern matching: you describe the shape, and `infer` captures the unknown parts.",
         },
         {
           type: "coding",
           q: "Implement `Awaited<T>` that recursively unwraps Promises.",
-          a: "```ts\\ntype Awaited<T> = T extends Promise<infer R>\\n  ? Awaited<R>  // Recursively unwrap\\n  : T;          // Base case: not a Promise\\n\\ntype A = Awaited<Promise<string>>;                    // string\\ntype B = Awaited<Promise<Promise<number>>>;            // number\\ntype C = Awaited<Promise<Promise<Promise<boolean>>>>;  // boolean\\ntype D = Awaited<string>;                              // string\\n```"
+          a: "```ts\\ntype Awaited<T> = T extends Promise<infer R>\\n  ? Awaited<R>  // Recursively unwrap\\n  : T;          // Base case: not a Promise\\n\\ntype A = Awaited<Promise<string>>;                    // string\\ntype B = Awaited<Promise<Promise<number>>>;            // number\\ntype C = Awaited<Promise<Promise<Promise<boolean>>>>;  // boolean\\ntype D = Awaited<string>;                              // string\\n```",
         },
         {
           type: "tricky",
           q: "Why does `Exclude<'a' | 'b' | 'c', 'a'>` work?",
-          a: "`Exclude` is defined as `T extends U ? never : T`. With union input, it distributes: `('a' extends 'a' ? never : 'a') | ('b' extends 'a' ? never : 'b') | ('c' extends 'a' ? never : 'c')` = `never | 'b' | 'c'` = `'b' | 'c'`. Distribution + `never` (which disappears from unions) is the mechanism."
+          a: "`Exclude` is defined as `T extends U ? never : T`. With union input, it distributes: `('a' extends 'a' ? never : 'a') | ('b' extends 'a' ? never : 'b') | ('c' extends 'a' ? never : 'c')` = `never | 'b' | 'c'` = `'b' | 'c'`. Distribution + `never` (which disappears from unions) is the mechanism.",
         },
         {
           type: "scenario",
           q: "How would you use conditional types to create a type-safe event system?",
-          a: "```ts\\ninterface EventMap {\\n  click: { x: number; y: number };\\n  submit: { data: FormData };\\n  error: { message: string };\\n}\\n\\ntype EventPayload<K extends keyof EventMap> = EventMap[K];\\ntype EventHandler<K extends keyof EventMap> = (payload: EventPayload<K>) => void;\\n\\nfunction on<K extends keyof EventMap>(\\n  event: K,\\n  handler: EventHandler<K>\\n): void { /* ... */ }\\n\\non('click', ({ x, y }) => { }); // ✅ Type-safe payload\\n```"
-        }
-      ]
+          a: "```ts\\ninterface EventMap {\\n  click: { x: number; y: number };\\n  submit: { data: FormData };\\n  error: { message: string };\\n}\\n\\ntype EventPayload<K extends keyof EventMap> = EventMap[K];\\ntype EventHandler<K extends keyof EventMap> = (payload: EventPayload<K>) => void;\\n\\nfunction on<K extends keyof EventMap>(\\n  event: K,\\n  handler: EventHandler<K>\\n): void { /* ... */ }\\n\\non('click', ({ x, y }) => { }); // ✅ Type-safe payload\\n```",
+        },
+      ],
     },
     {
       id: "mapped-types-template-literals",
@@ -230,35 +231,35 @@ type UserEvents = EventNames<User>;
         "Not understanding that mapped types create NEW types — they don't modify the original; types are always immutable",
         "Using `as never` in key remapping to filter — this is correct behavior (never keys are removed), but it's confusing at first",
         "Template literal type explosion — combining large unions creates a cartesian product that can slow the compiler",
-        "Confusing mapped types with index signatures — `{ [K in keyof T]: T[K] }` iterates known keys; `{ [key: string]: T }` accepts any string key"
+        "Confusing mapped types with index signatures — `{ [K in keyof T]: T[K] }` iterates known keys; `{ [key: string]: T }` accepts any string key",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are mapped types and how do they work?",
-          a: "Mapped types iterate over the keys of a type with `[K in keyof T]` and create a new type with transformed properties. You can change modifiers (`?`, `readonly`), transform value types, and remap keys with `as`. They're TypeScript's type-level `for...in` loop. `Partial<T>` = `{ [K in keyof T]?: T[K] }`. All built-in utility types use mapped types internally."
+          a: "Mapped types iterate over the keys of a type with `[K in keyof T]` and create a new type with transformed properties. You can change modifiers (`?`, `readonly`), transform value types, and remap keys with `as`. They're TypeScript's type-level `for...in` loop. `Partial<T>` = `{ [K in keyof T]?: T[K] }`. All built-in utility types use mapped types internally.",
         },
         {
           type: "coding",
           q: "Create a mapped type `DeepReadonly<T>` that recursively makes all properties readonly.",
-          a: "```ts\\ntype DeepReadonly<T> = {\\n  readonly [K in keyof T]: T[K] extends object\\n    ? T[K] extends Function\\n      ? T[K]  // Don't make functions readonly\\n      : DeepReadonly<T[K]>\\n    : T[K];\\n};\\n\\ntype Config = DeepReadonly<{\\n  api: { url: string; timeout: number };\\n  features: { darkMode: boolean };\\n}>;\\n// All nested properties are readonly\\n```"
+          a: "```ts\\ntype DeepReadonly<T> = {\\n  readonly [K in keyof T]: T[K] extends object\\n    ? T[K] extends Function\\n      ? T[K]  // Don't make functions readonly\\n      : DeepReadonly<T[K]>\\n    : T[K];\\n};\\n\\ntype Config = DeepReadonly<{\\n  api: { url: string; timeout: number };\\n  features: { darkMode: boolean };\\n}>;\\n// All nested properties are readonly\\n```",
         },
         {
           type: "tricky",
           q: "What happens when you remap a key to `never` in a mapped type?",
-          a: "The property is removed from the resulting type. This is the mechanism for filtering properties: `{ [K in keyof T as T[K] extends string ? K : never]: T[K] }` keeps only string-valued properties. Keys mapped to `never` simply don't appear in the output type."
+          a: "The property is removed from the resulting type. This is the mechanism for filtering properties: `{ [K in keyof T as T[K] extends string ? K : never]: T[K] }` keeps only string-valued properties. Keys mapped to `never` simply don't appear in the output type.",
         },
         {
           type: "conceptual",
           q: "How do template literal types work with unions?",
-          a: "Template literals with union type variables create a cartesian product of all combinations. `` `${A}${B}` `` where `A = 'a' | 'b'` and `B = '1' | '2'` produces `'a1' | 'a2' | 'b1' | 'b2'`. This is used for generating CSS class names, event names, API routes, and other string-based patterns at the type level."
+          a: "Template literals with union type variables create a cartesian product of all combinations. `` `${A}${B}` `` where `A = 'a' | 'b'` and `B = '1' | '2'` produces `'a1' | 'a2' | 'b1' | 'b2'`. This is used for generating CSS class names, event names, API routes, and other string-based patterns at the type level.",
         },
         {
           type: "scenario",
           q: "How would you create type-safe CSS-in-JS style props using mapped types and template literals?",
-          a: "```ts\\ntype CSSProperty = 'margin' | 'padding' | 'font';\\ntype CSSDirection = 'Top' | 'Right' | 'Bottom' | 'Left';\\n\\ntype SpacingProp = `${CSSProperty}${CSSDirection}` | CSSProperty;\\n// 'marginTop' | 'marginRight' | ... | 'margin' | 'padding' | 'font'\\n\\ntype StyleProps = { [K in SpacingProp]?: string | number };\\n// Type-safe style object with all valid CSS property combinations\\n```"
-        }
-      ]
+          a: "```ts\\ntype CSSProperty = 'margin' | 'padding' | 'font';\\ntype CSSDirection = 'Top' | 'Right' | 'Bottom' | 'Left';\\n\\ntype SpacingProp = `${CSSProperty}${CSSDirection}` | CSSProperty;\\n// 'marginTop' | 'marginRight' | ... | 'margin' | 'padding' | 'font'\\n\\ntype StyleProps = { [K in SpacingProp]?: string | number };\\n// Type-safe style object with all valid CSS property combinations\\n```",
+        },
+      ],
     },
     {
       id: "discriminated-unions-exhaustive",
@@ -384,38 +385,38 @@ type Expr =
 5. Add a new variant to an existing union and observe where TypeScript reports missing cases`,
       commonMistakes: [
         "Forgetting the exhaustive check in the default case — without `assertNever`, adding new variants won't cause compile errors",
-        "Using `string` instead of literal types for the discriminant — `status: string` doesn't narrow; must be `status: \"loading\"` (literal)",
+        'Using `string` instead of literal types for the discriminant — `status: string` doesn\'t narrow; must be `status: "loading"` (literal)',
         "Having too many variants in a single union — if your union has 20+ variants, consider grouping them into sub-unions",
         "Not using discriminated unions for state management — plain boolean flags (`isLoading && !isError`) create impossible states",
-        "Putting shared properties outside the discriminant check — TypeScript can only access properties common to ALL union members before narrowing"
+        "Putting shared properties outside the discriminant check — TypeScript can only access properties common to ALL union members before narrowing",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is a discriminated union and why is it TypeScript's most powerful pattern?",
-          a: "A discriminated union has a common property (tag/discriminant) with unique literal types per variant. TS automatically narrows based on the tag. It's powerful because: 1) Prevents impossible states. 2) Exhaustiveness checking catches missing cases at compile time. 3) No type assertions needed. 4) Models state machines, events, and API responses naturally."
+          a: "A discriminated union has a common property (tag/discriminant) with unique literal types per variant. TS automatically narrows based on the tag. It's powerful because: 1) Prevents impossible states. 2) Exhaustiveness checking catches missing cases at compile time. 3) No type assertions needed. 4) Models state machines, events, and API responses naturally.",
         },
         {
           type: "coding",
           q: "Write an exhaustiveness helper function and demonstrate it.",
-          a: "```ts\\nfunction assertNever(value: never, msg?: string): never {\\n  throw new Error(msg ?? `Unhandled: ${JSON.stringify(value)}`);\\n}\\n\\ntype Status = 'active' | 'inactive' | 'suspended';\\nfunction getMessage(status: Status): string {\\n  switch (status) {\\n    case 'active': return 'Welcome!';\\n    case 'inactive': return 'Account inactive';\\n    case 'suspended': return 'Account suspended';\\n    default: return assertNever(status);\\n  }\\n}\\n// Add 'deleted' to Status → TS errors on assertNever line\\n```"
+          a: "```ts\\nfunction assertNever(value: never, msg?: string): never {\\n  throw new Error(msg ?? `Unhandled: ${JSON.stringify(value)}`);\\n}\\n\\ntype Status = 'active' | 'inactive' | 'suspended';\\nfunction getMessage(status: Status): string {\\n  switch (status) {\\n    case 'active': return 'Welcome!';\\n    case 'inactive': return 'Account inactive';\\n    case 'suspended': return 'Account suspended';\\n    default: return assertNever(status);\\n  }\\n}\\n// Add 'deleted' to Status → TS errors on assertNever line\\n```",
         },
         {
           type: "tricky",
           q: "How does TypeScript know which properties are available after checking the discriminant?",
-          a: "TypeScript uses **control flow analysis**. When you check `if (state.status === 'success')`, TS narrows the union from the full `RequestState` to only the variant where `status` is `'success'`. In that branch, it knows `data` exists. This narrowing works with `if`, `switch`, ternaries, and even `&&` chains."
+          a: "TypeScript uses **control flow analysis**. When you check `if (state.status === 'success')`, TS narrows the union from the full `RequestState` to only the variant where `status` is `'success'`. In that branch, it knows `data` exists. This narrowing works with `if`, `switch`, ternaries, and even `&&` chains.",
         },
         {
           type: "conceptual",
           q: "How do discriminated unions prevent impossible states?",
-          a: "With boolean flags: `{ isLoading: true, isError: true, data: null }` is representable but impossible. With discriminated unions: `{ status: 'loading' }` and `{ status: 'error'; error: Error }` are separate variants — you CAN'T have both loading and error simultaneously. The type system prevents impossible combinations."
+          a: "With boolean flags: `{ isLoading: true, isError: true, data: null }` is representable but impossible. With discriminated unions: `{ status: 'loading' }` and `{ status: 'error'; error: Error }` are separate variants — you CAN'T have both loading and error simultaneously. The type system prevents impossible combinations.",
         },
         {
           type: "scenario",
           q: "How would you model a multi-step form wizard using discriminated unions?",
-          a: "```ts\\ntype WizardState =\\n  | { step: 'personal'; data: { name: string } }\\n  | { step: 'address'; data: { name: string; street: string } }\\n  | { step: 'payment'; data: { name: string; street: string; card: string } }\\n  | { step: 'complete'; data: FullFormData };\\n```\\nEach step knows exactly what data is available. Transitions from step N to N+1 require the previous data plus new fields. TypeScript prevents skipping steps or accessing data that hasn't been collected yet."
-        }
-      ]
+          a: "```ts\\ntype WizardState =\\n  | { step: 'personal'; data: { name: string } }\\n  | { step: 'address'; data: { name: string; street: string } }\\n  | { step: 'payment'; data: { name: string; street: string; card: string } }\\n  | { step: 'complete'; data: FullFormData };\\n```\\nEach step knows exactly what data is available. Transitions from step N to N+1 require the previous data plus new fields. TypeScript prevents skipping steps or accessing data that hasn't been collected yet.",
+        },
+      ],
     },
     {
       id: "variance-covariance",
@@ -507,35 +508,35 @@ const onEvent: BaseHandler = (e) => console.log(e.type);
         "Not understanding why function parameters are contravariant — a handler for ANY animal can handle a Dog, but a Dog handler can't handle ANY animal",
         "Confusing variance direction — 'co' means 'same direction' (output), 'contra' means 'opposite direction' (input)",
         "Not enabling `strictFunctionTypes` — without it, function parameters are bivariant (both co- and contra-), which is unsound",
-        "Over-thinking variance for everyday code — it mostly matters for library authors and generic containers; application code rarely needs explicit variance"
+        "Over-thinking variance for everyday code — it mostly matters for library authors and generic containers; application code rarely needs explicit variance",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is covariance and contravariance in TypeScript?",
-          a: "**Covariance** (output position): if `Dog extends Animal`, then `Producer<Dog>` assignable to `Producer<Animal>`. The subtype relationship is preserved. **Contravariance** (input position): if `Dog extends Animal`, then `Consumer<Animal>` assignable to `Consumer<Dog>`. The relationship is reversed. Return types are covariant; parameter types are contravariant (with strictFunctionTypes)."
+          a: "**Covariance** (output position): if `Dog extends Animal`, then `Producer<Dog>` assignable to `Producer<Animal>`. The subtype relationship is preserved. **Contravariance** (input position): if `Dog extends Animal`, then `Consumer<Animal>` assignable to `Consumer<Dog>`. The relationship is reversed. Return types are covariant; parameter types are contravariant (with strictFunctionTypes).",
         },
         {
           type: "tricky",
           q: "Why is `(animal: Animal) => void` assignable to `(dog: Dog) => void` and not the other way?",
-          a: "A function expecting a Dog might receive any Animal. If the handler handles ALL Animals, it can certainly handle Dogs (contravariant = safe). But a handler that only knows about Dogs (expects `.breed`) can't safely handle all Animals (a Cat has no `.breed`). This 'reversed' assignability is contravariance — wider input is compatible with narrower requirement."
+          a: "A function expecting a Dog might receive any Animal. If the handler handles ALL Animals, it can certainly handle Dogs (contravariant = safe). But a handler that only knows about Dogs (expects `.breed`) can't safely handle all Animals (a Cat has no `.breed`). This 'reversed' assignability is contravariance — wider input is compatible with narrower requirement.",
         },
         {
           type: "conceptual",
           q: "Is TypeScript's type system sound?",
-          a: "No, TypeScript is intentionally unsound in some cases for pragmatism. Key unsoundnesses: 1) Array covariance (Dog[] assignable to Animal[]). 2) `any` type. 3) Bivariant function parameters (without `strictFunctionTypes`). 4) Type assertions (`as`). The TS team prioritizes developer productivity and gradual typing over theoretical soundness."
+          a: "No, TypeScript is intentionally unsound in some cases for pragmatism. Key unsoundnesses: 1) Array covariance (Dog[] assignable to Animal[]). 2) `any` type. 3) Bivariant function parameters (without `strictFunctionTypes`). 4) Type assertions (`as`). The TS team prioritizes developer productivity and gradual typing over theoretical soundness.",
         },
         {
           type: "conceptual",
           q: "What do the `in` and `out` variance annotations do (TS 4.7+)?",
-          a: "`out T` marks T as covariant — only used in output positions (return types). `in T` marks T as contravariant — only used in input positions (parameters). `in out T` is invariant. Benefits: 1) Catches misuse (using `out T` in a parameter errors). 2) Improves type-checking performance (TS doesn't need to infer variance). 3) Serves as documentation."
+          a: "`out T` marks T as covariant — only used in output positions (return types). `in T` marks T as contravariant — only used in input positions (parameters). `in out T` is invariant. Benefits: 1) Catches misuse (using `out T` in a parameter errors). 2) Improves type-checking performance (TS doesn't need to infer variance). 3) Serves as documentation.",
         },
         {
           type: "scenario",
           q: "You're designing a generic Event system. How does variance affect your design?",
-          a: "Event emitters are **contravariant** in their handler type: you want to accept handlers for the specific event OR any broader event. `on('click', (e: Event) => {})` should work even though `click` emits `MouseEvent`. This means handlers should accept `Mouse extends Event`, and a handler for `Event` is assignable to a handler for `MouseEvent`."
-        }
-      ]
+          a: "Event emitters are **contravariant** in their handler type: you want to accept handlers for the specific event OR any broader event. `on('click', (e: Event) => {})` should work even though `click` emits `MouseEvent`. This means handlers should accept `Mouse extends Event`, and a handler for `Event` is assignable to a handler for `MouseEvent`.",
+        },
+      ],
     },
     {
       id: "type-level-programming",
@@ -665,37 +666,37 @@ type LatType = DeepGet<User, "address.geo.lat">; // number`,
         "Recursive types that expand exponentially — each level doubles the work; this crashes the TypeScript compiler",
         "Forgetting the base case in recursive types — always handle the terminal condition (`T extends []` for arrays)",
         "Overusing type-level programming in application code — it's powerful but makes types hard to read and debug; save it for libraries",
-        "Not using `& string` when iterating `keyof T` with template literals — `keyof T` includes `symbol`, which can't be used in template literals"
+        "Not using `& string` when iterating `keyof T` with template literals — `keyof T` includes `symbol`, which can't be used in template literals",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are recursive types and when are they useful?",
-          a: "Recursive types reference themselves in their definition. They're essential for: tree structures (AST nodes), deeply nested data (JSON type), recursive utility types (DeepPartial, DeepReadonly), tuple manipulation (Reverse, Flatten), and string parsing at the type level. TypeScript has a ~50 level recursion limit to prevent infinite loops."
+          a: "Recursive types reference themselves in their definition. They're essential for: tree structures (AST nodes), deeply nested data (JSON type), recursive utility types (DeepPartial, DeepReadonly), tuple manipulation (Reverse, Flatten), and string parsing at the type level. TypeScript has a ~50 level recursion limit to prevent infinite loops.",
         },
         {
           type: "coding",
           q: "Implement `DeepPartial<T>` that makes all nested properties optional.",
-          a: "```ts\\ntype DeepPartial<T> = T extends object\\n  ? { [K in keyof T]?: DeepPartial<T[K]> }\\n  : T;\\n\\n// Usage:\\ninterface Config {\\n  db: { host: string; port: number };\\n  cache: { ttl: number };\\n}\\ntype Patch = DeepPartial<Config>;\\n// { db?: { host?: string; port?: number }; cache?: { ttl?: number } }\\n```"
+          a: "```ts\\ntype DeepPartial<T> = T extends object\\n  ? { [K in keyof T]?: DeepPartial<T[K]> }\\n  : T;\\n\\n// Usage:\\ninterface Config {\\n  db: { host: string; port: number };\\n  cache: { ttl: number };\\n}\\ntype Patch = DeepPartial<Config>;\\n// { db?: { host?: string; port?: number }; cache?: { ttl?: number } }\\n```",
         },
         {
           type: "tricky",
           q: "Is TypeScript's type system Turing complete?",
-          a: "Yes, but with caveats. TypeScript's conditional types, mapped types, and recursive types can theoretically perform any computation. People have built type-level parsers, arithmetic, and even games. However, the ~50-level recursion limit and compiler performance make it impractical for complex algorithms. It's useful for library types, not for general computation."
+          a: "Yes, but with caveats. TypeScript's conditional types, mapped types, and recursive types can theoretically perform any computation. People have built type-level parsers, arithmetic, and even games. However, the ~50-level recursion limit and compiler performance make it impractical for complex algorithms. It's useful for library types, not for general computation.",
         },
         {
           type: "conceptual",
           q: "How would you create a type-safe dot-notation accessor?",
-          a: "Combine template literal types with recursive conditional types: use `Paths<T>` to generate valid paths as a union, then `DeepGet<T, P>` to resolve the type at a path. This is how libraries like `lodash.get` and `react-hook-form` provide type-safe deep access: `get(user, 'address.city')` returns `string`."
+          a: "Combine template literal types with recursive conditional types: use `Paths<T>` to generate valid paths as a union, then `DeepGet<T, P>` to resolve the type at a path. This is how libraries like `lodash.get` and `react-hook-form` provide type-safe deep access: `get(user, 'address.city')` returns `string`.",
         },
         {
           type: "scenario",
           q: "You're building a validation library. How would you infer TypeScript types from runtime schemas?",
-          a: "Define schemas as objects and use recursive type inference to derive the TypeScript type: ```ts\\nconst schema = z.object({\\n  name: z.string(),\\n  age: z.number(),\\n  address: z.object({ city: z.string() })\\n});\\ntype User = z.infer<typeof schema>;\\n// { name: string; age: number; address: { city: string } }\\n```\\nThis pattern (used by Zod, Valibot) uses recursive mapped types and `infer` to walk the schema tree and create the corresponding TypeScript type."
-        }
-      ]
-    }
-  ]
+          a: "Define schemas as objects and use recursive type inference to derive the TypeScript type: ```ts\\nconst schema = z.object({\\n  name: z.string(),\\n  age: z.number(),\\n  address: z.object({ city: z.string() })\\n});\\ntype User = z.infer<typeof schema>;\\n// { name: string; age: number; address: { city: string } }\\n```\\nThis pattern (used by Zod, Valibot) uses recursive mapped types and `infer` to walk the schema tree and create the corresponding TypeScript type.",
+        },
+      ],
+    },
+  ],
 };
 
 export default tsPhase3;
