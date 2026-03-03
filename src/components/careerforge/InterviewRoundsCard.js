@@ -19,13 +19,15 @@ export default function InterviewRoundsCard({ interviewProcess }) {
   if (!interviewProcess) return null;
 
   return (
-    <section style={cardStyle}>
+    <section className="cf-card" style={cardStyle}>
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           marginBottom: "1.25rem",
+          flexWrap: "wrap",
+          gap: "0.5rem",
         }}
       >
         <h2 style={{ fontSize: "1.1rem", fontWeight: 700 }}>
@@ -56,6 +58,7 @@ export default function InterviewRoundsCard({ interviewProcess }) {
             display: "flex",
             gap: "1rem",
             overflowX: "auto",
+            WebkitOverflowScrolling: "touch",
             paddingBottom: "1rem",
             position: "relative",
             zIndex: 1,

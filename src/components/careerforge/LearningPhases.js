@@ -138,7 +138,7 @@ export default function LearningPhases({
 
               {/* Phase content */}
               {isOpen && (
-                <div style={{ padding: "1rem 1.25rem" }}>
+                <div className="cf-phase-content" style={{ padding: "1rem 1.25rem" }}>
                   {phase.description && (
                     <p
                       style={{

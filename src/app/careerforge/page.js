@@ -35,7 +35,13 @@ const COMPANY_SUGGESTIONS = [
 function getOrCreateSessionId() {
   let id = localStorage.getItem("cf-session-id");
   if (!id) {
-    id = crypto.randomUUID();
+    id =
+      typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+            const r = (Math.random() * 16) | 0;
+            return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+          });
     localStorage.setItem("cf-session-id", id);
   }
   return id;
@@ -148,7 +154,7 @@ export default function CareerForgePage() {
         style={{ textAlign: "center", marginBottom: "2.5rem" }}
       >
         <div style={{ fontSize: "3rem", marginBottom: "0.5rem" }}>🤖</div>
-        <h1 style={{ fontSize: "2.2rem", marginBottom: "0.75rem" }}>
+        <h1 className="cf-hero-title">
           Roadmap AI
         </h1>
         <p
@@ -371,6 +377,7 @@ export default function CareerForgePage() {
             {history.map((item) => (
               <div
                 key={item.id}
+                className="cf-history-card"
                 style={{
                   background: "var(--bg-card)",
                   border: "1px solid var(--border)",
@@ -380,6 +387,7 @@ export default function CareerForgePage() {
                   alignItems: "center",
                   justifyContent: "space-between",
                   gap: "1rem",
+                  flexWrap: "wrap",
                 }}
               >
                 <Link

@@ -3,6 +3,7 @@ export default function RoadmapHeader({ meta }) {
 
   return (
     <div
+      className="cf-card"
       style={{
         background: "var(--bg-card)",
         border: "1px solid var(--border)",
@@ -48,10 +49,12 @@ export default function RoadmapHeader({ meta }) {
             Career Roadmap
           </div>
           <h1
+            className="cf-header-title"
             style={{
               fontSize: "1.8rem",
               fontWeight: 800,
               marginBottom: "0.4rem",
+              overflowWrap: "break-word",
             }}
           >
             {meta.role}

@@ -13,7 +13,7 @@ export default function PeopleIntelCard({ peopleIntel }) {
   }
 
   return (
-    <section style={cardStyle}>
+    <section className="cf-card" style={cardStyle}>
       <h2 style={headingStyle}>🔗 Networking & Referrals</h2>
 
       {peopleIntel.strategy && (

@@ -62,17 +62,7 @@ export default function RoadmapView({ roadmap, roadmapId }) {
         }}
       >
         {/* Tabs */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            gap: "0.25rem",
-            background: "var(--bg-secondary)",
-            borderRadius: "var(--radius)",
-            padding: "0.3rem",
-            overflowX: "auto",
-          }}
-        >
+        <div className="cf-tab-bar">
           {TABS.map((tab) => (
             <button
               key={tab.key}

@@ -12,6 +12,11 @@ export const metadata = {
     "A complete interactive roadmap for interviews with code examples, exercises, and interview questions. From variables to design patterns.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">

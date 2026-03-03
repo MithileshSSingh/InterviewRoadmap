@@ -6,7 +6,7 @@ export default function RoleIntelCard({ roleIntel }) {
   if (!roleIntel) return null;
 
   return (
-    <section style={cardStyle}>
+    <section className="cf-card" style={cardStyle}>
       <h2 style={headingStyle}>📋 Role Overview</h2>
       <p
         style={{

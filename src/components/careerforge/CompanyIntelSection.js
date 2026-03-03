@@ -2,7 +2,7 @@ export default function CompanyIntelSection({ companyIntel }) {
   if (!companyIntel) return null;
 
   return (
-    <section style={cardStyle}>
+    <section className="cf-card" style={cardStyle}>
       <h2 style={headingStyle}>🏢 Company Intel</h2>
 
       {companyIntel.hiringTimeline && (

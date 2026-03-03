@@ -12,7 +12,7 @@ export default function SalaryIntelCard({ salaryIntel, userLevel }) {
   }
 
   return (
-    <section style={cardStyle}>
+    <section className="cf-card" style={cardStyle}>
       <h2 style={headingStyle}>💰 Compensation Overview</h2>
       <p
         style={{
@@ -25,12 +25,13 @@ export default function SalaryIntelCard({ salaryIntel, userLevel }) {
         {salaryIntel.lastUpdated}
       </p>
 
-      <div style={{ overflowX: "auto" }}>
+      <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
         <table
           style={{
             width: "100%",
             borderCollapse: "collapse",
             fontSize: "0.9rem",
+            minWidth: 500,
           }}
         >
           <thead>
