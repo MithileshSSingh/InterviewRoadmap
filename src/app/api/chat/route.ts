@@ -189,10 +189,27 @@ export async function POST(request: Request) {
 
     const stream = new ReadableStream({
       async start(controller) {
+        let closed = false;
+
         const pushEvent = (event: StreamEvent) => {
-          const eventStr = JSON.stringify(event);
-          const b64Event = Buffer.from(eventStr, "utf8").toString("base64");
-          controller.enqueue(encoder.encode(`data: ${b64Event}\n\n`));
+          if (closed) return;
+          try {
+            const eventStr = JSON.stringify(event);
+            const b64Event = Buffer.from(eventStr, "utf8").toString("base64");
+            controller.enqueue(encoder.encode(`data: ${b64Event}\n\n`));
+          } catch {
+            closed = true;
+          }
+        };
+
+        const closeController = () => {
+          if (closed) return;
+          closed = true;
+          try {
+            controller.close();
+          } catch {
+            /* already closed */
+          }
         };
 
         try {
@@ -239,14 +256,14 @@ export async function POST(request: Request) {
           }
 
           pushEvent({ type: "done" });
-          controller.close();
+          closeController();
         } catch (streamErr) {
           console.error("[Chat API] Stream error:", streamErr);
           pushEvent({
             type: "error",
             message: "Something went wrong while streaming the response.",
           });
-          controller.close();
+          closeController();
         }
       },
     });
