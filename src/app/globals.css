@@ -1327,6 +1327,7 @@ body {
   border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--bg-card);
+  color: var(--text-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1340,6 +1341,17 @@ body {
   transform: scale(1.1);
   border-color: var(--accent-blue);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.mode-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.mode-toggle:disabled:hover {
+  transform: none;
+  border-color: var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Theme Dropdown */
@@ -1491,6 +1503,21 @@ body {
 
 .auth-dropdown-item:hover {
   background: rgba(255, 255, 255, 0.05);
+}
+
+.auth-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border);
+  border-top-color: var(--text-primary);
+  border-radius: 50%;
+  animation: auth-spin 0.7s linear infinite;
+}
+
+@keyframes auth-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .mode-icon {
