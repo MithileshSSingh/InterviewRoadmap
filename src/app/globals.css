@@ -463,13 +463,31 @@ body {
   max-width: 100%;
 }
 
+.code-block-clickable {
+  cursor: zoom-in;
+}
+
+.code-block-clickable:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
 .code-block-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
   padding: 0.5rem 1rem;
   background: var(--code-header-bg, #0b1a12);
   border-bottom: 1px solid var(--border);
+}
+
+.code-block-actions,
+.code-dialog-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .code-lang {
@@ -478,6 +496,11 @@ body {
   color: var(--accent-purple);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.expand-code-hint {
+  font-size: 0.7rem;
+  color: var(--text-muted);
 }
 
 .copy-btn {
@@ -505,6 +528,47 @@ body {
   margin-right: 1rem;
   user-select: none;
   font-size: 0.75rem;
+}
+
+.code-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 6, 0.94);
+  z-index: 1200;
+  padding: 1rem;
+}
+
+.code-dialog {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-primary);
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.code-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+.code-dialog-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.code-block-fullscreen-pre {
+  height: 100%;
+  min-height: 100%;
+  border-radius: 0 !important;
 }
 
 /* Exercise card */
@@ -825,10 +889,35 @@ body {
 }
 
 @media (max-width: 600px) {
+  .code-dialog-backdrop {
+    padding: 0.6rem;
+  }
   .top-controls {
     gap: 0.35rem;
     right: 0.75rem;
     top: 0.75rem;
+  }
+  .code-block-header,
+  .code-dialog-header {
+    padding: 0.55rem 0.7rem;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+  .code-block-actions,
+  .code-dialog-actions {
+    width: auto;
+    margin-left: auto;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+  }
+  .copy-btn {
+    padding: 0.2rem 0.45rem;
+    font-size: 0.7rem;
+  }
+  .expand-code-hint {
+    font-size: 0.62rem;
+    white-space: nowrap;
   }
   .mode-toggle {
     width: 38px;
@@ -846,6 +935,23 @@ body {
 }
 
 @media (max-width: 480px) {
+  .code-dialog-backdrop {
+    padding: 0.4rem;
+  }
+  .code-dialog {
+    border-radius: 0.75rem;
+  }
+  .code-dialog-header {
+    align-items: center;
+  }
+  .code-dialog-actions {
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+  }
+  .line-number {
+    width: 2rem;
+    margin-right: 0.7rem;
+  }
   .hero h1 {
     font-size: 1.6rem;
   }
