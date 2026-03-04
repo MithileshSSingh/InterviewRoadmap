@@ -17,7 +17,7 @@ These are non-negotiable improvements that make everything else easier and safer
 **Why:** Every future Claude Code session will understand project conventions automatically.
 
 <details>
-<summary><strong>(done) Prompt for Claude Code</strong></summary>
+<summary><strong>✅ Prompt for Claude Code</strong></summary>
 
 ```
 Create a CLAUDE.md file at the project root for this Next.js 16 / React 19 interview roadmap platform. Analyze the entire codebase first, then document:
@@ -58,7 +58,7 @@ Keep it concise — under 120 lines. Do not add aspirational content or TODOs.
 **Why:** The chat API crashes if `FREE_MODEL` env var is unset.
 
 <details>
-<summary><strong>(done) Prompt for Claude Code</strong></summary>
+<summary><strong>✅ Prompt for Claude Code</strong></summary>
 
 ```
 Fix a bug in src/app/api/chat/route.ts. On the line where the model name is resolved:
@@ -84,7 +84,7 @@ Fix this by:
 **Why:** Zero tests exist. Every future feature should have tests.
 
 <details>
-<summary><strong>(done)Prompt for Claude Code</strong></summary>
+<summary><strong>✅ Prompt for Claude Code</strong></summary>
 
 ```
 Set up a testing infrastructure for this Next.js 16 project. There are currently ZERO tests.
@@ -164,7 +164,7 @@ Keep it simple — no deployment step (the user deploys via Vercel). Just valida
 **Why:** API routes have no protection — anyone can spam expensive LLM calls.
 
 <details>
-<summary><strong>(next) Prompt for Claude Code</strong></summary>
+<summary><strong>✅ Prompt for Claude Code</strong></summary>
 
 ```
 Add rate limiting to protect the API routes in this Next.js 16 App Router project. Currently there is NO middleware.ts and NO rate limiting.
@@ -206,7 +206,7 @@ Follow existing project conventions. No external dependencies.
 **Why:** README is outdated — doesn't mention CareerForge, Salesforce roadmap, themes, or the AI chatbot.
 
 <details>
-<summary><strong>(done) Prompt for Claude Code</strong></summary>
+<summary><strong>✅ Prompt for Claude Code</strong></summary>
 
 ```
 Update the README.md for this project. The current README is outdated and missing major features. Read the existing README first, then rewrite it to include:
