@@ -69,9 +69,8 @@ const roadmaps = [
     emoji: "🟩",
     color: "#68a063",
     description:
-      "Server-side JavaScript — APIs, Express, databases, authentication, and deployment.",
+      "Master Node.js from beginner to advanced — runtime internals, Express, databases, authentication, REST & GraphQL APIs, testing, system design, and production deployment.",
     tags: ["Backend", "API", "Server"],
-    comingSoon: true,
   },
   {
     slug: "python",

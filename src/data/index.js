@@ -67,6 +67,21 @@ import sfPhase12Data from "./salesforce/sf-phase12";
 import sfPhase13Data from "./salesforce/sf-phase13";
 import sfPhase14Data from "./salesforce/sf-phase14";
 
+import nodePhase1 from "./nodejs/node-phase1";
+import nodePhase2 from "./nodejs/node-phase2";
+import nodePhase3 from "./nodejs/node-phase3";
+import nodePhase4 from "./nodejs/node-phase4";
+import nodePhase5 from "./nodejs/node-phase5";
+import nodePhase6 from "./nodejs/node-phase6";
+import nodePhase7 from "./nodejs/node-phase7";
+import nodePhase8 from "./nodejs/node-phase8";
+import nodePhase9 from "./nodejs/node-phase9";
+import nodePhase10 from "./nodejs/node-phase10";
+import nodePhase11 from "./nodejs/node-phase11";
+import nodePhase12 from "./nodejs/node-phase12";
+import nodePhase13 from "./nodejs/node-phase13";
+import nodePhase14 from "./nodejs/node-phase14";
+
 import reactPhase1 from "./react/react-phase1";
 import reactPhase2 from "./react/react-phase2";
 import reactPhase3 from "./react/react-phase3";
@@ -224,6 +239,24 @@ export const reactPhases = [
   reactPhase15,
 ];
 
+// Node.js roadmap phases
+export const nodejsPhases = [
+  nodePhase1,
+  nodePhase2,
+  nodePhase3,
+  nodePhase4,
+  nodePhase5,
+  nodePhase6,
+  nodePhase7,
+  nodePhase8,
+  nodePhase9,
+  nodePhase10,
+  nodePhase11,
+  nodePhase12,
+  nodePhase13,
+  nodePhase14,
+];
+
 // Registry of all roadmap data keyed by slug
 const roadmapData = {
   javascript: javascriptPhases,
@@ -233,6 +266,7 @@ const roadmapData = {
   "react-native-senior": reactnativePhases,
   "salesforce-developer": salesforcePhases,
   react: reactPhases,
+  nodejs: nodejsPhases,
 };
 
 export function getRoadmapPhases(slug) {
