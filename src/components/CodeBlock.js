@@ -96,36 +96,28 @@ export default function CodeBlock({ code, language = "javascript" }) {
             >
               {copied ? "✓ Copied" : "Copy"}
             </button>
-            
           </div>
         </div>
         {renderCode()}
       </div>
 
       {isFullscreenOpen && (
-        <div
-          className="code-dialog-backdrop"
-          onClick={() => setIsFullscreenOpen(false)}
-        >
+        <div className="code-dialog-backdrop">
           <div
             className="code-dialog"
             role="dialog"
             aria-modal="true"
             aria-label="Full screen code viewer"
-            onClick={(event) => event.stopPropagation()}
           >
-            <div className="code-dialog-header">
+            <div
+              className="code-dialog-header"
+              onClick={() => setIsFullscreenOpen(false)}
+            >
               <span className="code-lang">{language}</span>
+              <span className="expand-code-hint">Tap to close ⊙</span>
               <div className="code-dialog-actions">
                 <button className="copy-btn" onClick={handleCopy}>
                   {copied ? "✓ Copied" : "Copy"}
-                </button>
-                <button
-                  className="copy-btn"
-                  onClick={() => setIsFullscreenOpen(false)}
-                  aria-label="Close full screen code viewer"
-                >
-                  Close ✕
                 </button>
               </div>
             </div>
