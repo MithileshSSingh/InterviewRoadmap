@@ -42,6 +42,3 @@ next-env.d.ts
 
 /src/generated/prisma
 
-# IMPLEMENTATION_PLAN
-IMPLEMENTATION_PLAN.md
-TODOs.md
