@@ -71,15 +71,15 @@ export default function CodeBlock({ code, language = "javascript" }) {
 
   return (
     <>
-      <div
-        className="code-block-wrapper code-block-clickable"
-        role="button"
-        tabIndex={0}
-        aria-label="Open code in full screen"
-        onClick={() => setIsFullscreenOpen(true)}
-        onKeyDown={handleBlockKeyDown}
-      >
-        <div className="code-block-header">
+      <div className="code-block-wrapper">
+        <div
+          className="code-block-header code-block-header-clickable"
+          role="button"
+          tabIndex={0}
+          aria-label="Open code in full screen"
+          onClick={() => setIsFullscreenOpen(true)}
+          onKeyDown={handleBlockKeyDown}
+        >
           <span className="code-lang">{language}</span>
           <div className="code-block-actions">
             <button

@@ -463,11 +463,11 @@ body {
   max-width: 100%;
 }
 
-.code-block-clickable {
+.code-block-header-clickable {
   cursor: zoom-in;
 }
 
-.code-block-clickable:focus-visible {
+.code-block-header-clickable:focus-visible {
   outline: 2px solid var(--accent-blue);
   outline-offset: 2px;
 }
