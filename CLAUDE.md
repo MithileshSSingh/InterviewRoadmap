@@ -7,6 +7,7 @@ A Next.js platform with two features: (1) static interview roadmaps for JS, TS, 
 - **Framework:** Next.js 16.1.6 (App Router), React 19.2.3
 - **Styling:** Tailwind CSS v4, CSS custom properties in `globals.css`
 - **Database:** Prisma 7 with SQLite (local `dev.db`) / Turso (remote via `@prisma/adapter-libsql`)
+- **Auth:** NextAuth.js v5 (Auth.js) with `@auth/prisma-adapter`, Google OAuth, database sessions
 - **AI:** LangChain + LangGraph, OpenRouter (ChatOpenAI wrapper), Tavily Search API
 - **Analytics:** Vercel Analytics + Speed Insights
 - **Markdown:** `marked` + `prism-react-renderer` for syntax highlighting
@@ -36,14 +37,16 @@ bunx prisma migrate dev     # run migrations (SQLite)
 ```
 src/
 ├── app/                    # Next.js App Router
-│   ├── layout.js           # Root layout (server component, wraps ThemeProvider)
+│   ├── layout.js           # Root layout (server component, wraps Providers > ThemeProvider)
+│   ├── auth/signin/        # Custom sign-in page (Google OAuth)
 │   ├── page.js             # Home — roadmap listing
 │   ├── roadmap/[slug]/     # Static roadmap pages (phase → topic drill-down)
 │   ├── careerforge/        # AI roadmap generator UI
 │   │   └── [id]/page.js    # Generated roadmap view
 │   ├── settings/           # Theme/settings page
 │   └── api/
-│       ├── careerforge/    # generate/, history/, [id]/, [id]/stream/, [id]/progress/
+│       ├── auth/[...nextauth]/ # NextAuth.js API route (GET/POST handlers)
+│       ├── careerforge/    # generate/, history/, [id]/, [id]/stream/, [id]/progress/, migrate-session/
 │       └── chat/           # Topic chatbot endpoint
 ├── components/             # PascalCase.js — "use client" interactive components
 │   └── careerforge/        # RoadmapView, StreamingProgress, TopicCard, etc.
@@ -57,6 +60,7 @@ src/
 │   ├── index.js            # getRoadmapPhases(), getPhaseById(), getTopicById()
 │   └── roadmaps.js         # Registry: getAllRoadmaps(), getRoadmapMeta(slug)
 ├── lib/
+│   ├── auth.ts             # NextAuth.js v5 config (exports handlers, auth, signIn, signOut)
 │   ├── db.ts               # Prisma singleton (globalThis pattern, LibSQL adapter)
 │   ├── chatClient.ts       # OpenRouter chat client
 │   └── careerforge/
@@ -92,6 +96,10 @@ src/
 | `CAREER_MODEL` | Model for CareerForge pipeline (e.g., `google/gemini-2.0-flash-001`) |
 | `TAVILY_API_KEY` | Tavily web search API key |
 | `LINKEDIN_SCRAPING_ENABLED` | Feature flag for LinkedIn intel agent |
+| `AUTH_SECRET` | NextAuth.js encryption secret (`openssl rand -base64 32`) |
+| `AUTH_GOOGLE_ID` | Google OAuth 2.0 Client ID |
+| `AUTH_GOOGLE_SECRET` | Google OAuth 2.0 Client Secret |
+| `AUTH_TRUST_HOST` | Set to `true` for non-Vercel deployments |
 
 ## Important Patterns
 
@@ -99,7 +107,8 @@ src/
 - **CareerForge pipeline:** LangGraph state graph with fan-out/fan-in: orchestrator → 4 parallel agents (jobIntel, salaryIntel, linkedInIntel, skillsMapper) → resourceFinder → roadmapBuilder → formatter. Uses Tavily for web search, Zod for output validation.
 - **SSE streaming:** `POST /api/careerforge/generate` creates a pending Roadmap record. `GET /api/careerforge/[id]/stream` runs the pipeline and streams base64-encoded events. `force-dynamic` + `maxDuration = 300`.
 - **Theme system:** 6 themes in `src/themes.js` (midnight-indigo, emerald-forest, sunset-amber, rose-quartz, arctic-blue, monochrome). Applied by setting CSS variables on `document.documentElement` via `ThemeProvider`.
-- **Prisma schema:** 3 models — `Roadmap` (AI-generated plans), `TopicProgress` (completion tracking), `AgentRun` (pipeline execution logs). Schema at `prisma/schema.prisma`, migrations in `prisma/migrations/`.
+- **Authentication:** NextAuth.js v5 with Google OAuth, database sessions via `@auth/prisma-adapter`. Config at `src/lib/auth.ts` exports `{ handlers, auth, signIn, signOut }`. `Providers.js` wraps the app with `SessionProvider`. `AuthButton.js` in `.top-controls` shows sign-in/avatar dropdown. Anonymous users keep using `localStorage` `cf-session-id`; authenticated users get `userId` on Roadmap records. Migration endpoint at `/api/careerforge/migrate-session` transfers anonymous roadmaps to a user on first sign-in.
+- **Prisma schema:** 7 models — `User`, `Account`, `Session`, `VerificationToken` (NextAuth), `Roadmap` (AI-generated plans, optional `userId`), `TopicProgress` (completion tracking), `AgentRun` (pipeline execution logs). Schema at `prisma/schema.prisma`, migrations in `prisma/migrations/`.
 
 ## Database
 

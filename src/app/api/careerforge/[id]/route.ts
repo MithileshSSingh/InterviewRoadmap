@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { auth } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -61,11 +62,34 @@ export async function GET(
 }
 
 export async function DELETE(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
+
+    const session = await auth();
+    const userId = session?.user?.id ?? null;
+
+    const roadmap = await prisma.roadmap.findUnique({
+      where: { id },
+      select: { userId: true, sessionId: true },
+    });
+
+    if (!roadmap) {
+      return NextResponse.json({ error: "Roadmap not found" }, { status: 404 });
+    }
+
+    // Allow delete if authenticated user owns it, or sessionId matches
+    const requestSessionId = request.headers.get("x-session-id");
+    const canDelete =
+      (userId && roadmap.userId === userId) ||
+      (requestSessionId && roadmap.sessionId === requestSessionId);
+
+    if (!canDelete) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
     await prisma.roadmap.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (err) {

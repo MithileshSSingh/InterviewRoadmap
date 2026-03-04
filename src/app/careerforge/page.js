@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { exportRoadmap } from "@/lib/careerforge/export";
 import { ExportDropdown } from "@/components/careerforge/RoadmapView";
@@ -49,6 +50,7 @@ function getOrCreateSessionId() {
 
 export default function CareerForgePage() {
   const router = useRouter();
+  const { data: authSession } = useSession();
   const [role, setRole] = useState("");
   const [company, setCompany] = useState("");
   const [experienceLevel, setExperienceLevel] = useState("Mid");
@@ -64,6 +66,25 @@ export default function CareerForgePage() {
     setSessionId(sid);
     fetchHistory(sid);
   }, []);
+
+  // Migrate anonymous roadmaps to authenticated user on first sign-in
+  useEffect(() => {
+    if (!authSession?.user?.id || !sessionId) return;
+    const migrationKey = `cf-migrated-${authSession.user.id}`;
+    if (localStorage.getItem(migrationKey)) return;
+
+    fetch("/api/careerforge/migrate-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.migrated > 0) fetchHistory(sessionId);
+        localStorage.setItem(migrationKey, "true");
+      })
+      .catch(() => {});
+  }, [authSession?.user?.id, sessionId]);
 
   async function fetchHistory(sid) {
     try {
@@ -133,7 +154,10 @@ export default function CareerForgePage() {
     e.preventDefault();
     e.stopPropagation();
     try {
-      await fetch(`/api/careerforge/${id}`, { method: "DELETE" });
+      await fetch(`/api/careerforge/${id}`, {
+        method: "DELETE",
+        headers: sessionId ? { "x-session-id": sessionId } : {},
+      });
       setHistory((prev) => prev.filter((r) => r.id !== id));
     } catch {
       // silently fail

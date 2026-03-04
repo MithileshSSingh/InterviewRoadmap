@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { auth } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +19,13 @@ export async function POST(request: Request) {
       );
     }
 
+    const session = await auth();
+    const userId = session?.user?.id ?? null;
+
     const roadmap = await prisma.roadmap.create({
       data: {
         sessionId,
+        userId,
         role: role.trim(),
         company: company.trim(),
         experienceLevel,

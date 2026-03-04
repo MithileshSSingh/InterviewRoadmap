@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { auth } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -8,12 +9,27 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get("sessionId");
 
-    if (!sessionId) {
+    const session = await auth();
+    const userId = session?.user?.id ?? null;
+
+    // Build OR condition: match by userId OR sessionId
+    const whereConditions: Record<string, string>[] = [];
+    if (userId) {
+      whereConditions.push({ userId });
+    }
+    if (sessionId) {
+      whereConditions.push({ sessionId });
+    }
+
+    if (whereConditions.length === 0) {
       return NextResponse.json({ roadmaps: [] });
     }
 
     const roadmaps = await prisma.roadmap.findMany({
-      where: { sessionId },
+      where:
+        whereConditions.length === 1
+          ? whereConditions[0]
+          : { OR: whereConditions },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,

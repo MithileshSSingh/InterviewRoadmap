@@ -67,6 +67,12 @@ function addRateLimitHeaders(
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Skip rate limiting for auth routes — NextAuth handles its own CSRF protection
+  if (pathname.startsWith("/api/auth")) {
+    return NextResponse.next();
+  }
+
   const ip = getClientIp(request);
 
   let result: ReturnType<ReturnType<typeof rateLimit>>;
