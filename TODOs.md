@@ -474,9 +474,8 @@ Requirements:
 3. **Auth configuration** — Create src/lib/auth.ts:
    - Configure NextAuth with PrismaAdapter
    - Providers (start simple):
-     a. GitHub OAuth (GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET env vars)
-     b. Google OAuth (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET env vars)
-     c. Email/Magic Link (using Resend — RESEND_API_KEY env var) — optional, can be added later
+     a. Google OAuth (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET env vars)
+     b. Email/Magic Link (using Resend — RESEND_API_KEY env var) — optional, can be added later
    - Session strategy: "database" (for Prisma adapter)
    - Add user.id to the session via callbacks
 
@@ -490,7 +489,7 @@ Requirements:
 6. **Auth UI components:**
    a. Create src/components/AuthButton.js — shows "Sign In" or user avatar + dropdown (Sign Out, My Roadmaps)
    b. Place it in the .top-controls area in layout.js
-   c. Sign-in page: Create src/app/auth/signin/page.js — simple page with provider buttons (GitHub, Google icons), styled consistently with the app's theme
+   c. Sign-in page: Create src/app/auth/signin/page.js — simple page with provider buttons ( Google icons), styled consistently with the app's theme
 
 7. **Protect CareerForge API routes:**
    - In src/app/api/careerforge/generate/route.ts: check for authenticated session. If authenticated, associate roadmap with user.id. If not authenticated, fall back to sessionId (keep backward compat).
@@ -504,7 +503,6 @@ Requirements:
 
 9. **Environment variables to add:**
    - NEXTAUTH_URL, NEXTAUTH_SECRET
-   - GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET
    - GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 
 Update CLAUDE.md (if it exists) with the new auth setup. Keep all existing functionality working for non-authenticated users.
