@@ -45,8 +45,12 @@ export default function CodeBlock({ code, language = "javascript" }) {
             padding: "1rem",
             overflow: "auto",
             borderRadius: isFullscreen ? 0 : "0 0 0.75rem 0.75rem",
-            fontSize: isFullscreen ? "0.95rem" : "0.875rem",
-            lineHeight: 1.7,
+            fontSize: isFullscreen ? "0.78rem" : "0.875rem",
+            lineHeight: isFullscreen ? 1.55 : 1.7,
+            whiteSpace: "pre",
+            overflowWrap: "normal",
+            wordBreak: "normal",
+            maxWidth: "100%",
           }}
         >
           {tokens.map((line, i) => (
@@ -81,6 +85,7 @@ export default function CodeBlock({ code, language = "javascript" }) {
           onKeyDown={handleBlockKeyDown}
         >
           <span className="code-lang">{language}</span>
+          <span className="expand-code-hint">Tap to expand ⛶</span>
           <div className="code-block-actions">
             <button
               className="copy-btn"
@@ -91,7 +96,7 @@ export default function CodeBlock({ code, language = "javascript" }) {
             >
               {copied ? "✓ Copied" : "Copy"}
             </button>
-            <span className="expand-code-hint">Tap to expand ⛶</span>
+            
           </div>
         </div>
         {renderCode()}

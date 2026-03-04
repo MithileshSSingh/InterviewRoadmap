@@ -889,29 +889,24 @@ body {
 }
 
 @media (max-width: 600px) {
-  .code-dialog-backdrop {
-    padding: 0.6rem;
-  }
   .top-controls {
     gap: 0.35rem;
     right: 0.75rem;
     top: 0.75rem;
   }
-  .code-block-header,
-  .code-dialog-header {
+  .code-block-header {
     padding: 0.55rem 0.7rem;
     flex-wrap: nowrap;
     align-items: center;
   }
-  .code-block-actions,
-  .code-dialog-actions {
+  .code-block-actions {
     width: auto;
     margin-left: auto;
     justify-content: flex-end;
     flex-wrap: nowrap;
     gap: 0.35rem;
   }
-  .copy-btn {
+  .code-block-header .copy-btn {
     padding: 0.2rem 0.45rem;
     font-size: 0.7rem;
   }
@@ -935,19 +930,6 @@ body {
 }
 
 @media (max-width: 480px) {
-  .code-dialog-backdrop {
-    padding: 0.4rem;
-  }
-  .code-dialog {
-    border-radius: 0.75rem;
-  }
-  .code-dialog-header {
-    align-items: center;
-  }
-  .code-dialog-actions {
-    flex-wrap: nowrap;
-    justify-content: flex-end;
-  }
   .line-number {
     width: 2rem;
     margin-right: 0.7rem;
