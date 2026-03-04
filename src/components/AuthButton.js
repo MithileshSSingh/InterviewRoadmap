@@ -1,12 +1,11 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function AuthButton() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -28,26 +27,11 @@ export default function AuthButton() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  function resolveCallbackUrl() {
-    if (pathname !== "/auth/signin") return window.location.href;
-
-    const rawCallback = searchParams.get("callbackUrl");
-    if (!rawCallback) return "/";
-
-    try {
-      const parsed = new URL(rawCallback, window.location.origin);
-      if (parsed.origin !== window.location.origin) return "/";
-      return `${parsed.pathname}${parsed.search}${parsed.hash}`;
-    } catch {
-      return "/";
-    }
-  }
-
   async function handleSignInClick() {
     if (signInInFlightRef.current) return;
     signInInFlightRef.current = true;
     setIsSigningIn(true);
-    const callbackUrl = resolveCallbackUrl();
+    const callbackUrl = window.location.href;
 
     try {
       const result = await signIn(undefined, {
