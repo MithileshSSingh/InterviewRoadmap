@@ -82,6 +82,25 @@ import nodePhase12 from "./nodejs/node-phase12";
 import nodePhase13 from "./nodejs/node-phase13";
 import nodePhase14 from "./nodejs/node-phase14";
 
+// Python phases
+import pyPhase1Data from "./python/py-phase1";
+import pyPhase2Data from "./python/py-phase2";
+import pyPhase2bData from "./python/py-phase2b";
+import pyPhase3Data from "./python/py-phase3";
+import pyPhase4Data from "./python/py-phase4";
+import pyPhase4bData from "./python/py-phase4b";
+import pyPhase5Data from "./python/py-phase5";
+import pyPhase6Data from "./python/py-phase6";
+import pyPhase6bData from "./python/py-phase6b";
+import pyPhase7Data from "./python/py-phase7";
+import pyPhase8Data from "./python/py-phase8";
+import pyPhase9Data from "./python/py-phase9";
+import pyPhase10Data from "./python/py-phase10";
+import pyPhase11Data from "./python/py-phase11";
+import pyPhase12Data from "./python/py-phase12";
+import pyPhase13Data from "./python/py-phase13";
+import pyPhase14Data from "./python/py-phase14";
+
 import reactPhase1 from "./react/react-phase1";
 import reactPhase2 from "./react/react-phase2";
 import reactPhase3 from "./react/react-phase3";
@@ -257,6 +276,42 @@ export const nodejsPhases = [
   nodePhase14,
 ];
 
+// Combine Python phase2 + phase2b topics
+const pyPhase2 = {
+  ...pyPhase2Data,
+  topics: [...pyPhase2Data.topics, ...pyPhase2bData],
+};
+
+// Combine Python phase4 + phase4b topics
+const pyPhase4 = {
+  ...pyPhase4Data,
+  topics: [...pyPhase4Data.topics, ...pyPhase4bData],
+};
+
+// Combine Python phase6 + phase6b topics
+const pyPhase6 = {
+  ...pyPhase6Data,
+  topics: [...pyPhase6Data.topics, ...pyPhase6bData],
+};
+
+// Python roadmap phases
+export const pythonPhases = [
+  pyPhase1Data,
+  pyPhase2,
+  pyPhase3Data,
+  pyPhase4,
+  pyPhase5Data,
+  pyPhase6,
+  pyPhase7Data,
+  pyPhase8Data,
+  pyPhase9Data,
+  pyPhase10Data,
+  pyPhase11Data,
+  pyPhase12Data,
+  pyPhase13Data,
+  pyPhase14Data,
+];
+
 // Registry of all roadmap data keyed by slug
 const roadmapData = {
   javascript: javascriptPhases,
@@ -267,6 +322,7 @@ const roadmapData = {
   "salesforce-developer": salesforcePhases,
   react: reactPhases,
   nodejs: nodejsPhases,
+  python: pythonPhases,
 };
 
 export function getRoadmapPhases(slug) {

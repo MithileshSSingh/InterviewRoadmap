@@ -315,7 +315,7 @@ print(f"Name length: {len(name)}")
 print(f"Uppercase: {name.upper()}")
 
 # Format specifiers
-print(f"Currency: ${balance:,.2f}")      # $1,234,567.89
+print(f"Currency: \${balance:,.2f}")      # $1,234,567.89
 print(f"Percentage: {0.856:.1%}")        # 85.6%
 print(f"Padded: {42:08d}")              # 00000042
 print(f"Binary: {255:08b}")             # 11111111
@@ -340,7 +340,7 @@ report = (
     f"{'='*40}\\n"
     f"Name:    {name}\\n"
     f"Age:     {age}\\n"
-    f"Balance: ${balance:,.2f}"
+    f"Balance: \${balance:,.2f}"
 )
 print(report)
 

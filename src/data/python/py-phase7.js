@@ -451,7 +451,7 @@ transactions = [
 
 for date, group in itertools.groupby(transactions, key=lambda t: t["date"]):
     daily_total = sum(t["amount"] for t in group)
-    print(f"{date}: ${daily_total}")
+    print(f"{date}: \${daily_total}")
 # 2025-01-15: $300
 # 2025-01-16: $225
 # 2025-01-17: $300

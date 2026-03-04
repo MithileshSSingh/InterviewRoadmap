@@ -78,9 +78,8 @@ const roadmaps = [
     emoji: "🐍",
     color: "#3776ab",
     description:
-      "From basics to advanced Python — data structures, OOP, decorators, and real-world projects.",
-    tags: ["Backend", "Data Science", "AI"],
-    comingSoon: true,
+      "Master Python from fundamentals to advanced topics — data structures, OOP, concurrency, web dev, and interview prep.",
+    tags: ["Backend", "Data Science", "General Purpose"],
   },
   {
     slug: "css",

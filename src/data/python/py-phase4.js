@@ -76,7 +76,7 @@ class BankAccount:
 
     def __str__(self) -> str:
         """Human-readable string representation."""
-        return f"Account({self.owner}: ${self._balance:,.2f})"
+        return f"Account({self.owner}: \${self._balance:,.2f})"
 
     def __repr__(self) -> str:
         """Developer-friendly representation."""

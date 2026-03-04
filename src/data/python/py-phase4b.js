@@ -218,7 +218,7 @@ class Product:
         return self.price * self.quantity
 
 p = Product("Widget", 9.99, 100)
-print(f"{p.name}: ${p.price} x {p.quantity} = ${p.total}")
+print(f"{p.name}: \${p.price} x {p.quantity} = \${p.total}")
 # p.price = -5  # ValueError: price: must be a positive number`,
     exercise: `**Exercises:**
 
