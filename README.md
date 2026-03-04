@@ -125,6 +125,10 @@ bunx prisma studio              # visual DB browser
 bunx prisma migrate dev --name <name>   # create a new migration
 ```
 
+```bash
+turso db shell interview-roadmaps < prisma/migrations/<new-migration-folder>/migration.sql
+```
+
 ## License
 
 MIT
