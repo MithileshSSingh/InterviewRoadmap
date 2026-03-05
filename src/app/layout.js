@@ -3,6 +3,7 @@ import Sidebar from "@/components/Sidebar";
 import ModeToggle from "@/components/ModeToggle";
 import ThemeDropdown from "@/components/ThemeDropdown";
 import AuthButton from "@/components/AuthButton";
+import SearchModal from "@/components/SearchModal";
 import Providers from "@/components/Providers";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Analytics } from "@vercel/analytics/next";
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
               <main className="main-content">
                 <div className="top-controls">
                   <div id="top-chatbot-slot" className="top-control-slot" />
+                  <SearchModal />
                   <ThemeDropdown />
                   <ModeToggle />
                   <AuthButton />
