@@ -1930,7 +1930,4 @@ Phase 8 features are all independent of each other — pick any order based on u
 Phase 9 is conditional — only relevant if the static data in `src/data/` is moved to the database. If that migration happens, start with 9.2 (quickest to ship), then replace it with 9.1 for zero-latency, then consider 9.4 or 9.5 at scale.
 
 
-
-### Loading on roadmap list
 ### remove loading once agent work done in creating custom roadmap
-### header options on mobile
