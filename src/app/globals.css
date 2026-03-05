@@ -1301,6 +1301,67 @@ body {
   align-items: center;
 }
 
+/* Desktop: show all controls inline */
+.header-controls-desktop {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Mobile: hide desktop controls, show 3-dot menu */
+.header-controls-mobile {
+  display: none;
+  position: relative;
+}
+
+/* Mobile overflow panel */
+.mobile-menu-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 200px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  overflow: visible;
+  animation: slideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top right;
+  z-index: 300;
+  padding: 0.5rem;
+}
+
+.mobile-menu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  gap: 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.mobile-menu-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.mobile-menu-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .header-controls-desktop {
+    display: none;
+  }
+  .header-controls-mobile {
+    display: block;
+  }
+}
+
 .chatbot-top-toggle-icon {
   font-size: 1.25rem;
   line-height: 1;
@@ -1376,6 +1437,7 @@ body {
   overflow: hidden;
   animation: slideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   transform-origin: top right;
+  z-index: 400;
 }
 
 .theme-dropdown-header {

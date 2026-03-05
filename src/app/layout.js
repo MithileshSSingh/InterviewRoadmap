@@ -1,9 +1,7 @@
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
-import ModeToggle from "@/components/ModeToggle";
-import ThemeDropdown from "@/components/ThemeDropdown";
-import AuthButton from "@/components/AuthButton";
 import SearchModal from "@/components/SearchModal";
+import MobileMenu from "@/components/MobileMenu";
 import Providers from "@/components/Providers";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Analytics } from "@vercel/analytics/next";
@@ -32,9 +30,7 @@ export default function RootLayout({ children }) {
                 <div className="top-controls">
                   <div id="top-chatbot-slot" className="top-control-slot" />
                   <SearchModal />
-                  <ThemeDropdown />
-                  <ModeToggle />
-                  <AuthButton />
+                  <MobileMenu />
                 </div>
                 {children}
               </main>
