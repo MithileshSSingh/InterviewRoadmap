@@ -132,6 +132,7 @@ const orchestratorNode = async (
   }
 
   emitter?.({ type: "progress", agent: "orchestrator", percent: 5 });
+  emitter?.({ type: "status", agent: "orchestrator", message: "Analysis started" });
   return {};
 };
 
@@ -251,6 +252,7 @@ Respond ONLY with a valid JSON object matching this exact schema (no markdown, n
       data: parsed.interviewProcess,
     });
     emitter?.({ type: "progress", agent: "jobIntel", percent: 20 });
+    emitter?.({ type: "status", agent: "jobIntel", message: "Job intel complete" });
 
     return {
       roleIntel: parsed.roleIntel ?? defaultRoleIntel,
@@ -366,6 +368,7 @@ Respond ONLY with a valid JSON object (no markdown):
     const parsed = parseJsonFromLLM<SalaryIntel>(content, defaultSalary);
     emitter?.({ type: "partial", section: "salaryIntel", data: parsed });
     emitter?.({ type: "progress", agent: "salaryIntel", percent: 20 });
+    emitter?.({ type: "status", agent: "salaryIntel", message: "Compensation data ready" });
 
     return { salaryIntel: parsed };
   } catch (err) {
@@ -463,10 +466,12 @@ Respond ONLY with valid JSON (no markdown):
     const parsed = parseJsonFromLLM<PeopleIntel>(content, defaultPeople);
     emitter?.({ type: "partial", section: "peopleIntel", data: parsed });
     emitter?.({ type: "progress", agent: "linkedinIntel", percent: 20 });
+    emitter?.({ type: "status", agent: "linkedinIntel", message: "LinkedIn strategy ready" });
 
     return { peopleIntel: parsed };
   } catch (err) {
     console.error("[LinkedIn Intel Agent] Error:", err);
+    emitter?.({ type: "status", agent: "linkedinIntel", message: "Using default strategy" });
     return {
       errors: [`linkedinIntel: ${String(err)}`],
       peopleIntel: {
@@ -557,10 +562,12 @@ Respond ONLY with valid JSON (no markdown):
       phases: [],
     });
     emitter?.({ type: "progress", agent: "skillsMapper", percent: 30 });
+    emitter?.({ type: "status", agent: "skillsMapper", message: "Skill tree mapped" });
 
     return { skillTree: parsed };
   } catch (err) {
     console.error("[Skills Mapper Agent] Error:", err);
+    emitter?.({ type: "status", agent: "skillsMapper", message: "Using default skill tree" });
     return {
       errors: [`skillsMapper: ${String(err)}`],
       skillTree: { phases: [] },
@@ -642,9 +649,11 @@ Example:
     );
 
     emitter?.({ type: "progress", agent: "resourceFinder", percent: 55 });
+    emitter?.({ type: "status", agent: "resourceFinder", message: "Resources found" });
     return { enrichedPhases };
   } catch (err) {
     console.error("[Resource Finder Agent] Error:", err);
+    emitter?.({ type: "status", agent: "resourceFinder", message: "Using available resources" });
     return {
       errors: [`resourceFinder: ${String(err)}`],
       enrichedPhases: state.skillTree?.phases ?? [],
@@ -763,9 +772,11 @@ Respond ONLY with valid JSON (no markdown):
     };
 
     emitter?.({ type: "progress", agent: "roadmapBuilder", percent: 80 });
+    emitter?.({ type: "status", agent: "roadmapBuilder", message: "Roadmap assembled" });
     return { roadmap };
   } catch (err) {
     console.error("[Roadmap Builder Agent] Error:", err);
+    emitter?.({ type: "status", agent: "roadmapBuilder", message: "Using partial roadmap" });
     return { errors: [`roadmapBuilder: ${String(err)}`] };
   }
 };
@@ -847,6 +858,7 @@ Return ONLY the fixed JSON with no explanation or markdown.`;
     });
 
     emitter?.({ type: "progress", agent: "formatter", percent: 100 });
+    emitter?.({ type: "status", agent: "formatter", message: "Roadmap saved" });
     emitter?.({ type: "complete", roadmapId: state.roadmapId });
 
     return {};
