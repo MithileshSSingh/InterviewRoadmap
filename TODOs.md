@@ -297,7 +297,7 @@ Keep all styling consistent with existing CSS patterns in globals.css. Use CSS c
 **Why:** No way to search across roadmaps or topics. Users need to browse manually.
 
 <details>
-<summary><strong>(next) Prompt for Claude Code</strong></summary>
+<summary><strong>✅ Prompt for Claude Code</strong></summary>
 
 ```
 Add a global search feature to the interview roadmap platform. There is currently no search functionality.
@@ -390,7 +390,7 @@ Requirements:
 **Why:** The sidebar is collapsible but many components haven't been tested on small screens.
 
 <details>
-<summary><strong>(done) Prompt for Claude Code</strong></summary>
+<summary><strong>✅ Prompt for Claude Code</strong></summary>
 
 ```
 Perform a comprehensive mobile responsiveness audit and fix issues in this Next.js interview roadmap platform.
@@ -454,7 +454,7 @@ Moving from anonymous localStorage sessions to proper user accounts.
 **Why:** Currently users are anonymous (localStorage UUID). Auth enables cross-device access, data ownership, and opens the door for social features.
 
 <details>
-<summary><strong>Prompt for Claude Code</strong></summary>
+<summary><strong>✅ Prompt for Claude Code</strong></summary>
 
 ```
 Add user authentication to this Next.js 16 App Router project using NextAuth.js v5 (Auth.js). Currently there is NO authentication — sessions use a random localStorage UUID.
@@ -614,7 +614,7 @@ Expanding the content library.
 **Why:** React is the #1 most in-demand frontend framework. It's listed as "Coming Soon" and users are waiting.
 
 <details>
-<summary><strong>Prompt for Claude Code</strong></summary>
+<summary><strong>✅ Prompt for Claude Code</strong></summary>
 
 ```
 Create a comprehensive React interview roadmap for this platform. React is currently listed as "comingSoon: true" in src/data/roadmaps.js.
@@ -665,7 +665,7 @@ Make the content interview-focused — this is for people preparing for React in
 **Priority:** High | **Effort:** Large | **Dependencies:** None
 
 <details>
-<summary><strong>Prompt for Claude Code</strong></summary>
+<summary><strong>✅ Prompt for Claude Code</strong></summary>
 
 ```
 Create a comprehensive Node.js interview roadmap. Node.js is currently "comingSoon: true" in src/data/roadmaps.js.
@@ -700,7 +700,7 @@ Focus on senior-level interview content — cover "how does Node.js actually wor
 **Priority:** Medium | **Effort:** Large | **Dependencies:** None
 
 <details>
-<summary><strong>Prompt for Claude Code</strong></summary>
+<summary><strong>✅ Prompt for Claude Code</strong></summary>
 
 ```
 Create a comprehensive Python interview roadmap. Python is currently "comingSoon: true" in src/data/roadmaps.js.
