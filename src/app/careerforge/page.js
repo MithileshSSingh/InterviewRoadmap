@@ -60,6 +60,7 @@ export default function CareerForgePage() {
   const [sessionId, setSessionId] = useState(null);
   const [exportOpenId, setExportOpenId] = useState(null); // id of card whose dropdown is open
   const [exportLoadingId, setExportLoadingId] = useState(null); // id of card currently fetching
+  const [historyLoading, setHistoryLoading] = useState(true);
 
   useEffect(() => {
     const sid = getOrCreateSessionId();
@@ -87,6 +88,7 @@ export default function CareerForgePage() {
   }, [authSession?.user?.id, sessionId]);
 
   async function fetchHistory(sid) {
+    setHistoryLoading(true);
     try {
       const res = await fetch(`/api/careerforge/history?sessionId=${sid}`);
       if (res.ok) {
@@ -95,6 +97,8 @@ export default function CareerForgePage() {
       }
     } catch {
       // silently fail
+    } finally {
+      setHistoryLoading(false);
     }
   }
 
@@ -385,7 +389,30 @@ export default function CareerForgePage() {
       </form>
 
       {/* History */}
-      {history.length > 0 && (
+      {historyLoading ? (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.6rem",
+            color: "var(--text-secondary)",
+            fontSize: "0.9rem",
+          }}
+        >
+          <span
+            style={{
+              display: "inline-block",
+              width: 14,
+              height: 14,
+              border: "2px solid var(--border)",
+              borderTopColor: "var(--accent-blue)",
+              borderRadius: "50%",
+              animation: "spin 0.8s linear infinite",
+            }}
+          />
+          Loading history…
+        </div>
+      ) : history.length > 0 && (
         <div>
           <h2
             style={{
