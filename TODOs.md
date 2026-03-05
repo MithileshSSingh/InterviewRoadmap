@@ -1398,6 +1398,513 @@ Minimal change — only getClientIp() and env var documentation.
 
 ---
 
+---
+
+## Phase 8: Global Search Enhancements
+
+Improvements to the existing client-side global search (`src/lib/searchIndex.js` + `src/components/SearchModal.js`). The current implementation is functional but has known UX gaps listed below.
+
+---
+
+### 8.1 Strip Markdown from Snippets
+
+**Priority:** High | **Effort:** Tiny | **Dependencies:** None
+
+**Why:** `topic.explanation` is stored as raw markdown. The 200-char snippet shown in search results currently contains backticks, `**bold**`, and `##` heading syntax, making results hard to read.
+
+<details>
+<summary><strong>Prompt for Claude Code</strong></summary>
+
+```
+Fix the search result snippets in src/lib/searchIndex.js — they currently display raw markdown syntax (backticks, **bold**, ## headings) because topic.explanation is stored as markdown.
+
+Requirements:
+
+1. In the INDEX build loop in src/lib/searchIndex.js, strip markdown syntax from the explanation before slicing to 200 chars:
+   - Remove heading markers: ## ### ####
+   - Remove bold/italic: ** * __ _
+   - Remove inline code: `...`
+   - Remove links: [text](url) → keep "text"
+   - Remove code fences: ```...``` blocks → replace with empty string
+   - Remove blockquotes: leading >
+   - Collapse multiple spaces/newlines into a single space
+
+2. A simple regex chain is sufficient — no markdown parser needed:
+   snippet: (topic.explanation ?? "")
+     .replace(/```[\s\S]*?```/g, "")   // fenced code blocks
+     .replace(/`[^`]+`/g, "")          // inline code
+     .replace(/#{1,6}\s/g, "")         // headings
+     .replace(/[*_]{1,2}([^*_]+)[*_]{1,2}/g, "$1")  // bold/italic
+     .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")        // links
+     .replace(/^>\s/gm, "")            // blockquotes
+     .replace(/\s+/g, " ")             // collapse whitespace
+     .trim()
+     .slice(0, 200)
+
+3. No changes needed to SearchModal.js or globals.css — only searchIndex.js changes.
+
+Verify by searching for "closure" — the snippet under the result should read as plain English, not markdown.
+```
+
+</details>
+
+---
+
+### 8.2 Keyboard Navigation in Results (↑ ↓ Enter)
+
+**Priority:** High | **Effort:** Small | **Dependencies:** None
+
+**Why:** Standard expectation in any Cmd+K search palette (Notion, Linear, Vercel all support this). Currently the only way to select a result is mouse click.
+
+<details>
+<summary><strong>Prompt for Claude Code</strong></summary>
+
+```
+Add keyboard navigation to the search results list in src/components/SearchModal.js.
+
+Requirements:
+
+1. Add an `activeIndex` state (number | null) — index into the flat results array, null when nothing is selected.
+
+2. Handle ArrowDown and ArrowUp in the existing keydown listener inside SearchModal:
+   - ArrowDown: increment activeIndex (wraps from last → 0)
+   - ArrowUp: decrement activeIndex (wraps from 0 → last)
+   - Both keys: preventDefault() to stop page scroll
+
+3. Handle Enter key: if activeIndex is not null, navigate to results[activeIndex].url and close the modal.
+
+4. Reset activeIndex to null whenever `query` changes (new search resets selection).
+
+5. Apply an `.active` CSS class to the currently highlighted .search-result-item:
+   - Add to globals.css: `.search-result-item.active { background: var(--bg-card-hover); border-color: var(--glass-border); }`
+   - Pass the class conditionally in the JSX based on whether the item's flat index matches activeIndex
+
+6. Scroll the active item into view using a useEffect that watches activeIndex:
+   - Store refs for each result item, or use document.querySelector with a data-index attribute
+   - Call element.scrollIntoView({ block: "nearest" })
+
+7. Build a flat results array for index mapping: [...roadmapResults, ...allTopicResultsInOrder] — same order as rendered.
+
+Do not change the search logic, debounce, or navigation behaviour for mouse clicks.
+```
+
+</details>
+
+---
+
+### 8.3 Recent Searches
+
+**Priority:** Medium | **Effort:** Small | **Dependencies:** None
+
+**Why:** High perceived value for users who repeatedly look up the same topics. Zero server cost — localStorage only.
+
+<details>
+<summary><strong>Prompt for Claude Code</strong></summary>
+
+```
+Add a "Recent searches" feature to src/components/SearchModal.js using localStorage.
+
+Requirements:
+
+1. **Storage:** localStorage key `search-recents`, value is a JSON array of strings (up to 5 most recent queries), newest first.
+
+2. **When to save:** When the user clicks or keyboard-selects a result, save the current query (trimmed) to recents before navigating. Do not save empty queries. Do not save duplicates — if the query already exists, move it to the front instead.
+
+3. **When to show recents:** When the modal is open AND the query input is empty. Show a "Recent" section header above the list.
+
+4. **Recent item display:** Each recent query shown as a clickable row:
+   - A 🕐 clock emoji on the left
+   - The query text
+   - A small ✕ button on the right to remove that single recent
+   - Clicking the row (not ✕) populates the input with that query and runs the search immediately
+
+5. **Clear all:** Show a small "Clear" text button in the "Recent" section header (right-aligned) that clears all recents.
+
+6. **Hydration:** Read from localStorage inside a useEffect (not during render) to avoid SSR mismatch. Store recents in state and update state + localStorage together.
+
+7. **CSS:** Reuse existing .search-result-item and .search-result-group-label classes for consistent styling. Add .search-recent-clear for the clear button (small, muted, no border).
+
+No API routes, no database. localStorage only.
+```
+
+</details>
+
+---
+
+### 8.4 Match Highlighting
+
+**Priority:** Medium | **Effort:** Small | **Dependencies:** None
+
+**Why:** Users can see *why* a result matched at a glance. Standard in every search UI.
+
+<details>
+<summary><strong>Prompt for Claude Code</strong></summary>
+
+```
+Highlight matched query words in search results in src/components/SearchModal.js.
+
+Requirements:
+
+1. Create a helper function `highlight(text, words)` inside SearchModal.js:
+   - Takes the display text and the array of query words (already split + lowercased)
+   - Returns a React node (array of strings and <mark> elements)
+   - For each occurrence of any word in the text (case-insensitive), wrap it in <mark className="search-highlight">
+   - Preserve original casing of the matched text
+
+   Example implementation:
+   function highlight(text, words) {
+     if (!words.length || !text) return text;
+     const pattern = new RegExp(`(${words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
+     return text.split(pattern).map((part, i) =>
+       pattern.test(part) ? <mark key={i} className="search-highlight">{part}</mark> : part
+     );
+   }
+
+2. Apply highlighting to:
+   - .search-result-title (topicTitle or roadmap title)
+   - .search-result-snippet (the 200-char body excerpt)
+
+3. Pass the current query words down to the render — derive them from the same split used in searchIndex: query.toLowerCase().trim().split(/\s+/).filter(Boolean)
+
+4. Add to globals.css:
+   .search-highlight {
+     background: rgba(var(--accent-blue-rgb, 16, 185, 129), 0.25);
+     color: var(--text-primary);
+     border-radius: 2px;
+     padding: 0 1px;
+   }
+
+Do not change searchIndex.js — highlighting is purely a display concern in the modal.
+```
+
+</details>
+
+---
+
+### 8.5 Fuzzy Matching with Fuse.js
+
+**Priority:** Low | **Effort:** Small | **Dependencies:** 8.1 (clean snippets)
+
+**Why:** Current exact substring matching fails for typos ("closre" won't match "closure"). Fuse.js is ~10 KB and replaces the manual scoring loop entirely.
+
+<details>
+<summary><strong>Prompt for Claude Code</strong></summary>
+
+```
+Replace the manual word-matching loop in src/lib/searchIndex.js with Fuse.js for fuzzy search.
+
+Requirements:
+
+1. Install fuse.js: `bun add fuse.js`
+
+2. In src/lib/searchIndex.js:
+   - Import Fuse from 'fuse.js'
+   - After building the INDEX array, create a Fuse instance with these options:
+     {
+       keys: [
+         { name: 'topicTitle', weight: 0.6 },
+         { name: 'title', weight: 0.6 },        // roadmap entries
+         { name: 'snippet', weight: 0.3 },
+         { name: 'description', weight: 0.3 },  // roadmap entries
+         { name: 'phaseName', weight: 0.1 },
+       ],
+       threshold: 0.4,       // 0 = exact, 1 = match anything
+       includeScore: true,
+       minMatchCharLength: 2,
+     }
+   - Export the updated searchIndex(query, limit) function using fuse.search(query) instead of the manual loop
+   - fuse.search() returns [{ item, score }] — map to just item, then slice to limit
+
+3. Remove the old manual scoring loop entirely.
+
+4. No changes needed to SearchModal.js or globals.css — the function signature stays the same.
+
+Verify: searching "closre" should return "Closures" as a top result.
+```
+
+</details>
+
+---
+
+### 8.6 Filter by Roadmap
+
+**Priority:** Low | **Effort:** Small | **Dependencies:** None
+
+**Why:** Once 10+ roadmaps exist, users may want to narrow results to a single roadmap (e.g., "only search TypeScript").
+
+<details>
+<summary><strong>Prompt for Claude Code</strong></summary>
+
+```
+Add a roadmap filter to the global search modal in src/components/SearchModal.js.
+
+Requirements:
+
+1. Add a `filterSlug` state (string | null) — null means "all roadmaps".
+
+2. Show filter chips below the search input (above results), one per roadmap:
+   - Display: roadmap emoji + short name (e.g. "⚡ JS", "💙 TS", "🧮 DSA")
+   - Wrap in a .search-filters flex row
+   - Active chip has .active class (accent border + tinted background)
+   - Clicking an already-active chip deactivates it (sets filterSlug back to null)
+
+3. Pass filterSlug to searchIndex:
+   - Update src/lib/searchIndex.js: add an optional third parameter `slugFilter`
+   - If slugFilter is set, filter INDEX entries to only those where roadmapSlug === slugFilter (or type === "roadmap" && slug === slugFilter) before scoring
+   - Default: slugFilter = null (search all)
+
+4. Reset filterSlug to null when the modal closes.
+
+5. CSS additions to globals.css:
+   .search-filters { display: flex; gap: 0.4rem; padding: 0.5rem 1.25rem; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+   .search-filter-chip { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+   .search-filter-chip:hover { border-color: var(--glass-border); background: var(--bg-card-hover); }
+   .search-filter-chip.active { border-color: var(--accent-blue); color: var(--accent-blue); background: rgba(16, 185, 129, 0.1); }
+
+Only show the filter row when there is an active query (hide when input is empty / showing recents).
+```
+
+</details>
+
+---
+
+## Phase 9: Search Architecture Migration (When Data Moves to Database)
+
+These features become necessary if the static roadmap data in `src/data/` is migrated to the Prisma database. The current client-side `searchIndex.js` assumes data is importable as JS modules — that assumption breaks when data is in a DB.
+
+---
+
+### 9.1 Build-Time Search Index JSON (Recommended Migration Path)
+
+**Priority:** High | **Effort:** Medium | **Dependencies:** Database migration of src/data/
+
+**Why:** Preserves zero-latency client-side search after the data moves to the database. A build script reads from the DB and writes `public/search-index.json` — the browser fetches this file once (CDN-cached) and all queries stay synchronous on the client.
+
+<details>
+<summary><strong>Prompt for Claude Code</strong></summary>
+
+```
+Replace the static-import-based search index in src/lib/searchIndex.js with a build-time generated JSON file, for use after roadmap data has been migrated from src/data/ to the Prisma database.
+
+Requirements:
+
+1. **Build script** — create scripts/build-search-index.js:
+   - Import Prisma client from src/generated/prisma
+   - Query all roadmaps with their phases and topics (include: { phases: { include: { topics: true } } })
+   - Build the same INDEX array shape as the current searchIndex.js (roadmap entries + topic entries)
+   - Strip markdown from snippets (same regex chain as feature 8.1)
+   - Write the result as JSON to public/search-index.json
+   - Log: "Search index built: X roadmaps, Y topics"
+
+2. **Update package.json build script:**
+   "build": "node scripts/build-search-index.js && next build"
+
+3. **Update src/lib/searchIndex.js:**
+   - Remove all static imports from src/data/
+   - Add a module-level cache: let INDEX_CACHE = null
+   - Export an async getSearchIndex() that:
+     - Returns INDEX_CACHE if already populated
+     - Otherwise fetches /search-index.json, parses it, stores in INDEX_CACHE, returns it
+   - Export searchIndex(query, limit) as an async function that awaits getSearchIndex() before scoring
+
+4. **Update src/components/SearchModal.js:**
+   - searchIndex is now async — await it in the debounced useEffect
+   - Add a loading state for the first call (show a spinner in .search-results while fetching)
+   - Subsequent calls are instant (cache hit)
+
+5. **Add public/search-index.json to .gitignore** — it is a build artefact, not source.
+
+Do not change the scoring algorithm or result shapes.
+```
+
+</details>
+
+---
+
+### 9.2 API Route Search
+
+**Priority:** Medium | **Effort:** Small | **Dependencies:** Database migration of src/data/
+
+**Why:** Simplest migration path — no build script needed. Every search query hits the server but the implementation is straightforward. Best for getting search working quickly after the DB migration; can be replaced with 9.1 later for performance.
+
+<details>
+<summary><strong>Prompt for Claude Code</strong></summary>
+
+```
+Create a server-side search API route for use after roadmap data has been migrated from src/data/ to the Prisma database.
+
+Requirements:
+
+1. **API route** — create src/app/api/search/route.ts:
+   - GET handler with query param `q` (string) and optional `limit` (number, default 20)
+   - If q is empty or missing, return []
+   - Query the database:
+     SELECT roadmap, phase, topic WHERE topic.title ILIKE %q% OR topic.explanation ILIKE %q%
+     (use Prisma's contains filter with mode: 'insensitive')
+   - Also query roadmap-level matches: WHERE roadmap.title ILIKE %q% OR roadmap.description ILIKE %q%
+   - Map results to the same shape as the current searchIndex entries (roadmapSlug, topicTitle, phaseName, snippet, url, etc.)
+   - Sort: title matches first (check in JS after query), then body matches
+   - Return NextResponse.json(results)
+
+2. **Update src/components/SearchModal.js:**
+   - Replace the call to searchIndex(query) with fetch(`/api/search?q=${encodeURIComponent(query)}`)
+   - Use AbortController to cancel in-flight requests when a new query starts (debounce already limits frequency, but fast typers can still cause overlap)
+   - Add a loading spinner state: show a small spinner inside .search-input-container while fetching
+   - Handle fetch errors: show "Search unavailable" in .search-empty on error
+
+3. **Remove src/lib/searchIndex.js** — it is no longer needed once this route is live.
+
+4. Apply rate limiting to the route using the existing rateLimit utility from src/lib/rateLimit.ts.
+
+Note: This adds ~100-300ms latency per search versus the current ~0ms. See feature 9.1 for a zero-latency alternative.
+```
+
+</details>
+
+---
+
+### 9.3 Server-Side Index Cache
+
+**Priority:** Medium | **Effort:** Small | **Dependencies:** 9.2
+
+**Why:** Eliminates the per-request DB query cost from 9.2. The index is built once per server process and cached in memory with a 5-minute TTL. On cache miss it rebuilds from the DB. On roadmap write it is invalidated immediately.
+
+<details>
+<summary><strong>Prompt for Claude Code</strong></summary>
+
+```
+Add a server-side in-memory cache to the search API route (src/app/api/search/route.ts) to avoid a full DB query on every search request.
+
+Requirements:
+
+1. Create src/lib/searchCache.ts:
+   - Module-level variable: let cache: { index: SearchEntry[]; builtAt: number } | null = null
+   - Export async function getSearchIndex(): Promise<SearchEntry[]>:
+     - If cache exists and Date.now() - cache.builtAt < 5 * 60 * 1000 (5 min TTL), return cache.index
+     - Otherwise: query DB for all roadmaps + phases + topics, build the same INDEX array shape, store in cache with builtAt = Date.now(), return index
+   - Export function invalidateSearchCache(): void — sets cache = null
+
+2. Update src/app/api/search/route.ts to use getSearchIndex() instead of querying the DB directly.
+
+3. Call invalidateSearchCache() in any API route that writes roadmap/phase/topic data to the DB (e.g., POST /api/careerforge/generate after saving a new roadmap, and any future content management routes).
+
+4. Use the same SearchEntry type as defined in 9.2 for the cache entries.
+
+No changes to SearchModal.js — the API interface stays the same.
+```
+
+</details>
+
+---
+
+### 9.4 SQLite / Turso Full-Text Search (FTS5)
+
+**Priority:** Low | **Effort:** Medium | **Dependencies:** Database migration of src/data/
+
+**Why:** SQLite FTS5 provides relevance ranking, prefix matching, and phrase search built into the database engine — no application-level scoring loop needed. Turso (the remote DB used in production) supports FTS5.
+
+<details>
+<summary><strong>Prompt for Claude Code</strong></summary>
+
+```
+Add a SQLite FTS5 virtual table for full-text search over roadmap topics, for use after roadmap data has been migrated to the Prisma database.
+
+Requirements:
+
+1. **Migration** — create a new Prisma migration (bunx prisma migrate dev --name add_fts5_search):
+   - Add raw SQL to create the FTS5 virtual table:
+     CREATE VIRTUAL TABLE IF NOT EXISTS topic_fts USING fts5(
+       topic_id UNINDEXED,
+       roadmap_slug UNINDEXED,
+       roadmap_title,
+       phase_name,
+       topic_title,
+       snippet,
+       content='',
+       tokenize='porter unicode61'
+     );
+   - Note: 'porter' stemming means "closure" also matches "closures", "closed"
+
+2. **Populate the FTS table** — in the same migration or a separate seed script:
+   INSERT INTO topic_fts SELECT id, roadmap_slug, roadmap_title, phase_name, title, substr(explanation, 0, 200) FROM Topic;
+
+3. **Keep FTS in sync** — add application-level sync in the API route that writes topics:
+   - On topic INSERT: INSERT INTO topic_fts VALUES (...)
+   - On topic UPDATE: INSERT INTO topic_fts(topic_fts, rowid, ...) VALUES ('delete', ...) then re-insert
+   - On topic DELETE: INSERT INTO topic_fts(topic_fts, rowid, ...) VALUES ('delete', ...)
+
+4. **Update src/app/api/search/route.ts** to use FTS5:
+   const results = await db.$queryRaw`
+     SELECT topic_id, roadmap_slug, roadmap_title, phase_name, topic_title,
+            snippet(topic_fts, 4, '<mark>', '</mark>', '…', 12) as snippet,
+            rank
+     FROM topic_fts
+     WHERE topic_fts MATCH ${query}
+     ORDER BY rank
+     LIMIT ${limit}
+   `
+
+5. **Remove the manual scoring loop** from the API route — FTS5 rank handles relevance.
+
+Note: Prisma does not model FTS5 virtual tables. Use $queryRaw and $executeRaw for all FTS5 operations.
+```
+
+</details>
+
+---
+
+### 9.5 Algolia / Typesense Search (For Scale)
+
+**Priority:** Low | **Effort:** Large | **Dependencies:** Database migration of src/data/
+
+**Why:** Once the platform has thousands of user-generated CareerForge roadmaps or community content, a dedicated search service provides sub-20ms results, built-in fuzzy matching, typo tolerance, and analytics — without adding load to the primary database.
+
+<details>
+<summary><strong>Prompt for Claude Code</strong></summary>
+
+```
+Integrate Algolia (or Typesense as a self-hosted alternative) for full-text search, for use after roadmap data has been migrated to the Prisma database and search scale requires a dedicated service.
+
+Requirements:
+
+1. **Choose service:**
+   - Algolia: hosted, generous free tier (10K records, 10K searches/month), best DX
+   - Typesense: self-hosted or Typesense Cloud, open-source, similar API
+
+   This prompt uses Algolia. For Typesense, replace algoliasearch with typesense and adjust client initialisation.
+
+2. **Install:** bun add algoliasearch
+
+3. **Environment variables** (add to .env.local and CLAUDE.md):
+   ALGOLIA_APP_ID=...
+   ALGOLIA_SEARCH_API_KEY=...    # public, read-only
+   ALGOLIA_ADMIN_API_KEY=...     # server-only, for indexing
+
+4. **Indexing script** — create scripts/index-algolia.js:
+   - Connect using ALGOLIA_APP_ID + ALGOLIA_ADMIN_API_KEY
+   - Query all roadmaps + phases + topics from DB
+   - Build objects with objectID = topic.id (or roadmap.slug for roadmap entries)
+   - Push to Algolia index named 'roadmap_content'
+   - Run after every content deployment: add to package.json "postbuild" or CI pipeline
+
+5. **Search API route** — update src/app/api/search/route.ts:
+   - Use algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_API_KEY) (public key on server is fine)
+   - index.search(query, { hitsPerPage: limit })
+   - Map hits to the same result shape as before (roadmapSlug, topicTitle, url, etc.)
+
+6. **Incremental sync** — in any route that writes roadmap/topic data:
+   - On create/update: index.saveObject(record)
+   - On delete: index.deleteObject(objectID)
+
+7. **Remove src/lib/searchCache.ts** if it exists — Algolia handles caching.
+
+Keep the SearchModal.js fetch-based approach unchanged — it calls /api/search regardless of the backend.
+```
+
+</details>
+
+---
+
 ## Suggested Implementation Order
 
 ```
@@ -1408,6 +1915,8 @@ Phase 4 (Content):      4.1 → 4.2 → 4.3 → 4.4  (can be done in parallel)
 Phase 5 (AI Features):  5.1 → 5.2 → 5.3 → 5.4
 Phase 6 (Polish):       6.1 → 6.2 → 6.3 → 6.4 → 6.5
 Phase 7 (Infra):        7.2 → 7.3 → 7.1  (7.1 requires Upstash account; 7.2 + 7.3 are local-only changes)
+Phase 8 (Search UX):    8.1 → 8.2 → 8.3 → 8.4 → 8.5 → 8.6  (all independent, do in any order)
+Phase 9 (Search Arch):  Only needed if src/data/ is migrated to DB. Path: 9.2 → 9.3 → 9.1 (replace 9.2) → 9.4 or 9.5 (at scale)
 ```
 
 Phases 1-3 are sequential (each builds on the previous).
@@ -1415,3 +1924,7 @@ Phases 1-3 are sequential (each builds on the previous).
 Phases 4, 5, and 6 can be worked on in parallel or in any order after Phase 1.
 
 Phase 7 can be done at any time after Phase 1.5; start with 7.2 and 7.3 (no external dependencies), then 7.1 if scaling to multiple replicas.
+
+Phase 8 features are all independent of each other — pick any order based on user impact. Start with 8.1 (tiny effort, immediate improvement) and 8.2 (high UX value).
+
+Phase 9 is conditional — only relevant if the static data in `src/data/` is moved to the database. If that migration happens, start with 9.2 (quickest to ship), then replace it with 9.1 for zero-latency, then consider 9.4 or 9.5 at scale.
