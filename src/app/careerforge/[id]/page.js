@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import StreamingProgress from "@/components/careerforge/StreamingProgress";
 import RoadmapView from "@/components/careerforge/RoadmapView";
@@ -17,42 +17,8 @@ export default function RoadmapPage() {
 
   const abortRef = useRef(null);
 
-  useEffect(() => {
-    if (!id) return;
-    checkAndLoad();
-    return () => abortRef.current?.abort();
-  }, [id]);
-
-  async function checkAndLoad() {
-    try {
-      const res = await fetch(`/api/careerforge/${id}`);
-      if (!res.ok) {
-        setViewState("error");
-        setErrorMessage("Roadmap not found.");
-        return;
-      }
-      const data = await res.json();
-      const rm = data.roadmap;
-
-      if (rm.status === "complete" && rm.result) {
-        setRoadmap(rm.result);
-        setViewState("complete");
-      } else if (rm.status === "error") {
-        setViewState("error");
-        setErrorMessage(
-          rm.errorMessage ?? "Generation failed. Please try again.",
-        );
-      } else {
-        // pending or running — connect to SSE
-        startStreaming();
-      }
-    } catch {
-      setViewState("error");
-      setErrorMessage("Failed to load roadmap.");
-    }
-  }
-
-  async function startStreaming() {
+  const startStreaming = useCallback(async () => {
+    abortRef.current?.abort();
     setViewState("streaming");
     const controller = new AbortController();
     abortRef.current = controller;
@@ -99,11 +65,60 @@ export default function RoadmapPage() {
 
     if (result === "aborted") {
       // User navigated away — fine
-    } else if (result === "error" && viewState !== "complete") {
+    } else if (result === "error") {
       setViewState("error");
       setErrorMessage("Connection lost. Please try refreshing.");
     }
-  }
+  }, [id]);
+
+  const checkAndLoad = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/careerforge/${id}`);
+      if (!res.ok) {
+        setViewState("error");
+        setErrorMessage("Roadmap not found.");
+        return;
+      }
+      const data = await res.json();
+      const rm = data.roadmap;
+
+      if (rm?.generation) {
+        if (rm.generation.agentStatuses) {
+          setAgentStatuses(rm.generation.agentStatuses);
+        }
+        if (typeof rm.generation.progress === "number") {
+          setProgress((prev) => Math.max(prev, rm.generation.progress));
+        }
+      }
+
+      if (rm.status === "complete" && rm.result) {
+        setRoadmap(rm.result);
+        setViewState("complete");
+      } else if (rm.status === "error") {
+        setViewState("error");
+        setErrorMessage(
+          rm.errorMessage ?? "Generation failed. Please try again.",
+        );
+      } else {
+        // pending or running — connect to SSE
+        startStreaming();
+      }
+    } catch {
+      setViewState("error");
+      setErrorMessage("Failed to load roadmap.");
+    }
+  }, [id, startStreaming]);
+
+  useEffect(() => {
+    if (!id) return;
+    const timer = setTimeout(() => {
+      void checkAndLoad();
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+      abortRef.current?.abort();
+    };
+  }, [id, checkAndLoad]);
 
   if (viewState === "checking") {
     return (

@@ -109,13 +109,67 @@ const CareerForgeAnnotation = Annotation.Root({
 type CareerForgeState = typeof CareerForgeAnnotation.State;
 type Emitter = (event: CareerForgeSSEEvent) => void;
 
+const PIPELINE_AGENTS = [
+  "orchestrator",
+  "jobIntel",
+  "salaryIntel",
+  "linkedinIntel",
+  "skillsMapper",
+  "resourceFinder",
+  "roadmapBuilder",
+  "formatter",
+] as const;
+
+type AgentName = (typeof PIPELINE_AGENTS)[number];
+type AgentRunStatus = "running" | "complete" | "error";
+
+async function persistAgentRunStatus(
+  roadmapId: string,
+  agentName: AgentName,
+  status: AgentRunStatus,
+  errorMessage?: string,
+) {
+  const now = new Date();
+  try {
+    const update = await prisma.agentRun.updateMany({
+      where: { roadmapId, agentName },
+      data: {
+        status,
+        startedAt: status === "running" ? now : undefined,
+        completedAt: status === "running" ? null : now,
+        errorMessage: status === "error" ? (errorMessage ?? null) : null,
+      },
+    });
+
+    if (update.count === 0) {
+      await prisma.agentRun.create({
+        data: {
+          roadmapId,
+          agentName,
+          status,
+          startedAt: now,
+          completedAt: status === "running" ? null : now,
+          errorMessage: status === "error" ? (errorMessage ?? null) : null,
+        },
+      });
+    }
+  } catch (err) {
+    console.warn(
+      `[Pipeline] Failed to persist ${agentName} status (${status}):`,
+      err,
+    );
+  }
+}
+
 // ─── Node: Orchestrator ───────────────────────────────────────────────────────
 
 const orchestratorNode = async (
   state: CareerForgeState,
   config: { configurable?: { emitter?: Emitter } },
 ) => {
+  const agentName: AgentName = "orchestrator";
   const emitter = config.configurable?.emitter;
+  await persistAgentRunStatus(state.roadmapId, agentName, "running");
   emitter?.({
     type: "status",
     agent: "orchestrator",
@@ -133,6 +187,7 @@ const orchestratorNode = async (
 
   emitter?.({ type: "progress", agent: "orchestrator", percent: 5 });
   emitter?.({ type: "status", agent: "orchestrator", message: "Analysis started" });
+  await persistAgentRunStatus(state.roadmapId, agentName, "complete");
   return {};
 };
 
@@ -142,7 +197,9 @@ const jobIntelNode = async (
   state: CareerForgeState,
   config: { configurable?: { emitter?: Emitter } },
 ) => {
+  const agentName: AgentName = "jobIntel";
   const emitter = config.configurable?.emitter;
+  await persistAgentRunStatus(state.roadmapId, agentName, "running");
   emitter?.({
     type: "status",
     agent: "jobIntel",
@@ -253,6 +310,7 @@ Respond ONLY with a valid JSON object matching this exact schema (no markdown, n
     });
     emitter?.({ type: "progress", agent: "jobIntel", percent: 20 });
     emitter?.({ type: "status", agent: "jobIntel", message: "Job intel complete" });
+    await persistAgentRunStatus(state.roadmapId, agentName, "complete");
 
     return {
       roleIntel: parsed.roleIntel ?? defaultRoleIntel,
@@ -260,6 +318,12 @@ Respond ONLY with a valid JSON object matching this exact schema (no markdown, n
     };
   } catch (err) {
     console.error("[Job Intel Agent] Error:", err);
+    await persistAgentRunStatus(
+      state.roadmapId,
+      agentName,
+      "error",
+      String(err),
+    );
     emitter?.({
       type: "status",
       agent: "jobIntel",
@@ -291,7 +355,9 @@ const salaryIntelNode = async (
   state: CareerForgeState,
   config: { configurable?: { emitter?: Emitter } },
 ) => {
+  const agentName: AgentName = "salaryIntel";
   const emitter = config.configurable?.emitter;
+  await persistAgentRunStatus(state.roadmapId, agentName, "running");
   emitter?.({
     type: "status",
     agent: "salaryIntel",
@@ -369,10 +435,17 @@ Respond ONLY with a valid JSON object (no markdown):
     emitter?.({ type: "partial", section: "salaryIntel", data: parsed });
     emitter?.({ type: "progress", agent: "salaryIntel", percent: 20 });
     emitter?.({ type: "status", agent: "salaryIntel", message: "Compensation data ready" });
+    await persistAgentRunStatus(state.roadmapId, agentName, "complete");
 
     return { salaryIntel: parsed };
   } catch (err) {
     console.error("[Salary Intel Agent] Error:", err);
+    await persistAgentRunStatus(
+      state.roadmapId,
+      agentName,
+      "error",
+      String(err),
+    );
     emitter?.({
       type: "status",
       agent: "salaryIntel",
@@ -397,7 +470,9 @@ const linkedInIntelNode = async (
   state: CareerForgeState,
   config: { configurable?: { emitter?: Emitter } },
 ) => {
+  const agentName: AgentName = "linkedinIntel";
   const emitter = config.configurable?.emitter;
+  await persistAgentRunStatus(state.roadmapId, agentName, "running");
   emitter?.({
     type: "status",
     agent: "linkedinIntel",
@@ -467,10 +542,17 @@ Respond ONLY with valid JSON (no markdown):
     emitter?.({ type: "partial", section: "peopleIntel", data: parsed });
     emitter?.({ type: "progress", agent: "linkedinIntel", percent: 20 });
     emitter?.({ type: "status", agent: "linkedinIntel", message: "LinkedIn strategy ready" });
+    await persistAgentRunStatus(state.roadmapId, agentName, "complete");
 
     return { peopleIntel: parsed };
   } catch (err) {
     console.error("[LinkedIn Intel Agent] Error:", err);
+    await persistAgentRunStatus(
+      state.roadmapId,
+      agentName,
+      "error",
+      String(err),
+    );
     emitter?.({ type: "status", agent: "linkedinIntel", message: "Using default strategy" });
     return {
       errors: [`linkedinIntel: ${String(err)}`],
@@ -490,7 +572,9 @@ const skillsMapperNode = async (
   state: CareerForgeState,
   config: { configurable?: { emitter?: Emitter } },
 ) => {
+  const agentName: AgentName = "skillsMapper";
   const emitter = config.configurable?.emitter;
+  await persistAgentRunStatus(state.roadmapId, agentName, "running");
   emitter?.({
     type: "status",
     agent: "skillsMapper",
@@ -563,10 +647,17 @@ Respond ONLY with valid JSON (no markdown):
     });
     emitter?.({ type: "progress", agent: "skillsMapper", percent: 30 });
     emitter?.({ type: "status", agent: "skillsMapper", message: "Skill tree mapped" });
+    await persistAgentRunStatus(state.roadmapId, agentName, "complete");
 
     return { skillTree: parsed };
   } catch (err) {
     console.error("[Skills Mapper Agent] Error:", err);
+    await persistAgentRunStatus(
+      state.roadmapId,
+      agentName,
+      "error",
+      String(err),
+    );
     emitter?.({ type: "status", agent: "skillsMapper", message: "Using default skill tree" });
     return {
       errors: [`skillsMapper: ${String(err)}`],
@@ -581,7 +672,9 @@ const resourceFinderNode = async (
   state: CareerForgeState,
   config: { configurable?: { emitter?: Emitter } },
 ) => {
+  const agentName: AgentName = "resourceFinder";
   const emitter = config.configurable?.emitter;
+  await persistAgentRunStatus(state.roadmapId, agentName, "running");
   emitter?.({
     type: "status",
     agent: "resourceFinder",
@@ -650,9 +743,16 @@ Example:
 
     emitter?.({ type: "progress", agent: "resourceFinder", percent: 55 });
     emitter?.({ type: "status", agent: "resourceFinder", message: "Resources found" });
+    await persistAgentRunStatus(state.roadmapId, agentName, "complete");
     return { enrichedPhases };
   } catch (err) {
     console.error("[Resource Finder Agent] Error:", err);
+    await persistAgentRunStatus(
+      state.roadmapId,
+      agentName,
+      "error",
+      String(err),
+    );
     emitter?.({ type: "status", agent: "resourceFinder", message: "Using available resources" });
     return {
       errors: [`resourceFinder: ${String(err)}`],
@@ -667,7 +767,9 @@ const roadmapBuilderNode = async (
   state: CareerForgeState,
   config: { configurable?: { emitter?: Emitter } },
 ) => {
+  const agentName: AgentName = "roadmapBuilder";
   const emitter = config.configurable?.emitter;
+  await persistAgentRunStatus(state.roadmapId, agentName, "running");
   emitter?.({
     type: "status",
     agent: "roadmapBuilder",
@@ -773,9 +875,16 @@ Respond ONLY with valid JSON (no markdown):
 
     emitter?.({ type: "progress", agent: "roadmapBuilder", percent: 80 });
     emitter?.({ type: "status", agent: "roadmapBuilder", message: "Roadmap assembled" });
+    await persistAgentRunStatus(state.roadmapId, agentName, "complete");
     return { roadmap };
   } catch (err) {
     console.error("[Roadmap Builder Agent] Error:", err);
+    await persistAgentRunStatus(
+      state.roadmapId,
+      agentName,
+      "error",
+      String(err),
+    );
     emitter?.({ type: "status", agent: "roadmapBuilder", message: "Using partial roadmap" });
     return { errors: [`roadmapBuilder: ${String(err)}`] };
   }
@@ -787,7 +896,9 @@ const formatterNode = async (
   state: CareerForgeState,
   config: { configurable?: { emitter?: Emitter } },
 ) => {
+  const agentName: AgentName = "formatter";
   const emitter = config.configurable?.emitter;
+  await persistAgentRunStatus(state.roadmapId, agentName, "running");
   emitter?.({
     type: "status",
     agent: "formatter",
@@ -836,26 +947,7 @@ Return ONLY the fixed JSON with no explanation or markdown.`;
       },
     });
 
-    // Log agent runs
-    await prisma.agentRun.createMany({
-      data: [
-        "orchestrator",
-        "jobIntel",
-        "salaryIntel",
-        "linkedinIntel",
-        "skillsMapper",
-        "resourceFinder",
-        "roadmapBuilder",
-        "formatter",
-      ].map((agentName) => ({
-        roadmapId: state.roadmapId,
-        agentName,
-        status: state.errors?.some((e) => e.startsWith(agentName))
-          ? "error"
-          : "complete",
-        completedAt: new Date(),
-      })),
-    });
+    await persistAgentRunStatus(state.roadmapId, agentName, "complete");
 
     emitter?.({ type: "progress", agent: "formatter", percent: 100 });
     emitter?.({ type: "status", agent: "formatter", message: "Roadmap saved" });
@@ -864,6 +956,12 @@ Return ONLY the fixed JSON with no explanation or markdown.`;
     return {};
   } catch (err) {
     console.error("[Formatter Agent] Error:", err);
+    await persistAgentRunStatus(
+      state.roadmapId,
+      agentName,
+      "error",
+      String(err),
+    );
 
     // Mark DB as error
     await prisma.roadmap
