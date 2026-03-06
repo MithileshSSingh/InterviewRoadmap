@@ -2,6 +2,10 @@
 
 A Next.js platform with two features: (1) static interview roadmaps for JS, TS, DSA, Android, React Native, and Salesforce, and (2) CareerForge — an AI-powered roadmap generator that builds personalized interview prep plans using a LangGraph multi-agent pipeline with web research.
 
+## Product Positioning
+
+Treat this project as a full-fledged production application, not an MVP or prototype. Recommendations, code changes, architecture decisions, UX, security, reliability, observability, data handling, authentication, and deployment guidance should all assume production-grade quality and maintainability.
+
 ## Tech Stack
 
 - **Framework:** Next.js 16.1.6 (App Router), React 19.2.3

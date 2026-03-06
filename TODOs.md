@@ -124,7 +124,7 @@ Expanding the content library.
 
 ---
 
-- [ ] **4.2 Complete the "Coming Soon" Roadmaps — Node.js**
+- [x] **4.2 Complete the "Coming Soon" Roadmaps — Node.js**
   **Priority:** High | **Effort:** Large | **Dependencies:** None
   **Why:** Node.js backend interviews are extremely common, and it's currently listed as "Coming Soon."
 
@@ -154,7 +154,7 @@ Leveraging the existing AI infrastructure for powerful new capabilities.
 
 ---
 
-- [ ] **5.2 Code Playground (Embedded Editor)**
+- [x] **5.2 Code Playground (Embedded Editor)**
   **Priority:** Medium | **Effort:** Large | **Dependencies:** None
   **Why:** Users read code examples but can't practice in the app. They have to copy-paste to an external editor.
 
@@ -164,7 +164,7 @@ Leveraging the existing AI infrastructure for powerful new capabilities.
 
 ---
 
-- [ ] **5.3 Quiz / Assessment System**
+- [x] **5.3 Quiz / Assessment System**
   **Priority:** Medium | **Effort:** Large | **Dependencies:** None
   **Why:** Users need to validate their understanding. Reading content is passive — quizzes are active learning.
 
