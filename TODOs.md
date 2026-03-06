@@ -441,6 +441,152 @@ Only modify globals.css for style changes and component files where structural c
 
 ---
 
+### 2.5 In-App Feedback System
+
+**Priority:** High | **Effort:** Medium | **Dependencies:** 1.5 (rate limiting), 3.1 (optional for user-linked feedback)
+
+**Why:** There is no structured way for users to report bugs, request features, or rate roadmap quality from inside the app.
+
+<details>
+<summary><strong>✅ Prompt for Claude Code</strong></summary>
+
+```
+Implement a complete in-app feedback system for this Next.js 16 interview roadmap platform.
+
+Requirements:
+
+1. **Database model (Prisma)**
+   - Add a new `Feedback` model in prisma/schema.prisma with:
+     - `id` String @id @default(cuid())
+     - `type` String  // "bug" | "feature" | "content" | "general"
+     - `category` String? // optional sub-category
+     - `message` String
+     - `email` String? // optional contact
+     - `rating` Int? // 1-5 optional
+     - `roadmapSlug` String? // if feedback is tied to a roadmap
+     - `phaseId` String?
+     - `topicId` String?
+     - `pagePath` String? // e.g. /roadmap/javascript/phase1/closures
+     - `metadata` Json? // browser/app context
+     - `createdAt` DateTime @default(now())
+     - `updatedAt` DateTime @updatedAt
+   - Keep schema compatible with SQLite + Turso.
+   - Generate Prisma client after schema changes.
+
+2. **API routes**
+   - Create `POST /api/feedback` in `src/app/api/feedback/route.ts`:
+     - Validate input with zod (create schema in `src/lib/feedback/schema.ts`)
+     - Sanitize strings (trim, enforce max lengths)
+     - Require minimum message length (e.g., 10 chars)
+     - Save to DB with Prisma
+     - Return `{ success: true, feedbackId }`
+   - Add rate limiting via existing middleware strategy:
+     - `POST /api/feedback`: 10 requests/min/IP
+
+3. **Feedback UI component**
+   - Create `src/components/FeedbackWidget.js` (`"use client"`):
+     - Floating feedback button visible on all pages (bottom-right, theme-aware)
+     - Opens modal with form fields:
+       - Type (bug/feature/content/general)
+       - Optional rating (1-5) for content/general
+       - Message (required)
+       - Optional email
+       - Include current page context automatically
+     - Submit state handling: loading, success toast/message, error state
+     - Reset form on success
+   - Add widget to `src/app/layout.js` so it is globally available.
+
+4. **Roadmap/topic contextual feedback**
+   - On topic pages (`src/app/roadmap/[slug]/[phaseId]/[topicId]/page.js`), add a compact block:
+     - “Was this topic helpful?” thumbs up/down
+     - “Report issue” quick action that opens the feedback modal prefilled with:
+       - type = "content"
+       - roadmapSlug, phaseId, topicId, pagePath
+   - Store contextual identifiers in payload for better triage.
+
+5. **Styling**
+   - Add CSS classes to `src/globals.css`:
+     - `.feedback-widget`, `.feedback-modal`, `.feedback-form`, `.feedback-chip`, etc.
+   - Use existing design tokens and CSS vars (`--bg-*`, `--accent-*`, glass styles).
+   - Ensure responsive behavior on mobile and desktop.
+
+6. **Validation + tests**
+   - Add tests for zod schema validation and API handlers:
+     - valid payload accepted
+     - invalid type/message rejected
+     - rate-limited requests return 429
+   - Add one component test for modal open/submit success flow.
+
+7. **Non-functional requirements**
+   - Do not break existing SSE CareerForge flows.
+   - Keep feedback submission lightweight and non-blocking.
+   - Follow existing file naming and mixed JS/TS conventions in this repo.
+```
+
+</details>
+
+---
+
+### 2.6 Feedback Admin Management
+
+**Priority:** Medium | **Effort:** Medium | **Dependencies:** 2.5, 3.1 (admin access pattern)
+
+**Why:** Product/admin team needs a dedicated workflow to review, triage, and close user feedback.
+
+<details>
+<summary><strong>✅ Prompt for Claude Code</strong></summary>
+
+```
+Implement an admin feedback management feature for the existing feedback system in this Next.js 16 project.
+
+Requirements:
+
+1. **Prisma update**
+   - Extend existing `Feedback` model with:
+     - `status` String @default("new") // "new" | "reviewed" | "planned" | "closed"
+     - `reviewNotes` String? // optional internal notes
+   - Keep backward compatibility with existing feedback rows.
+   - Run migration and regenerate Prisma client.
+
+2. **Admin APIs**
+   - Create `GET /api/feedback`:
+     - Query params: `status`, `type`, `limit`, `cursor`
+     - Return paginated feedback sorted newest first
+   - Create `PATCH /api/feedback/[id]`:
+     - Allow updating `status` and optional `reviewNotes`
+     - Validate with zod
+   - Protect both routes with the existing admin protection pattern used in this project.
+   - Apply stricter rate limits for admin endpoints.
+
+3. **Admin page**
+   - Create `src/app/admin/feedback/page.js`:
+     - Filters: status + type
+     - List columns: createdAt, type, message preview, rating, pagePath, status
+     - Detail panel/modal with full message + metadata + review notes
+     - Actions to update status (new/reviewed/planned/closed)
+   - Keep UI consistent with existing admin dashboard patterns.
+
+4. **Styling**
+   - Add needed classes in `src/globals.css`:
+     - `.feedback-admin-page`, `.feedback-admin-table`, `.feedback-status-badge`, `.feedback-detail-panel`, etc.
+   - Ensure responsive behavior for smaller screens.
+
+5. **Tests**
+   - API tests for:
+     - unauthorized access rejected
+     - valid status transition accepted
+     - invalid status rejected
+   - One component test for status update interaction in admin UI.
+
+6. **Non-functional**
+   - Keep user-facing feedback submit flow unchanged.
+   - Keep file naming and mixed JS/TS conventions aligned with the repo.
+```
+
+</details>
+
+---
+
 ## Phase 3: Authentication & Data Persistence
 
 Moving from anonymous localStorage sessions to proper user accounts.
@@ -1936,7 +2082,7 @@ Keep the SearchModal.js fetch-based approach unchanged — it calls /api/search 
 
 ```
 Phase 1 (Foundation):    1.1 → 1.2 → 1.3 → 1.4 → 1.5 → 1.6
-Phase 2 (UX):           2.1 → 2.2 → 2.3 → 2.4
+Phase 2 (UX):           2.1 → 2.2 → 2.3 → 2.4 → 2.5 → 2.6
 Phase 3 (Auth & Data):  3.1 → 3.2 → 3.3
 Phase 4 (Content):      4.1 → 4.2 → 4.3 → 4.4  (can be done in parallel)
 Phase 5 (AI Features):  5.1 → 5.2 → 5.3 → 5.4
