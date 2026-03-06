@@ -27,15 +27,20 @@ export async function POST(request: Request) {
       );
     }
 
-    const { metadata, email, ...rest } = result.data;
+    const { data } = result;
 
     const feedback = await prisma.feedback.create({
       data: {
-        ...rest,
-        // Store empty string email as null
-        email: email || null,
-        // Serialize metadata object to JSON string for SQLite
-        metadata: metadata ? JSON.stringify(metadata) : null,
+        type: data.type,
+        message: data.message,
+        category: data.category || null,
+        email: data.email || null,
+        rating: data.rating || null,
+        roadmapSlug: data.roadmapSlug || null,
+        phaseId: data.phaseId || null,
+        topicId: data.topicId || null,
+        pagePath: data.pagePath || null,
+        metadata: data.metadata ? JSON.stringify(data.metadata) : null,
       },
     });
 
