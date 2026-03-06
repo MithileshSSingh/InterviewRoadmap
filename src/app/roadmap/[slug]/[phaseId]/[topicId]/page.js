@@ -1,5 +1,7 @@
 "use client";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { getRoadmapPhases } from "@/data";
 import { getRoadmapMeta } from "@/data/roadmaps";
@@ -10,6 +12,10 @@ import TopicQuizSection from "@/components/TopicQuizSection";
 
 import { marked } from "marked";
 
+const CodePlayground = dynamic(() => import("@/components/CodePlayground"), {
+  ssr: false,
+});
+
 function renderMarkdown(text) {
   if (!text) return null;
   // Some legacy data might still have literal string "\n" instead of actual newlines
@@ -17,9 +23,106 @@ function renderMarkdown(text) {
   return marked.parse(processed);
 }
 
+function normalizeLanguage(language) {
+  if (!language) return "javascript";
+  const lower = language.toLowerCase();
+  if (lower === "js" || lower === "jsx" || lower === "javascript") {
+    return "javascript";
+  }
+  if (lower === "ts" || lower === "tsx" || lower === "typescript") {
+    return "typescript";
+  }
+  if (lower === "py" || lower === "python") {
+    return "python";
+  }
+  return lower;
+}
+
+function parseCodeExample(rawCode) {
+  const source = (rawCode || "").trim();
+  if (!source) return { code: "", language: "javascript" };
+
+  const fenced = source.match(/^```([a-zA-Z0-9+#-]*)\n?([\s\S]*?)```$/);
+  if (fenced) {
+    return {
+      code: fenced[2].trim(),
+      language: normalizeLanguage(fenced[1] || "javascript"),
+    };
+  }
+
+  return { code: source, language: "javascript" };
+}
+
+function createExerciseStarter(topicTitle, exercise, language) {
+  const normalizedLanguage = normalizeLanguage(language);
+  const cleanedExercise = (exercise || "")
+    .replace(/\*\*/g, "")
+    .replace(/`/g, "")
+    .replace(/\\n/g, "\n")
+    .slice(0, 220);
+
+  if (normalizedLanguage === "python") {
+    return `# ${topicTitle} - Practice
+# Instructions:
+# ${cleanedExercise || "Solve the exercise requirements below."}
+
+def solution():
+    # TODO: implement
+    pass
+
+if __name__ == "__main__":
+    solution()
+`;
+  }
+
+  if (normalizedLanguage === "typescript") {
+    return `/**
+ * ${topicTitle} - Practice
+ * ${cleanedExercise || "Solve the exercise requirements below."}
+ */
+
+function solution(): void {
+  // TODO: implement
+}
+
+solution();
+`;
+  }
+
+  return `/**
+ * ${topicTitle} - Practice
+ * ${cleanedExercise || "Solve the exercise requirements below."}
+ */
+
+function solution() {
+  // TODO: implement
+}
+
+solution();
+`;
+}
+
 export default function TopicPage() {
   const params = useParams();
   const { slug, phaseId, topicId } = params;
+  const [codeViewMode, setCodeViewMode] = useState("view");
+  const [isExercisePlaygroundOpen, setIsExercisePlaygroundOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const updateViewport = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (mobile) {
+        setCodeViewMode("view");
+        setIsExercisePlaygroundOpen(false);
+      }
+    };
+
+    updateViewport();
+    window.addEventListener("resize", updateViewport);
+    return () => window.removeEventListener("resize", updateViewport);
+  }, []);
 
   const meta = getRoadmapMeta(slug);
   const phases = getRoadmapPhases(slug);
@@ -58,6 +161,13 @@ export default function TopicPage() {
     }
   }
 
+  const parsedExample = parseCodeExample(topic.codeExample);
+  const exerciseStarter = createExerciseStarter(
+    topic.title,
+    topic.exercise,
+    parsedExample.language || "javascript",
+  );
+
   return (
     <div className="topic-page">
       <div className="breadcrumb">
@@ -94,7 +204,40 @@ export default function TopicPage() {
         <h2 className="section-title">
           <span className="icon">💻</span> Code Example
         </h2>
-        <CodeBlock code={topic.codeExample} />
+        {!isMobile && (
+          <div className="code-view-toggle" role="tablist" aria-label="Code view mode">
+            <button
+              type="button"
+              role="tab"
+              className={`code-view-toggle-btn ${codeViewMode === "view" ? "active" : ""}`}
+              aria-selected={codeViewMode === "view"}
+              onClick={() => setCodeViewMode("view")}
+            >
+              View
+            </button>
+            <button
+              type="button"
+              role="tab"
+              className={`code-view-toggle-btn ${codeViewMode === "playground" ? "active" : ""}`}
+              aria-selected={codeViewMode === "playground"}
+              onClick={() => setCodeViewMode("playground")}
+            >
+              Playground
+            </button>
+          </div>
+        )}
+        {isMobile || codeViewMode === "view" ? (
+          <CodeBlock code={parsedExample.code} language={parsedExample.language} />
+        ) : (
+          <Suspense fallback={<div className="playground-loading">Loading editor...</div>}>
+            <CodePlayground
+              key={`topic-example-${topic.id}-${parsedExample.language}`}
+              code={parsedExample.code}
+              language={parsedExample.language}
+              height="460px"
+            />
+          </Suspense>
+        )}
       </section>
 
       {/* Exercise */}
@@ -107,7 +250,33 @@ export default function TopicPage() {
             className="exercise-text"
             dangerouslySetInnerHTML={{ __html: renderMarkdown(topic.exercise) }}
           />
+          {!isMobile && (
+            <button
+              type="button"
+              className="exercise-try-btn"
+              onClick={() => setIsExercisePlaygroundOpen((prev) => !prev)}
+            >
+              {isExercisePlaygroundOpen ? "Hide" : "Try it"}
+            </button>
+          )}
         </div>
+        {!isMobile && isExercisePlaygroundOpen && (
+          <div className="exercise-playground-wrap">
+            <h3 className="exercise-playground-title">Exercise Playground</h3>
+            <div
+              className="exercise-playground-instructions"
+              dangerouslySetInnerHTML={{ __html: renderMarkdown(topic.exercise) }}
+            />
+            <Suspense fallback={<div className="playground-loading">Loading editor...</div>}>
+              <CodePlayground
+                key={`exercise-${topic.id}-${parsedExample.language}`}
+                code={exerciseStarter}
+                language={parsedExample.language}
+                height="480px"
+              />
+            </Suspense>
+          </div>
+        )}
       </section>
 
       {/* Common Mistakes */}

@@ -884,6 +884,33 @@ Requirements:
 
 </details>
 
+#### 5.2.1 Future Extensions (Post-MVP)
+
+- [ ] Add TypeScript execution pipeline:
+  - Transpile TS to JS in-browser (or server-assisted) before sandbox execution
+  - Preserve source-mapped error display in the console panel
+- [ ] Add test-case runner mode:
+  - Let users define input/expected output pairs
+  - Display pass/fail summary with per-test diagnostics
+- [ ] Persist per-topic playground drafts:
+  - Save editor state in localStorage keyed by `slug/phaseId/topicId`
+  - Keep `Reset` restoring the canonical starter code
+- [ ] Add downloadable/shareable snippets:
+  - Export current editor code as `.js/.ts/.py`
+  - Optional: create share links encoded with code + language
+- [ ] Add multi-file playground support:
+  - File tabs + virtual file model
+  - Bundle/concatenate files before sandbox run
+- [ ] Harden execution isolation:
+  - Evaluate moving JS execution to Web Worker + iframe hybrid
+  - Add stricter runtime guardrails and cancellation behavior
+- [ ] Add accessibility upgrades:
+  - Keyboard resizing for splitter
+  - Improved ARIA labels for console streaming output
+- [ ] Add telemetry for playground engagement:
+  - Track View vs Playground usage, Run clicks, timeout frequency
+  - Feed data into roadmap content quality improvements
+
 ---
 
 ### 5.3 Quiz / Assessment System
