@@ -2,7 +2,8 @@ const reactPhase14 = {
   id: "phase-14",
   title: "Phase 14: Modern React (RSC & Next.js)",
   emoji: "🚀",
-  description: "Explore the newest era of React. Learn about React Server Components (RSC), Server Actions, and how the Next.js App Router changes everything.",
+  description:
+    "Explore the newest era of React. Learn about React Server Components (RSC), Server Actions, and how the Next.js App Router changes everything.",
   topics: [
     {
       id: "react-server-components",
@@ -61,20 +62,20 @@ function LikeButton({ postId }) {
         "Adding 'use client' to every file (this defeats the purpose of RSC).",
         "Trying to pass non-serializable data (like a function or a Date object) across the server-client boundary.",
         "Forgetting to add 'use server' to functions that are used as Server Actions.",
-        "Over-using Client Components for simple things that could be handled on the server."
+        "Over-using Client Components for simple things that could be handled on the server.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the primary benefit of React Server Components?",
-          a: "The primary benefit is **reduced bundle size** and **faster performance**. Server Components are executed on the server, so their code and dependencies are never sent to the client. They also allow for direct database access during the render process."
+          a: "The primary benefit is **reduced bundle size** and **faster performance**. Server Components are executed on the server, so their code and dependencies are never sent to the client. They also allow for direct database access during the render process.",
         },
         {
           type: "conceptual",
           q: "When must you use 'use client'?",
-          a: "You must use 'use client' whenever a component needs to use **Hooks** (like useState or useEffect), **Event Listeners** (like onClick), or **Browser APIs** (like window or document)."
-        }
-      ]
+          a: "You must use 'use client' whenever a component needs to use **Hooks** (like useState or useEffect), **Event Listeners** (like onClick), or **Browser APIs** (like window or document).",
+        },
+      ],
     },
     {
       id: "react-server-actions",
@@ -116,17 +117,17 @@ function TodoPage() {
         "Forgetting to add 'use server' at the top of the file or function.",
         "Performing sensitive actions without checking the user's session (Authentication!).",
         "Not handling server-side errors gracefully, leading to crashes.",
-        "Thinking Server Actions are only for forms (they can also be called like regular async functions)."
+        "Thinking Server Actions are only for forms (they can also be called like regular async functions).",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "How do Server Actions improve the developer experience compared to traditional API routes?",
-          a: "They eliminate the need to manually define and maintain API endpoints, handle JSON serialization, and manage fetch logic on the client. It allows for a more seamless, end-to-end development flow where the server logic feels like a regular function call."
-        }
-      ]
-    }
-  ]
+          a: "They eliminate the need to manually define and maintain API endpoints, handle JSON serialization, and manage fetch logic on the client. It allows for a more seamless, end-to-end development flow where the server logic feels like a regular function call.",
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase14;

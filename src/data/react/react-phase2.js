@@ -2,7 +2,8 @@ const reactPhase2 = {
   id: "phase-2",
   title: "Phase 2: Modern Tooling & Setup",
   emoji: "🛠️",
-  description: "Set up a professional development environment. Learn about Vite, Next.js, and how to structure a React project for scalability.",
+  description:
+    "Set up a professional development environment. Learn about Vite, Next.js, and how to structure a React project for scalability.",
   topics: [
     {
       id: "react-tooling-vite-nextjs",
@@ -55,20 +56,20 @@ export default defineConfig({
       commonMistakes: [
         "Continuing to use 'Create React App' for new projects (it is no longer recommended).",
         "Not using environment variables (.env) for sensitive information like API keys.",
-        "Overcomplicating the setup before you actually need complex features."
+        "Overcomplicating the setup before you actually need complex features.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Why is Vite faster than Webpack-based tools like Create React App?",
-          a: "Vite uses native ES modules in the browser during development. Instead of bundling the entire app before serving (like Webpack), it only transforms and serves code as requested by the browser. It also uses 'esbuild' (written in Go) for dependency pre-bundling, which is significantly faster than JS-based bundlers."
+          a: "Vite uses native ES modules in the browser during development. Instead of bundling the entire app before serving (like Webpack), it only transforms and serves code as requested by the browser. It also uses 'esbuild' (written in Go) for dependency pre-bundling, which is significantly faster than JS-based bundlers.",
         },
         {
           type: "scenario",
           q: "When would you choose Next.js over a standard Vite SPA?",
-          a: "I would choose Next.js if the project requires **SEO** (since SPAs are harder for some crawlers), faster **First Contentful Paint** (via SSR/SSG), or if I want a more opinionated framework that includes routing and API routes built-in."
-        }
-      ]
+          a: "I would choose Next.js if the project requires **SEO** (since SPAs are harder for some crawlers), faster **First Contentful Paint** (via SSR/SSG), or if I want a more opinionated framework that includes routing and API routes built-in.",
+        },
+      ],
     },
     {
       id: "react-project-structure",
@@ -133,17 +134,17 @@ export { default } from './Button';
       commonMistakes: [
         "Creating a separate folder for every single component, even if it's only used once.",
         "Deeply nesting folders (more than 3-4 levels) making navigation difficult.",
-        "Not being consistent with naming (mixing PascalCase and kebab-case for files)."
+        "Not being consistent with naming (mixing PascalCase and kebab-case for files).",
       ],
       interviewQuestions: [
         {
           type: "scenario",
           q: "How would you structure a large-scale React application with multiple teams?",
-          a: "I would recommend a **feature-based** or **monorepo** structure. Feature-based grouping allows teams to work on their specific domains (e.g., 'Checkout', 'Inventory') with minimal friction. Using 'Barrel files' and 'Absolute imports' also helps maintain clean boundaries and easier refactoring."
-        }
-      ]
-    }
-  ]
+          a: "I would recommend a **feature-based** or **monorepo** structure. Feature-based grouping allows teams to work on their specific domains (e.g., 'Checkout', 'Inventory') with minimal friction. Using 'Barrel files' and 'Absolute imports' also helps maintain clean boundaries and easier refactoring.",
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase2;

@@ -677,7 +677,7 @@ const packageJson = {
         {
           type: "conceptual",
           q: "How do you create and publish a CLI tool with Node.js?",
-          a: "**Steps:** (1) Create entry file with shebang `#!/usr/bin/env node`. (2) Use Commander.js or yargs for argument parsing. (3) Add `bin` field to `package.json`: `\"bin\": { \"my-cli\": \"./src/cli.js\" }`. (4) Make the file executable: `chmod +x src/cli.js`. (5) Test locally: `npm link` (creates global symlink). (6) Publish: `npm login` then `npm publish`. (7) Users install: `npm install -g my-cli`. **Polish:** Add Inquirer.js for interactive prompts, chalk for colors, ora for spinners, conf for persistent config, and update-notifier to alert users of new versions.",
+          a: '**Steps:** (1) Create entry file with shebang `#!/usr/bin/env node`. (2) Use Commander.js or yargs for argument parsing. (3) Add `bin` field to `package.json`: `"bin": { "my-cli": "./src/cli.js" }`. (4) Make the file executable: `chmod +x src/cli.js`. (5) Test locally: `npm link` (creates global symlink). (6) Publish: `npm login` then `npm publish`. (7) Users install: `npm install -g my-cli`. **Polish:** Add Inquirer.js for interactive prompts, chalk for colors, ora for spinners, conf for persistent config, and update-notifier to alert users of new versions.',
         },
         {
           type: "scenario",

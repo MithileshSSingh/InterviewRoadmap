@@ -82,6 +82,15 @@ const roadmaps = [
     tags: ["Backend", "Data Science", "General Purpose"],
   },
   {
+    slug: "system-design",
+    title: "System Design",
+    emoji: "🏛️",
+    color: "#6C5CE7",
+    description:
+      "Master system design from beginner to advanced — scalability, databases, caching, microservices, and real-world interview-ready designs.",
+    tags: ["System Design", "Interview", "Architecture"],
+  },
+  {
     slug: "css",
     title: "CSS",
     emoji: "🎨",

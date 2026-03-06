@@ -229,7 +229,7 @@ def wrapper(*args, **kwargs):
         {
           type: "coding",
           q: "Write a function `compose` that takes any number of single-argument functions and returns their composition.",
-          a: "```python\nfrom functools import reduce\n\ndef compose(*funcs):\n    \"\"\"compose(f, g, h)(x) == f(g(h(x)))\"\"\"\n    def composed(x):\n        result = x\n        for f in reversed(funcs):\n            result = f(result)\n        return result\n    return composed\n\n# Or using reduce:\ndef compose_v2(*funcs):\n    return reduce(lambda f, g: lambda x: f(g(x)), funcs)\n\ndouble = lambda x: x * 2\nadd_one = lambda x: x + 1\nsquare = lambda x: x ** 2\n\ntransform = compose(square, add_one, double)\nprint(transform(3))  # square(add_one(double(3))) = square(add_one(6)) = square(7) = 49\n```",
+          a: '```python\nfrom functools import reduce\n\ndef compose(*funcs):\n    """compose(f, g, h)(x) == f(g(h(x)))"""\n    def composed(x):\n        result = x\n        for f in reversed(funcs):\n            result = f(result)\n        return result\n    return composed\n\n# Or using reduce:\ndef compose_v2(*funcs):\n    return reduce(lambda f, g: lambda x: f(g(x)), funcs)\n\ndouble = lambda x: x * 2\nadd_one = lambda x: x + 1\nsquare = lambda x: x ** 2\n\ntransform = compose(square, add_one, double)\nprint(transform(3))  # square(add_one(double(3))) = square(add_one(6)) = square(7) = 49\n```',
         },
       ],
     },
@@ -908,7 +908,7 @@ print([p.name for p in sorted_people])  # ['Bob', 'Alice', 'Charlie']`,
         {
           type: "coding",
           q: "Implement `pipe` and `compose` functions for function composition.",
-          a: "```python\nfrom functools import reduce\n\ndef pipe(*funcs):\n    \"\"\"Left-to-right composition: pipe(f, g, h)(x) = h(g(f(x)))\"\"\"\n    return reduce(lambda f, g: lambda *a, **kw: g(f(*a, **kw)), funcs)\n\ndef compose(*funcs):\n    \"\"\"Right-to-left composition: compose(f, g, h)(x) = f(g(h(x)))\"\"\"\n    return pipe(*reversed(funcs))\n\n# Usage:\nprocess = pipe(\n    str.strip,\n    str.lower,\n    lambda s: s.replace(' ', '_'),\n)\nprint(process('  Hello World  '))  # 'hello_world'\n```",
+          a: '```python\nfrom functools import reduce\n\ndef pipe(*funcs):\n    """Left-to-right composition: pipe(f, g, h)(x) = h(g(f(x)))"""\n    return reduce(lambda f, g: lambda *a, **kw: g(f(*a, **kw)), funcs)\n\ndef compose(*funcs):\n    """Right-to-left composition: compose(f, g, h)(x) = f(g(h(x)))"""\n    return pipe(*reversed(funcs))\n\n# Usage:\nprocess = pipe(\n    str.strip,\n    str.lower,\n    lambda s: s.replace(\' \', \'_\'),\n)\nprint(process(\'  Hello World  \'))  # \'hello_world\'\n```',
         },
         {
           type: "tricky",

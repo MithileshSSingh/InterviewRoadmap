@@ -2,7 +2,8 @@ const reactPhase11 = {
   id: "phase-11",
   title: "Phase 11: Testing React Apps",
   emoji: "🧪",
-  description: "Ensure your code works as expected. Learn how to write unit, integration, and end-to-end tests for your React components.",
+  description:
+    "Ensure your code works as expected. Learn how to write unit, integration, and end-to-end tests for your React components.",
   topics: [
     {
       id: "react-testing-library",
@@ -51,20 +52,20 @@ test('starts with a custom initial value', () => {
         "Testing implementation details (like component state) instead of the UI.",
         "Using \`container.querySelector\` instead of RTL's built-in queries (which are more accessible).",
         "Not cleaning up tests (RTL does this automatically, but some setups might need manual cleanup).",
-        "Writing tests that are too specific and break on every minor CSS change."
+        "Writing tests that are too specific and break on every minor CSS change.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the main philosophy of React Testing Library?",
-          a: "The philosophy is to 'test your components as a user would'. This means interacting with the DOM nodes directly and asserting based on what the user sees, rather than checking the component's internal state or props."
+          a: "The philosophy is to 'test your components as a user would'. This means interacting with the DOM nodes directly and asserting based on what the user sees, rather than checking the component's internal state or props.",
         },
         {
           type: "conceptual",
           q: "When should you use findByRole instead of getByRole?",
-          a: "You should use \`findByRole\` when the element you are looking for is rendered asynchronously (e.g., after an API call or a timeout), as it returns a promise that resolves when the element appears."
-        }
-      ]
+          a: "You should use \`findByRole\` when the element you are looking for is rendered asynchronously (e.g., after an API call or a timeout), as it returns a promise that resolves when the element appears.",
+        },
+      ],
     },
     {
       id: "react-mocking-msw",
@@ -104,17 +105,17 @@ test('loads and displays user data', async () => {
       commonMistakes: [
         "Mocking at the component level (like mocking the hook) instead of the network level.",
         "Forgetting to call \`server.listen()\` and \`server.close()\` in your test setup.",
-        "Hardcoding full URLs in mocks that change between environments."
+        "Hardcoding full URLs in mocks that change between environments.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Why is MSW preferred over simple fetch mocking?",
-          a: "MSW intercepts requests at the network level, making the tests more realistic. It allows the component to use its actual data-fetching logic (fetch, axios, etc.) without modification. It also makes it easier to test complex scenarios like network errors or slow responses."
-        }
-      ]
-    }
-  ]
+          a: "MSW intercepts requests at the network level, making the tests more realistic. It allows the component to use its actual data-fetching logic (fetch, axios, etc.) without modification. It also makes it easier to test complex scenarios like network errors or slow responses.",
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase11;

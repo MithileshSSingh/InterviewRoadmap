@@ -2,7 +2,8 @@ const reactPhase7 = {
   id: "phase-7",
   title: "Phase 7: Data Fetching & Async",
   emoji: "🌐",
-  description: "Master fetching data from APIs. Learn how to handle loading states, errors, race conditions, and how to use Suspense for a better user experience.",
+  description:
+    "Master fetching data from APIs. Learn how to handle loading states, errors, race conditions, and how to use Suspense for a better user experience.",
   topics: [
     {
       id: "react-fetching-basics",
@@ -69,15 +70,15 @@ function UserList() {
         "Not handling the loading state, leading to 'undefined' errors when trying to access data before it arrives.",
         "Not handling errors, leaving the user with a broken UI if the API is down.",
         "Forgetting to include the 'signal' or a 'cancel' flag to prevent setting state on unmounted components.",
-        "Triggering infinite fetch loops by not providing a dependency array."
+        "Triggering infinite fetch loops by not providing a dependency array.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Why should you fetch data inside useEffect instead of the component body?",
-          a: "The component body is executed on every render. If you fetch data there, you would trigger a network request every time the component updates, likely leading to an infinite loop (since setting the data state triggers a re-render). \`useEffect\` allows you to control exactly when the fetch happens."
-        }
-      ]
+          a: "The component body is executed on every render. If you fetch data there, you would trigger a network request every time the component updates, likely leading to an infinite loop (since setting the data state triggers a re-render). \`useEffect\` allows you to control exactly when the fetch happens.",
+        },
+      ],
     },
     {
       id: "react-race-conditions",
@@ -132,20 +133,20 @@ function ProductDetails({ productId }) {
       commonMistakes: [
         "Thinking that because the component unmounted, the network request stopped (it hasn't!).",
         "Setting state on an unmounted component (React will sometimes warn about this, though it's less common in newer versions).",
-        "Not testing your data fetching on slow or unstable networks."
+        "Not testing your data fetching on slow or unstable networks.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is a race condition in the context of React data fetching?",
-          a: "A race condition occurs when an older asynchronous request finishes **after** a newer request, potentially overwriting the most recent data in the component state with outdated information."
+          a: "A race condition occurs when an older asynchronous request finishes **after** a newer request, potentially overwriting the most recent data in the component state with outdated information.",
         },
         {
           type: "coding",
           q: "How do you use AbortController to prevent race conditions?",
-          a: "You create an \`AbortController\` instance inside \`useEffect\`, pass its \`signal\` to the \`fetch\` call, and call \`controller.abort()\` in the cleanup function. This ensures that if the effect re-runs or the component unmounts, the ongoing fetch is cancelled."
-        }
-      ]
+          a: "You create an \`AbortController\` instance inside \`useEffect\`, pass its \`signal\` to the \`fetch\` call, and call \`controller.abort()\` in the cleanup function. This ensures that if the effect re-runs or the component unmounts, the ongoing fetch is cancelled.",
+        },
+      ],
     },
     {
       id: "react-error-boundaries",
@@ -217,17 +218,17 @@ function App() {
       commonMistakes: [
         "Wrapping the entire app in a single Error Boundary (users will see a blank page if one small thing fails).",
         "Thinking Error Boundaries catch async errors (they don't; you must handle those with try/catch in your effects).",
-        "Not logging errors caught by the boundary to a monitoring service."
+        "Not logging errors caught by the boundary to a monitoring service.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is an Error Boundary in React?",
-          a: "It's a component that catches JavaScript errors in its child component tree and displays a fallback UI instead of crashing the whole app. It prevents a single component's failure from breaking the entire user interface."
-        }
-      ]
-    }
-  ]
+          a: "It's a component that catches JavaScript errors in its child component tree and displays a fallback UI instead of crashing the whole app. It prevents a single component's failure from breaking the entire user interface.",
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase7;

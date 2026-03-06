@@ -2,7 +2,8 @@ const reactPhase8 = {
   id: "phase-8",
   title: "Phase 8: Global State Management",
   emoji: "🧠",
-  description: "Learn how to share state across your entire application without prop drilling. Compare Context API with modern libraries like Zustand and Redux.",
+  description:
+    "Learn how to share state across your entire application without prop drilling. Compare Context API with modern libraries like Zustand and Redux.",
   topics: [
     {
       id: "react-context-api",
@@ -79,20 +80,20 @@ function UserProfile() {
         "Putting everything into a single 'GlobalContext' (leading to unnecessary re-renders).",
         "Using Context for highly frequent updates (like a mouse position or a fast timer).",
         "Forgetting to wrap the app in the Provider, causing \`useContext\` to return undefined.",
-        "Not splitting state and dispatch contexts, which forces components that only need to dispatch to re-render when state changes."
+        "Not splitting state and dispatch contexts, which forces components that only need to dispatch to re-render when state changes.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the main problem with using Context API for all global state?",
-          a: "The main problem is **unnecessary re-renders**. Any component that consumes a context will re-render whenever the context value changes. If the context holds a large object and only one property changes, all consumers will re-render, even if they don't use that property."
+          a: "The main problem is **unnecessary re-renders**. Any component that consumes a context will re-render whenever the context value changes. If the context holds a large object and only one property changes, all consumers will re-render, even if they don't use that property.",
         },
         {
           type: "conceptual",
           q: "When would you choose Context API over a library like Redux or Zustand?",
-          a: "I would choose Context for relatively static data that doesn't change frequently, such as **User Authentication**, **Theme settings**, or **Locale/Language**. For high-frequency updates or complex state logic, external libraries are more efficient."
-        }
-      ]
+          a: "I would choose Context for relatively static data that doesn't change frequently, such as **User Authentication**, **Theme settings**, or **Locale/Language**. For high-frequency updates or complex state logic, external libraries are more efficient.",
+        },
+      ],
     },
     {
       id: "react-state-libraries",
@@ -162,20 +163,20 @@ export const counterSlice = createSlice({
       commonMistakes: [
         "Over-engineering simple apps by adding Redux/Zustand before they are needed.",
         "Storing 'Server State' (API data) in a global store instead of using TanStack Query.",
-        "Not using selectors in Zustand, causing the entire component to re-render on any store change."
+        "Not using selectors in Zustand, causing the entire component to re-render on any store change.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are the advantages of Zustand over Redux?",
-          a: "Zustand is much lighter (barely any boilerplate), doesn't require wrapping the app in a Provider, and uses a much simpler hooks-based API. It's often easier to learn and maintain for most project sizes."
+          a: "Zustand is much lighter (barely any boilerplate), doesn't require wrapping the app in a Provider, and uses a much simpler hooks-based API. It's often easier to learn and maintain for most project sizes.",
         },
         {
           type: "conceptual",
           q: "What is a 'selector' and why is it important for performance?",
-          a: "A selector is a function that extracts a specific part of the state from a store. It's important because it allows the component to subscribe only to the data it actually uses, preventing unnecessary re-renders when other parts of the store change."
-        }
-      ]
+          a: "A selector is a function that extracts a specific part of the state from a store. It's important because it allows the component to subscribe only to the data it actually uses, preventing unnecessary re-renders when other parts of the store change.",
+        },
+      ],
     },
     {
       id: "react-query-swr",
@@ -237,17 +238,17 @@ function Products() {
       commonMistakes: [
         "Mixing Client State (Zustand) and Server State (React Query) unnecessarily.",
         "Not providing a unique \`queryKey\`, leading to data being cached in the wrong place.",
-        "Manually managing loading/error states when React Query provides them for free."
+        "Manually managing loading/error states when React Query provides them for free.",
       ],
       interviewQuestions: [
         {
           type: "scenario",
           q: "Why should you avoid putting API data in Redux or Context?",
-          a: "API data is 'Server State'. Putting it in Redux forces you to manually manage loading states, error handling, caching, and cache invalidation. Libraries like TanStack Query are designed specifically for this, providing these features out of the box and keeping your global store much cleaner."
-        }
-      ]
-    }
-  ]
+          a: "API data is 'Server State'. Putting it in Redux forces you to manually manage loading states, error handling, caching, and cache invalidation. Libraries like TanStack Query are designed specifically for this, providing these features out of the box and keeping your global store much cleaner.",
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase8;

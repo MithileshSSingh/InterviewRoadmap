@@ -2,7 +2,8 @@ const reactPhase1 = {
   id: "phase-1",
   title: "Phase 1: Foundations & The Virtual DOM",
   emoji: "🧱",
-  description: "Understand React's history, why it was created, and the core concept that revolutionized UI development: the Virtual DOM.",
+  description:
+    "Understand React's history, why it was created, and the core concept that revolutionized UI development: the Virtual DOM.",
   topics: [
     {
       id: "react-history-intro",
@@ -66,20 +67,20 @@ export default Counter;`,
       commonMistakes: [
         "Thinking React is a full framework (it's a library focused on the View layer).",
         "Directly manipulating the DOM (e.g., using document.getElementById) inside a React component.",
-        "Not understanding that React requires a build step (JSX isn't native browser JS)."
+        "Not understanding that React requires a build step (JSX isn't native browser JS).",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What problem was React originally created to solve at Facebook?",
-          a: "React was created to solve the problem of complex state management and inconsistent UIs (the 'zombie' UI problem) in large-scale applications like Facebook's News Feed. It introduced a **declarative** approach and **unidirectional data flow** to make the UI more predictable and easier to debug."
+          a: "React was created to solve the problem of complex state management and inconsistent UIs (the 'zombie' UI problem) in large-scale applications like Facebook's News Feed. It introduced a **declarative** approach and **unidirectional data flow** to make the UI more predictable and easier to debug.",
         },
         {
           type: "conceptual",
           q: "Is React a library or a framework? Why?",
-          a: "React is technically a **library** for building user interfaces. Unlike a full framework (like Angular), it doesn't provide built-in solutions for routing, state management, or form validation. This modularity allows developers to choose the best tools for their specific needs, though it requires more setup."
-        }
-      ]
+          a: "React is technically a **library** for building user interfaces. Unlike a full framework (like Angular), it doesn't provide built-in solutions for routing, state management, or form validation. This modularity allows developers to choose the best tools for their specific needs, though it requires more setup.",
+        },
+      ],
     },
     {
       id: "react-declarative-vs-imperative",
@@ -150,20 +151,20 @@ function ToggleView() {
       commonMistakes: [
         "Trying to 'reach into' components to change them from the outside (imperative thinking).",
         "Mixing imperative DOM logic (like jQuery) with React code.",
-        "Overcomplicating state because you're thinking about the 'transition' instead of the 'result'."
+        "Overcomplicating state because you're thinking about the 'transition' instead of the 'result'.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What does it mean that React is 'declarative'?",
-          a: "It means you describe **what** you want the UI to look like based on the current state, rather than giving step-by-step instructions on **how** to change the DOM. React takes care of efficiently updating the DOM to match your description."
+          a: "It means you describe **what** you want the UI to look like based on the current state, rather than giving step-by-step instructions on **how** to change the DOM. React takes care of efficiently updating the DOM to match your description.",
         },
         {
           type: "scenario",
           q: "How does declarative programming make large applications easier to maintain?",
-          a: "In large apps, state changes can happen from many sources (user input, API responses, timers). With imperative code, you must manually update every affected DOM element for every possible state transition, which is error-prone. With declarative code, you only define how the UI looks for a given state, and React ensures the UI is always in sync, regardless of how the state changed."
-        }
-      ]
+          a: "In large apps, state changes can happen from many sources (user input, API responses, timers). With imperative code, you must manually update every affected DOM element for every possible state transition, which is error-prone. With declarative code, you only define how the UI looks for a given state, and React ensures the UI is always in sync, regardless of how the state changed.",
+        },
+      ],
     },
     {
       id: "react-virtual-dom-reconciliation",
@@ -232,27 +233,27 @@ function List({ items }) {
       commonMistakes: [
         "Using array indices as keys (this can cause bugs if the list order changes).",
         "Thinking the Virtual DOM is always faster than the Real DOM (it adds overhead, but it's more efficient for most updates).",
-        "Modifying the Real DOM directly, which makes the Virtual DOM and Real DOM go out of sync."
+        "Modifying the Real DOM directly, which makes the Virtual DOM and Real DOM go out of sync.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the Virtual DOM, and how does it work?",
-          a: "The Virtual DOM is a lightweight JavaScript representation of the real DOM. When state changes, React creates a new Virtual DOM tree, compares it with the old one (diffing), and then applies the minimum necessary updates to the real DOM (reconciliation)."
+          a: "The Virtual DOM is a lightweight JavaScript representation of the real DOM. When state changes, React creates a new Virtual DOM tree, compares it with the old one (diffing), and then applies the minimum necessary updates to the real DOM (reconciliation).",
         },
         {
           type: "tricky",
           q: "Does React re-render the entire Real DOM on every state change?",
-          a: "No! React re-renders the **Virtual DOM** on every state change. It then calculates the difference (diffing) and only updates the specific parts of the **Real DOM** that actually changed."
+          a: "No! React re-renders the **Virtual DOM** on every state change. It then calculates the difference (diffing) and only updates the specific parts of the **Real DOM** that actually changed.",
         },
         {
           type: "conceptual",
           q: "Why is the 'key' prop important in React?",
-          a: "Keys help React identify which items in a list have changed, been added, or been removed. They are essential for the reconciliation algorithm to efficiently update lists without re-rendering every item from scratch."
-        }
-      ]
-    }
-  ]
+          a: "Keys help React identify which items in a list have changed, been added, or been removed. They are essential for the reconciliation algorithm to efficiently update lists without re-rendering every item from scratch.",
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase1;

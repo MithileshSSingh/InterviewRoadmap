@@ -2,7 +2,8 @@ const reactPhase15 = {
   id: "phase-15",
   title: "Phase 15: Interview Prep & Senior Patterns",
   emoji: "🎓",
-  description: "Prepare for senior-level React interviews. Master system design, accessibility, security, and advanced architectural patterns.",
+  description:
+    "Prepare for senior-level React interviews. Master system design, accessibility, security, and advanced architectural patterns.",
   topics: [
     {
       id: "react-senior-architecture",
@@ -66,20 +67,20 @@ export const useLogin = () => {
         "Prematurely choosing a complex tool (like Redux) when simpler tools would suffice.",
         "Not standardizing the 'Data Flow' of the application.",
         "Mixing business logic directly into the JSX.",
-        "Not considering 'Cross-Cutting Concerns' like logging, error tracking, and analytics."
+        "Not considering 'Cross-Cutting Concerns' like logging, error tracking, and analytics.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "How would you handle a performance bottleneck in a large React list with complex items?",
-          a: "I would first use the **React Profiler** to identify exactly what is re-rendering. Then I'd apply **React.memo** to the items, use **useCallback/useMemo** for props, and if the list is still slow, I would implement **Windowing** (using a library like react-window) so only the visible items are rendered."
+          a: "I would first use the **React Profiler** to identify exactly what is re-rendering. Then I'd apply **React.memo** to the items, use **useCallback/useMemo** for props, and if the list is still slow, I would implement **Windowing** (using a library like react-window) so only the visible items are rendered.",
         },
         {
           type: "scenario",
           q: "How do you decide between building a custom UI or using a library like MUI/Radix?",
-          a: "It depends on the project's 'Uniqueness' and 'Speed' requirements. For a standard admin panel, a library like MUI saves time. For a consumer-facing brand that needs a highly unique look, I'd use **Radix UI** (headless) for the accessibility logic and **Tailwind** for the custom styling."
-        }
-      ]
+          a: "It depends on the project's 'Uniqueness' and 'Speed' requirements. For a standard admin panel, a library like MUI saves time. For a consumer-facing brand that needs a highly unique look, I'd use **Radix UI** (headless) for the accessibility logic and **Tailwind** for the custom styling.",
+        },
+      ],
     },
     {
       id: "react-accessibility-security",
@@ -139,17 +140,17 @@ const DangerousHtml = ({ html }) => {
         "Using \`<div>\` or \`<span>\` for buttons (which breaks keyboard navigation and screen readers).",
         "Forgetting to add \`alt\` text to images.",
         "Hardcoding secrets in the frontend code instead of using environment variables.",
-        "Not handling 'Sensitive Data' (like passwords) correctly in state or local storage."
+        "Not handling 'Sensitive Data' (like passwords) correctly in state or local storage.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What does 'dangerouslySetInnerHTML' do and why is it named that way?",
-          a: "It allows you to render raw HTML strings directly into a component. It is named that way as a warning that it exposes your application to **XSS (Cross-Site Scripting)** attacks if the HTML content is not properly sanitized."
-        }
-      ]
-    }
-  ]
+          a: "It allows you to render raw HTML strings directly into a component. It is named that way as a warning that it exposes your application to **XSS (Cross-Site Scripting)** attacks if the HTML content is not properly sanitized.",
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase15;

@@ -2,7 +2,8 @@ const reactPhase10 = {
   id: "phase-10",
   title: "Phase 10: Performance Optimization",
   emoji: "⚡",
-  description: "Learn how to make your React apps blazingly fast. Master memoization, code-splitting, and the React Profiler to eliminate unnecessary re-renders.",
+  description:
+    "Learn how to make your React apps blazingly fast. Master memoization, code-splitting, and the React Profiler to eliminate unnecessary re-renders.",
   topics: [
     {
       id: "react-memoization-basics",
@@ -72,20 +73,20 @@ function Parent() {
         "Wrapping every single function and calculation in useMemo/useCallback (this is often slower due to overhead).",
         "Forgetting that \`React.memo\` only does a shallow comparison (it won't detect changes inside objects or arrays).",
         "Not including all required dependencies in the dependency array.",
-        "Using memoization for simple values that are cheap to calculate."
+        "Using memoization for simple values that are cheap to calculate.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the difference between useMemo and useCallback?",
-          a: "\`useMemo\` memoizes a **value** (the result of a function), while \`useCallback\` memoizes the **function itself**. You use \`useMemo\` for expensive calculations and \`useCallback\` to maintain referential equality of functions passed to memoized children."
+          a: "\`useMemo\` memoizes a **value** (the result of a function), while \`useCallback\` memoizes the **function itself**. You use \`useMemo\` for expensive calculations and \`useCallback\` to maintain referential equality of functions passed to memoized children.",
         },
         {
           type: "tricky",
           q: "Why doesn't React memoize everything by default?",
-          a: "Memoization isn't free. It requires extra memory to store previous results and extra CPU cycles to perform a 'shallow comparison' of props on every render. For most components, re-rendering is faster than the cost of checking if it *should* re-render."
-        }
-      ]
+          a: "Memoization isn't free. It requires extra memory to store previous results and extra CPU cycles to perform a 'shallow comparison' of props on every render. For most components, re-rendering is faster than the cost of checking if it *should* re-render.",
+        },
+      ],
     },
     {
       id: "react-code-splitting",
@@ -139,22 +140,22 @@ function App() {
       commonMistakes: [
         "Not wrapping \`lazy\` components in \`<Suspense>\` (this will cause a crash).",
         "Putting \`<Suspense>\` too high up (causing the entire page to disappear while a small component loads).",
-        "Over-splitting (making hundreds of tiny chunks can slow down the app due to too many network requests)."
+        "Over-splitting (making hundreds of tiny chunks can slow down the app due to too many network requests).",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is code-splitting and how do you achieve it in React?",
-          a: "Code-splitting is the process of breaking a large JS bundle into smaller pieces (chunks) that can be loaded on demand. In React, it's primarily achieved using \`React.lazy()\` for dynamic component imports and \`<Suspense />\` for handling the loading state."
+          a: "Code-splitting is the process of breaking a large JS bundle into smaller pieces (chunks) that can be loaded on demand. In React, it's primarily achieved using \`React.lazy()\` for dynamic component imports and \`<Suspense />\` for handling the loading state.",
         },
         {
           type: "scenario",
           q: "When would you prefer component-based splitting over route-based splitting?",
-          a: "I'd use component-based splitting for heavy elements that aren't visible on initial load, such as **Modals**, **Accordions**, or **Complex Visualizations** (like D3 charts) that are 'below the fold' or hidden behind a user action."
-        }
-      ]
-    }
-  ]
+          a: "I'd use component-based splitting for heavy elements that aren't visible on initial load, such as **Modals**, **Accordions**, or **Complex Visualizations** (like D3 charts) that are 'below the fold' or hidden behind a user action.",
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase10;

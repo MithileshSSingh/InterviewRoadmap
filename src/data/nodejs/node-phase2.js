@@ -337,7 +337,7 @@ console.log("Directory:", __dirname);
         "Forgetting file extensions in ESM imports — `import { add } from './math'` fails; you MUST use `import { add } from './math.mjs'` or `'./math.js'`",
         "Trying to use `require()` in an ESM file — ESM has `import` syntax and dynamic `import()`; `require` is not available",
         "Expecting named imports from CommonJS modules — CJS exports become a single default export in ESM; destructure after the default import",
-        "Not setting `\"type\": \"module\"` in package.json and wondering why `import` syntax throws SyntaxError in `.js` files",
+        'Not setting `"type": "module"` in package.json and wondering why `import` syntax throws SyntaxError in `.js` files',
         "Using top-level await without understanding it blocks the entire module graph — dependent modules wait for the await to resolve before they can execute",
       ],
       interviewQuestions: [

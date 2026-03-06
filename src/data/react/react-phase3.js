@@ -2,7 +2,8 @@ const reactPhase3 = {
   id: "phase-3",
   title: "Phase 3: JSX & Components",
   emoji: "🧱",
-  description: "Master the syntax of JSX and the art of building reusable, composable components.",
+  description:
+    "Master the syntax of JSX and the art of building reusable, composable components.",
   topics: [
     {
       id: "react-jsx-deep-dive",
@@ -76,20 +77,20 @@ export default JsxShowcase;`,
         "Using 'class' instead of 'className'.",
         "Forgetting to wrap multiple elements in a Fragment or a parent div.",
         "Putting a block-level statement (like a 'for' loop or 'if/else') inside curly braces (only expressions are allowed).",
-        "Not self-closing tags like <br> or <input>."
+        "Not self-closing tags like <br> or <input>.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is JSX, and is it required for React?",
-          a: "JSX is a syntax extension for JavaScript that looks like HTML. It is **not** required for React, but it is highly recommended as it makes code much more readable and easier to write. Without JSX, you would have to write nested \`React.createElement()\` or \`_jsx()\` calls manually."
+          a: "JSX is a syntax extension for JavaScript that looks like HTML. It is **not** required for React, but it is highly recommended as it makes code much more readable and easier to write. Without JSX, you would have to write nested \`React.createElement()\` or \`_jsx()\` calls manually.",
         },
         {
           type: "tricky",
           q: "Why can't you use a 'for' loop or 'if' statement directly inside JSX curly braces?",
-          a: "JSX curly braces can only contain **expressions** (things that resolve to a value, like a variable, a function call, or a ternary operator). 'for' and 'if' are **statements** and do not resolve to a value. Instead, you should use \`.map()\` for loops and ternaries or \`&&\` for conditions."
-        }
-      ]
+          a: "JSX curly braces can only contain **expressions** (things that resolve to a value, like a variable, a function call, or a ternary operator). 'for' and 'if' are **statements** and do not resolve to a value. Instead, you should use \`.map()\` for loops and ternaries or \`&&\` for conditions.",
+        },
+      ],
     },
     {
       id: "react-components-props",
@@ -180,22 +181,22 @@ export default App;`,
         "Trying to change a prop value inside a child component (Props are read-only).",
         "Not destructuring props, leading to messy code like 'props.user.name' everywhere.",
         "Using PascalCase for prop names (prop names should be camelCase).",
-        "Forgetting to provide a 'key' when rendering a list of components."
+        "Forgetting to provide a 'key' when rendering a list of components.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What are 'props' in React?",
-          a: "Props (short for properties) are a way of passing data from a parent component to a child component. They are read-only and help make components reusable by allowing them to render different content based on the data they receive."
+          a: "Props (short for properties) are a way of passing data from a parent component to a child component. They are read-only and help make components reusable by allowing them to render different content based on the data they receive.",
         },
         {
           type: "conceptual",
           q: "What is the 'children' prop?",
-          a: "The 'children' prop is a special prop that automatically passes whatever is placed between the opening and closing tags of a component. It is primarily used for 'wrapper' or 'layout' components that don't know their content in advance."
-        }
-      ]
-    }
-  ]
+          a: "The 'children' prop is a special prop that automatically passes whatever is placed between the opening and closing tags of a component. It is primarily used for 'wrapper' or 'layout' components that don't know their content in advance.",
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase3;

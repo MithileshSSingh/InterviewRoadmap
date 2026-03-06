@@ -601,7 +601,7 @@ module.exports = { redis, cacheMiddleware, checkRateLimit };`,
         {
           type: "scenario",
           q: "How would you handle cache invalidation in a distributed system?",
-          a: "**Strategies:** (1) **TTL-based** — simplest; set cache expiry; accept staleness. (2) **Event-driven** — use Redis Pub/Sub or message queues to broadcast invalidation events to all server instances. (3) **Write-through cache** — write to cache AND database simultaneously; cache always has latest data. (4) **Versioned keys** — include a version number in cache keys (`user:42:v3`); increment version on updates. (5) **Cache-busting tags** — associate cached data with \"tags\" and invalidate all entries with a given tag. **The two hardest problems in CS:** naming things, cache invalidation, and off-by-one errors.",
+          a: '**Strategies:** (1) **TTL-based** — simplest; set cache expiry; accept staleness. (2) **Event-driven** — use Redis Pub/Sub or message queues to broadcast invalidation events to all server instances. (3) **Write-through cache** — write to cache AND database simultaneously; cache always has latest data. (4) **Versioned keys** — include a version number in cache keys (`user:42:v3`); increment version on updates. (5) **Cache-busting tags** — associate cached data with "tags" and invalidate all entries with a given tag. **The two hardest problems in CS:** naming things, cache invalidation, and off-by-one errors.',
         },
       ],
     },

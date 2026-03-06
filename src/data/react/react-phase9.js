@@ -2,7 +2,8 @@ const reactPhase9 = {
   id: "phase-9",
   title: "Phase 9: Client-Side Routing",
   emoji: "🛣️",
-  description: "Learn how to build multi-page applications using React Router and get an introduction to the Next.js App Router.",
+  description:
+    "Learn how to build multi-page applications using React Router and get an introduction to the Next.js App Router.",
   topics: [
     {
       id: "react-router-basics",
@@ -55,16 +56,16 @@ function App() {
       commonMistakes: [
         "Using \`<a>\` tags instead of \`<Link>\` (causing full page reloads and losing state).",
         "Forgetting the \`<Outlet />\` in a parent route, which prevents child routes from appearing.",
-        "Not handling 404 routes using the \`path=\"*\"\` wildcard.",
-        "Nesting routes too deeply, making the URL structure confusing."
+        'Not handling 404 routes using the \`path="*"\` wildcard.',
+        "Nesting routes too deeply, making the URL structure confusing.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the difference between Link and NavLink in React Router?",
-          a: "\`<Link>\` is used for basic navigation. \`<NavLink>\` is a special version of \`<Link>\` that knows if it is 'active' (matching the current URL). It's useful for styling the active link in a navigation bar."
-        }
-      ]
+          a: "\`<Link>\` is used for basic navigation. \`<NavLink>\` is a special version of \`<Link>\` that knows if it is 'active' (matching the current URL). It's useful for styling the active link in a navigation bar.",
+        },
+      ],
     },
     {
       id: "react-router-dynamic",
@@ -124,17 +125,17 @@ function SearchPage() {
       commonMistakes: [
         "Forgetting the colon (\`:\`) when defining a dynamic route.",
         "Not handling cases where a param or search param might be missing (undefined).",
-        "Thinking search params are part of the \`useParams\` hook (they are separate!)."
+        "Thinking search params are part of the \`useParams\` hook (they are separate!).",
       ],
       interviewQuestions: [
         {
           type: "coding",
           q: "How do you extract a dynamic ID from a URL in React Router?",
-          a: "You define the route with a colon, like \`path=\"/user/:id\"\`, and then use the \`useParams()\` hook inside the component to access it: \`const { id } = useParams();\`."
-        }
-      ]
-    }
-  ]
+          a: 'You define the route with a colon, like \`path="/user/:id"\`, and then use the \`useParams()\` hook inside the component to access it: \`const { id } = useParams();\`.',
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase9;

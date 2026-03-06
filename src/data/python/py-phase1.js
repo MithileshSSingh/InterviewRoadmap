@@ -521,7 +521,7 @@ a, b = b, a              # No temp variable needed!`,
         {
           type: "coding",
           q: "Write a function that determines if a value is mutable or immutable without modifying it.",
-          a: "```python\ndef is_mutable(obj):\n    \"\"\"Check if an object is mutable by checking its type.\"\"\"\n    immutable_types = (int, float, complex, bool, str, bytes, tuple, frozenset, type(None))\n    return not isinstance(obj, immutable_types)\n\n# Alternative: check if it has __hash__ (most immutable types are hashable)\ndef is_mutable_v2(obj):\n    try:\n        hash(obj)\n        return False  # Hashable objects are typically immutable\n    except TypeError:\n        return True   # Unhashable objects are typically mutable\n```\nNote: The hash-based approach isn't perfect (user-defined classes are hashable but mutable by default), but it works for built-in types.",
+          a: '```python\ndef is_mutable(obj):\n    """Check if an object is mutable by checking its type."""\n    immutable_types = (int, float, complex, bool, str, bytes, tuple, frozenset, type(None))\n    return not isinstance(obj, immutable_types)\n\n# Alternative: check if it has __hash__ (most immutable types are hashable)\ndef is_mutable_v2(obj):\n    try:\n        hash(obj)\n        return False  # Hashable objects are typically immutable\n    except TypeError:\n        return True   # Unhashable objects are typically mutable\n```\nNote: The hash-based approach isn\'t perfect (user-defined classes are hashable but mutable by default), but it works for built-in types.',
         },
       ],
     },

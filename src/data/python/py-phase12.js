@@ -450,7 +450,7 @@ user_svc_sms.register(User("Bob", "555-0123"))`,
         {
           type: "conceptual",
           q: "Why is composition generally preferred over inheritance in Python?",
-          a: "Inheritance creates **tight coupling** — changes to the parent class ripple through all subclasses. Deep hierarchies become fragile and hard to understand (**fragile base class problem**). Composition is more flexible: you can combine behaviors at runtime, swap implementations easily, and test components in isolation. Python supports composition naturally via duck typing — an object just needs the right methods, no inheritance required. **Mixins** (multiple inheritance of small behavior classes) are Python's middle ground, but even these can cause complexity with MRO (Method Resolution Order). The rule of thumb: use inheritance for \"is-a\" relationships (a \`Dog\` is an \`Animal\`), composition for \"has-a\" relationships (a \`Car\` has an \`Engine\`).",
+          a: 'Inheritance creates **tight coupling** — changes to the parent class ripple through all subclasses. Deep hierarchies become fragile and hard to understand (**fragile base class problem**). Composition is more flexible: you can combine behaviors at runtime, swap implementations easily, and test components in isolation. Python supports composition naturally via duck typing — an object just needs the right methods, no inheritance required. **Mixins** (multiple inheritance of small behavior classes) are Python\'s middle ground, but even these can cause complexity with MRO (Method Resolution Order). The rule of thumb: use inheritance for "is-a" relationships (a \`Dog\` is an \`Animal\`), composition for "has-a" relationships (a \`Car\` has an \`Engine\`).',
         },
       ],
     },

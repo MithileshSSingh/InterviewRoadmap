@@ -211,7 +211,7 @@ app.listen(3000, () => console.log("Auth server on http://localhost:3000"));`,
         {
           type: "tricky",
           q: "How do you handle JWT revocation?",
-          a: "JWTs are stateless — once issued, they can't be \"recalled.\" **Strategies:** (1) **Short-lived access tokens** (15min) — limits exposure time. (2) **Refresh token rotation** — store refresh tokens in database/Redis; delete on logout; issue new pair on refresh. (3) **Token blacklist** — store revoked token IDs in Redis (check on every request); defeats the stateless benefit. (4) **Version field** — store a `tokenVersion` on the user; increment on logout/password change; verify version in token matches database. (5) **Sliding sessions** — re-issue tokens on activity; pair with short TTLs.",
+          a: 'JWTs are stateless — once issued, they can\'t be "recalled." **Strategies:** (1) **Short-lived access tokens** (15min) — limits exposure time. (2) **Refresh token rotation** — store refresh tokens in database/Redis; delete on logout; issue new pair on refresh. (3) **Token blacklist** — store revoked token IDs in Redis (check on every request); defeats the stateless benefit. (4) **Version field** — store a `tokenVersion` on the user; increment on logout/password change; verify version in token matches database. (5) **Sliding sessions** — re-issue tokens on activity; pair with short TTLs.',
         },
       ],
     },

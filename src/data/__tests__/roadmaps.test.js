@@ -5,7 +5,7 @@ describe("roadmaps metadata", () => {
   it("returns all roadmaps with the expected count and required fields", () => {
     const roadmaps = getAllRoadmaps();
 
-    expect(roadmaps).toHaveLength(10);
+    expect(roadmaps).toHaveLength(11);
 
     for (const roadmap of roadmaps) {
       expect(roadmap).toHaveProperty("slug");

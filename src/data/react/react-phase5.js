@@ -2,7 +2,8 @@ const reactPhase5 = {
   id: "phase-5",
   title: "Phase 5: Side Effects & Lifecycle",
   emoji: "🔄",
-  description: "Handle side effects like data fetching, subscriptions, and DOM updates. Understand the component lifecycle in the world of hooks.",
+  description:
+    "Handle side effects like data fetching, subscriptions, and DOM updates. Understand the component lifecycle in the world of hooks.",
   topics: [
     {
       id: "react-useeffect-basics",
@@ -94,20 +95,20 @@ function SearchComponent() {
         "Forgetting the dependency array (causing the effect to run on every render).",
         "Lying to React about dependencies (not including a variable you use inside the effect).",
         "Performing side effects directly in the component body (instead of inside \`useEffect\`).",
-        "Not providing a cleanup function for subscriptions or timers."
+        "Not providing a cleanup function for subscriptions or timers.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "When does the cleanup function in useEffect run?",
-          a: "The cleanup function runs in two cases: 1. Right before the component unmounts. 2. Right before the effect is re-executed (due to a dependency change)."
+          a: "The cleanup function runs in two cases: 1. Right before the component unmounts. 2. Right before the effect is re-executed (due to a dependency change).",
         },
         {
           type: "tricky",
           q: "What happens if you omit the dependency array in useEffect?",
-          a: "If you omit the dependency array, the effect will run after **every single render** of the component. This is usually inefficient and can lead to performance issues or bugs if not intended."
-        }
-      ]
+          a: "If you omit the dependency array, the effect will run after **every single render** of the component. This is usually inefficient and can lead to performance issues or bugs if not intended.",
+        },
+      ],
     },
     {
       id: "react-useeffect-sync",
@@ -169,17 +170,17 @@ function Form() {
       commonMistakes: [
         "Using \`useEffect\` to update state based on other state (leading to 'render chains').",
         "Overusing effects for logic that should be in event handlers.",
-        "Thinking \`useEffect\` is exactly like class lifecycle methods (it's similar but has a different mental model based on synchronization)."
+        "Thinking \`useEffect\` is exactly like class lifecycle methods (it's similar but has a different mental model based on synchronization).",
       ],
       interviewQuestions: [
         {
           type: "scenario",
           q: "You have a 'fullName' state that updates whenever 'firstName' or 'lastName' state changes. How should you implement this?",
-          a: "You should **not** use \`useEffect\` or a separate 'fullName' state. Instead, you should calculate 'fullName' directly in the component body during render: \`const fullName = firstName + ' ' + lastName;\`. This avoids unnecessary re-renders and keeps the code simpler."
-        }
-      ]
-    }
-  ]
+          a: "You should **not** use \`useEffect\` or a separate 'fullName' state. Instead, you should calculate 'fullName' directly in the component body during render: \`const fullName = firstName + ' ' + lastName;\`. This avoids unnecessary re-renders and keeps the code simpler.",
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase5;

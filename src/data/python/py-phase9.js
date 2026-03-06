@@ -1355,7 +1355,7 @@ class DatabaseConnection:
 
 6. Set up a CI pipeline configuration (GitHub Actions YAML) that runs linting, type checking, and tests on every pull request. Use caching for pip dependencies and fail fast on lint errors before running the full test suite.`,
       commonMistakes: [
-        "Not configuring tools to be compatible with each other. Black and isort can conflict on import formatting — always set `profile = \"black\"` in isort config, or use ruff which handles both consistently.",
+        'Not configuring tools to be compatible with each other. Black and isort can conflict on import formatting — always set `profile = "black"` in isort config, or use ruff which handles both consistently.',
         "Disabling too many linter rules instead of fixing the underlying issues. Linter warnings exist for good reasons. Only disable rules project-wide if you have a documented rationale, and use per-file ignores for legitimate exceptions.",
         "Running formatters and linters only in CI but not locally. By the time CI catches an issue, the developer has context-switched. Pre-commit hooks provide instant feedback. IDE integration (VS Code + ruff extension) provides real-time feedback.",
         "Not pinning tool versions in CI and pre-commit config. A new ruff or black release can reformat your entire codebase, causing massive diffs. Pin exact versions and update deliberately with `pre-commit autoupdate`.",

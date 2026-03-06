@@ -2,7 +2,8 @@ const reactPhase12 = {
   id: "phase-12",
   title: "Phase 12: Styling & UI Ecosystem",
   emoji: "🎨",
-  description: "Explore the different ways to style React apps. From CSS Modules to Utility-First CSS and animations with Framer Motion.",
+  description:
+    "Explore the different ways to style React apps. From CSS Modules to Utility-First CSS and animations with Framer Motion.",
   topics: [
     {
       id: "react-styling-tailwind-modules",
@@ -67,15 +68,15 @@ const DynamicButton = ({ active }) => (
         "Using global CSS for everything (leading to naming conflicts).",
         "Over-relying on inline styles (\`style={{...}}\`), which are hard to maintain and can't use pseudo-selectors (hover, focus).",
         "Creating giant 'utils' files for styles instead of using a proper utility framework.",
-        "Not using a linter for Tailwind classes (to keep them in a consistent order)."
+        "Not using a linter for Tailwind classes (to keep them in a consistent order).",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Why is Tailwind CSS preferred over traditional CSS in large React teams?",
-          a: "Tailwind enforces a consistent design system (constrained choices for colors/spacing), eliminates naming fatigue (you don't have to name every div), and results in a very small CSS bundle because utility classes are reused throughout the entire app."
-        }
-      ]
+          a: "Tailwind enforces a consistent design system (constrained choices for colors/spacing), eliminates naming fatigue (you don't have to name every div), and results in a very small CSS bundle because utility classes are reused throughout the entire app.",
+        },
+      ],
     },
     {
       id: "react-framer-motion",
@@ -143,15 +144,15 @@ const SimpleToggle = () => {
         "Animating non-GPU accelerated properties (like \`height\` or \`margin\`) which causes layout shifts. Prefer \`transform\` (scale, x, y) and \`opacity\`.",
         "Forgetting to wrap \`exit\` animations in \`<AnimatePresence>\`.",
         "Adding too many animations, making the UI feel slow or distracting.",
-        "Not considering users who prefer 'Reduced Motion' (use the \`useReducedMotion\` hook)."
+        "Not considering users who prefer 'Reduced Motion' (use the \`useReducedMotion\` hook).",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Why is Framer Motion better for React than a library like GSAP?",
-          a: "GSAP is powerful but imperative (you target elements by ID/ref). Framer Motion is fully declarative and integrated with React's render cycle, making it much easier to animate elements as they enter/exit the DOM or change state."
-        }
-      ]
+          a: "GSAP is powerful but imperative (you target elements by ID/ref). Framer Motion is fully declarative and integrated with React's render cycle, making it much easier to animate elements as they enter/exit the DOM or change state.",
+        },
+      ],
     },
     {
       id: "react-component-libraries",
@@ -198,17 +199,17 @@ const MyDialog = () => (
         "Building complex UI widgets (like Selects or Datepickers) from scratch (they are almost always inaccessible).",
         "Using a library that is too heavy for a simple project.",
         "Fighting against a library's default styles instead of choosing a more flexible library.",
-        "Not checking for mobile responsiveness in pre-built components."
+        "Not checking for mobile responsiveness in pre-built components.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What does 'Headless UI' mean and why is it useful?",
-          a: "Headless UI means a component library that provides functionality and accessibility (like ARIA roles, keyboard navigation) but no visual styling. This is useful because it allows developers to have complete control over the UI's appearance using their own CSS, while ensuring the component is robust and accessible."
-        }
-      ]
-    }
-  ]
+          a: "Headless UI means a component library that provides functionality and accessibility (like ARIA roles, keyboard navigation) but no visual styling. This is useful because it allows developers to have complete control over the UI's appearance using their own CSS, while ensuring the component is robust and accessible.",
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase12;

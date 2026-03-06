@@ -2,7 +2,8 @@ const reactPhase6 = {
   id: "phase-6",
   title: "Phase 6: Advanced Component Patterns",
   emoji: "🧩",
-  description: "Level up your component architecture. Learn how to build highly flexible, reusable, and developer-friendly components using professional patterns.",
+  description:
+    "Level up your component architecture. Learn how to build highly flexible, reusable, and developer-friendly components using professional patterns.",
   topics: [
     {
       id: "react-compound-components",
@@ -104,20 +105,20 @@ export default App;`,
       commonMistakes: [
         "Not providing a fallback for the Context, leading to errors if children are used outside the parent.",
         "Over-using the pattern for simple components that don't need it.",
-        "Breaking the implicit contract by nesting components too deeply (Context solves this!)."
+        "Breaking the implicit contract by nesting components too deeply (Context solves this!).",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the Compound Components pattern and why is it useful?",
-          a: "It's a pattern where a group of components work together to perform a task. It's useful because it avoids prop drilling and gives the developer more flexibility over the component's internal structure and layout."
+          a: "It's a pattern where a group of components work together to perform a task. It's useful because it avoids prop drilling and gives the developer more flexibility over the component's internal structure and layout.",
         },
         {
           type: "scenario",
           q: "How does the Context API help in implementing Compound Components?",
-          a: "Context allows the parent component to share its internal state (like which tab is active) with all its descendants (the individual tabs) regardless of how deep they are nested, without having to pass props through every intermediate level."
-        }
-      ]
+          a: "Context allows the parent component to share its internal state (like which tab is active) with all its descendants (the individual tabs) regardless of how deep they are nested, without having to pass props through every intermediate level.",
+        },
+      ],
     },
     {
       id: "react-render-props-pattern",
@@ -188,20 +189,20 @@ export default App;`,
       commonMistakes: [
         "Naming the prop something other than 'render' (it's a convention, not a rule, but consistency helps).",
         "Not handling the case where the render function returns null.",
-        "Using Render Props when a simple Custom Hook would be cleaner (Hooks are generally preferred since 2019)."
+        "Using Render Props when a simple Custom Hook would be cleaner (Hooks are generally preferred since 2019).",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is a 'render prop' in React?",
-          a: "A render prop is a technique where a component receives a function as a prop and uses that function to determine what to render. This allows for logic sharing and highly flexible UI rendering."
+          a: "A render prop is a technique where a component receives a function as a prop and uses that function to determine what to render. This allows for logic sharing and highly flexible UI rendering.",
         },
         {
           type: "scenario",
           q: "How do Hooks compare to the Render Props pattern?",
-          a: "Hooks generally lead to flatter component trees and are easier to compose. However, Render Props are still useful when you need to decide what to render dynamically based on internal component state in a way that's visible in the JSX structure."
-        }
-      ]
+          a: "Hooks generally lead to flatter component trees and are easier to compose. However, Render Props are still useful when you need to decide what to render dynamically based on internal component state in a way that's visible in the JSX structure.",
+        },
+      ],
     },
     {
       id: "react-control-props",
@@ -274,17 +275,17 @@ function App() {
       commonMistakes: [
         "Not handling the transition between controlled and uncontrolled correctly (React will warn if a component changes from one to the other).",
         "Forgetting to call the \`onChange\` callback in the uncontrolled case.",
-        "Creating complex 'sync' logic when a simple 'key' prop would have sufficed to reset internal state."
+        "Creating complex 'sync' logic when a simple 'key' prop would have sufficed to reset internal state.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the difference between controlled and uncontrolled components?",
-          a: "A controlled component's state is driven by props (external), while an uncontrolled component maintains its own internal state. Control Props is a pattern that allows a component to support both modes."
-        }
-      ]
-    }
-  ]
+          a: "A controlled component's state is driven by props (external), while an uncontrolled component maintains its own internal state. Control Props is a pattern that allows a component to support both modes.",
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase6;

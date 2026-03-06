@@ -101,6 +101,24 @@ import pyPhase12Data from "./python/py-phase12";
 import pyPhase13Data from "./python/py-phase13";
 import pyPhase14Data from "./python/py-phase14";
 
+// System Design phases
+import sdPhase1 from "./system-design/sd-phase1";
+import sdPhase2 from "./system-design/sd-phase2";
+import sdPhase3 from "./system-design/sd-phase3";
+import sdPhase4Data from "./system-design/sd-phase4";
+import sdPhase4bData from "./system-design/sd-phase4b";
+import sdPhase5 from "./system-design/sd-phase5";
+import sdPhase6 from "./system-design/sd-phase6";
+import sdPhase7 from "./system-design/sd-phase7";
+import sdPhase8 from "./system-design/sd-phase8";
+import sdPhase9 from "./system-design/sd-phase9";
+import sdPhase10 from "./system-design/sd-phase10";
+import sdPhase11Data from "./system-design/sd-phase11";
+import sdPhase11bData from "./system-design/sd-phase11b";
+import sdPhase12 from "./system-design/sd-phase12";
+import sdPhase13 from "./system-design/sd-phase13";
+import sdPhase14 from "./system-design/sd-phase14";
+
 import reactPhase1 from "./react/react-phase1";
 import reactPhase2 from "./react/react-phase2";
 import reactPhase3 from "./react/react-phase3";
@@ -312,6 +330,36 @@ export const pythonPhases = [
   pyPhase14Data,
 ];
 
+// Combine System Design phase4 + phase4b topics
+const sdPhase4 = {
+  ...sdPhase4Data,
+  topics: [...sdPhase4Data.topics, ...sdPhase4bData],
+};
+
+// Combine System Design phase11 + phase11b topics
+const sdPhase11 = {
+  ...sdPhase11Data,
+  topics: [...sdPhase11Data.topics, ...sdPhase11bData],
+};
+
+// System Design roadmap phases
+export const systemDesignPhases = [
+  sdPhase1,
+  sdPhase2,
+  sdPhase3,
+  sdPhase4,
+  sdPhase5,
+  sdPhase6,
+  sdPhase7,
+  sdPhase8,
+  sdPhase9,
+  sdPhase10,
+  sdPhase11,
+  sdPhase12,
+  sdPhase13,
+  sdPhase14,
+];
+
 // Registry of all roadmap data keyed by slug
 const roadmapData = {
   javascript: javascriptPhases,
@@ -323,6 +371,7 @@ const roadmapData = {
   react: reactPhases,
   nodejs: nodejsPhases,
   python: pythonPhases,
+  "system-design": systemDesignPhases,
 };
 
 export function getRoadmapPhases(slug) {

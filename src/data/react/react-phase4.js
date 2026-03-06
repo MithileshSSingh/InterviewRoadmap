@@ -2,7 +2,8 @@ const reactPhase4 = {
   id: "phase-4",
   title: "Phase 4: State Management Basics",
   emoji: "💾",
-  description: "Learn how to make your components interactive by managing state. Master useState, useReducer, and the art of 'lifting state up'.",
+  description:
+    "Learn how to make your components interactive by managing state. Master useState, useReducer, and the art of 'lifting state up'.",
   topics: [
     {
       id: "react-usestate",
@@ -103,20 +104,20 @@ export default ProfileForm;`,
         "Directly mutating state (e.g., state.push(newItem)).",
         "Assuming state is updated immediately after calling the setter.",
         "Not using the functional update pattern when the new state depends on the old state.",
-        "Initializing state with props and expecting the state to update when props change (use useEffect or a key for that)."
+        "Initializing state with props and expecting the state to update when props change (use useEffect or a key for that).",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "Is useState synchronous or asynchronous?",
-          a: "State updates in React are **asynchronous**. When you call the setter function, React schedules an update rather than changing the variable immediately. This allows React to batch multiple updates together for better performance."
+          a: "State updates in React are **asynchronous**. When you call the setter function, React schedules an update rather than changing the variable immediately. This allows React to batch multiple updates together for better performance.",
         },
         {
           type: "coding",
           q: "How do you update an object in state without losing other properties?",
-          a: "You must use the spread operator (\`...\`) to copy the existing state properties into a new object, and then override the specific property you want to change. Example: \`setPerson(prev => ({ ...prev, name: 'New Name' }))\`."
-        }
-      ]
+          a: "You must use the spread operator (\`...\`) to copy the existing state properties into a new object, and then override the specific property you want to change. Example: \`setPerson(prev => ({ ...prev, name: 'New Name' }))\`.",
+        },
+      ],
     },
     {
       id: "react-usereducer",
@@ -209,20 +210,20 @@ export default AdvancedCounter;`,
         "Mutating state inside the reducer (Reducers MUST be pure).",
         "Forgetting to return the state in the 'default' case (this can cause the state to become undefined).",
         "Using \`useReducer\` for very simple state that only needs a single \`useState\`.",
-        "Performing side effects (like API calls) inside a reducer."
+        "Performing side effects (like API calls) inside a reducer.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What is the difference between useState and useReducer?",
-          a: "\`useState\` is simpler and better for independent, basic state values. \`useReducer\` is better for complex state objects where multiple values change together, or when the next state depends on the previous state. It also helps decouple state logic from the component."
+          a: "\`useState\` is simpler and better for independent, basic state values. \`useReducer\` is better for complex state objects where multiple values change together, or when the next state depends on the previous state. It also helps decouple state logic from the component.",
         },
         {
           type: "scenario",
           q: "Why is it important that a reducer function is 'pure'?",
-          a: "A pure function always returns the same output for the same input and has no side effects. React relies on this purity to determine if the state has actually changed (via reference comparison). If you mutate state directly, React might not detect the change and fail to re-render the UI."
-        }
-      ]
+          a: "A pure function always returns the same output for the same input and has no side effects. React relies on this purity to determine if the state has actually changed (via reference comparison). If you mutate state directly, React might not detect the change and fail to re-render the UI.",
+        },
+      ],
     },
     {
       id: "react-lifting-state",
@@ -308,22 +309,22 @@ export default Calculator;`,
       commonMistakes: [
         "Lifting state too high (lifting it to App when only two small components need it).",
         "Duplicating state (keeping a copy in the parent AND the child).",
-        "Passing too many props instead of grouping them into an object."
+        "Passing too many props instead of grouping them into an object.",
       ],
       interviewQuestions: [
         {
           type: "conceptual",
           q: "What does 'Lifting State Up' mean in React?",
-          a: "It's the process of moving state from a child component to its parent so that the state can be shared with other sibling components. This ensures a 'single source of truth' for the shared data."
+          a: "It's the process of moving state from a child component to its parent so that the state can be shared with other sibling components. This ensures a 'single source of truth' for the shared data.",
         },
         {
           type: "scenario",
           q: "What are the downsides of lifting state too high in the component tree?",
-          a: "Lifting state too high can lead to **'Prop Drilling'**, where you pass props through many components that don't actually use them. It can also cause unnecessary re-renders, as every component below the parent will re-render whenever the state changes, even if they don't consume that specific state."
-        }
-      ]
-    }
-  ]
+          a: "Lifting state too high can lead to **'Prop Drilling'**, where you pass props through many components that don't actually use them. It can also cause unnecessary re-renders, as every component below the parent will re-render whenever the state changes, even if they don't consume that specific state.",
+        },
+      ],
+    },
+  ],
 };
 
 export default reactPhase4;
