@@ -6,6 +6,7 @@ import { getRoadmapMeta } from "@/data/roadmaps";
 import CodeBlock from "@/components/CodeBlock";
 import Accordion from "@/components/Accordion";
 import TopicChatBot from "@/components/TopicChatBot";
+import TopicQuizSection from "@/components/TopicQuizSection";
 
 import { marked } from "marked";
 
@@ -131,6 +132,13 @@ export default function TopicPage() {
         </h2>
         <Accordion items={topic.interviewQuestions} />
       </section>
+
+      {/* Quiz */}
+      <TopicQuizSection
+        slug={slug}
+        topicId={topicId}
+        topicContent={topic}
+      />
 
       {/* Navigation */}
       <div className="topic-nav">

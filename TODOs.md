@@ -893,7 +893,7 @@ Requirements:
 **Why:** Users need to validate their understanding. Reading content is passive — quizzes are active learning.
 
 <details>
-<summary><strong>Prompt for Claude Code</strong></summary>
+<summary><strong>(inprogress) Prompt for Claude Code</strong></summary>
 
 ```
 Add a quiz/assessment system to the interview roadmap platform so users can test their knowledge after studying topics.

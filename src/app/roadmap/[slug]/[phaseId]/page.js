@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getRoadmapPhases } from "@/data";
 import { getRoadmapMeta } from "@/data/roadmaps";
 import { notFound } from "next/navigation";
+import PhaseAssessment from "@/components/PhaseAssessment";
 
 export default async function PhasePage({ params }) {
   const { slug, phaseId } = await params;
@@ -45,6 +46,8 @@ export default async function PhasePage({ params }) {
           </Link>
         ))}
       </div>
+
+      <PhaseAssessment slug={slug} phase={phase} />
     </div>
   );
 }
