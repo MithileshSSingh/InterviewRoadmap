@@ -4,9 +4,35 @@ import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
+function getInterviewSessionDelegate() {
+  const delegate = (prisma as typeof prisma & {
+    interviewSession?: {
+      create?: typeof prisma.bookmark.create;
+      findMany?: typeof prisma.bookmark.findMany;
+    };
+  }).interviewSession;
+
+  if (!delegate?.create || !delegate?.findMany) {
+    return null;
+  }
+
+  return delegate;
+}
+
 export async function POST(request: Request) {
   const session = await auth();
   const userId = session?.user?.id;
+  const interviewSessions = getInterviewSessionDelegate();
+
+  if (!interviewSessions) {
+    return NextResponse.json(
+      {
+        error:
+          "Interview session storage is unavailable. Regenerate the Prisma client or restart the dev server.",
+      },
+      { status: 503 },
+    );
+  }
 
   const body = await request.json().catch(() => null);
   if (!body) {
@@ -33,7 +59,7 @@ export async function POST(request: Request) {
 
   const messagesJson = typeof messages === "string" ? messages : JSON.stringify(messages);
 
-  const record = await prisma.interviewSession.create({
+  const record = await interviewSessions.create({
     data: {
       topicId,
       topicTitle,
@@ -55,6 +81,18 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   const session = await auth();
   const userId = session?.user?.id;
+  const interviewSessions = getInterviewSessionDelegate();
+
+  if (!interviewSessions) {
+    return NextResponse.json(
+      {
+        error:
+          "Interview session storage is unavailable. Regenerate the Prisma client or restart the dev server.",
+      },
+      { status: 503 },
+    );
+  }
+
   const headerSessionId = request.headers.get("x-session-id");
 
   const effectiveId = userId ?? headerSessionId;
@@ -64,7 +102,7 @@ export async function GET(request: Request) {
 
   const where = userId ? { userId } : { sessionId: effectiveId };
 
-  const sessions = await prisma.interviewSession.findMany({
+  const sessions = await interviewSessions.findMany({
     where,
     orderBy: { createdAt: "desc" },
     select: {

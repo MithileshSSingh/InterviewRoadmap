@@ -3,6 +3,17 @@ import { PrismaClient } from "@/generated/prisma/client";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
+function hasExpectedDelegates(client: PrismaClient | undefined): client is PrismaClient {
+  if (!client) return false;
+
+  const candidate = client as PrismaClient & {
+    bookmark?: unknown;
+    interviewSession?: unknown;
+  };
+
+  return Boolean(candidate.bookmark) && Boolean(candidate.interviewSession);
+}
+
 function createPrismaClient(): PrismaClient {
   const adapter = new PrismaLibSql({
     url: process.env.DATABASE_URL ?? "file:./dev.db",
@@ -13,6 +24,8 @@ function createPrismaClient(): PrismaClient {
 }
 
 export const prisma: PrismaClient =
-  globalForPrisma.prisma ?? createPrismaClient();
+  hasExpectedDelegates(globalForPrisma.prisma)
+    ? globalForPrisma.prisma
+    : createPrismaClient();
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

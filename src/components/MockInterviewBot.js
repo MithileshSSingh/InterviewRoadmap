@@ -94,6 +94,19 @@ function getSpeechRecognitionCtor() {
   return window.SpeechRecognition || window.webkitSpeechRecognition || null;
 }
 
+function isIOSWebKitBrowser() {
+  if (typeof window === "undefined" || typeof navigator === "undefined") return false;
+
+  const ua = navigator.userAgent || "";
+  const platform = navigator.platform || "";
+  const maxTouchPoints = navigator.maxTouchPoints || 0;
+  const isIOSDevice =
+    /iPad|iPhone|iPod/.test(ua) ||
+    (platform === "MacIntel" && maxTouchPoints > 1);
+
+  return isIOSDevice && /WebKit/i.test(ua);
+}
+
 function cleanSpeechText(text) {
   return text
     .replace(/```[\s\S]*?```/g, " code example. ")
@@ -150,7 +163,7 @@ function normaliseVoiceError(error) {
       return "Speech recognition lost its connection. Try again.";
     case "not-allowed":
     case "service-not-allowed":
-      return "Microphone permission is blocked for this site.";
+      return "Microphone access is blocked. On iPhone/iPad Safari, also make sure Siri or Dictation is enabled in Settings.";
     case "language-not-supported":
       return "Speech recognition does not support the current language.";
     default:
@@ -213,6 +226,12 @@ export default function MockInterviewBot({
   const freeformFinalScoreRef = useRef(freeformFinalScore);
   const submitVoiceTurnRef = useRef(null);
   const interruptedForBargeInRef = useRef(false);
+  const audioPermissionPrimedRef = useRef(false);
+  const speechSynthesisPrimedRef = useRef(false);
+  const initialRecognitionPrimedRef = useRef(false);
+  const shouldAbortImmediatelyOnStartRef = useRef(false);
+
+  const isIOSWebKit = isIOSWebKitBrowser();
 
   const isVoiceSupported =
     typeof window !== "undefined" &&
@@ -258,10 +277,48 @@ export default function MockInterviewBot({
     }
   }, []);
 
+  const primeSpeechSynthesis = useCallback(() => {
+    if (typeof window === "undefined" || !window.speechSynthesis || speechSynthesisPrimedRef.current) {
+      return;
+    }
+
+    try {
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.resume();
+      const utterance = new SpeechSynthesisUtterance(" ");
+      utterance.volume = 0;
+      utterance.lang = "en-US";
+      speechSynthesisPrimedRef.current = true;
+      window.speechSynthesis.speak(utterance);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const primeAudioPermission = useCallback(async () => {
+    if (
+      typeof navigator === "undefined" ||
+      !navigator.mediaDevices?.getUserMedia ||
+      audioPermissionPrimedRef.current
+    ) {
+      return true;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((track) => track.stop());
+      audioPermissionPrimedRef.current = true;
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
   const cancelAssistantSpeech = useCallback(
     ({ clearBuffer = true } = {}) => {
       if (typeof window !== "undefined" && window.speechSynthesis) {
         window.speechSynthesis.cancel();
+        window.speechSynthesis.resume();
       }
       speechQueueRef.current = [];
       currentUtteranceRef.current = null;
@@ -338,6 +395,7 @@ export default function MockInterviewBot({
         const utterance = new SpeechSynthesisUtterance(nextText);
         utterance.rate = 1.02;
         utterance.pitch = 1;
+        utterance.lang = "en-US";
         utterance.voice = pickSpeechVoice();
 
         utterance.onstart = () => {
@@ -369,6 +427,7 @@ export default function MockInterviewBot({
           }
         };
 
+        window.speechSynthesis.resume();
         window.speechSynthesis.speak(utterance);
       };
 
@@ -564,12 +623,23 @@ export default function MockInterviewBot({
     }
 
     const recognition = new SpeechRecognitionCtor();
-    recognition.continuous = true;
+    recognition.continuous = !isIOSWebKit;
     recognition.interimResults = true;
     recognition.lang = "en-US";
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
+      if (shouldAbortImmediatelyOnStartRef.current) {
+        shouldAbortImmediatelyOnStartRef.current = false;
+        initialRecognitionPrimedRef.current = true;
+        try {
+          recognition.abort();
+        } catch {
+          /* ignore */
+        }
+        return;
+      }
+
       recognitionActiveRef.current = true;
       setRecognitionStatus("listening");
       setVoiceError("");
@@ -659,7 +729,7 @@ export default function MockInterviewBot({
         /* ignore */
       }
     };
-  }, [clearTranscriptTimer, isVoiceSupported, startListening, stopListening]);
+  }, [clearTranscriptTimer, isIOSWebKit, isVoiceSupported, startListening, stopListening]);
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -743,6 +813,26 @@ export default function MockInterviewBot({
   }
 
   async function startFreeformMode() {
+    if (isIOSWebKit) {
+      primeSpeechSynthesis();
+
+      const permissionGranted = await primeAudioPermission();
+      if (!permissionGranted) {
+        setVoiceError(
+          "Microphone access is required in Safari. Also ensure Siri or Dictation is enabled in iOS Settings.",
+        );
+      }
+
+      if (recognitionRef.current && !initialRecognitionPrimedRef.current) {
+        shouldAbortImmediatelyOnStartRef.current = true;
+        try {
+          recognitionRef.current.start();
+        } catch {
+          shouldAbortImmediatelyOnStartRef.current = false;
+        }
+      }
+    }
+
     setMode("freeform");
     setPhase("freeform");
     await startFreeformInterview();
@@ -906,6 +996,7 @@ export default function MockInterviewBot({
     if (recognitionStatus === "starting") return "Starting microphone.";
     if (recognitionStatus === "listening") return "Listening. Speak naturally.";
     if (recognitionStatus === "processing") return "Processing your answer.";
+    if (isIOSWebKit) return "Ready for your answer. Safari may require one tap to re-arm the mic.";
     return "Ready for your answer.";
   })();
 
