@@ -4529,10 +4529,32 @@ body {
 
 .interview-voice-support-note {
   margin: 0;
+  padding: 0.85rem 1rem;
   font-size: 0.8rem;
-  color: var(--text-muted);
-  text-align: center;
+  color: var(--text-secondary);
+  text-align: left;
   line-height: 1.5;
+  background: rgba(251, 191, 36, 0.06);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: var(--radius);
+}
+
+.interview-voice-support-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent-yellow, #fbbf24);
+}
+
+.interview-voice-support-steps {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
 }
 
 .interview-voice-panel {

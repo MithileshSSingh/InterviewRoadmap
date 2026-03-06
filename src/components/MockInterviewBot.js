@@ -149,6 +149,7 @@ function pickSpeechVoice() {
   if (typeof window === "undefined" || !window.speechSynthesis) return null;
   const voices = window.speechSynthesis.getVoices();
   return (
+    voices.find((voice) => voice.name === "Google UK English Female") ??
     voices.find((voice) => voice.lang?.toLowerCase().startsWith("en")) ??
     voices[0] ??
     null
@@ -1073,7 +1074,7 @@ export default function MockInterviewBot({
                       disabled={!isVoiceSupported}
                       title={
                         !isVoiceSupported
-                          ? "Voice interview requires Chrome or Edge with microphone access."
+                          ? "Enable speech features in your device settings (see below)"
                           : undefined
                       }
                     >
@@ -1085,9 +1086,22 @@ export default function MockInterviewBot({
                     </button>
                   </div>
                   {!isVoiceSupported && (
-                    <p className="interview-voice-support-note">
-                      Voice mode needs browser-native speech recognition and speech synthesis. Chrome or Edge works best.
-                    </p>
+                    <div className="interview-voice-support-note">
+                      <p className="interview-voice-support-title">⚠️ Voice mode is not available on this browser</p>
+                      {isIOSWebKit ? (
+                        <ul className="interview-voice-support-steps">
+                          <li>Open <strong>Settings → Siri & Search</strong> (or <strong>Settings → General → Keyboard</strong>) and enable <strong>Dictation</strong>.</li>
+                          <li>Make sure you are using <strong>Safari</strong> (not an in-app browser).</li>
+                          <li>Reload this page and try again.</li>
+                        </ul>
+                      ) : (
+                        <ul className="interview-voice-support-steps">
+                          <li>Use <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong> for full voice support.</li>
+                          <li>Ensure <strong>microphone permission</strong> is granted to this site.</li>
+                          <li>On Android, check that <strong>Google Voice Typing</strong> is enabled in keyboard settings.</li>
+                        </ul>
+                      )}
+                    </div>
                   )}
                 </div>
               )}
