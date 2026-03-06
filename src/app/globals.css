@@ -3786,18 +3786,72 @@ body {
     font-size: 0.88rem;
   }
 
+  .feedback-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
   .feedback-modal {
     max-width: 100%;
-    border-radius: var(--radius) var(--radius) 0 0;
-    max-height: 80vh;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    width: 100%;
+    margin: 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    max-height: 90vh;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+    overscroll-behavior: contain;
+    animation: feedbackSlideUpMobile 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  /* Drag handle indicator */
+  .feedback-modal::before {
+    content: "";
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0.75rem auto 0;
+  }
+
+  .feedback-modal-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .feedback-form {
+    padding: 1rem;
+    gap: 0.875rem;
+  }
+
+  /* Bigger touch targets for chips */
+  .feedback-chip {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.82rem;
+    min-height: 36px;
+  }
+
+  /* Bigger touch targets for stars */
+  .feedback-star {
+    font-size: 1.6rem;
+    padding: 0.25rem 0.3rem;
+  }
+
+  /* Full-width submit button */
+  .feedback-submit {
+    width: 100%;
+    padding: 0.75rem 1.2rem;
+    font-size: 0.9rem;
   }
 
   .feedback-contextual {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+@keyframes feedbackSlideUpMobile {
+  from { opacity: 0; transform: translateY(100%); }
+  to   { opacity: 1; transform: translateY(0); }
 }
