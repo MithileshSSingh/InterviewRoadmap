@@ -47,13 +47,9 @@ export default function PhaseAssessment({ slug, phase }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            topicContent: {
-              title: topic.title,
-              explanation: topic.explanation,
-              codeExample: topic.codeExample,
-              commonMistakes: topic.commonMistakes,
-              interviewQuestions: topic.interviewQuestions,
-            },
+            slug,
+            phaseId: phase.id,
+            topicId: topic.id,
             difficulty: "intermediate",
             count: 3,
           }),

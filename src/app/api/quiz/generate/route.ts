@@ -1,19 +1,14 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { SystemMessage, HumanMessage } from "@langchain/core/messages";
 import { NextResponse } from "next/server";
+import { getTopicById } from "@/data";
 
 export const dynamic = "force-dynamic";
 
-interface TopicContent {
-  title: string;
-  explanation: string;
-  codeExample?: string;
-  commonMistakes?: string[];
-  interviewQuestions?: { q: string; a: string }[];
-}
-
 interface GenerateQuizRequest {
-  topicContent: TopicContent;
+  slug: string;
+  phaseId: string;
+  topicId: string;
   difficulty?: "beginner" | "intermediate" | "advanced";
   count?: number;
 }
@@ -31,13 +26,19 @@ interface QuizQuestion {
 export async function POST(request: Request) {
   try {
     const body: GenerateQuizRequest = await request.json();
-    const { topicContent, difficulty = "intermediate", count = 5 } = body;
+    const { slug, phaseId, topicId, difficulty = "intermediate", count = 5 } =
+      body;
 
-    if (!topicContent?.title || !topicContent?.explanation) {
+    if (!slug || !phaseId || !topicId) {
       return NextResponse.json(
-        { error: "Missing required topicContent fields" },
+        { error: "slug, phaseId, and topicId are required" },
         { status: 400 },
       );
+    }
+
+    const topic = getTopicById(slug, phaseId, topicId);
+    if (!topic) {
+      return NextResponse.json({ error: "Topic not found" }, { status: 404 });
     }
 
     const clampedCount = Math.min(Math.max(count, 3), 10);
@@ -67,10 +68,10 @@ export async function POST(request: Request) {
     const systemPrompt = `You are a technical interview quiz generator. Generate exactly ${clampedCount} quiz questions at ${difficulty} difficulty level.
 
 TOPIC CONTEXT:
-Title: ${topicContent.title}
-Explanation: ${topicContent.explanation}
-${topicContent.codeExample ? `Code Examples: ${topicContent.codeExample}` : ""}
-${topicContent.commonMistakes ? `Common Mistakes: ${topicContent.commonMistakes.join("; ")}` : ""}
+Title: ${topic.title}
+Explanation: ${topic.explanation}
+${topic.codeExample ? `Code Examples:\n${topic.codeExample}` : ""}
+${topic.commonMistakes?.length ? `Common Mistakes: ${topic.commonMistakes.join("; ")}` : ""}
 
 RULES:
 - Mix question types: "multiple-choice", "true-false", "code-output"
@@ -82,20 +83,19 @@ RULES:
 - Each question id should be a short unique slug (e.g., "q1", "q2")
 - Ensure only ONE answer is correct per question
 
-Respond with ONLY a valid JSON array of objects. No markdown, no explanation, no code fences. Example format:
+Respond with ONLY a valid JSON array. No markdown, no explanation, no code fences. Example:
 [{"id":"q1","type":"multiple-choice","question":"...","options":["A","B","C","D"],"correctAnswer":0,"explanation":"..."}]`;
 
     const response = await llm.invoke([
       new SystemMessage(systemPrompt),
       new HumanMessage(
-        `Generate ${clampedCount} ${difficulty}-level quiz questions for the topic: "${topicContent.title}"`,
+        `Generate ${clampedCount} ${difficulty}-level quiz questions for: "${topic.title}"`,
       ),
     ]);
 
     const content =
       typeof response.content === "string" ? response.content : "";
 
-    // Extract JSON from response (handle potential markdown fences)
     let jsonStr = content.trim();
     if (jsonStr.startsWith("```")) {
       jsonStr = jsonStr

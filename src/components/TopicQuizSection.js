@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import Quiz from "@/components/Quiz";
 import { getQuizForTopic } from "@/data/quizzes";
 
-export default function TopicQuizSection({ slug, topicId, topicContent }) {
+export default function TopicQuizSection({ slug, phaseId, topicId, topicTitle }) {
   const [mounted, setMounted] = useState(false);
   const [questions, setQuestions] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -54,17 +54,7 @@ export default function TopicQuizSection({ slug, topicId, topicContent }) {
       const res = await fetch("/api/quiz/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          topicContent: {
-            title: topicContent.title,
-            explanation: topicContent.explanation,
-            codeExample: topicContent.codeExample,
-            commonMistakes: topicContent.commonMistakes,
-            interviewQuestions: topicContent.interviewQuestions,
-          },
-          difficulty: "intermediate",
-          count: 5,
-        }),
+        body: JSON.stringify({ slug, phaseId, topicId, difficulty: "intermediate", count: 5 }),
       });
       if (!res.ok) throw new Error("Failed to generate quiz");
       const data = await res.json();
@@ -76,10 +66,7 @@ export default function TopicQuizSection({ slug, topicId, topicContent }) {
         const cacheKey = `quiz-cache-${slug}-${topicId}`;
         localStorage.setItem(
           cacheKey,
-          JSON.stringify({
-            questions: data.questions,
-            generatedAt: Date.now(),
-          }),
+          JSON.stringify({ questions: data.questions, generatedAt: Date.now() }),
         );
       } catch {}
     } catch {
@@ -87,7 +74,7 @@ export default function TopicQuizSection({ slug, topicId, topicContent }) {
     } finally {
       setIsGenerating(false);
     }
-  }, [slug, topicId, topicContent]);
+  }, [slug, phaseId, topicId]);
 
   const handleQuizComplete = useCallback(
     (score, total) => {
@@ -134,7 +121,7 @@ export default function TopicQuizSection({ slug, topicId, topicContent }) {
       ) : questions ? (
         <div className="quiz-generate-card">
           <p className="quiz-generate-text">
-            Test your understanding of {topicContent.title}
+            Test your understanding of {topicTitle}
           </p>
           <button
             className="quiz-btn quiz-btn-primary"
@@ -157,7 +144,7 @@ export default function TopicQuizSection({ slug, topicId, topicContent }) {
           ) : (
             <>
               <p className="quiz-generate-text">
-                No quiz available yet for {topicContent.title}
+                No quiz available yet for {topicTitle}
               </p>
               <button
                 className="quiz-btn quiz-btn-primary"

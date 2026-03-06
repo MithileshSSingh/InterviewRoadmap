@@ -136,8 +136,9 @@ export default function TopicPage() {
       {/* Quiz */}
       <TopicQuizSection
         slug={slug}
+        phaseId={phaseId}
         topicId={topicId}
-        topicContent={topic}
+        topicTitle={topic.title}
       />
 
       {/* Navigation */}
