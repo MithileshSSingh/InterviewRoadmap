@@ -168,6 +168,13 @@ export default function Sidebar() {
         </nav>
 
         <Link
+          href="/bookmarks"
+          className={`sidebar-settings ${pathname === "/bookmarks" ? "active" : ""}`}
+          onClick={() => setMobileOpen(false)}
+        >
+          🔖 Bookmarks
+        </Link>
+        <Link
           href="/settings"
           className={`sidebar-settings ${pathname === "/settings" ? "active" : ""}`}
           onClick={() => setMobileOpen(false)}

@@ -252,7 +252,7 @@ Features that make the existing platform significantly better for end users.
 <summary><strong>Prompt for Claude Code</strong></summary>
 
 ```
-Add topic completion tracking to the static roadmaps (JavaScript, TypeScript, DSA, Android, React Native, Salesforce). Currently only CareerForge AI-generated roadmaps have progress tracking.
+Add topic completion tracking to the static roadmaps (JavaScript, TypeScript, DSA, Android, React Native, Salesforce etc). Currently only CareerForge AI-generated roadmaps have progress tracking.
 
 Requirements:
 

@@ -3,6 +3,7 @@ import { getRoadmapPhases } from "@/data";
 import { getRoadmapMeta } from "@/data/roadmaps";
 import { notFound } from "next/navigation";
 import PhaseAssessment from "@/components/PhaseAssessment";
+import TopicCardList from "@/components/TopicCardList";
 
 export default async function PhasePage({ params }) {
   const { slug, phaseId } = await params;
@@ -34,18 +35,14 @@ export default async function PhasePage({ params }) {
         <p>{phase.description}</p>
       </div>
 
-      <div className="topics-list">
-        {phase.topics.map((topic, idx) => (
-          <Link
-            key={topic.id}
-            href={`/roadmap/${slug}/${phase.id}/${topic.id}`}
-            className="topic-card"
-          >
-            <span className="topic-number">{idx + 1}</span>
-            <h3>{topic.title}</h3>
-          </Link>
-        ))}
-      </div>
+      <TopicCardList
+        topics={phase.topics}
+        slug={slug}
+        phaseId={phase.id}
+        phaseTitle={phase.title}
+        roadmapTitle={meta.title}
+        roadmapEmoji={meta.emoji}
+      />
 
       <PhaseAssessment slug={slug} phase={phase} />
     </div>

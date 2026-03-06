@@ -10,6 +10,7 @@ import Accordion from "@/components/Accordion";
 import TopicChatBot from "@/components/TopicChatBot";
 import TopicQuizSection from "@/components/TopicQuizSection";
 import { useFeedback } from "@/components/FeedbackWidget";
+import BookmarkButton, { useBookmark } from "@/components/BookmarkButton";
 
 import { marked } from "marked";
 
@@ -189,9 +190,27 @@ function TopicFeedback({ slug, phaseId, topicId }) {
 export default function TopicPage() {
   const params = useParams();
   const { slug, phaseId, topicId } = params;
+
+  // Pure static lookups — done before hooks so useBookmark gets real values
+  const meta = getRoadmapMeta(slug);
+  const phases = getRoadmapPhases(slug);
+  const phase = phases?.find((p) => p.id === phaseId) ?? null;
+  const topicIndex = phase ? phase.topics.findIndex((t) => t.id === topicId) : -1;
+  const topic = phase?.topics[topicIndex] ?? null;
+
+  // All hooks called unconditionally before any early returns
   const [codeViewMode, setCodeViewMode] = useState("view");
   const [isExercisePlaygroundOpen, setIsExercisePlaygroundOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const bookmark = useBookmark({
+    slug,
+    phaseId,
+    topicId,
+    topicTitle: topic?.title ?? "",
+    phaseTitle: phase?.title ?? "",
+    roadmapTitle: meta?.title ?? "",
+    roadmapEmoji: meta?.emoji ?? "",
+  });
 
   useEffect(() => {
     const updateViewport = () => {
@@ -208,15 +227,9 @@ export default function TopicPage() {
     return () => window.removeEventListener("resize", updateViewport);
   }, []);
 
-  const meta = getRoadmapMeta(slug);
-  const phases = getRoadmapPhases(slug);
+  // Early returns after all hooks
   if (!meta || !phases) return <div>Roadmap not found</div>;
-
-  const phase = phases.find((p) => p.id === phaseId);
   if (!phase) return <div>Phase not found</div>;
-
-  const topicIndex = phase.topics.findIndex((t) => t.id === topicId);
-  const topic = phase.topics[topicIndex];
   if (!topic) return <div>Topic not found</div>;
 
   // Prev/next within phase
@@ -268,7 +281,15 @@ export default function TopicPage() {
         <span>{topic.title}</span>
       </div>
 
-      <h1>{topic.title}</h1>
+      <div className="topic-title-row">
+        <h1>{topic.title}</h1>
+        <BookmarkButton
+          bookmarked={bookmark.bookmarked}
+          loading={bookmark.loading}
+          toast={bookmark.toast}
+          onToggle={bookmark.toggle}
+        />
+      </div>
 
       {/* Explanation */}
       <section className="section">
@@ -396,6 +417,16 @@ export default function TopicPage() {
 
       {/* Topic Feedback */}
       <TopicFeedback slug={slug} phaseId={phaseId} topicId={topicId} />
+
+      {/* Save bookmark (bottom) */}
+      <div className="bookmark-bottom">
+        <BookmarkButton
+          bookmarked={bookmark.bookmarked}
+          loading={bookmark.loading}
+          toast={bookmark.toast}
+          onToggle={bookmark.toggle}
+        />
+      </div>
 
       {/* Navigation */}
       <div className="topic-nav">

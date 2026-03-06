@@ -13,16 +13,17 @@ datasource db {
 // ─── NextAuth.js v5 models ───────────────────────────────────────────────────
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
   roadmaps      Roadmap[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  bookmarks     Bookmark[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   @@map("users")
 }
@@ -114,6 +115,28 @@ model AgentRun {
 
   @@index([roadmapId])
   @@map("agent_runs")
+}
+
+// ─── Bookmarks ───────────────────────────────────────────────────────────────
+
+model Bookmark {
+  id           String   @id @default(cuid())
+  userId       String?
+  sessionId    String
+  slug         String
+  phaseId      String
+  topicId      String
+  topicTitle   String
+  phaseTitle   String
+  roadmapTitle String
+  roadmapEmoji String?
+  createdAt    DateTime @default(now())
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, slug, phaseId, topicId])
+  @@index([sessionId])
+  @@index([userId])
+  @@map("bookmarks")
 }
 
 // ─── Feedback ────────────────────────────────────────────────────────────────
