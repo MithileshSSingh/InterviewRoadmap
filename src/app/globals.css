@@ -3427,15 +3427,16 @@ body {
   bottom: 1.5rem;
   right: 1.5rem;
   z-index: 1100;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
+  height: 44px;
+  padding: 0 1.25rem;
+  border-radius: 999px;
   border: 1px solid var(--glass-border);
   background: var(--glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: var(--text-primary);
-  font-size: 1.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -3780,9 +3781,9 @@ body {
   .feedback-fab {
     bottom: 1rem;
     right: 1rem;
-    width: 46px;
-    height: 46px;
-    font-size: 1.2rem;
+    height: 40px;
+    padding: 0 1rem;
+    font-size: 0.88rem;
   }
 
   .feedback-modal {

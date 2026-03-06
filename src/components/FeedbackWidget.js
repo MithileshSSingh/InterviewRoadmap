@@ -123,7 +123,7 @@ export default function FeedbackWidget({ children }) {
         title="Send feedback"
         data-testid="feedback-fab"
       >
-        💬
+        Feedback
       </button>
 
       {/* Modal Overlay */}
