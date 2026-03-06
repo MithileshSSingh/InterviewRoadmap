@@ -115,3 +115,23 @@ model AgentRun {
   @@index([roadmapId])
   @@map("agent_runs")
 }
+
+// ─── Feedback ────────────────────────────────────────────────────────────────
+
+model Feedback {
+  id          String   @id @default(cuid())
+  type        String   // "bug" | "feature" | "content" | "general"
+  category    String?
+  message     String
+  email       String?
+  rating      Int?     // 1-5
+  roadmapSlug String?
+  phaseId     String?
+  topicId     String?
+  pagePath    String?
+  metadata    String?  // JSON-stringified browser/app context
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("feedback")
+}

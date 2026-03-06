@@ -4,6 +4,7 @@ import SearchModal from "@/components/SearchModal";
 import MobileMenu from "@/components/MobileMenu";
 import Providers from "@/components/Providers";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import FeedbackWidget from "@/components/FeedbackWidget";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -24,17 +25,19 @@ export default function RootLayout({ children }) {
       <body>
         <Providers>
           <ThemeProvider>
-            <div className="app-layout">
-              <Sidebar />
-              <main className="main-content">
-                <div className="top-controls">
-                  <div id="top-chatbot-slot" className="top-control-slot" />
-                  <SearchModal />
-                  <MobileMenu />
-                </div>
-                {children}
-              </main>
-            </div>
+            <FeedbackWidget>
+              <div className="app-layout">
+                <Sidebar />
+                <main className="main-content">
+                  <div className="top-controls">
+                    <div id="top-chatbot-slot" className="top-control-slot" />
+                    <SearchModal />
+                    <MobileMenu />
+                  </div>
+                  {children}
+                </main>
+              </div>
+            </FeedbackWidget>
           </ThemeProvider>
         </Providers>
         <Analytics />

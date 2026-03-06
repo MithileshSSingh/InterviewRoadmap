@@ -20,6 +20,9 @@ const careerforgeDefaultLimiter = rateLimit({
   maxRequests: 60,
 });
 
+// /api/feedback — 10 req/min
+const feedbackLimiter = rateLimit({ interval: 60000, maxRequests: 10 });
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -84,6 +87,8 @@ export function middleware(request: NextRequest) {
   } else if (pathname.includes("/stream")) {
     // Matches /api/careerforge/[id]/stream
     result = streamLimiter(ip);
+  } else if (pathname.startsWith("/api/feedback")) {
+    result = feedbackLimiter(ip);
   } else {
     // All other /api/careerforge/* routes
     result = careerforgeDefaultLimiter(ip);

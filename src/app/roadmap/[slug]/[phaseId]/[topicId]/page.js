@@ -9,6 +9,7 @@ import CodeBlock from "@/components/CodeBlock";
 import Accordion from "@/components/Accordion";
 import TopicChatBot from "@/components/TopicChatBot";
 import TopicQuizSection from "@/components/TopicQuizSection";
+import { useFeedback } from "@/components/FeedbackWidget";
 
 import { marked } from "marked";
 
@@ -18,7 +19,7 @@ const CodePlayground = dynamic(() => import("@/components/CodePlayground"), {
 
 function renderMarkdown(text) {
   if (!text) return null;
-  // Some legacy data might still have literal string "\n" instead of actual newlines
+  // Some legacy data might still have literal string "\\n" instead of actual newlines
   const processed = text.replace(/\\n/g, "\n");
   return marked.parse(processed);
 }
@@ -100,6 +101,89 @@ function solution() {
 
 solution();
 `;
+}
+
+function TopicFeedback({ slug, phaseId, topicId }) {
+  const feedback = useFeedback();
+  const [voted, setVoted] = useState(null); // "up" | "down" | null
+
+  async function handleThumbsUp() {
+    setVoted("up");
+    try {
+      await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "content",
+          message: "Topic was helpful (thumbs up)",
+          rating: 5,
+          roadmapSlug: slug,
+          phaseId,
+          topicId,
+          pagePath: window.location.pathname,
+        }),
+      });
+    } catch {
+      /* non-blocking */
+    }
+  }
+
+  function handleThumbsDown() {
+    setVoted("down");
+    if (feedback) {
+      feedback.openFeedback({
+        type: "content",
+        roadmapSlug: slug,
+        phaseId,
+        topicId,
+      });
+    }
+  }
+
+  function handleReport() {
+    if (feedback) {
+      feedback.openFeedback({
+        type: "content",
+        roadmapSlug: slug,
+        phaseId,
+        topicId,
+      });
+    }
+  }
+
+  return (
+    <section className="feedback-contextual">
+      <div className="feedback-contextual-inner">
+        <span className="feedback-contextual-label">Was this topic helpful?</span>
+        <div className="feedback-thumbs">
+          <button
+            type="button"
+            className={`feedback-thumb ${voted === "up" ? "active" : ""}`}
+            onClick={handleThumbsUp}
+            disabled={voted !== null}
+            aria-label="Helpful"
+          >
+            👍
+          </button>
+          <button
+            type="button"
+            className={`feedback-thumb ${voted === "down" ? "active" : ""}`}
+            onClick={handleThumbsDown}
+            disabled={voted !== null}
+            aria-label="Not helpful"
+          >
+            👎
+          </button>
+        </div>
+        {voted === "up" && (
+          <span className="feedback-thanks">Thanks for your feedback!</span>
+        )}
+      </div>
+      <button type="button" className="feedback-report-link" onClick={handleReport}>
+        ⚑ Report an issue
+      </button>
+    </section>
+  );
 }
 
 export default function TopicPage() {
@@ -309,6 +393,9 @@ export default function TopicPage() {
         topicId={topicId}
         topicTitle={topic.title}
       />
+
+      {/* Topic Feedback */}
+      <TopicFeedback slug={slug} phaseId={phaseId} topicId={topicId} />
 
       {/* Navigation */}
       <div className="topic-nav">
