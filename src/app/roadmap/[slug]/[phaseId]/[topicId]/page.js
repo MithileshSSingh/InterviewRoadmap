@@ -8,6 +8,7 @@ import { getRoadmapMeta } from "@/data/roadmaps";
 import CodeBlock from "@/components/CodeBlock";
 import Accordion from "@/components/Accordion";
 import TopicChatBot from "@/components/TopicChatBot";
+import MockInterviewBot from "@/components/MockInterviewBot";
 import TopicQuizSection from "@/components/TopicQuizSection";
 import { useFeedback } from "@/components/FeedbackWidget";
 import BookmarkButton, { useBookmark } from "@/components/BookmarkButton";
@@ -459,6 +460,13 @@ export default function TopicPage() {
 
       {/* Topic Chatbot */}
       <TopicChatBot topicContent={topic} />
+      {/* Mock Interview Bot */}
+      <MockInterviewBot
+        topicContent={topic}
+        topicId={topic.id}
+        roadmapSlug={slug}
+        phaseId={phaseId}
+      />
     </div>
   );
 }

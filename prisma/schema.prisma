@@ -13,17 +13,19 @@ datasource db {
 // ─── NextAuth.js v5 models ───────────────────────────────────────────────────
 
 model User {
-  id            String     @id @default(cuid())
-  name          String?
-  email         String?    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  roadmaps      Roadmap[]
-  bookmarks     Bookmark[]
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  id                String             @id @default(cuid())
+  name              String?
+  email             String?            @unique
+  emailVerified     DateTime?
+  image             String?
+  accounts          Account[]
+  sessions          Session[]
+  roadmaps          Roadmap[]
+  bookmarks         Bookmark[]
+  comparisons       Comparison[]
+  interviewSessions InterviewSession[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 
   @@map("users")
 }
@@ -137,6 +139,137 @@ model Bookmark {
   @@index([sessionId])
   @@index([userId])
   @@map("bookmarks")
+}
+
+// ─── Comparative Intelligence ────────────────────────────────────────────────
+
+model Comparison {
+  id                String               @id @default(cuid())
+  sessionId         String
+  userId            String?
+  mode              String
+  status            String               @default("pending")
+  title             String
+  summary           String?
+  priority          String?
+  location          String?
+  experienceLevel   String?
+  currentRole       String?
+  yearsOfExperience Int?
+  visibility        String               @default("private")
+  shareToken        String?              @unique
+  result            String?
+  errorMessage      String?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  lastRefreshedAt   DateTime?
+  user              User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+  targets           ComparisonTarget[]
+  runs              ComparisonRun[]
+  snapshots         ComparisonSnapshot[]
+  sources           ComparisonSource[]
+
+  @@index([sessionId])
+  @@index([userId])
+  @@index([status])
+  @@map("comparisons")
+}
+
+model ComparisonTarget {
+  id                String           @id @default(cuid())
+  comparisonId      String
+  side              String
+  targetType        String
+  role              String?
+  company           String?
+  label             String
+  normalizedRole    String?
+  normalizedCompany String?
+  location          String?
+  experienceLevel   String?
+  inputPayload      String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  comparison        Comparison       @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+  sources           ComparisonSource[]
+
+  @@unique([comparisonId, side])
+  @@index([comparisonId])
+  @@map("comparison_targets")
+}
+
+model ComparisonRun {
+  id           String     @id @default(cuid())
+  comparisonId String
+  runType      String     @default("initial")
+  status       String     @default("pending")
+  startedAt    DateTime?
+  completedAt  DateTime?
+  errorMessage String?
+  log          String?
+  createdAt    DateTime   @default(now())
+  comparison   Comparison @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+
+  @@index([comparisonId])
+  @@map("comparison_runs")
+}
+
+model ComparisonSnapshot {
+  id           String     @id @default(cuid())
+  comparisonId String
+  version      Int        @default(1)
+  payload      String
+  createdAt    DateTime   @default(now())
+  comparison   Comparison @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+
+  @@index([comparisonId])
+  @@map("comparison_snapshots")
+}
+
+model ComparisonSource {
+  id             String           @id @default(cuid())
+  comparisonId   String
+  targetId       String?
+  dimensionKey   String?
+  title          String
+  url            String
+  domain         String?
+  sourceType     String?
+  publishedAt    DateTime?
+  accessedAt     DateTime         @default(now())
+  trustScore     Int?
+  freshnessScore Int?
+  notes          String?
+  comparison     Comparison       @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+  target         ComparisonTarget? @relation(fields: [targetId], references: [id], onDelete: SetNull)
+
+  @@index([comparisonId])
+  @@index([targetId])
+  @@map("comparison_sources")
+}
+
+// ─── Mock Interview ──────────────────────────────────────────────────────────
+
+model InterviewSession {
+  id          String    @id @default(cuid())
+  topicId     String
+  topicTitle  String
+  roadmapSlug String
+  phaseId     String
+  mode        String    // "guided" | "freeform"
+  score       Float?    // 0–10 average for guided; null for freeform
+  summary     String?   // AI final feedback text
+  messages    String    // JSON-stringified array
+  sessionId   String    // always present (generated client-side if needed)
+  userId      String?   // set when authenticated
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([userId])
+  @@map("interview_sessions")
 }
 
 // ─── Feedback ────────────────────────────────────────────────────────────────
