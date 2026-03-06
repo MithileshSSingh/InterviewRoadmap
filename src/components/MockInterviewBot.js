@@ -177,6 +177,7 @@ export default function MockInterviewBot({
   topicId,
   roadmapSlug,
   phaseId,
+  onOpenChange,
 }) {
   const questions = topicContent?.interviewQuestions ?? [];
   const hasGuidedContent = questions.length > 0;
@@ -195,6 +196,7 @@ export default function MockInterviewBot({
   const [chatMessages, setChatMessages] = useState([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [recognitionStatus, setRecognitionStatus] = useState("idle");
+  const [typedInput, setTypedInput] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
   const [voiceError, setVoiceError] = useState("");
   const [isAssistantSpeaking, setIsAssistantSpeaking] = useState(false);
@@ -234,10 +236,11 @@ export default function MockInterviewBot({
 
   const isIOSWebKit = isIOSWebKitBrowser();
 
-  const isVoiceSupported =
-    typeof window !== "undefined" &&
-    Boolean(getSpeechRecognitionCtor()) &&
-    "speechSynthesis" in window;
+  const hasSpeechRecognition =
+    typeof window !== "undefined" && Boolean(getSpeechRecognitionCtor());
+  const hasSpeechSynthesis =
+    typeof window !== "undefined" && "speechSynthesis" in window;
+  const isVoiceSupported = hasSpeechRecognition && hasSpeechSynthesis;
 
   const updateChatMessages = useCallback((updater) => {
     setChatMessages((prev) => {
@@ -612,6 +615,36 @@ export default function MockInterviewBot({
     [streamAssistantTurn, topicContent, updateChatMessages],
   );
 
+  const submitTypedMessage = useCallback(
+    async (text) => {
+      const trimmed = text.trim();
+      if (!trimmed || isStreamingRef.current || phaseRef.current !== "freeform") return;
+
+      const userMessage = { role: "user", content: trimmed };
+      const nextMessages = [
+        ...chatMessagesRef.current,
+        userMessage,
+        { role: "assistant", content: "" },
+      ];
+      const assistantIndex = nextMessages.length - 1;
+
+      updateChatMessages(nextMessages);
+
+      const systemMsg = buildFreeformSystemPrompt(topicContent);
+      const apiMessages = [
+        { role: "system", content: systemMsg },
+        ...nextMessages.slice(0, assistantIndex),
+      ];
+
+      await streamAssistantTurn({
+        apiMessages,
+        assistantIndex,
+        resumeListeningAfter: isVoiceSupported,
+      });
+    },
+    [isVoiceSupported, streamAssistantTurn, topicContent, updateChatMessages],
+  );
+
   useEffect(() => {
     submitVoiceTurnRef.current = submitVoiceTurn;
   }, [submitVoiceTurn]);
@@ -766,6 +799,11 @@ export default function MockInterviewBot({
     };
   }, [cancelAssistantSpeech, stopListening]);
 
+  // Notify parent when open state changes
+  useEffect(() => {
+    onOpenChange?.(isOpen);
+  }, [isOpen, onOpenChange]);
+
   function handleOpen() {
     setIsOpen(true);
     if (phase === "idle" || phase === "complete") {
@@ -814,7 +852,7 @@ export default function MockInterviewBot({
   }
 
   async function startFreeformMode() {
-    if (isIOSWebKit) {
+    if (isVoiceSupported && isIOSWebKit) {
       primeSpeechSynthesis();
 
       const permissionGranted = await primeAudioPermission();
@@ -913,7 +951,7 @@ export default function MockInterviewBot({
     await streamAssistantTurn({
       apiMessages: openingMessages,
       assistantIndex: 0,
-      resumeListeningAfter: true,
+      resumeListeningAfter: isVoiceSupported,
     });
   }
 
@@ -1071,38 +1109,16 @@ export default function MockInterviewBot({
                     <button
                       className="interview-mode-card"
                       onClick={startFreeformMode}
-                      disabled={!isVoiceSupported}
-                      title={
-                        !isVoiceSupported
-                          ? "Enable speech features in your device settings (see below)"
-                          : undefined
-                      }
                     >
-                      <span className="interview-mode-card-icon">🎙️</span>
-                      <h4>Voice Interview</h4>
+                      <span className="interview-mode-card-icon">{isVoiceSupported ? "🎙️" : "💬"}</span>
+                      <h4>{isVoiceSupported ? "Voice Interview" : "Live Interview"}</h4>
                       <p>
-                        Spoken interview with auto-listening, live transcript capture, and streamed voice responses.
+                        {isVoiceSupported
+                          ? "Spoken interview with auto-listening, live transcript, and streamed voice."
+                          : "Interactive interview with AI — type your answers in a live conversation."}
                       </p>
                     </button>
                   </div>
-                  {!isVoiceSupported && (
-                    <div className="interview-voice-support-note">
-                      <p className="interview-voice-support-title">⚠️ Voice mode is not available on this browser</p>
-                      {isIOSWebKit ? (
-                        <ul className="interview-voice-support-steps">
-                          <li>Open <strong>Settings → Siri & Search</strong> (or <strong>Settings → General → Keyboard</strong>) and enable <strong>Dictation</strong>.</li>
-                          <li>Make sure you are using <strong>Safari</strong> (not an in-app browser).</li>
-                          <li>Reload this page and try again.</li>
-                        </ul>
-                      ) : (
-                        <ul className="interview-voice-support-steps">
-                          <li>Use <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong> for full voice support.</li>
-                          <li>Ensure <strong>microphone permission</strong> is granted to this site.</li>
-                          <li>On Android, check that <strong>Google Voice Typing</strong> is enabled in keyboard settings.</li>
-                        </ul>
-                      )}
-                    </div>
-                  )}
                 </div>
               )}
 
@@ -1201,41 +1217,43 @@ export default function MockInterviewBot({
 
               {phase === "freeform" && (
                 <div className="interview-freeform-panel">
-                  <div className="interview-voice-panel">
-                    <div className="interview-voice-status-row">
-                      <span
-                        className={`interview-voice-indicator interview-voice-indicator--${recognitionStatus}`}
-                      >
-                        {recognitionStatus === "listening" ? "Mic live" : "Voice"}
-                      </span>
-                      {(isStreaming || isAssistantSpeaking) ? (
-                        <button
-                          className="interview-voice-action-btn"
-                          onClick={interruptAssistantAndListen}
+                  {isVoiceSupported && (
+                    <div className="interview-voice-panel">
+                      <div className="interview-voice-status-row">
+                        <span
+                          className={`interview-voice-indicator interview-voice-indicator--${recognitionStatus}`}
                         >
-                          Interrupt &amp; Answer
-                        </button>
-                      ) : (
-                        <button
-                          className="interview-voice-action-btn"
-                          onClick={startListening}
-                          disabled={!isVoiceSupported || recognitionStatus === "listening"}
-                        >
-                          Resume Mic
-                        </button>
+                          {recognitionStatus === "listening" ? "Mic live" : "Voice"}
+                        </span>
+                        {(isStreaming || isAssistantSpeaking) ? (
+                          <button
+                            className="interview-voice-action-btn"
+                            onClick={interruptAssistantAndListen}
+                          >
+                            Interrupt &amp; Answer
+                          </button>
+                        ) : (
+                          <button
+                            className="interview-voice-action-btn"
+                            onClick={startListening}
+                            disabled={!isVoiceSupported || recognitionStatus === "listening"}
+                          >
+                            Resume Mic
+                          </button>
+                        )}
+                      </div>
+                      <p className="interview-voice-status-text">{voiceStatusText}</p>
+                      <p className="interview-voice-hint">
+                        Your answer is captured automatically after you stop speaking.
+                      </p>
+                      {interimTranscript && (
+                        <div className="interview-voice-transcript">
+                          <span className="interview-voice-transcript-label">Live transcript</span>
+                          <p>{interimTranscript}</p>
+                        </div>
                       )}
                     </div>
-                    <p className="interview-voice-status-text">{voiceStatusText}</p>
-                    <p className="interview-voice-hint">
-                      Your answer is captured automatically after you stop speaking.
-                    </p>
-                    {interimTranscript && (
-                      <div className="interview-voice-transcript">
-                        <span className="interview-voice-transcript-label">Live transcript</span>
-                        <p>{interimTranscript}</p>
-                      </div>
-                    )}
-                  </div>
+                  )}
 
                   <div className="chatbot-messages interview-chat-messages">
                     {chatMessages.map((message, index) => (
@@ -1266,6 +1284,34 @@ export default function MockInterviewBot({
                       </div>
                     ))}
                     <div ref={messagesEndRef} />
+                  </div>
+
+                  <div className="interview-text-input-bar">
+                    <input
+                      type="text"
+                      className="interview-text-input"
+                      placeholder={isVoiceSupported ? "Or type your answer..." : "Type your answer..."}
+                      value={typedInput}
+                      onChange={(e) => setTypedInput(e.target.value)}
+                      disabled={isStreaming}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey && typedInput.trim()) {
+                          e.preventDefault();
+                          submitTypedMessage(typedInput);
+                          setTypedInput("");
+                        }
+                      }}
+                    />
+                    <button
+                      className="interview-text-send-btn"
+                      disabled={isStreaming || !typedInput.trim()}
+                      onClick={() => {
+                        submitTypedMessage(typedInput);
+                        setTypedInput("");
+                      }}
+                    >
+                      Send
+                    </button>
                   </div>
                 </div>
               )}

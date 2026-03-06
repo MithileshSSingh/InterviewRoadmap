@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
@@ -204,6 +204,8 @@ export default function TopicPage() {
   const [codeViewMode, setCodeViewMode] = useState("view");
   const [isExercisePlaygroundOpen, setIsExercisePlaygroundOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [chatbotOpen, setChatbotOpen] = useState(false);
+  const [interviewOpen, setInterviewOpen] = useState(false);
   const bookmark = useBookmark({
     slug,
     phaseId,
@@ -235,6 +237,20 @@ export default function TopicPage() {
       setIsExercisePlaygroundOpen(false);
     }
   }, [isPlaygroundEnabled]);
+
+  // Toggle body attribute when any drawer is open to hide bottom-right FABs
+  useEffect(() => {
+    const anyOpen = chatbotOpen || interviewOpen;
+    if (anyOpen) {
+      document.body.setAttribute("data-drawer-open", "");
+    } else {
+      document.body.removeAttribute("data-drawer-open");
+    }
+    return () => document.body.removeAttribute("data-drawer-open");
+  }, [chatbotOpen, interviewOpen]);
+
+  const handleChatbotOpenChange = useCallback((open) => setChatbotOpen(open), []);
+  const handleInterviewOpenChange = useCallback((open) => setInterviewOpen(open), []);
 
   // Early returns after all hooks
   if (!meta || !phases) return <div>Roadmap not found</div>;
@@ -459,13 +475,14 @@ export default function TopicPage() {
       </div>
 
       {/* Topic Chatbot */}
-      <TopicChatBot topicContent={topic} />
+      <TopicChatBot topicContent={topic} onOpenChange={handleChatbotOpenChange} />
       {/* Mock Interview Bot */}
       <MockInterviewBot
         topicContent={topic}
         topicId={topic.id}
         roadmapSlug={slug}
         phaseId={phaseId}
+        onOpenChange={handleInterviewOpenChange}
       />
     </div>
   );

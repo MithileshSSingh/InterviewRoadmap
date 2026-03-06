@@ -24,6 +24,7 @@ interface TopicContent {
 
 interface TopicChatBotProps {
   topicContent: TopicContent;
+  onOpenChange?: (isOpen: boolean) => void;
 }
 
 interface ChatMessage {
@@ -36,7 +37,7 @@ function renderMarkdown(text: string): string {
   return marked.parse(text, { async: false }) as string;
 }
 
-export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
+export default function TopicChatBot({ topicContent, onOpenChange }: TopicChatBotProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -155,6 +156,11 @@ export default function TopicChatBot({ topicContent }: TopicChatBotProps) {
       selectionAbortRef.current?.abort();
     };
   }, []);
+
+  // Notify parent when open state changes
+  useEffect(() => {
+    onOpenChange?.(isOpen);
+  }, [isOpen, onOpenChange]);
 
   useEffect(() => {
     setTopControlSlot(document.getElementById("top-chatbot-slot"));

@@ -3451,6 +3451,20 @@ body {
   transform: scale(1.08);
 }
 
+/* Hide bottom-right FABs when a chat/interview drawer is open */
+body[data-drawer-open] .feedback-fab,
+body[data-drawer-open] .mock-interview-fab {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.feedback-fab,
+.mock-interview-fab {
+  transition: all 0.25s ease, opacity 0.2s ease;
+}
+
 .feedback-overlay {
   position: fixed;
   inset: 0;
@@ -4527,34 +4541,59 @@ body {
   overflow: hidden;
 }
 
-.interview-voice-support-note {
-  margin: 0;
-  padding: 0.85rem 1rem;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  text-align: left;
-  line-height: 1.5;
-  background: rgba(251, 191, 36, 0.06);
-  border: 1px solid rgba(251, 191, 36, 0.25);
-  border-radius: var(--radius);
-}
-
-.interview-voice-support-title {
-  margin: 0 0 0.5rem;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--accent-yellow, #fbbf24);
-}
-
-.interview-voice-support-steps {
-  margin: 0;
-  padding-left: 1.2rem;
+/* Text Input Bar */
+.interview-text-input-bar {
   display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-  line-height: 1.55;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg-card);
+  flex-shrink: 0;
+}
+
+.interview-text-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.interview-text-input:focus {
+  border-color: var(--accent-blue);
+}
+
+.interview-text-input:disabled {
+  opacity: 0.5;
+}
+
+.interview-text-send-btn {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--accent-blue);
+  color: #000;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.interview-text-send-btn:hover:not(:disabled) {
+  background: var(--accent-green);
+}
+
+.interview-text-send-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .interview-voice-panel {
@@ -4804,8 +4843,8 @@ body {
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* Mobile */
-@media (max-width: 520px) {
+/* Mobile + tablet */
+@media (max-width: 768px) {
   .mock-interview-drawer {
     position: fixed;
     inset: 0;
