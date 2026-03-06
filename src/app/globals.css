@@ -4527,6 +4527,139 @@ body {
   overflow: hidden;
 }
 
+.interview-voice-support-note {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.interview-voice-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1rem 1.1rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  background:
+    linear-gradient(180deg, rgba(96, 165, 250, 0.08), transparent),
+    var(--bg-card);
+}
+
+.interview-voice-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.interview-voice-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 32px;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.interview-voice-indicator::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.75;
+}
+
+.interview-voice-indicator--listening {
+  color: var(--accent-green);
+  border-color: rgba(16, 185, 129, 0.32);
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.interview-voice-indicator--processing,
+.interview-voice-indicator--starting {
+  color: var(--accent-blue);
+  border-color: rgba(96, 165, 250, 0.32);
+  background: rgba(96, 165, 250, 0.12);
+}
+
+.interview-voice-indicator--error,
+.interview-voice-indicator--unsupported {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.28);
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.interview-voice-action-btn {
+  min-height: 34px;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  border-radius: 999px;
+  background: rgba(96, 165, 250, 0.12);
+  color: var(--text-primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.interview-voice-action-btn:hover:not(:disabled) {
+  background: rgba(96, 165, 250, 0.18);
+  transform: translateY(-1px);
+}
+
+.interview-voice-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.interview-voice-status-text {
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.interview-voice-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.interview-voice-transcript {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px dashed rgba(96, 165, 250, 0.32);
+  border-radius: var(--radius);
+  background: rgba(96, 165, 250, 0.06);
+}
+
+.interview-voice-transcript-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.interview-voice-transcript p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--text-primary);
+  line-height: 1.55;
+}
+
 .interview-chat-messages {
   flex: 1;
   overflow-y: auto;

@@ -154,6 +154,12 @@ Leveraging the existing AI infrastructure for powerful new capabilities.
 
 ---
 
+- [ ] **5.1.1 Provider-Backed Realtime Voice Interview**
+  **Priority:** Medium | **Effort:** Medium | **Dependencies:** 5.1
+  **Why:** Browser-native speech APIs are a good short-term path, but production voice interviews need provider-backed STT/TTS or realtime audio for lower latency, better cross-browser support, and more reliable interruption handling.
+
+---
+
 - [x] **5.2 Code Playground (Embedded Editor)**
   **Priority:** Medium | **Effort:** Large | **Dependencies:** None
   **Why:** Users read code examples but can't practice in the app. They have to copy-paste to an external editor.
