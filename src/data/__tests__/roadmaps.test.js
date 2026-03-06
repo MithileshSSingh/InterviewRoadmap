@@ -21,6 +21,7 @@ describe("roadmaps metadata", () => {
       expect(typeof roadmap.color).toBe("string");
       expect(typeof roadmap.description).toBe("string");
       expect(Array.isArray(roadmap.tags)).toBe(true);
+      expect(typeof roadmap.features?.playground?.enabled).toBe("boolean");
     }
   });
 
@@ -31,6 +32,19 @@ describe("roadmaps metadata", () => {
     expect(roadmap).toMatchObject({
       slug: "javascript",
       title: "JavaScript",
+      features: {
+        playground: {
+          enabled: true,
+        },
+      },
     });
+  });
+
+  it("keeps playground disabled by default for non-javascript roadmaps", () => {
+    const roadmaps = getAllRoadmaps().filter((roadmap) => roadmap.slug !== "javascript");
+
+    for (const roadmap of roadmaps) {
+      expect(roadmap.features.playground.enabled).toBe(false);
+    }
   });
 });

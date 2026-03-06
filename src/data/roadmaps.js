@@ -8,6 +8,11 @@ const roadmaps = [
     description:
       "Master DSA from beginner to advanced — arrays, trees, graphs, DP, and interview-level problem solving.",
     tags: ["DSA", "Interview", "Problem Solving"],
+    features: {
+      playground: {
+        enabled: false,
+      },
+    },
   },
   {
     slug: "android-senior",
@@ -17,6 +22,11 @@ const roadmaps = [
     description:
       "Prepare for a Senior Android Developer role at Google — architecture, Kotlin, system design, DSA, and behavioral.",
     tags: ["Android", "Interview", "Google"],
+    features: {
+      playground: {
+        enabled: false,
+      },
+    },
   },
   {
     slug: "javascript",
@@ -26,6 +36,11 @@ const roadmaps = [
     description:
       "Master JavaScript from variables to design patterns — the language of the web.",
     tags: ["Frontend", "Backend", "Web"],
+    features: {
+      playground: {
+        enabled: true,
+      },
+    },
   },
   {
     slug: "typescript",
@@ -35,6 +50,11 @@ const roadmaps = [
     description:
       "Add type safety to JavaScript — interfaces, generics, utility types, and best practices.",
     tags: ["Frontend", "Backend", "Types"],
+    features: {
+      playground: {
+        enabled: false,
+      },
+    },
   },
   {
     slug: "react-native-senior",
@@ -44,6 +64,11 @@ const roadmaps = [
     description:
       "Prepare for a Senior / Staff React Native Engineer role — architecture, performance, internals, system design, and technical leadership.",
     tags: ["React Native", "Interview", "Mobile"],
+    features: {
+      playground: {
+        enabled: false,
+      },
+    },
   },
   {
     slug: "salesforce-developer",
@@ -53,6 +78,11 @@ const roadmaps = [
     description:
       "Master Salesforce development from Apex to LWC — architecture, integrations, security, and interview preparation for Developer to Architect roles.",
     tags: ["Salesforce", "Interview", "CRM"],
+    features: {
+      playground: {
+        enabled: false,
+      },
+    },
   },
   {
     slug: "react",
@@ -62,6 +92,11 @@ const roadmaps = [
     description:
       "Master React from absolute fundamentals to enterprise-grade patterns, performance optimization, and Next.js.",
     tags: ["Frontend", "UI", "Web"],
+    features: {
+      playground: {
+        enabled: false,
+      },
+    },
   },
   {
     slug: "nodejs",
@@ -71,6 +106,11 @@ const roadmaps = [
     description:
       "Master Node.js from beginner to advanced — runtime internals, Express, databases, authentication, REST & GraphQL APIs, testing, system design, and production deployment.",
     tags: ["Backend", "API", "Server"],
+    features: {
+      playground: {
+        enabled: false,
+      },
+    },
   },
   {
     slug: "python",
@@ -80,6 +120,11 @@ const roadmaps = [
     description:
       "Master Python from fundamentals to advanced topics — data structures, OOP, concurrency, web dev, and interview prep.",
     tags: ["Backend", "Data Science", "General Purpose"],
+    features: {
+      playground: {
+        enabled: false,
+      },
+    },
   },
   {
     slug: "system-design",
@@ -89,6 +134,11 @@ const roadmaps = [
     description:
       "Master system design from beginner to advanced — scalability, databases, caching, microservices, and real-world interview-ready designs.",
     tags: ["System Design", "Interview", "Architecture"],
+    features: {
+      playground: {
+        enabled: false,
+      },
+    },
   },
   {
     slug: "css",
@@ -99,6 +149,11 @@ const roadmaps = [
       "Master modern CSS — flexbox, grid, animations, responsive design, and advanced selectors.",
     tags: ["Frontend", "Design", "Web"],
     comingSoon: true,
+    features: {
+      playground: {
+        enabled: false,
+      },
+    },
   },
 ];
 

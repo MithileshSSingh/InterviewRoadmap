@@ -197,6 +197,7 @@ export default function TopicPage() {
   const phase = phases?.find((p) => p.id === phaseId) ?? null;
   const topicIndex = phase ? phase.topics.findIndex((t) => t.id === topicId) : -1;
   const topic = phase?.topics[topicIndex] ?? null;
+  const isPlaygroundEnabled = Boolean(meta?.features?.playground?.enabled);
 
   // All hooks called unconditionally before any early returns
   const [codeViewMode, setCodeViewMode] = useState("view");
@@ -226,6 +227,13 @@ export default function TopicPage() {
     window.addEventListener("resize", updateViewport);
     return () => window.removeEventListener("resize", updateViewport);
   }, []);
+
+  useEffect(() => {
+    if (!isPlaygroundEnabled) {
+      setCodeViewMode("view");
+      setIsExercisePlaygroundOpen(false);
+    }
+  }, [isPlaygroundEnabled]);
 
   // Early returns after all hooks
   if (!meta || !phases) return <div>Roadmap not found</div>;
@@ -309,7 +317,7 @@ export default function TopicPage() {
         <h2 className="section-title">
           <span className="icon">💻</span> Code Example
         </h2>
-        {!isMobile && (
+        {!isMobile && isPlaygroundEnabled && (
           <div className="code-view-toggle" role="tablist" aria-label="Code view mode">
             <button
               type="button"
@@ -331,7 +339,7 @@ export default function TopicPage() {
             </button>
           </div>
         )}
-        {isMobile || codeViewMode === "view" ? (
+        {isMobile || !isPlaygroundEnabled || codeViewMode === "view" ? (
           <CodeBlock code={parsedExample.code} language={parsedExample.language} />
         ) : (
           <Suspense fallback={<div className="playground-loading">Loading editor...</div>}>
@@ -355,7 +363,7 @@ export default function TopicPage() {
             className="exercise-text"
             dangerouslySetInnerHTML={{ __html: renderMarkdown(topic.exercise) }}
           />
-          {!isMobile && (
+          {!isMobile && isPlaygroundEnabled && (
             <button
               type="button"
               className="exercise-try-btn"
@@ -365,13 +373,9 @@ export default function TopicPage() {
             </button>
           )}
         </div>
-        {!isMobile && isExercisePlaygroundOpen && (
+        {!isMobile && isPlaygroundEnabled && isExercisePlaygroundOpen && (
           <div className="exercise-playground-wrap">
             <h3 className="exercise-playground-title">Exercise Playground</h3>
-            <div
-              className="exercise-playground-instructions"
-              dangerouslySetInnerHTML={{ __html: renderMarkdown(topic.exercise) }}
-            />
             <Suspense fallback={<div className="playground-loading">Loading editor...</div>}>
               <CodePlayground
                 key={`exercise-${topic.id}-${parsedExample.language}`}
