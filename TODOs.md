@@ -148,7 +148,7 @@ Leveraging the existing AI infrastructure for powerful new capabilities.
 
 ---
 
-- [ ] **5.1 Mock Interview Chatbot**
+- [x] **5.1 Mock Interview Chatbot**
   **Priority:** High | **Effort:** Large | **Dependencies:** None
   **Why:** The existing chatbot explains topics — but practicing interviews is what users actually need.
 

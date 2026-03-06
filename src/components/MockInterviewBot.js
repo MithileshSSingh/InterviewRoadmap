@@ -3,9 +3,16 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { marked } from "marked";
 import { streamChatResponse } from "@/lib/chatClient";
+import { createDeepgramSTT } from "@/lib/deepgramSTT";
+import { createDeepgramTTS } from "@/lib/deepgramTTS";
 
 const USER_SPEECH_DEBOUNCE_MS = 1200;
 const MAX_SAVED_FREEFORM_MESSAGES = 50;
+
+/** true when the server has provider-backed voice configured */
+const IS_PROVIDER_VOICE_AVAILABLE =
+  typeof window !== "undefined" &&
+  process.env.NEXT_PUBLIC_DEEPGRAM_ENABLED === "true";
 
 function renderMarkdown(text) {
   return marked.parse(text, { async: false });
@@ -233,10 +240,15 @@ export default function MockInterviewBot({
 
   const isIOSWebKit = isIOSWebKitBrowser();
 
+  /* Provider voice available? If so, no browser speech API needed */
+  const [useProviderVoice, setUseProviderVoice] = useState(IS_PROVIDER_VOICE_AVAILABLE);
+  const deepgramSTTRef = useRef(null);
+  const deepgramTTSRef = useRef(null);
+
   const isVoiceSupported =
     typeof window !== "undefined" &&
-    Boolean(getSpeechRecognitionCtor()) &&
-    "speechSynthesis" in window;
+    (useProviderVoice ||
+      (Boolean(getSpeechRecognitionCtor()) && "speechSynthesis" in window));
 
   const updateChatMessages = useCallback((updater) => {
     setChatMessages((prev) => {
@@ -316,6 +328,11 @@ export default function MockInterviewBot({
 
   const cancelAssistantSpeech = useCallback(
     ({ clearBuffer = true } = {}) => {
+      /* Provider TTS cancel */
+      if (deepgramTTSRef.current) {
+        deepgramTTSRef.current.cancel();
+      }
+      /* Browser-native TTS cancel */
       if (typeof window !== "undefined" && window.speechSynthesis) {
         window.speechSynthesis.cancel();
         window.speechSynthesis.resume();
@@ -338,6 +355,11 @@ export default function MockInterviewBot({
       finalTranscriptBufferRef.current = "";
       setInterimTranscript("");
 
+      /* Provider STT stop */
+      if (deepgramSTTRef.current && deepgramSTTRef.current.isActive()) {
+        deepgramSTTRef.current.stop();
+      }
+
       if (recognitionActiveRef.current && recognitionRef.current) {
         try {
           recognitionRef.current.abort();
@@ -356,11 +378,79 @@ export default function MockInterviewBot({
     if (phaseRef.current !== "freeform" || modeRef.current !== "freeform") return;
     if (phaseRef.current === "complete") return;
     if (isStreamingRef.current || speechActiveRef.current) return;
-    if (!recognitionRef.current || recognitionActiveRef.current) return;
 
     shouldListenRef.current = true;
     setVoiceError("");
     setRecognitionStatus("starting");
+
+    /* ── Provider-backed STT ─────────────────────────── */
+    if (useProviderVoice) {
+      // Destroy any existing instance and create a fresh one
+      if (deepgramSTTRef.current) {
+        deepgramSTTRef.current.destroy();
+      }
+
+      deepgramSTTRef.current = createDeepgramSTT({
+        onTranscript: (text, isFinal) => {
+          if (!text && isFinal) {
+            // UtteranceEnd with no text — flush any buffered transcript
+            const buffered = finalTranscriptBufferRef.current.trim();
+            if (buffered) {
+              finalTranscriptBufferRef.current = "";
+              setInterimTranscript("");
+              setRecognitionStatus("processing");
+              submitVoiceTurnRef.current?.(buffered);
+            }
+            return;
+          }
+
+          if (isFinal) {
+            finalTranscriptBufferRef.current = `${finalTranscriptBufferRef.current} ${text}`.trim();
+            setInterimTranscript("");
+
+            // Debounce: after USER_SPEECH_DEBOUNCE_MS of silence, submit
+            clearTranscriptTimer();
+            transcriptFlushTimerRef.current = setTimeout(() => {
+              const buffered = finalTranscriptBufferRef.current.trim();
+              finalTranscriptBufferRef.current = "";
+              setInterimTranscript("");
+              if (buffered) {
+                setRecognitionStatus("processing");
+                // Stop provider STT before submitting
+                if (deepgramSTTRef.current) {
+                  deepgramSTTRef.current.stop();
+                }
+                submitVoiceTurnRef.current?.(buffered);
+              }
+            }, USER_SPEECH_DEBOUNCE_MS);
+          } else {
+            setInterimTranscript(text);
+          }
+        },
+        onError: (msg) => {
+          setRecognitionStatus("error");
+          setVoiceError(msg);
+          shouldListenRef.current = false;
+        },
+        onClose: () => {
+          // If we should still be listening, the onEnd in streamAssistantTurn
+          // will restart — no action needed here.
+        },
+      });
+
+      deepgramSTTRef.current.start().then(() => {
+        setRecognitionStatus("listening");
+      }).catch((err) => {
+        const msg = err instanceof Error ? err.message : "Failed to start provider voice.";
+        setVoiceError(msg);
+        setRecognitionStatus("error");
+        shouldListenRef.current = false;
+      });
+      return;
+    }
+
+    /* ── Browser-native STT fallback ─────────────────── */
+    if (!recognitionRef.current || recognitionActiveRef.current) return;
 
     try {
       recognitionRef.current.start();
@@ -372,13 +462,44 @@ export default function MockInterviewBot({
         setVoiceError("Unable to start the microphone right now.");
       }
     }
-  }, [isVoiceSupported]);
+  }, [isVoiceSupported, useProviderVoice, clearTranscriptTimer]);
 
   const enqueueSpeechChunk = useCallback(
     (rawText) => {
       const speakableText = cleanSpeechText(rawText);
       if (!speakableText) return;
 
+      /* ── Provider-backed TTS ─────────────────────────── */
+      if (useProviderVoice) {
+        if (!deepgramTTSRef.current) {
+          deepgramTTSRef.current = createDeepgramTTS({
+            onStart: () => {
+              speechActiveRef.current = true;
+              setIsAssistantSpeaking(true);
+              setRecognitionStatus("processing");
+            },
+            onEnd: () => {
+              speechActiveRef.current = false;
+              setIsAssistantSpeaking(false);
+              if (shouldListenRef.current && !isStreamingRef.current) {
+                startListening();
+              }
+            },
+            onError: (msg) => {
+              speechActiveRef.current = false;
+              setIsAssistantSpeaking(false);
+              setVoiceError(msg);
+              if (shouldListenRef.current && !isStreamingRef.current) {
+                startListening();
+              }
+            },
+          });
+        }
+        deepgramTTSRef.current.speak(speakableText);
+        return;
+      }
+
+      /* ── Browser-native TTS fallback ─────────────────── */
       speechQueueRef.current.push(speakableText);
 
       const speakNext = () => {
@@ -435,7 +556,7 @@ export default function MockInterviewBot({
         speakNext();
       }
     },
-    [startListening],
+    [startListening, useProviderVoice],
   );
 
   const flushSpeechBuffer = useCallback(
@@ -762,6 +883,15 @@ export default function MockInterviewBot({
       abortRef.current?.abort();
       stopListening("idle");
       cancelAssistantSpeech();
+      /* Cleanup provider instances */
+      if (deepgramSTTRef.current) {
+        deepgramSTTRef.current.destroy();
+        deepgramSTTRef.current = null;
+      }
+      if (deepgramTTSRef.current) {
+        deepgramTTSRef.current.destroy();
+        deepgramTTSRef.current = null;
+      }
     };
   }, [cancelAssistantSpeech, stopListening]);
 
@@ -813,7 +943,7 @@ export default function MockInterviewBot({
   }
 
   async function startFreeformMode() {
-    if (isIOSWebKit) {
+    if (!useProviderVoice && isIOSWebKit) {
       primeSpeechSynthesis();
 
       const permissionGranted = await primeAudioPermission();
@@ -989,14 +1119,14 @@ export default function MockInterviewBot({
       : null;
 
   const voiceStatusText = (() => {
-    if (!isVoiceSupported) return "Voice interview requires a browser with native speech APIs.";
+    if (!isVoiceSupported) return "Voice interview requires a browser with speech APIs or provider-backed voice.";
     if (voiceError) return voiceError;
     if (isStreaming) return "Interviewer is thinking.";
     if (isAssistantSpeaking) return "Interviewer is speaking.";
     if (recognitionStatus === "starting") return "Starting microphone.";
-    if (recognitionStatus === "listening") return "Listening. Speak naturally.";
+    if (recognitionStatus === "listening") return useProviderVoice ? "Listening (cloud voice)." : "Listening. Speak naturally.";
     if (recognitionStatus === "processing") return "Processing your answer.";
-    if (isIOSWebKit) return "Ready for your answer. Safari may require one tap to re-arm the mic.";
+    if (!useProviderVoice && isIOSWebKit) return "Ready for your answer. Safari may require one tap to re-arm the mic.";
     return "Ready for your answer.";
   })();
 
@@ -1073,20 +1203,25 @@ export default function MockInterviewBot({
                       disabled={!isVoiceSupported}
                       title={
                         !isVoiceSupported
-                          ? "Voice interview requires Chrome or Edge with microphone access."
+                          ? "Voice interview requires Chrome or Edge, or provider-backed voice."
                           : undefined
                       }
                     >
                       <span className="interview-mode-card-icon">🎙️</span>
                       <h4>Voice Interview</h4>
                       <p>
-                        Spoken interview with auto-listening, live transcript capture, and streamed voice responses.
+                        {useProviderVoice
+                          ? "Cloud-powered voice with low-latency STT & natural TTS."
+                          : "Spoken interview with auto-listening, live transcript capture, and streamed voice responses."}
                       </p>
+                      {useProviderVoice && (
+                        <span className="interview-voice-provider-badge">☁️ Cloud Voice</span>
+                      )}
                     </button>
                   </div>
                   {!isVoiceSupported && (
                     <p className="interview-voice-support-note">
-                      Voice mode needs browser-native speech recognition and speech synthesis. Chrome or Edge works best.
+                      Voice mode needs browser speech APIs or cloud voice.
                     </p>
                   )}
                 </div>
@@ -1192,7 +1327,9 @@ export default function MockInterviewBot({
                       <span
                         className={`interview-voice-indicator interview-voice-indicator--${recognitionStatus}`}
                       >
-                        {recognitionStatus === "listening" ? "Mic live" : "Voice"}
+                        {recognitionStatus === "listening"
+                          ? useProviderVoice ? "☁️ Mic live" : "Mic live"
+                          : useProviderVoice ? "☁️ Voice" : "Voice"}
                       </span>
                       {(isStreaming || isAssistantSpeaking) ? (
                         <button
