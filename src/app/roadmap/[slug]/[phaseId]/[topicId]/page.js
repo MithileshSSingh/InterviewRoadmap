@@ -9,6 +9,7 @@ import CodeBlock from "@/components/CodeBlock";
 import Accordion from "@/components/Accordion";
 import TopicChatBot from "@/components/TopicChatBot";
 import TopicQuizSection from "@/components/TopicQuizSection";
+import { FEEDBACK_EVENT_NAME } from "@/components/FeedbackWidget";
 
 import { marked } from "marked";
 
@@ -108,6 +109,7 @@ export default function TopicPage() {
   const [codeViewMode, setCodeViewMode] = useState("view");
   const [isExercisePlaygroundOpen, setIsExercisePlaygroundOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [helpfulStatus, setHelpfulStatus] = useState("idle");
 
   useEffect(() => {
     const updateViewport = () => {
@@ -167,6 +169,60 @@ export default function TopicPage() {
     topic.exercise,
     parsedExample.language || "javascript",
   );
+
+  const pagePath =
+    typeof window === "undefined"
+      ? `/roadmap/${slug}/${phaseId}/${topicId}`
+      : window.location.pathname + window.location.search;
+
+  const submitTopicHelpfulFeedback = async (isHelpful) => {
+    try {
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "content",
+          category: "topic-helpfulness",
+          rating: isHelpful ? 5 : 1,
+          message: isHelpful
+            ? "Topic marked as helpful from topic feedback control."
+            : "Topic marked as not helpful from topic feedback control.",
+          roadmapSlug: slug,
+          phaseId,
+          topicId,
+          pagePath,
+          metadata: {
+            source: "topic-helpfulness",
+          },
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to submit helpfulness feedback");
+      }
+
+      setHelpfulStatus(isHelpful ? "up" : "down");
+    } catch {
+      setHelpfulStatus("error");
+    }
+  };
+
+  const openIssueModal = () => {
+    window.dispatchEvent(
+      new CustomEvent(FEEDBACK_EVENT_NAME, {
+        detail: {
+          prefill: {
+            type: "content",
+            category: "topic-issue",
+            roadmapSlug: slug,
+            phaseId,
+            topicId,
+            message: `Issue report for "${topic.title}": `,
+          },
+        },
+      }),
+    );
+  };
 
   return (
     <div className="topic-page">
@@ -309,6 +365,37 @@ export default function TopicPage() {
         topicId={topicId}
         topicTitle={topic.title}
       />
+
+      <section className="topic-feedback-inline">
+        <p>Was this topic helpful?</p>
+        <div className="topic-feedback-actions">
+          <button
+            type="button"
+            className={`feedback-chip ${helpfulStatus === "up" ? "active" : ""}`}
+            onClick={() => submitTopicHelpfulFeedback(true)}
+          >
+            👍 Yes
+          </button>
+          <button
+            type="button"
+            className={`feedback-chip ${helpfulStatus === "down" ? "active" : ""}`}
+            onClick={() => submitTopicHelpfulFeedback(false)}
+          >
+            👎 No
+          </button>
+          <button type="button" className="topic-feedback-report" onClick={openIssueModal}>
+            Report issue
+          </button>
+        </div>
+        {helpfulStatus === "error" ? (
+          <p className="topic-feedback-note error">
+            Could not save feedback right now. Please try again.
+          </p>
+        ) : null}
+        {helpfulStatus === "up" || helpfulStatus === "down" ? (
+          <p className="topic-feedback-note success">Thanks, feedback saved.</p>
+        ) : null}
+      </section>
 
       {/* Navigation */}
       <div className="topic-nav">

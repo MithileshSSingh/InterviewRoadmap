@@ -4,6 +4,7 @@ import SearchModal from "@/components/SearchModal";
 import MobileMenu from "@/components/MobileMenu";
 import Providers from "@/components/Providers";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import FeedbackWidget from "@/components/FeedbackWidget";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
                   <MobileMenu />
                 </div>
                 {children}
+                <FeedbackWidget />
               </main>
             </div>
           </ThemeProvider>
