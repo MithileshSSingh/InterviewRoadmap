@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useSession } from "next-auth/react";
 import { useSelector } from "@legendapp/state/react";
 import { createMockInterviewStore } from "./mock-interview/mockInterviewStore";
 import { useMockInterviewController } from "./mock-interview/useMockInterviewController";
 import MockInterviewBotView from "./mock-interview/MockInterviewBotView";
 import { getSpeechRecognitionCtor, isIOSWebKitBrowser } from "./mock-interview/mockInterviewUtils";
+import RequireAuthDialog from "./RequireAuthDialog";
 
 export default function MockInterviewBot({
   topicContent,
@@ -15,6 +17,9 @@ export default function MockInterviewBot({
   phaseId,
   onOpenChange,
 }) {
+  const { data: session, status: authStatus } = useSession();
+  const isAuthenticated = !!session;
+
   const hasSpeechRecognition = typeof window !== "undefined" && Boolean(getSpeechRecognitionCtor());
   const hasSpeechSynthesis = typeof window !== "undefined" && "speechSynthesis" in window;
   const isVoiceSupported = hasSpeechRecognition && hasSpeechSynthesis;
@@ -54,18 +59,72 @@ export default function MockInterviewBot({
       <section className="section">
         <h2 className="section-title">
           <span className="icon">🎤</span> Mock Interview
+          {!isAuthenticated && authStatus !== "loading" && (
+            <span
+              style={{
+                marginLeft: "auto",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.35rem",
+                fontSize: "0.7rem",
+                fontWeight: 600,
+                color: "var(--accent-yellow)",
+                background: "rgba(251, 191, 36, 0.1)",
+                border: "1px solid rgba(251, 191, 36, 0.25)",
+                borderRadius: "999px",
+                padding: "0.2rem 0.6rem",
+              }}
+            >
+              🔒 Premium
+            </span>
+          )}
         </h2>
-        <div className="quiz-generate-card mock-interview-entry-card">
-          <p className="quiz-generate-text">
-            Practice a live interview for {topicContent?.title}
-          </p>
-          <button
-            className="quiz-btn quiz-btn-primary"
-            onClick={() => void actions.handleOpen()}
+
+        {isAuthenticated ? (
+          /* ── Unlocked state ── */
+          <div className="quiz-generate-card mock-interview-entry-card">
+            <p className="quiz-generate-text">
+              Practice a live interview for {topicContent?.title}
+            </p>
+            <button
+              className="quiz-btn quiz-btn-primary"
+              onClick={() => void actions.handleOpen()}
+            >
+              Start Interview
+            </button>
+          </div>
+        ) : (
+          /* ── Locked state ── */
+          <div
+            className="quiz-generate-card mock-interview-entry-card"
+            style={{
+              position: "relative",
+              opacity: 0.75,
+            }}
           >
-            Start Interview
-          </button>
-        </div>
+            <p
+              className="quiz-generate-text"
+              style={{ color: "var(--text-muted)" }}
+            >
+              Mock interview is powered by AI. Sign in to unlock this feature.
+            </p>
+            <RequireAuthDialog
+              featureName="Mock Interviews"
+              onAction={() => void actions.handleOpen()}
+            >
+              <button
+                className="quiz-btn"
+                style={{
+                  background: "rgba(251, 191, 36, 0.12)",
+                  border: "1px solid rgba(251, 191, 36, 0.3)",
+                  color: "var(--accent-yellow)",
+                }}
+              >
+                🔒 Sign in to Unlock
+              </button>
+            </RequireAuthDialog>
+          </div>
+        )}
       </section>
 
       {isOpen

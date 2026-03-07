@@ -177,7 +177,7 @@ function SignInContent() {
           marginTop: "1.5rem",
         }}
       >
-        Anonymous usage is still fully supported. Sign in is optional.
+        Anonymous usage is still fully supported. Sign in for locked/premium features.
       </p>
     </div>
   );
