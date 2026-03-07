@@ -1,5 +1,5 @@
 "use client";
-import { useReducer, useCallback, useMemo } from "react";
+import { useReducer, useCallback, useMemo, useEffect } from "react";
 import CodeBlock from "@/components/CodeBlock";
 
 const initialState = {
@@ -40,6 +40,8 @@ function quizReducer(state, action) {
         selectedAnswer: null,
         questionStartTime: Date.now(),
       };
+    case "END_QUIZ_EARLY":
+      return { ...state, phase: "results", selectedAnswer: null };
     case "RESET":
       return {
         ...initialState,
@@ -64,8 +66,25 @@ export default function Quiz({
   topicGrouping = null,
   onComplete,
   onRetake,
+  onClose,
+  forceEnd = false,
+  onPhaseChange,
 }) {
   const [state, dispatch] = useReducer(quizReducer, initialState);
+
+  // Notify parent of phase changes
+  useEffect(() => {
+    onPhaseChange?.(state.phase);
+  }, [state.phase, onPhaseChange]);
+
+  // Handle forcing the quiz to end early
+  useEffect(() => {
+    if (forceEnd && state.phase !== "results") {
+      dispatch({ type: "END_QUIZ_EARLY" });
+      const finalScore = state.answers.filter((a) => a.correct).length;
+      onComplete?.(finalScore, questions.length);
+    }
+  }, [forceEnd, state.phase, state.answers, questions.length, onComplete]);
 
   const currentQuestion = questions[state.currentIndex];
   const progress = ((state.currentIndex + 1) / questions.length) * 100;
@@ -180,6 +199,15 @@ export default function Quiz({
             >
               Retake Quiz
             </button>
+            {onClose && (
+              <button
+                className="quiz-btn"
+                style={{ marginLeft: "1rem", background: "transparent", border: "1px solid var(--border)", color: "var(--text-secondary)" }}
+                onClick={onClose}
+              >
+                Close Quiz
+              </button>
+            )}
           </div>
         </div>
       </div>

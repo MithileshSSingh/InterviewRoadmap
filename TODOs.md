@@ -350,3 +350,6 @@ Phase 9 is conditional — only relevant if the static data in `src/data/` is mo
 - [ ] handle error while generating roadmap properly ... example rate limitting
 - [ ] duplications in codes and agent name, list in generations and stream api
 - [ ] write proper graph which is hosted and stream from there ... with session id
+- [x] full screen Quiz dailog on exit show score 
+
+

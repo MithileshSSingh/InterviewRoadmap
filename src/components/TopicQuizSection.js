@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import Quiz from "@/components/Quiz";
 import { getQuizForTopic } from "@/data/quizzes";
 
@@ -10,8 +11,22 @@ export default function TopicQuizSection({ slug, phaseId, topicId, topicTitle })
   const [error, setError] = useState(null);
   const [bestScore, setBestScore] = useState(null);
   const [showQuiz, setShowQuiz] = useState(false);
+  const [quizPhase, setQuizPhase] = useState("quiz");
+  const [forceEnd, setForceEnd] = useState(false);
 
   const storageKey = `quiz-scores-${slug}`;
+
+  // Lock body scroll when quiz dialog is open
+  useEffect(() => {
+    if (showQuiz) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showQuiz]);
 
   useEffect(() => {
     setMounted(true);
@@ -59,6 +74,8 @@ export default function TopicQuizSection({ slug, phaseId, topicId, topicTitle })
       if (!res.ok) throw new Error("Failed to generate quiz");
       const data = await res.json();
       setQuestions(data.questions);
+      setForceEnd(false);
+      setQuizPhase("quiz");
       setShowQuiz(true);
 
       // Cache in localStorage
@@ -97,6 +114,21 @@ export default function TopicQuizSection({ slug, phaseId, topicId, topicTitle })
     [storageKey, topicId],
   );
 
+  const handleCloseDialog = useCallback(() => {
+    if (quizPhase === "results") {
+      setShowQuiz(false);
+      setForceEnd(false);
+    } else {
+      if (
+        window.confirm(
+          "Are you sure you want to end the quiz early? Your progress will be graded as-is."
+        )
+      ) {
+        setForceEnd(true);
+      }
+    }
+  }, [quizPhase]);
+
   if (!mounted) return null;
 
   return (
@@ -113,11 +145,40 @@ export default function TopicQuizSection({ slug, phaseId, topicId, topicTitle })
       )}
 
       {showQuiz && questions ? (
-        <Quiz
-          questions={questions}
-          onComplete={handleQuizComplete}
-          onRetake={() => {}}
-        />
+        mounted && createPortal(
+          <>
+            <div className="quiz-dialog-backdrop" onClick={handleCloseDialog} />
+            <div className="quiz-dialog-container" role="dialog" aria-modal="true" aria-label={`${topicTitle} Quiz`}>
+              <div className="quiz-dialog-header">
+                <h3 className="quiz-dialog-title">
+                  <span className="icon">📝</span> {topicTitle} Quiz
+                </h3>
+                <button 
+                  className="quiz-dialog-close"
+                  onClick={handleCloseDialog}
+                  title="Close Quiz"
+                  aria-label="Close Quiz"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="quiz-dialog-content">
+                <Quiz
+                  questions={questions}
+                  onComplete={handleQuizComplete}
+                  onRetake={() => {
+                    setForceEnd(false);
+                    setQuizPhase("quiz");
+                  }}
+                  onClose={handleCloseDialog}
+                  forceEnd={forceEnd}
+                  onPhaseChange={setQuizPhase}
+                />
+              </div>
+            </div>
+          </>,
+          document.body
+        )
       ) : questions ? (
         <div className="quiz-generate-card">
           <p className="quiz-generate-text">
@@ -125,7 +186,11 @@ export default function TopicQuizSection({ slug, phaseId, topicId, topicTitle })
           </p>
           <button
             className="quiz-btn quiz-btn-primary"
-            onClick={() => setShowQuiz(true)}
+            onClick={() => {
+              setForceEnd(false);
+              setQuizPhase("quiz");
+              setShowQuiz(true);
+            }}
           >
             Test Your Knowledge
           </button>
