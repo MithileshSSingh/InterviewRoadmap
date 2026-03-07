@@ -6,10 +6,8 @@ import { streamChatResponse } from "@/lib/chatClient";
 import {
   USER_SPEECH_DEBOUNCE_MS,
   MAX_SAVED_FREEFORM_MESSAGES,
-  parseScore,
   parseFreeformScore,
   getOrCreateSessionId,
-  buildGuidedEvaluationMessages,
   buildFreeformSystemPrompt,
   getSpeechRecognitionCtor,
   cleanSpeechText,
@@ -33,8 +31,6 @@ import {
  * @param {function} [props.onOpenChange]
  */
 export function useMockInterviewController(store$, { topicContent, topicId, roadmapSlug, phaseId, onOpenChange }) {
-  const questions = topicContent?.interviewQuestions ?? [];
-
   // ── Refs (non-serializable, imperative) ──────────────────────────────────
   const abortRef = useRef(null);
 
@@ -351,33 +347,17 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
 
       const localSessionId = getOrCreateSessionId();
       const effectiveMode = sessionMode ?? store$.ui.mode.peek();
-      const currentAnswered = store$.guided.answeredQuestions.peek();
-
       let avgScore = null;
       let allMessages = [];
 
-      if (effectiveMode === "guided") {
-        const scored = currentAnswered.filter((q) => q.score !== null);
-        if (scored.length > 0) {
-          avgScore = scored.reduce((sum, q) => sum + q.score, 0) / scored.length;
-        }
-        allMessages = currentAnswered.map((q) => ({
-          role: "user",
-          content: q.userAnswer,
-          score: q.score,
-          feedback: q.feedback,
-          questionIndex: q.questionIndex,
-        }));
-      } else {
-        const transcriptMessages = messagesOverride ?? store$.freeform.chatMessages.peek();
-        allMessages = transcriptMessages.slice(0, MAX_SAVED_FREEFORM_MESSAGES).map((msg, i) => ({
-          role: msg.role,
-          content: msg.content,
-          source: msg.role === "user" ? "voice" : "assistant",
-          turn: i + 1,
-        }));
-        avgScore = finalScore ?? store$.freeform.freeformFinalScore.peek();
-      }
+      const transcriptMessages = messagesOverride ?? store$.freeform.chatMessages.peek();
+      allMessages = transcriptMessages.slice(0, MAX_SAVED_FREEFORM_MESSAGES).map((msg, i) => ({
+        role: msg.role,
+        content: msg.content,
+        source: msg.role === "user" ? "voice" : "assistant",
+        turn: i + 1,
+      }));
+      avgScore = finalScore ?? store$.freeform.freeformFinalScore.peek();
 
       try {
         const res = await fetch("/api/interview/sessions", {
@@ -673,12 +653,12 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
   }, [isOpen, onOpenChange]);
 
   // ── Public actions ───────────────────────────────────────────────────────
-  function handleOpen() {
+  async function handleOpen() {
     store$.ui.isOpen.set(true);
     const currentPhase = store$.ui.phase.peek();
     if (currentPhase === "idle" || currentPhase === "complete") {
       resetState(false);
-      store$.ui.phase.set("mode-select");
+      await startFreeformMode();
     }
   }
 
@@ -697,16 +677,11 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
 
     if (fullReset) {
       store$.ui.mode.set(null);
-      store$.ui.phase.set("mode-select");
+      store$.ui.phase.set("idle");
     }
 
-    store$.guided.currentQuestionIndex.set(0);
-    store$.guided.userAnswer.set("");
-    store$.guided.isEvaluating.set(false);
-    store$.guided.evaluationText.set("");
-    store$.guided.parsedScore.set(null);
-    store$.guided.answeredQuestions.set([]);
     store$.freeform.chatMessages.set([]);
+    store$.freeform.typedInput.set("");
     store$.freeform.isStreaming.set(false);
     store$.voice.recognitionStatus.set(isVoiceSupported ? "idle" : "unsupported");
     store$.voice.interimTranscript.set("");
@@ -715,11 +690,6 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
     store$.freeform.freeformFinalScore.set(null);
     store$.freeform.interviewStatus.set("ongoing");
     store$.ui.saveStatus.set("idle");
-  }
-
-  function startGuidedMode() {
-    store$.ui.mode.set("guided");
-    store$.ui.phase.set("guided");
   }
 
   async function startFreeformMode() {
@@ -746,65 +716,6 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
     store$.ui.mode.set("freeform");
     store$.ui.phase.set("freeform");
     await startFreeformInterview();
-  }
-
-  async function submitAnswer() {
-    const userAnswer = store$.guided.userAnswer.peek();
-    if (!userAnswer.trim() || store$.guided.isEvaluating.peek()) return;
-
-    const question = questions[store$.guided.currentQuestionIndex.peek()];
-    store$.guided.isEvaluating.set(true);
-    store$.guided.evaluationText.set("");
-    store$.guided.parsedScore.set(null);
-
-    const msgs = buildGuidedEvaluationMessages(question, userAnswer, topicContent.title);
-    const controller = new AbortController();
-    abortRef.current = controller;
-
-    let finalText = "";
-    const result = await streamChatResponse({
-      messages: msgs,
-      signal: controller.signal,
-      onToken: (_token, fullContent) => {
-        finalText = fullContent;
-        store$.guided.evaluationText.set(fullContent);
-        store$.guided.parsedScore.set(parseScore(fullContent));
-      },
-    });
-
-    abortRef.current = null;
-    store$.guided.isEvaluating.set(false);
-
-    if (result.status === "aborted") return;
-
-    const score = parseScore(finalText);
-    store$.guided.answeredQuestions.set((prev) => [
-      ...prev,
-      {
-        questionIndex: store$.guided.currentQuestionIndex.peek(),
-        question,
-        userAnswer,
-        score,
-        feedback: finalText,
-      },
-    ]);
-  }
-
-  function advanceGuided() {
-    const next = store$.guided.currentQuestionIndex.peek() + 1;
-    if (next < questions.length) {
-      store$.guided.currentQuestionIndex.set(next);
-      store$.guided.userAnswer.set("");
-      store$.guided.evaluationText.set("");
-      store$.guided.parsedScore.set(null);
-    } else {
-      finishGuided();
-    }
-  }
-
-  function finishGuided() {
-    store$.ui.phase.set("complete");
-    saveSession({ sessionMode: "guided" });
   }
 
   async function startFreeformInterview() {
@@ -882,21 +793,23 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
     });
   }
 
+  async function restartInterview() {
+    resetState(true);
+    await startFreeformMode();
+  }
+
   // ── Return public surface ────────────────────────────────────────────────
   return {
     actions: {
       handleOpen,
       handleClose,
       resetState,
-      startGuidedMode,
       startFreeformMode,
-      submitAnswer,
-      advanceGuided,
+      restartInterview,
       startListening,
       interruptAssistantAndListen,
       submitTypedMessage,
       endInterview,
-      setUserAnswer: (val) => store$.guided.userAnswer.set(val),
       setTypedInput: (val) => store$.freeform.typedInput.set(val),
       saveSession,
     },

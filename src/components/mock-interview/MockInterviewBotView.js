@@ -6,165 +6,6 @@ import { renderMarkdown, scoreColorClass } from "./mockInterviewUtils";
 
 // ── Sub-views ─────────────────────────────────────────────────────────────────
 
-const ModeSelectView = observer(function ModeSelectView({ store$, actions, topicContent }) {
-  const hasGuidedContent = store$.hasGuidedContent.get();
-  const isVoiceSupported = store$.voice.isVoiceSupported.get();
-  const questions = topicContent?.interviewQuestions ?? [];
-
-  return (
-    <div className="interview-mode-select">
-      <p className="interview-mode-intro">
-        Choose how to practice <strong>{topicContent?.title}</strong>
-      </p>
-      <div className="interview-mode-cards">
-        <button
-          className="interview-mode-card"
-          onClick={actions.startGuidedMode}
-          disabled={!hasGuidedContent}
-          title={!hasGuidedContent ? "No practice questions available for this topic" : undefined}
-        >
-          <span className="interview-mode-card-icon">📋</span>
-          <h4>Guided Q&amp;A</h4>
-          <p>
-            {hasGuidedContent
-              ? `Answer ${questions.length} questions step-by-step. Each answer is scored.`
-              : "No practice questions available for this topic."}
-          </p>
-        </button>
-        <button
-          className="interview-mode-card"
-          onClick={actions.startFreeformMode}
-        >
-          <span className="interview-mode-card-icon">{isVoiceSupported ? "🎙️" : "💬"}</span>
-          <h4>{isVoiceSupported ? "Voice Interview" : "Live Interview"}</h4>
-          <p>
-            {isVoiceSupported
-              ? "Spoken interview with auto-listening, live transcript, and streamed voice."
-              : "Interactive interview with AI — type your answers in a live conversation."}
-          </p>
-        </button>
-      </div>
-    </div>
-  );
-});
-
-const GuidedInterviewView = observer(function GuidedInterviewView({ store$, actions, topicContent }) {
-  const questions = topicContent?.interviewQuestions ?? [];
-  const currentQuestionIndex = store$.guided.currentQuestionIndex.get();
-  const userAnswer = store$.guided.userAnswer.get();
-  const isEvaluating = store$.guided.isEvaluating.get();
-  const evaluationText = store$.guided.evaluationText.get();
-  const parsedScore = store$.guided.parsedScore.get();
-
-  const textareaRef = useRef(null);
-
-  const guidedSubState = isEvaluating
-    ? "evaluating"
-    : evaluationText
-      ? "evaluated"
-      : "asking";
-
-  // Auto-focus textarea when ready for input
-  useEffect(() => {
-    if (!isEvaluating && !evaluationText) {
-      window.setTimeout(() => textareaRef.current?.focus(), 100);
-    }
-  }, [evaluationText, isEvaluating, currentQuestionIndex]);
-
-  return (
-    <div className="interview-guided-panel">
-      <div className="interview-progress-bar-wrap">
-        <span className="interview-progress-label">
-          Question {currentQuestionIndex + 1} of {questions.length}
-        </span>
-        <div className="interview-progress-bar">
-          <div
-            className="interview-progress-fill"
-            style={{
-              width: `${((currentQuestionIndex + 1) / questions.length) * 100}%`,
-            }}
-          />
-        </div>
-      </div>
-
-      {questions[currentQuestionIndex]?.type && (
-        <span
-          className={`interview-type-badge interview-type-badge--${questions[currentQuestionIndex].type}`}
-        >
-          {questions[currentQuestionIndex].type}
-        </span>
-      )}
-
-      <div className="interview-question-card">{questions[currentQuestionIndex]?.q}</div>
-
-      <textarea
-        ref={textareaRef}
-        className="interview-answer-textarea"
-        placeholder="Type your answer here..."
-        value={userAnswer}
-        onChange={(event) => actions.setUserAnswer(event.target.value)}
-        disabled={guidedSubState !== "asking"}
-        rows={4}
-        onKeyDown={(event) => {
-          if (event.key === "Enter" && event.ctrlKey && guidedSubState === "asking") {
-            actions.submitAnswer();
-          }
-        }}
-      />
-
-      {guidedSubState === "asking" && (
-        <button
-          className="interview-submit-btn"
-          onClick={actions.submitAnswer}
-          disabled={!userAnswer.trim()}
-        >
-          Submit Answer
-        </button>
-      )}
-
-      {(isEvaluating || evaluationText) && (
-        <div className="interview-evaluation-box">
-          {parsedScore !== null && (
-            <div className="interview-evaluation-header">
-              <span className={`interview-score-badge ${scoreColorClass(parsedScore)}`}>
-                {parsedScore}/10
-              </span>
-              <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-                {parsedScore >= 7
-                  ? "Great answer!"
-                  : parsedScore >= 5
-                    ? "Good attempt"
-                    : "Needs improvement"}
-              </span>
-            </div>
-          )}
-          {isEvaluating && !evaluationText && (
-            <div className="chatbot-typing">
-              <span />
-              <span />
-              <span />
-            </div>
-          )}
-          {evaluationText && (
-            <div
-              className="chatbot-markdown interview-feedback-text"
-              dangerouslySetInnerHTML={{ __html: renderMarkdown(evaluationText) }}
-            />
-          )}
-        </div>
-      )}
-
-      {guidedSubState === "evaluated" && (
-        <button className="interview-nav-btn" onClick={actions.advanceGuided}>
-          {currentQuestionIndex + 1 < questions.length
-            ? "Next Question ->"
-            : "Finish Interview"}
-        </button>
-      )}
-    </div>
-  );
-});
-
 const ChatBubble = observer(function ChatBubble({ message$ }) {
   const role = message$.role.get();
   const content = message$.content.get();
@@ -308,60 +149,28 @@ const FreeformInterviewView = observer(function FreeformInterviewView({ store$, 
 });
 
 const InterviewCompleteView = observer(function InterviewCompleteView({ store$, actions }) {
-  const mode = store$.ui.mode.get();
   const saveStatus = store$.ui.saveStatus.get();
   const summary = store$.freeform.summary.get();
   const freeformFinalScore = store$.freeform.freeformFinalScore.get();
-  const answeredQuestions = store$.guided.answeredQuestions.get();
-
-  const guidedAvgScore =
-    answeredQuestions.length > 0
-      ? (() => {
-          const scored = answeredQuestions.filter((q) => q.score !== null);
-          return scored.length > 0
-            ? scored.reduce((sum, q) => sum + q.score, 0) / scored.length
-            : null;
-        })()
-      : null;
 
   return (
     <div className="interview-complete">
       <div className="interview-complete-header">
-        {mode === "guided" && guidedAvgScore !== null && (
-          <span
-            className={`interview-score-badge interview-score-badge--lg ${scoreColorClass(guidedAvgScore)}`}
-          >
-            {guidedAvgScore.toFixed(1)}/10
-          </span>
-        )}
-        {mode === "freeform" && freeformFinalScore !== null && (
+        {freeformFinalScore !== null && (
           <span
             className={`interview-score-badge interview-score-badge--lg ${scoreColorClass(freeformFinalScore)}`}
           >
             {freeformFinalScore}/10
           </span>
         )}
-        <h4>{mode === "guided" ? "Interview Complete" : "Interview Summary"}</h4>
+        <h4>Interview Summary</h4>
       </div>
 
-      {mode === "freeform" && summary && (
+      {summary && (
         <div
           className="chatbot-markdown interview-summary-text"
           dangerouslySetInnerHTML={{ __html: renderMarkdown(summary) }}
         />
-      )}
-
-      {mode === "guided" && answeredQuestions.length > 0 && (
-        <div className="interview-answers-review">
-          {answeredQuestions.map((question, index) => (
-            <div key={index} className="interview-answer-review-item">
-              <p className="interview-question-mini">{question.question?.q}</p>
-              <span className={`interview-score-badge ${scoreColorClass(question.score)}`}>
-                {question.score !== null ? `${question.score}/10` : "N/A"}
-              </span>
-            </div>
-          ))}
-        </div>
       )}
 
       <div className="interview-complete-actions">
@@ -385,7 +194,7 @@ const InterviewCompleteView = observer(function InterviewCompleteView({ store$, 
             Retry Save
           </button>
         )}
-        <button className="interview-restart-btn" onClick={() => actions.resetState(true)}>
+        <button className="interview-restart-btn" onClick={actions.restartInterview}>
           Start New Interview
         </button>
       </div>
@@ -404,7 +213,7 @@ function MockInterviewBotView({ store$, actions, topicContent }) {
       {!isOpen && (
         <button
           className="mock-interview-fab"
-          onClick={actions.handleOpen}
+          onClick={() => void actions.handleOpen()}
           aria-label="Start mock interview"
         >
           Practice Interview
@@ -446,14 +255,6 @@ function MockInterviewBotView({ store$, actions, topicContent }) {
             </div>
 
             <div className="mock-interview-body">
-              {phase === "mode-select" && (
-                <ModeSelectView store$={store$} actions={actions} topicContent={topicContent} />
-              )}
-
-              {phase === "guided" && (
-                <GuidedInterviewView store$={store$} actions={actions} topicContent={topicContent} />
-              )}
-
               {phase === "freeform" && (
                 <FreeformInterviewView store$={store$} actions={actions} />
               )}

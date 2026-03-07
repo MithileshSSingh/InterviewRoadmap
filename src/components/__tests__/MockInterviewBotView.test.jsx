@@ -8,21 +8,18 @@ function createActions() {
     handleOpen: vi.fn(),
     handleClose: vi.fn(),
     resetState: vi.fn(),
-    startGuidedMode: vi.fn(),
     startFreeformMode: vi.fn(),
-    submitAnswer: vi.fn(),
-    advanceGuided: vi.fn(),
+    restartInterview: vi.fn(),
     startListening: vi.fn(),
     interruptAssistantAndListen: vi.fn(),
     submitTypedMessage: vi.fn(),
     endInterview: vi.fn(),
-    setUserAnswer: vi.fn(),
     setTypedInput: vi.fn(),
     saveSession: vi.fn(),
   };
 }
 
-if (!Element.prototype.scrollIntoView) {
+if (typeof Element !== "undefined" && !Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = vi.fn();
 }
 

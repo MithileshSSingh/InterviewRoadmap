@@ -13,16 +13,12 @@ export default function MockInterviewBot({
   phaseId,
   onOpenChange,
 }) {
-  const questions = topicContent?.interviewQuestions ?? [];
-  const hasGuidedContent = questions.length > 0;
-
   const hasSpeechRecognition = typeof window !== "undefined" && Boolean(getSpeechRecognitionCtor());
   const hasSpeechSynthesis = typeof window !== "undefined" && "speechSynthesis" in window;
   const isVoiceSupported = hasSpeechRecognition && hasSpeechSynthesis;
 
   const [store$] = useState(() =>
     createMockInterviewStore({
-      hasGuidedContent,
       isVoiceSupported,
       hasSpeechRecognition,
       hasSpeechSynthesis,
@@ -46,4 +42,3 @@ export default function MockInterviewBot({
     />
   );
 }
-

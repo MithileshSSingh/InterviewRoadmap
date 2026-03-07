@@ -4,10 +4,9 @@ import { observable } from "@legendapp/state";
  * Factory – returns a NEW Legend State observable per call.
  * Never share a single store across multiple MockInterviewBot instances.
  *
- * @param {{ hasGuidedContent: boolean, isVoiceSupported: boolean }} init
+ * @param {{ isVoiceSupported: boolean }} init
  */
 export function createMockInterviewStore({
-  hasGuidedContent = false,
   isVoiceSupported = false,
   hasSpeechRecognition = false,
   hasSpeechSynthesis = false,
@@ -16,20 +15,10 @@ export function createMockInterviewStore({
   return observable({
     // ── UI / phase ────────────────────────────────────────────────────────
     ui: {
-      phase: "idle",       // "idle" | "mode-select" | "guided" | "freeform" | "complete"
+      phase: "idle",       // "idle" | "freeform" | "complete"
       isOpen: false,
-      mode: null,          // null | "guided" | "freeform"
+      mode: null,          // null | "freeform"
       saveStatus: "idle",  // "idle" | "saving" | "saved" | "error"
-    },
-
-    // ── Guided Q&A ───────────────────────────────────────────────────────
-    guided: {
-      currentQuestionIndex: 0,
-      userAnswer: "",
-      isEvaluating: false,
-      evaluationText: "",
-      parsedScore: null,
-      answeredQuestions: [],   // { questionIndex, question, userAnswer, score, feedback }[]
     },
 
     // ── Freeform / chat ──────────────────────────────────────────────────
@@ -53,8 +42,5 @@ export function createMockInterviewStore({
       isVoiceSupported,
       isIOSWebKit,
     },
-
-    // ── Derived / static (set once) ──────────────────────────────────────
-    hasGuidedContent,
   });
 }
