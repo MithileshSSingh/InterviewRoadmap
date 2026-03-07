@@ -360,7 +360,8 @@ Phase 9 is conditional — only relevant if the static data in `src/data/` is mo
 - [ ] Mock interview in home page
 - [ ] Mock interview - in roadmap ai features
 - [x] Mock interview - tell llm not to responde out to context
-- [x] Mock interveiw login based / payment based
+- [x] Mock interveiw - login based / payment based
+- [ ] Mock interview - Bot should not reply with the system context information
 - [ ] handle error while generating roadmap properly ... example rate limitting
 - [ ] duplications in codes and agent name, list in generations and stream api
 - [ ] write proper graph which is hosted and stream from there ... with session id
