@@ -638,7 +638,12 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
   // Use useSelector so React re-runs this hook when isOpen changes
   const isOpen = useSelector(() => store$.ui.isOpen.get());
   useEffect(() => {
-    if (!isOpen) return undefined;
+    if (!isOpen) {
+      abortRef.current?.abort();
+      stopListening("idle");
+      cancelAssistantSpeech();
+      return undefined;
+    }
 
     const handler = (event) => {
       if (event.key === "Escape") {
