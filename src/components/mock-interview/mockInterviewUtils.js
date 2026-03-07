@@ -1,0 +1,195 @@
+import { marked } from "marked";
+
+// ── Constants ─────────────────────────────────────────────────────────────────
+export const USER_SPEECH_DEBOUNCE_MS = 1200;
+export const MAX_SAVED_FREEFORM_MESSAGES = 50;
+
+// ── Markdown / score helpers ──────────────────────────────────────────────────
+export function renderMarkdown(text) {
+  return marked.parse(text, { async: false });
+}
+
+export function parseScore(text) {
+  const match = text.match(/SCORE:\s*(\d+(?:\.\d+)?)\/10/i);
+  if (!match) return null;
+  const val = parseFloat(match[1]);
+  return Number.isNaN(val) ? null : Math.min(10, Math.max(0, val));
+}
+
+export function parseFreeformScore(text) {
+  const match = text.match(/OVERALL SCORE:\s*(\d+(?:\.\d+)?)\/10/i);
+  if (!match) return null;
+  const val = parseFloat(match[1]);
+  return Number.isNaN(val) ? null : Math.min(10, Math.max(0, val));
+}
+
+export function scoreColorClass(score) {
+  if (score === null) return "";
+  if (score >= 7) return "interview-score-badge--green";
+  if (score >= 5) return "interview-score-badge--yellow";
+  return "interview-score-badge--red";
+}
+
+// ── Session ID ────────────────────────────────────────────────────────────────
+export function getOrCreateSessionId() {
+  if (typeof window === "undefined") return null;
+  let sid = localStorage.getItem("cf-session-id");
+  if (!sid) {
+    sid = `anon-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    localStorage.setItem("cf-session-id", sid);
+  }
+  return sid;
+}
+
+// ── Prompt builders ───────────────────────────────────────────────────────────
+export function buildGuidedEvaluationMessages(question, userAnswer, topicTitle) {
+  return [
+    {
+      role: "system",
+      content: `You are a senior technical interviewer evaluating an interview answer.
+Topic: ${topicTitle}
+Question: ${question.q}
+Expected answer: ${question.a}
+
+Evaluate the candidate's answer. Respond with exactly this format:
+SCORE: X/10
+
+[2-3 sentences of specific feedback on what was correct and what was missing or incomplete]
+
+KEY POINTS MISSED:
+- [Only list if key concepts were missing; omit section if answer was complete]`,
+    },
+    {
+      role: "user",
+      content: userAnswer,
+    },
+  ];
+}
+
+export function buildFreeformSystemPrompt(topicContent) {
+  const questions = (topicContent.interviewQuestions ?? [])
+    .map((q) => `- ${q.q}`)
+    .join("\n");
+  const explanation = (topicContent.explanation ?? "").slice(0, 500);
+
+  return `You are a senior technical interviewer conducting a mock interview on "${topicContent.title}".
+
+Topic background: ${explanation}
+
+Sample questions to draw from (adapt freely, ask follow-ups):
+${questions || "Ask general questions about the topic."}
+
+Instructions:
+- Speak naturally and keep each turn concise enough for a spoken conversation
+- Start with a brief 1-sentence introduction, then ask your first question
+- Ask one question at a time and wait for the candidate's response
+- Probe deeper when answers are vague or incomplete
+- After 5-7 questions, or when the candidate says they are done, conclude with a summary in this exact format:
+OVERALL SCORE: X/10
+[2-3 sentences on strengths and areas for improvement]`;
+}
+
+// ── Browser / speech detection ────────────────────────────────────────────────
+export function getSpeechRecognitionCtor() {
+  if (typeof window === "undefined") return null;
+  return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+}
+
+export function isIOSWebKitBrowser() {
+  if (typeof window === "undefined" || typeof navigator === "undefined") return false;
+
+  const ua = navigator.userAgent || "";
+  const platform = navigator.platform || "";
+  const maxTouchPoints = navigator.maxTouchPoints || 0;
+  const isIOSDevice =
+    /iPad|iPhone|iPod/.test(ua) ||
+    (platform === "MacIntel" && maxTouchPoints > 1);
+
+  return isIOSDevice && /WebKit/i.test(ua);
+}
+
+// ── Speech text helpers ───────────────────────────────────────────────────────
+export function cleanSpeechText(text) {
+  return text
+    .replace(/```[\s\S]*?```/g, " code example. ")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
+    .replace(/[*_~>#]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function splitSpeechChunks(buffer, force = false) {
+  const chunks = [];
+  let remaining = buffer;
+  const boundaryRegex = /^[\s\S]*?(?:[.!?](?=\s|$)|\n{2,})/;
+
+  while (true) {
+    const match = remaining.match(boundaryRegex);
+    if (!match || !match[0]) break;
+    chunks.push(match[0]);
+    remaining = remaining.slice(match[0].length);
+  }
+
+  if (!force && chunks.length === 0 && remaining.length > 180) {
+    const cutIndex = remaining.lastIndexOf(" ", 180);
+    if (cutIndex > 80) {
+      chunks.push(remaining.slice(0, cutIndex));
+      remaining = remaining.slice(cutIndex);
+    }
+  }
+
+  if (force && remaining.trim()) {
+    chunks.push(remaining);
+    remaining = "";
+  }
+
+  return { chunks, remaining };
+}
+
+export function pickSpeechVoice() {
+  if (typeof window === "undefined" || !window.speechSynthesis) return null;
+  const voices = window.speechSynthesis.getVoices();
+  return (
+    voices.find((voice) => voice.name === "Google UK English Female") ??
+    voices.find((voice) => voice.lang?.toLowerCase().startsWith("en")) ??
+    voices[0] ??
+    null
+  );
+}
+
+// Chrome has a long-standing bug where SpeechSynthesisUtterance instances are garbage collected
+// mid-speech if not referenced globally, which causes the `onend` event to never fire.
+// We must keep a strong reference to them in the global scope until they finish.
+export function keepUtteranceAlive(utterance) {
+  if (typeof window === "undefined") return;
+  window.__speechUtterances = window.__speechUtterances || [];
+  window.__speechUtterances.push(utterance);
+}
+
+export function clearUtterance(utterance) {
+  if (typeof window === "undefined" || !window.__speechUtterances) return;
+  window.__speechUtterances = window.__speechUtterances.filter((u) => u !== utterance);
+}
+
+export function clearAllUtterances() {
+  if (typeof window !== "undefined") {
+    window.__speechUtterances = [];
+  }
+}
+
+export function normaliseVoiceError(error) {
+  switch (error) {
+    case "audio-capture":
+      return "No microphone was detected. Connect a mic and try again.";
+    case "network":
+      return "Speech recognition lost its connection. Try again.";
+    case "not-allowed":
+    case "service-not-allowed":
+      return "Microphone access is blocked. On iPhone/iPad Safari, also make sure Siri or Dictation is enabled in Settings.";
+    case "language-not-supported":
+      return "Speech recognition does not support the current language.";
+    default:
+      return "Voice capture failed. Try again.";
+  }
+}
