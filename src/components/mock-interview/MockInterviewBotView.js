@@ -204,7 +204,7 @@ const InterviewCompleteView = observer(function InterviewCompleteView({ store$, 
 
 // ── Main View ─────────────────────────────────────────────────────────────────
 
-function MockInterviewBotView({ store$, actions, topicContent }) {
+function MockInterviewBotView({ store$, actions, interviewConfig }) {
   const isOpen = store$.ui.isOpen.get();
   const phase = store$.ui.phase.get();
 
@@ -226,7 +226,7 @@ function MockInterviewBotView({ store$, actions, topicContent }) {
             <span className="chatbot-header-icon">🎤</span>
             <div>
               <h3 className="chatbot-title">Mock Interview</h3>
-              <p className="chatbot-subtitle">{topicContent?.title}</p>
+              <p className="chatbot-subtitle">{interviewConfig?.title}</p>
             </div>
           </div>
           <div className="chatbot-header-actions">

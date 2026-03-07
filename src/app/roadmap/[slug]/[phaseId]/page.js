@@ -4,6 +4,7 @@ import { getRoadmapMeta } from "@/data/roadmaps";
 import { notFound } from "next/navigation";
 import PhaseAssessment from "@/components/PhaseAssessment";
 import TopicCardList from "@/components/TopicCardList";
+import MockInterviewBot from "@/components/MockInterviewBot";
 
 export default async function PhasePage({ params }) {
   const { slug, phaseId } = await params;
@@ -13,6 +14,10 @@ export default async function PhasePage({ params }) {
 
   const phase = phases.find((p) => p.id === phaseId);
   if (!phase) notFound();
+
+  function getExplanation(phase) {
+    return `Assess my comprehensive knowledge of the ${phase.title} phase. Topics covered include: ${phase.topics.map((t) => t.title).join(", ")}.`;
+  } 
 
   return (
     <div>
@@ -45,6 +50,18 @@ export default async function PhasePage({ params }) {
       />
 
       <PhaseAssessment slug={slug} phase={phase} />
+
+      <MockInterviewBot
+        interviewConfig={{
+          title: phase.title,
+          explanation: getExplanation(phase),
+          type: "phase"
+        }}
+        metadata={{
+          roadmapSlug: slug,
+          phaseId: phase.id
+        }}
+      />
     </div>
   );
 }

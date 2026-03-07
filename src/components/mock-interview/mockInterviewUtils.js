@@ -67,24 +67,7 @@ KEY POINTS MISSED:
   ];
 }
 
-export function buildFreeformSystemPrompt(topicContent) {
-  const questions = (topicContent.interviewQuestions ?? [])
-    .map((q) => `- ${q.q}`)
-    .join("\n");
-  const explanation = (topicContent.explanation ?? "").slice(0, 500);
-
-  return `You are a **Senior Technical Interviewer** conducting a **mock technical interview**.
-
-INTERVIEW TOPIC
-Title: ${topicContent.title}
-
-BACKGROUND CONTEXT
-${explanation}
-
-QUESTION POOL (Use as inspiration. You may modify, extend, or ask follow-up questions.)
-${questions || "Ask general questions related to the topic."}
-
-
+const COMMON_INTERVIEW_RULES = `
 INTERVIEW BEHAVIOR RULES
 
 1. Communication Style
@@ -147,6 +130,72 @@ Short Feedback:
 - Never ask **multiple questions in one turn**
 - Keep the conversation **interview-like and interactive**
 - in OVERALL SCORE: X/10 X should be strickly integer ... should not give NA`;
+
+function createTopicPrompt(config) {
+  const questions = (config.interviewQuestions || [])
+    .map((q) => `- ${q.q}`)
+    .join("\n");
+  const explanation = (config.explanation || "").slice(0, 500);
+
+  return `You are a **Senior Technical Interviewer** conducting a **mock technical interview** on a specific topic.
+
+INTERVIEW TOPIC
+Title: ${config.title}
+
+BACKGROUND CONTEXT
+${explanation}
+
+QUESTION POOL (Use as inspiration. You may modify, extend, or ask follow-up questions.)
+${questions || "Ask general questions related to the topic."}
+
+${COMMON_INTERVIEW_RULES}`;
+}
+
+function createPhasePrompt(config) {
+  const questions = (config.interviewQuestions || [])
+    .map((q) => `- ${q.q}`)
+    .join("\n");
+  const explanation = (config.explanation || "").slice(0, 500);
+
+  return `You are a **Senior Technical Interviewer** conducting a **phase-level mock technical interview**.
+Your goal is to assess the candidate's broad understanding across multiple topics within this phase.
+
+PHASE
+Title: ${config.title}
+
+BACKGROUND CONTEXT
+${explanation || "Assess the candidate's comprehensive understanding of this learning phase."}
+
+QUESTION POOL (Use as inspiration. You may modify, extend, or ask follow-up questions.)
+${questions || "Ask comprehensive questions covering various sub-topics in this phase."}
+
+${COMMON_INTERVIEW_RULES}`;
+}
+
+function createGeneralPrompt(config) {
+  return `You are a **Senior Technical Interviewer** conducting a **general software engineering mock interview**.
+
+INTERVIEW FOCUS
+Title: ${config.title || "General Interview"}
+
+BACKGROUND CONTEXT
+${(config.explanation || "Evaluate the candidate's overall technical problem-solving and software design skills.").slice(0, 500)}
+
+${COMMON_INTERVIEW_RULES}`;
+}
+
+export function getSystemPromptForConfig(config) {
+  const type = config?.type || "topic";
+  
+  switch (type) {
+    case "topic":
+      return createTopicPrompt(config);
+    case "phase":
+      return createPhasePrompt(config);
+    case "general":
+    default:
+      return createGeneralPrompt(config);
+  }
 }
 
 // ── Browser / speech detection ────────────────────────────────────────────────

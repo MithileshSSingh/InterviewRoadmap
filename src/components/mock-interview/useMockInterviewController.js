@@ -8,7 +8,7 @@ import {
   MAX_SAVED_FREEFORM_MESSAGES,
   parseFreeformScore,
   getOrCreateSessionId,
-  buildFreeformSystemPrompt,
+  getSystemPromptForConfig,
   getSpeechRecognitionCtor,
   cleanSpeechText,
   splitSpeechChunks,
@@ -24,13 +24,11 @@ import {
  *
  * @param {import("@legendapp/state").Observable} store$  – scoped Legend State observable
  * @param {object} props
- * @param {object} props.topicContent
- * @param {string} props.topicId
- * @param {string} props.roadmapSlug
- * @param {string} props.phaseId
+ * @param {object} props.interviewConfig Contains title, explanation, optional interviewQuestions, and type
+ * @param {object} props.metadata Information like topicId, phaseId, roadmapSlug to contextualize
  * @param {function} [props.onOpenChange]
  */
-export function useMockInterviewController(store$, { topicContent, topicId, roadmapSlug, phaseId, onOpenChange }) {
+export function useMockInterviewController(store$, { interviewConfig, metadata, onOpenChange }) {
   // ── Refs (non-serializable, imperative) ──────────────────────────────────
   const abortRef = useRef(null);
 
@@ -364,10 +362,10 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            topicId,
-            topicTitle: topicContent.title,
-            roadmapSlug,
-            phaseId,
+            topicId: metadata?.topicId || null,
+            topicTitle: interviewConfig?.title || "Unknown Topic",
+            roadmapSlug: metadata?.roadmapSlug || null,
+            phaseId: metadata?.phaseId || null,
             mode: effectiveMode,
             score: avgScore,
             summary: summaryText ?? store$.freeform.summary.peek() ?? null,
@@ -381,7 +379,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
         store$.ui.saveStatus.set("error");
       }
     },
-    [phaseId, roadmapSlug, store$, topicContent.title, topicId],
+    [metadata, store$, interviewConfig],
   );
 
   // ── Voice turn submission ────────────────────────────────────────────────
@@ -397,7 +395,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
 
       store$.freeform.chatMessages.set(nextMessages);
 
-      const systemMsg = buildFreeformSystemPrompt(topicContent);
+      const systemMsg = getSystemPromptForConfig(interviewConfig);
       const apiMessages = [
         { role: "system", content: systemMsg },
         ...nextMessages.slice(0, assistantIndex),
@@ -431,7 +429,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
         });
       }
     },
-    [streamAssistantTurn, topicContent, store$, stopListening, saveSession],
+    [streamAssistantTurn, interviewConfig, store$, stopListening, saveSession],
   );
 
   const submitTypedMessage = useCallback(
@@ -446,7 +444,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
 
       store$.freeform.chatMessages.set(nextMessages);
 
-      const systemMsg = buildFreeformSystemPrompt(topicContent);
+      const systemMsg = getSystemPromptForConfig(interviewConfig);
       const apiMessages = [
         { role: "system", content: systemMsg },
         ...nextMessages.slice(0, assistantIndex),
@@ -480,7 +478,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
         });
       }
     },
-    [isVoiceSupported, streamAssistantTurn, topicContent, store$, stopListening, saveSession],
+    [isVoiceSupported, streamAssistantTurn, interviewConfig, store$, stopListening, saveSession],
   );
 
   // ── Ref to keep submitVoiceTurn current ──────────────────────────────────
@@ -721,7 +719,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
   async function startFreeformInterview() {
     store$.freeform.chatMessages.set([{ role: "assistant", content: "" }]);
 
-    const systemMsg = buildFreeformSystemPrompt(topicContent);
+    const systemMsg = getSystemPromptForConfig(interviewConfig);
     const openingMessages = [
       { role: "system", content: systemMsg },
       {
@@ -760,7 +758,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
 
     store$.freeform.chatMessages.set(nextMessages);
 
-    const systemMsg = buildFreeformSystemPrompt(topicContent);
+    const systemMsg = getSystemPromptForConfig(interviewConfig);
     const summaryMessages = [
       { role: "system", content: systemMsg },
       ...filteredMessages,

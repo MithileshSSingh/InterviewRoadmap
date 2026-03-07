@@ -12,10 +12,8 @@ import RequireAuthDialog from "./RequireAuthDialog";
 import PremiumBadge from "./PremiumBadge";
 
 export default function MockInterviewBot({
-  topicContent,
-  topicId,
-  roadmapSlug,
-  phaseId,
+  interviewConfig,
+  metadata,
   onOpenChange,
 }) {
   const { data: session, status: authStatus } = useSession();
@@ -35,10 +33,8 @@ export default function MockInterviewBot({
   );
 
   const { actions } = useMockInterviewController(store$, {
-    topicContent,
-    topicId,
-    roadmapSlug,
-    phaseId,
+    interviewConfig,
+    metadata,
     onOpenChange,
   });
   const isOpen = useSelector(() => store$.ui.isOpen.get());
@@ -57,7 +53,7 @@ export default function MockInterviewBot({
 
   return (
     <>
-      <section className="section">
+      <section className="mock-interview-section">
         <h2 className="section-title">
           <span className="icon">🎤</span> Mock Interview
           <PremiumBadge />
@@ -67,7 +63,7 @@ export default function MockInterviewBot({
           /* ── Unlocked state ── */
           <div className="quiz-generate-card mock-interview-entry-card">
             <p className="quiz-generate-text">
-              Practice a live interview for <strong>{topicContent?.title}</strong>
+              Practice a live interview for <strong>{interviewConfig?.title}</strong>
             </p>
             <button
               className="quiz-btn quiz-btn-primary"
@@ -89,7 +85,7 @@ export default function MockInterviewBot({
               className="quiz-generate-text"
               style={{ color: "var(--text-muted)" }}
             >
-              Mock interview is powered by AI for <strong> {topicContent?.title}</strong>. Sign in to unlock this feature.
+              Mock interview is powered by AI for <strong> {interviewConfig?.title}</strong>. Sign in to unlock this feature.
             </p>
             <RequireAuthDialog
               featureName="Mock Interviews"
@@ -115,7 +111,7 @@ export default function MockInterviewBot({
             <MockInterviewBotView
               store$={store$}
               actions={actions}
-              topicContent={topicContent}
+              interviewConfig={interviewConfig}
             />,
             document.body,
           )

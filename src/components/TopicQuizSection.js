@@ -132,7 +132,7 @@ export default function TopicQuizSection({ slug, phaseId, topicId, topicTitle })
   if (!mounted) return null;
 
   return (
-    <section className="section">
+    <section className="topic-quiz-section">
       <h2 className="section-title">
         <span className="icon">📝</span> Quiz
       </h2>

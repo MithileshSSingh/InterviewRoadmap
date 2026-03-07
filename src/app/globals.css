@@ -3478,6 +3478,16 @@ body {
   margin-top: 2rem;
 }
 
+/* Quiz section */
+.topic-quiz-section {
+  margin-top: 2rem;
+}
+
+/* Mock interview */
+.mock-interview-section {
+  margin-top: 2rem;
+}
+
 /* Phase assessment trigger */
 .phase-assessment-trigger {
   margin-top: 2rem;

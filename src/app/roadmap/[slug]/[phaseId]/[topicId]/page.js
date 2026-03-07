@@ -233,6 +233,7 @@ export default function TopicPage() {
 
   useEffect(() => {
     if (!isPlaygroundEnabled) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCodeViewMode("view");
       setIsExercisePlaygroundOpen(false);
     }
@@ -437,10 +438,17 @@ export default function TopicPage() {
       />
 
       <MockInterviewBot
-        topicContent={topic}
-        topicId={topic.id}
-        roadmapSlug={slug}
-        phaseId={phaseId}
+        interviewConfig={{
+          title: topic.title,
+          explanation: topic.explanation,
+          interviewQuestions: topic.interviewQuestions,
+          type: "topic"
+        }}
+        metadata={{
+          topicId: topic.id,
+          roadmapSlug: slug,
+          phaseId: phaseId
+        }}
         onOpenChange={handleInterviewOpenChange}
       />
 
