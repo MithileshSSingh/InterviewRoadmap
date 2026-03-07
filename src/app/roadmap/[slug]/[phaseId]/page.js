@@ -19,6 +19,10 @@ export default async function PhasePage({ params }) {
     return `Assess my comprehensive knowledge of the ${phase.title} phase. Topics covered include: ${phase.topics.map((t) => t.title).join(", ")}.`;
   } 
 
+  function getInterviewQuestions(phase) {
+    return phase.topics.flatMap((t) => t.interviewQuestions || []);
+  }
+
   return (
     <div>
       <div className="breadcrumb">
@@ -55,6 +59,7 @@ export default async function PhasePage({ params }) {
         interviewConfig={{
           title: phase.title,
           explanation: getExplanation(phase),
+          interviewQuestions: getInterviewQuestions(phase),
           type: "phase"
         }}
         metadata={{
