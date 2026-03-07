@@ -322,6 +322,11 @@ These features become necessary if the static roadmap data in `src/data/` is mig
 
 ---
 
+---
+## Phase 10: Error logging and alerting system**
+
+---
+
 ## Suggested Implementation Order
 
 ```
@@ -348,7 +353,7 @@ Phase 9 is conditional — only relevant if the static data in `src/data/` is mo
 
 
 - [x] Remove other functionality from mockinterview
-- [ ] full screen mock interview dialog instead of small dialolg
+- [x] full screen mock interview dialog instead of small dialolg
 - [ ] Custom View page for mock interview
 - [ ] Mock interview in topic list page
 - [ ] Mock interview in phase list page
