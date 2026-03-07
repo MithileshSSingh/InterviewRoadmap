@@ -354,10 +354,11 @@ Phase 9 is conditional — only relevant if the static data in `src/data/` is mo
 
 - [x] Remove other functionality from mockinterview
 - [x] full screen mock interview dialog instead of small dialolg
-- [ ] Custom View page for mock interview
+- [x] Custom View page for mock interview
 - [ ] Mock interview in topic list page
 - [ ] Mock interview in phase list page
 - [ ] Mock interview in home page
+- [ ] Mock interview - tell llm not to responde out to context
 - [ ] Mock interveiw login based / payment based
 - [ ] handle error while generating roadmap properly ... example rate limitting
 - [ ] duplications in codes and agent name, list in generations and stream api

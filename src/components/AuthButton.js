@@ -155,7 +155,7 @@ export default function AuthButton() {
               className="auth-dropdown-item"
               onClick={() => {
                 setIsOpen(false);
-                signOut({ callbackUrl: "/" });
+                signOut({ callbackUrl: window.location.href });
               }}
             >
               Sign out
