@@ -3473,6 +3473,11 @@ body {
   border-bottom: none;
 }
 
+/* Phase assessment */
+.phase-assessment-section {
+  margin-top: 2rem;
+}
+
 /* Phase assessment trigger */
 .phase-assessment-trigger {
   margin-top: 2rem;
