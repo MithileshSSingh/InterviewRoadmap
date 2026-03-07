@@ -95,6 +95,25 @@ export function getSpeechRecognitionCtor() {
   return window.SpeechRecognition || window.webkitSpeechRecognition || null;
 }
 
+export function getVoiceSupportState() {
+  if (typeof window === "undefined") {
+    return {
+      hasSpeechRecognition: false,
+      hasSpeechSynthesis: false,
+      isVoiceSupported: false,
+    };
+  }
+
+  const hasSpeechRecognition = Boolean(getSpeechRecognitionCtor());
+  const hasSpeechSynthesis = "speechSynthesis" in window;
+
+  return {
+    hasSpeechRecognition,
+    hasSpeechSynthesis,
+    isVoiceSupported: hasSpeechRecognition && hasSpeechSynthesis,
+  };
+}
+
 export function isIOSWebKitBrowser() {
   if (typeof window === "undefined" || typeof navigator === "undefined") return false;
 

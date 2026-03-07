@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createMockInterviewStore } from "./mock-interview/mockInterviewStore";
 import { useMockInterviewController } from "./mock-interview/useMockInterviewController";
 import MockInterviewBotView from "./mock-interview/MockInterviewBotView";
-import { getSpeechRecognitionCtor, isIOSWebKitBrowser } from "./mock-interview/mockInterviewUtils";
+import { getVoiceSupportState, isIOSWebKitBrowser } from "./mock-interview/mockInterviewUtils";
 
 export default function MockInterviewBot({
   topicContent,
@@ -15,20 +15,44 @@ export default function MockInterviewBot({
 }) {
   const questions = topicContent?.interviewQuestions ?? [];
   const hasGuidedContent = questions.length > 0;
-
-  const hasSpeechRecognition = typeof window !== "undefined" && Boolean(getSpeechRecognitionCtor());
-  const hasSpeechSynthesis = typeof window !== "undefined" && "speechSynthesis" in window;
-  const isVoiceSupported = hasSpeechRecognition && hasSpeechSynthesis;
+  const initialVoiceState = getVoiceSupportState();
 
   const [store$] = useState(() =>
     createMockInterviewStore({
       hasGuidedContent,
-      isVoiceSupported,
-      hasSpeechRecognition,
-      hasSpeechSynthesis,
+      isVoiceSupported: initialVoiceState.isVoiceSupported,
+      hasSpeechRecognition: initialVoiceState.hasSpeechRecognition,
+      hasSpeechSynthesis: initialVoiceState.hasSpeechSynthesis,
       isIOSWebKit: isIOSWebKitBrowser(),
     }),
   );
+
+  useEffect(() => {
+    const syncVoiceCapabilities = () => {
+      const nextVoiceState = getVoiceSupportState();
+      store$.voice.hasSpeechRecognition.set(nextVoiceState.hasSpeechRecognition);
+      store$.voice.hasSpeechSynthesis.set(nextVoiceState.hasSpeechSynthesis);
+      store$.voice.isVoiceSupported.set(nextVoiceState.isVoiceSupported);
+
+      if (!nextVoiceState.isVoiceSupported && store$.voice.recognitionStatus.peek() !== "unsupported") {
+        store$.voice.recognitionStatus.set("unsupported");
+      } else if (
+        nextVoiceState.isVoiceSupported &&
+        store$.voice.recognitionStatus.peek() === "unsupported"
+      ) {
+        store$.voice.recognitionStatus.set("idle");
+      }
+    };
+
+    syncVoiceCapabilities();
+    window.addEventListener("focus", syncVoiceCapabilities);
+    document.addEventListener("visibilitychange", syncVoiceCapabilities);
+
+    return () => {
+      window.removeEventListener("focus", syncVoiceCapabilities);
+      document.removeEventListener("visibilitychange", syncVoiceCapabilities);
+    };
+  }, [store$]);
 
   const { actions } = useMockInterviewController(store$, {
     topicContent,
@@ -46,4 +70,3 @@ export default function MockInterviewBot({
     />
   );
 }
-

@@ -9,6 +9,7 @@ import { renderMarkdown, scoreColorClass } from "./mockInterviewUtils";
 const ModeSelectView = observer(function ModeSelectView({ store$, actions, topicContent }) {
   const hasGuidedContent = store$.hasGuidedContent.get();
   const isVoiceSupported = store$.voice.isVoiceSupported.get();
+  const isIOSWebKit = store$.voice.isIOSWebKit.get();
   const questions = topicContent?.interviewQuestions ?? [];
 
   return (
@@ -40,7 +41,9 @@ const ModeSelectView = observer(function ModeSelectView({ store$, actions, topic
           <p>
             {isVoiceSupported
               ? "Spoken interview with auto-listening, live transcript, and streamed voice."
-              : "Interactive interview with AI — type your answers in a live conversation."}
+              : isIOSWebKit
+                ? "Safari is currently falling back to typing because speech recognition is unavailable on this iPhone."
+                : "Interactive interview with AI — type your answers in a live conversation."}
           </p>
         </button>
       </div>
@@ -199,6 +202,8 @@ const ChatBubble = observer(function ChatBubble({ message$ }) {
 
 const FreeformInterviewView = observer(function FreeformInterviewView({ store$, actions }) {
   const isVoiceSupported = store$.voice.isVoiceSupported.get();
+  const hasSpeechRecognition = store$.voice.hasSpeechRecognition.get();
+  const hasSpeechSynthesis = store$.voice.hasSpeechSynthesis.get();
   const isIOSWebKit = store$.voice.isIOSWebKit.get();
   const recognitionStatus = store$.voice.recognitionStatus.get();
   const isAssistantSpeaking = store$.voice.isAssistantSpeaking.get();
@@ -256,7 +261,13 @@ const FreeformInterviewView = observer(function FreeformInterviewView({ store$, 
           </div>
           <p className="interview-voice-status-text">{voiceStatusText}</p>
           <p className="interview-voice-hint">
-            Your answer is captured automatically after you stop speaking.
+            {isVoiceSupported
+              ? "Your answer is captured automatically after you stop speaking."
+              : isIOSWebKit
+                ? `Safari has${hasSpeechSynthesis ? "" : " not"} loaded speech playback and${
+                    hasSpeechRecognition ? "" : " not"
+                  } exposed speech recognition on this iPhone right now. Check Settings > Apps > Safari > Microphone, then Privacy & Security > Speech Recognition, and reopen Safari.`
+                : "Voice mode needs native speech recognition and speech playback in this browser."}
           </p>
           {interimTranscript && (
             <div className="interview-voice-transcript">

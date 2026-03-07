@@ -56,8 +56,8 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
   const shouldAbortImmediatelyOnStartRef = useRef(false);
 
   // ── Shorthand getters ────────────────────────────────────────────────────
-  const isVoiceSupported = store$.voice.isVoiceSupported.peek();
-  const isIOSWebKit = store$.voice.isIOSWebKit.peek();
+  const getIsVoiceSupported = useCallback(() => store$.voice.isVoiceSupported.peek(), [store$]);
+  const getIsIOSWebKit = useCallback(() => store$.voice.isIOSWebKit.peek(), [store$]);
 
   // ── Internal helpers ─────────────────────────────────────────────────────
   const clearTranscriptTimer = useCallback(() => {
@@ -141,7 +141,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
   );
 
   const startListening = useCallback(() => {
-    if (!isVoiceSupported) return;
+    if (!getIsVoiceSupported()) return;
     if (store$.ui.phase.peek() !== "freeform" || store$.ui.mode.peek() !== "freeform") return;
     if (store$.ui.phase.peek() === "complete") return;
     if (store$.freeform.isStreaming.peek() || speechActiveRef.current) return;
@@ -161,7 +161,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
         store$.voice.voiceError.set("Unable to start the microphone right now.");
       }
     }
-  }, [isVoiceSupported, store$]);
+  }, [getIsVoiceSupported, store$]);
 
   const enqueueSpeechChunk = useCallback(
     (rawText) => {
@@ -191,7 +191,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
         const resumeListeningAfterSpeech = () => {
           if (!shouldListenRef.current || store$.freeform.isStreaming.peek()) return;
 
-          if (isIOSWebKit) {
+          if (getIsIOSWebKit()) {
             window.setTimeout(() => {
               if (!speechActiveRef.current) {
                 startListening();
@@ -210,7 +210,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
 
           // Chrome can occasionally strand utterances without an end event.
           // Avoid this watchdog on iOS WebKit where it can fire early and re-arm the mic too soon.
-          if (!isIOSWebKit) {
+          if (!getIsIOSWebKit()) {
             if (utterance.watchdog) clearInterval(utterance.watchdog);
             utterance.watchdog = setInterval(() => {
               if (
@@ -266,7 +266,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
         speakNext();
       }
     },
-    [isIOSWebKit, startListening, store$],
+    [getIsIOSWebKit, startListening, store$],
   );
 
   const flushSpeechBuffer = useCallback(
@@ -450,10 +450,10 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
       await streamAssistantTurn({
         apiMessages,
         assistantIndex,
-        resumeListeningAfter: isVoiceSupported,
+        resumeListeningAfter: getIsVoiceSupported(),
       });
     },
-    [isVoiceSupported, streamAssistantTurn, topicContent, store$],
+    [getIsVoiceSupported, streamAssistantTurn, topicContent, store$],
   );
 
   // ── Ref to keep submitVoiceTurn current ──────────────────────────────────
@@ -465,12 +465,12 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
   useEffect(() => {
     const SpeechRecognitionCtor = getSpeechRecognitionCtor();
 
-    if (!isVoiceSupported || !SpeechRecognitionCtor) {
+    if (!getIsVoiceSupported() || !SpeechRecognitionCtor) {
       return undefined;
     }
 
     const recognition = new SpeechRecognitionCtor();
-    recognition.continuous = !isIOSWebKit;
+    recognition.continuous = !getIsIOSWebKit();
     recognition.interimResults = true;
     recognition.lang = "en-US";
     recognition.maxAlternatives = 1;
@@ -585,7 +585,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
         /* ignore */
       }
     };
-  }, [clearTranscriptTimer, isIOSWebKit, isVoiceSupported, startListening, stopListening, store$]);
+  }, [clearTranscriptTimer, getIsIOSWebKit, getIsVoiceSupported, startListening, stopListening, store$]);
 
   // ── Escape-to-close ──────────────────────────────────────────────────────
   // Use .get() so React re-runs this effect when isOpen changes
@@ -656,7 +656,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
     store$.guided.answeredQuestions.set([]);
     store$.freeform.chatMessages.set([]);
     store$.freeform.isStreaming.set(false);
-    store$.voice.recognitionStatus.set(isVoiceSupported ? "idle" : "unsupported");
+    store$.voice.recognitionStatus.set(getIsVoiceSupported() ? "idle" : "unsupported");
     store$.voice.interimTranscript.set("");
     store$.voice.voiceError.set("");
     store$.freeform.summary.set("");
@@ -670,7 +670,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
   }
 
   async function startFreeformMode() {
-    if (isVoiceSupported && isIOSWebKit) {
+    if (getIsVoiceSupported() && getIsIOSWebKit()) {
       primeSpeechSynthesis();
 
       const permissionGranted = await primeAudioPermission();
@@ -769,7 +769,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
     await streamAssistantTurn({
       apiMessages: openingMessages,
       assistantIndex: 0,
-      resumeListeningAfter: isVoiceSupported,
+      resumeListeningAfter: getIsVoiceSupported(),
     });
   }
 

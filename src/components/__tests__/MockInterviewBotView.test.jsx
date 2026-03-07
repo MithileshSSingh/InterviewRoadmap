@@ -64,4 +64,30 @@ describe("MockInterviewBotView", () => {
 
     expect(screen.getByPlaceholderText("Or type your answer...")).toBeEnabled();
   });
+
+  it("shows Safari-specific guidance when iPhone voice APIs are unavailable", () => {
+    const store$ = createMockInterviewStore({
+      isVoiceSupported: false,
+      hasSpeechRecognition: false,
+      hasSpeechSynthesis: true,
+      isIOSWebKit: true,
+    });
+
+    act(() => {
+      store$.ui.isOpen.set(true);
+      store$.ui.phase.set("mode-select");
+    });
+
+    render(
+      <MockInterviewBotView
+        store$={store$}
+        actions={createActions()}
+        topicContent={{ title: "JavaScript Closures" }}
+      />,
+    );
+
+    expect(
+      screen.getByText(/Safari is currently falling back to typing/i),
+    ).toBeInTheDocument();
+  });
 });
