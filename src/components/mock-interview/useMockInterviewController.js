@@ -281,7 +281,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
 
   // ── Stream orchestration ─────────────────────────────────────────────────
   const streamAssistantTurn = useCallback(
-    async ({ apiMessages, assistantIndex, resumeListeningAfter }) => {
+    async ({ apiMessages, assistantIndex, resumeListeningAfter, onContent = null }) => {
       stopListening("processing");
       cancelAssistantSpeech();
       speechBufferRef.current = "";
@@ -299,6 +299,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
           store$.freeform.chatMessages[assistantIndex].content.set(fullContent);
           speechBufferRef.current += token;
           flushSpeechBuffer(false);
+          onContent?.(fullContent);
         },
       });
 
@@ -421,13 +422,35 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
         ...nextMessages.slice(0, assistantIndex),
       ];
 
-      await streamAssistantTurn({
+      const content = await streamAssistantTurn({
         apiMessages,
         assistantIndex,
         resumeListeningAfter: true,
+        onContent: (fullContent) => {
+          if (
+            store$.freeform.interviewStatus.peek() === "ongoing" &&
+            parseFreeformScore(fullContent) !== null
+          ) {
+            store$.freeform.interviewStatus.set("completing");
+          }
+        },
       });
+
+      if (store$.freeform.interviewStatus.peek() === "completing") {
+        stopListening("idle");
+        store$.freeform.summary.set(content);
+        store$.freeform.freeformFinalScore.set(parseFreeformScore(content));
+        store$.freeform.interviewStatus.set("ongoing");
+        store$.ui.phase.set("complete");
+        await saveSession({
+          summaryText: content,
+          sessionMode: "freeform",
+          finalScore: parseFreeformScore(content),
+          messagesOverride: store$.freeform.chatMessages.peek(),
+        });
+      }
     },
-    [streamAssistantTurn, topicContent, store$],
+    [streamAssistantTurn, topicContent, store$, stopListening, saveSession],
   );
 
   const submitTypedMessage = useCallback(
@@ -448,13 +471,35 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
         ...nextMessages.slice(0, assistantIndex),
       ];
 
-      await streamAssistantTurn({
+      const content = await streamAssistantTurn({
         apiMessages,
         assistantIndex,
         resumeListeningAfter: isVoiceSupported,
+        onContent: (fullContent) => {
+          if (
+            store$.freeform.interviewStatus.peek() === "ongoing" &&
+            parseFreeformScore(fullContent) !== null
+          ) {
+            store$.freeform.interviewStatus.set("completing");
+          }
+        },
       });
+
+      if (store$.freeform.interviewStatus.peek() === "completing") {
+        stopListening("idle");
+        store$.freeform.summary.set(content);
+        store$.freeform.freeformFinalScore.set(parseFreeformScore(content));
+        store$.freeform.interviewStatus.set("ongoing");
+        store$.ui.phase.set("complete");
+        await saveSession({
+          summaryText: content,
+          sessionMode: "freeform",
+          finalScore: parseFreeformScore(content),
+          messagesOverride: store$.freeform.chatMessages.peek(),
+        });
+      }
     },
-    [isVoiceSupported, streamAssistantTurn, topicContent, store$],
+    [isVoiceSupported, streamAssistantTurn, topicContent, store$, stopListening, saveSession],
   );
 
   // ── Ref to keep submitVoiceTurn current ──────────────────────────────────
@@ -662,6 +707,7 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
     store$.voice.voiceError.set("");
     store$.freeform.summary.set("");
     store$.freeform.freeformFinalScore.set(null);
+    store$.freeform.interviewStatus.set("ongoing");
     store$.ui.saveStatus.set("idle");
   }
 

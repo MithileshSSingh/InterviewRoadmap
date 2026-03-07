@@ -39,6 +39,7 @@ export function createMockInterviewStore({
       summary: "",
       freeformFinalScore: null,
       isStreaming: false,
+      interviewStatus: "ongoing",  // "ongoing" | "completing"
     },
 
     // ── Voice ────────────────────────────────────────────────────────────
