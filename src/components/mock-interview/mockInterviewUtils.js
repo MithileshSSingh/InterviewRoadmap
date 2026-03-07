@@ -151,7 +151,7 @@ export function pickSpeechVoice() {
   if (typeof window === "undefined" || !window.speechSynthesis) return null;
   const voices = window.speechSynthesis.getVoices();
   return (
-    voices.find((voice) => voice.name === "Google UK English Female") ??
+    voices.find((voice) => voice.name === "Google US English") ??
     voices.find((voice) => voice.lang?.toLowerCase().startsWith("en")) ??
     voices[0] ??
     null
