@@ -254,7 +254,7 @@ export default function PhaseAssessment({ slug, phase }) {
                 className="quiz-btn quiz-btn-primary"
                 onClick={handleStartAssessment}
               >
-                Generate Phase Assessment
+                Generate Phase Assessment with AI
               </button>
               {error && <p className="quiz-error">{error}</p>}
             </>
