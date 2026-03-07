@@ -351,5 +351,11 @@ Phase 9 is conditional — only relevant if the static data in `src/data/` is mo
 - [ ] duplications in codes and agent name, list in generations and stream api
 - [ ] write proper graph which is hosted and stream from there ... with session id
 - [x] full screen Quiz dailog on exit show score 
+- [ ] Schadcn UI for all components
+- [ ] Mock interview in topic list page
+- [ ] Mock interview in phase list page
+- [ ] Mock interview in home page
+- [ ] Mock interveiw login based / payment based
+
 
 
