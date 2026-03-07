@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useCallback } from "react";
+import { useSelector } from "@legendapp/state/react";
 import { streamChatResponse } from "@/lib/chatClient";
 import {
   USER_SPEECH_DEBOUNCE_MS,
@@ -634,8 +635,8 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
   }, [clearTranscriptTimer, isIOSWebKit, isVoiceSupported, startListening, stopListening, store$]);
 
   // ── Escape-to-close ──────────────────────────────────────────────────────
-  // Use .get() so React re-runs this effect when isOpen changes
-  const isOpen = store$.ui.isOpen.get();
+  // Use useSelector so React re-runs this hook when isOpen changes
+  const isOpen = useSelector(() => store$.ui.isOpen.get());
   useEffect(() => {
     if (!isOpen) return undefined;
 
