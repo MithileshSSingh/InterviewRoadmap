@@ -3,7 +3,7 @@ import { marked } from "marked";
 // ── Constants ─────────────────────────────────────────────────────────────────
 export const USER_SPEECH_DEBOUNCE_MS = 1200;
 export const MAX_SAVED_FREEFORM_MESSAGES = 50;
-export const VOICE_TO_RESPOND = "Google US English";
+export const VOICE_TO_RESPOND = ["Google US English", "Samantha"];
 
 // ── Markdown / score helpers ──────────────────────────────────────────────────
 export function renderMarkdown(text) {
@@ -210,7 +210,12 @@ export function splitSpeechChunks(buffer, force = false) {
 export function pickSpeechVoice() {
   if (typeof window === "undefined" || !window.speechSynthesis) return null;
   const voices = window.speechSynthesis.getVoices();
-  const voice = voices.find((voice) => voice.name === VOICE_TO_RESPOND) ?? voices[0] ?? null
+  let voice = null;
+  for (const preferredName of VOICE_TO_RESPOND) {
+    voice = voices.find((v) => v.name === preferredName);
+    if (voice) break;
+  }
+  voice = voice ?? voices[0] ?? null;
   return { voice, lang: voice?.lang ?? "en-US" };
 }
 
