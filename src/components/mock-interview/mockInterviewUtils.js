@@ -3,6 +3,7 @@ import { marked } from "marked";
 // ── Constants ─────────────────────────────────────────────────────────────────
 export const USER_SPEECH_DEBOUNCE_MS = 1200;
 export const MAX_SAVED_FREEFORM_MESSAGES = 50;
+export const VOICE_TO_RESPOND = "Google US English";
 
 // ── Markdown / score helpers ──────────────────────────────────────────────────
 export function renderMarkdown(text) {
@@ -150,12 +151,8 @@ export function splitSpeechChunks(buffer, force = false) {
 export function pickSpeechVoice() {
   if (typeof window === "undefined" || !window.speechSynthesis) return null;
   const voices = window.speechSynthesis.getVoices();
-  return (
-    voices.find((voice) => voice.name === "Google US English") ??
-    voices.find((voice) => voice.lang?.toLowerCase().startsWith("en")) ??
-    voices[0] ??
-    null
-  );
+  const voice = voices.find((voice) => voice.name === VOICE_TO_RESPOND) ?? voices[0] ?? null
+  return { voice, lang: voice?.lang ?? "en-US" };
 }
 
 // Chrome has a long-standing bug where SpeechSynthesisUtterance instances are garbage collected

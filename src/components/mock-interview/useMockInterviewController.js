@@ -181,11 +181,12 @@ export function useMockInterviewController(store$, { topicContent, topicId, road
           return;
         }
 
+        const {voice, lang} = pickSpeechVoice();
         const utterance = new SpeechSynthesisUtterance(nextText);
         utterance.rate = 1.02;
         utterance.pitch = 1;
-        utterance.lang = "en-US";
-        utterance.voice = pickSpeechVoice();
+        utterance.lang = lang;
+        utterance.voice = voice;
         let hasFinished = false;
 
         const resumeListeningAfterSpeech = () => {
