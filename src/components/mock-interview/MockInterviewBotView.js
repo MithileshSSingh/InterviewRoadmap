@@ -208,64 +208,54 @@ function MockInterviewBotView({ store$, actions, topicContent }) {
   const isOpen = store$.ui.isOpen.get();
   const phase = store$.ui.phase.get();
 
+  if (!isOpen) {
+    return null;
+  }
+
   return (
     <>
-      {!isOpen && (
-        <button
-          className="mock-interview-fab"
-          onClick={() => void actions.handleOpen()}
-          aria-label="Start mock interview"
-        >
-          Practice Interview
-        </button>
-      )}
-
-      {isOpen && (
-        <>
-          <div className="mock-interview-backdrop" onClick={actions.handleClose} />
-          <div
-            className="mock-interview-drawer"
-            role="dialog"
-            aria-label="Mock Interview"
-            aria-modal="true"
-          >
-            <div className="chatbot-header">
-              <div className="chatbot-header-info">
-                <span className="chatbot-header-icon">🎤</span>
-                <div>
-                  <h3 className="chatbot-title">Mock Interview</h3>
-                  <p className="chatbot-subtitle">{topicContent?.title}</p>
-                </div>
-              </div>
-              <div className="chatbot-header-actions">
-                {phase === "freeform" && (
-                  <button
-                    className="chatbot-action-btn"
-                    onClick={actions.endInterview}
-                    title="End Interview"
-                    style={{ fontSize: "0.75rem", padding: "0.25rem 0.6rem" }}
-                  >
-                    End
-                  </button>
-                )}
-                <button className="chatbot-action-btn" onClick={actions.handleClose} title="Close">
-                  X
-                </button>
-              </div>
-            </div>
-
-            <div className="mock-interview-body">
-              {phase === "freeform" && (
-                <FreeformInterviewView store$={store$} actions={actions} />
-              )}
-
-              {phase === "complete" && (
-                <InterviewCompleteView store$={store$} actions={actions} />
-              )}
+      <div className="quiz-dialog-backdrop" onClick={actions.handleClose} />
+      <div
+        className="mock-interview-dialog-container"
+        role="dialog"
+        aria-label="Mock Interview"
+        aria-modal="true"
+      >
+        <div className="chatbot-header mock-interview-dialog-header">
+          <div className="chatbot-header-info">
+            <span className="chatbot-header-icon">🎤</span>
+            <div>
+              <h3 className="chatbot-title">Mock Interview</h3>
+              <p className="chatbot-subtitle">{topicContent?.title}</p>
             </div>
           </div>
-        </>
-      )}
+          <div className="chatbot-header-actions">
+            {phase === "freeform" && (
+              <button
+                className="chatbot-action-btn"
+                onClick={actions.endInterview}
+                title="End Interview"
+                style={{ fontSize: "0.75rem", padding: "0.25rem 0.6rem" }}
+              >
+                End
+              </button>
+            )}
+            <button className="chatbot-action-btn" onClick={actions.handleClose} title="Close">
+              X
+            </button>
+          </div>
+        </div>
+
+        <div className="mock-interview-body">
+          {phase === "freeform" && (
+            <FreeformInterviewView store$={store$} actions={actions} />
+          )}
+
+          {phase === "complete" && (
+            <InterviewCompleteView store$={store$} actions={actions} />
+          )}
+        </div>
+      </div>
     </>
   );
 }

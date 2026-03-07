@@ -436,6 +436,14 @@ export default function TopicPage() {
         topicTitle={topic.title}
       />
 
+      <MockInterviewBot
+        topicContent={topic}
+        topicId={topic.id}
+        roadmapSlug={slug}
+        phaseId={phaseId}
+        onOpenChange={handleInterviewOpenChange}
+      />
+
       {/* Topic Feedback */}
       <TopicFeedback slug={slug} phaseId={phaseId} topicId={topicId} />
 
@@ -476,14 +484,6 @@ export default function TopicPage() {
 
       {/* Topic Chatbot */}
       <TopicChatBot topicContent={topic} onOpenChange={handleChatbotOpenChange} />
-      {/* Mock Interview Bot */}
-      <MockInterviewBot
-        topicContent={topic}
-        topicId={topic.id}
-        roadmapSlug={slug}
-        phaseId={phaseId}
-        onOpenChange={handleInterviewOpenChange}
-      />
     </div>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { useSelector } from "@legendapp/state/react";
 import { createMockInterviewStore } from "./mock-interview/mockInterviewStore";
 import { useMockInterviewController } from "./mock-interview/useMockInterviewController";
 import MockInterviewBotView from "./mock-interview/MockInterviewBotView";
@@ -33,12 +35,49 @@ export default function MockInterviewBot({
     phaseId,
     onOpenChange,
   });
+  const isOpen = useSelector(() => store$.ui.isOpen.get());
+
+  useEffect(() => {
+    if (!isOpen) {
+      document.body.style.overflow = "";
+      return undefined;
+    }
+
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   return (
-    <MockInterviewBotView
-      store$={store$}
-      actions={actions}
-      topicContent={topicContent}
-    />
+    <>
+      <section className="section">
+        <h2 className="section-title">
+          <span className="icon">🎤</span> Mock Interview
+        </h2>
+        <div className="quiz-generate-card mock-interview-entry-card">
+          <p className="quiz-generate-text">
+            Practice a live interview for {topicContent?.title}
+          </p>
+          <button
+            className="quiz-btn quiz-btn-primary"
+            onClick={() => void actions.handleOpen()}
+          >
+            Start Interview
+          </button>
+        </div>
+      </section>
+
+      {isOpen
+        ? createPortal(
+            <MockInterviewBotView
+              store$={store$}
+              actions={actions}
+              topicContent={topicContent}
+            />,
+            document.body,
+          )
+        : null}
+    </>
   );
 }
