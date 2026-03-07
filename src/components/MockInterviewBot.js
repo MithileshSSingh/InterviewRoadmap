@@ -9,6 +9,7 @@ import { useMockInterviewController } from "./mock-interview/useMockInterviewCon
 import MockInterviewBotView from "./mock-interview/MockInterviewBotView";
 import { getSpeechRecognitionCtor, isIOSWebKitBrowser } from "./mock-interview/mockInterviewUtils";
 import RequireAuthDialog from "./RequireAuthDialog";
+import PremiumBadge from "./PremiumBadge";
 
 export default function MockInterviewBot({
   topicContent,
@@ -59,32 +60,14 @@ export default function MockInterviewBot({
       <section className="section">
         <h2 className="section-title">
           <span className="icon">🎤</span> Mock Interview
-          {!isAuthenticated && authStatus !== "loading" && (
-            <span
-              style={{
-                marginLeft: "auto",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.35rem",
-                fontSize: "0.7rem",
-                fontWeight: 600,
-                color: "var(--accent-yellow)",
-                background: "rgba(251, 191, 36, 0.1)",
-                border: "1px solid rgba(251, 191, 36, 0.25)",
-                borderRadius: "999px",
-                padding: "0.2rem 0.6rem",
-              }}
-            >
-              🔒 Premium
-            </span>
-          )}
+          <PremiumBadge />
         </h2>
 
         {isAuthenticated ? (
           /* ── Unlocked state ── */
           <div className="quiz-generate-card mock-interview-entry-card">
             <p className="quiz-generate-text">
-              Practice a live interview for {topicContent?.title}
+              Practice a live interview for <strong>{topicContent?.title}</strong>
             </p>
             <button
               className="quiz-btn quiz-btn-primary"
@@ -106,7 +89,7 @@ export default function MockInterviewBot({
               className="quiz-generate-text"
               style={{ color: "var(--text-muted)" }}
             >
-              Mock interview is powered by AI. Sign in to unlock this feature.
+              Mock interview is powered by AI for <strong> {topicContent?.title}</strong>. Sign in to unlock this feature.
             </p>
             <RequireAuthDialog
               featureName="Mock Interviews"
